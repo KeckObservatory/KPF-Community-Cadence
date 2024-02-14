@@ -1,31 +1,40 @@
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import React, { useEffect } from 'react'
-// import { GetLogsArgs, log_functions } from './api/api_root'
-import { NumberParam, StringParam, useQueryParam, withDefault } from 'use-query-params'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
-import { Autocomplete, Box, Paper, Tooltip, Typography } from '@mui/material'
+import { StringParam, useQueryParam } from 'use-query-params'
+import { Autocomplete, Tooltip } from '@mui/material'
 
 interface Props {
 }
 
+export interface SPP {
+    semester: string
+    progid: string
+    pi: string
+}
 
 export const Control = (props: Props) => {
 
-    // const [n_logs, setNLogs] = useQueryParam('n_logs', withDefault(NumberParam, 100))
-    // const [minutes, setMinutes] = useQueryParam('log_minutes', withDefault(NumberParam, 0))
-    // const [loggername, setLoggername] = useQueryParam('loggername', withDefault(StringParam, 'ddoi'))
-    // const [startdatetime, setStartdatetime] = useQueryParam<string | undefined>('startdatetime')
-    // const [enddatetime, setEnddatetime] = useQueryParam<string | undefined>('enddatetime')
+    const [semester, setSemester] = useQueryParam('semester', StringParam)
+    const [progid, setProgid] = useQueryParam('prog_id', StringParam)
+    const [pi, setPI] = useQueryParam('pi', StringParam)
 
     useEffect(() => {
     }, [])
 
-
+    const onChange = (key: String, value: string | undefined | null) => {
+        if (value) {
+            if (key === 'semester') {
+                setSemester(value)
+            }
+            else if (key === 'progid') {
+                setProgid(value)
+            }
+            else if (key === 'pi') {
+                setPI(value)
+            }
+        }
+    }
 
     // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
     const semesters = [
@@ -39,9 +48,9 @@ export const Control = (props: Props) => {
     ]
 
     const programs = [
-        { label: '123A' },
-        { label: '123B' },
-        { label: '123C' },
+        { label: 'A123' },
+        { label: 'B123' },
+        { label: 'C123' },
     ]
 
     const pis = [
@@ -58,6 +67,8 @@ export const Control = (props: Props) => {
                 <Autocomplete
                     disablePortal
                     id="semester-selection"
+                    value={{ label: semester }}
+                    onChange={(_, value) => onChange('semester', value?.label)}
                     options={semesters}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Semester" />}
@@ -67,6 +78,8 @@ export const Control = (props: Props) => {
                 <Autocomplete
                     disablePortal
                     id="program-selection"
+                    value={{ label: progid }}
+                    onChange={(_, value) => onChange('progid', value?.label)}
                     options={programs}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Program" />}
@@ -76,6 +89,8 @@ export const Control = (props: Props) => {
                 <Autocomplete
                     disablePortal
                     id="program-selection"
+                    value={{ label: pi }}
+                    onChange={(_, value) => onChange('pi', value?.label)}
                     options={pis}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="PI" />}

@@ -6,7 +6,6 @@ import { ThemeProvider } from "@mui/material/styles";
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params'
 import { TargetView } from './target_view'
 import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
 import { Control } from './control';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -20,6 +19,7 @@ function App() {
   const handleThemeChange = (): void => {
     setDarkState(!darkState);
   }
+
   return (
     <ThemeProvider theme={theme} >
       <CssBaseline />

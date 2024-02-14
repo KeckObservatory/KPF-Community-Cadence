@@ -1,0 +1,88 @@
+{
+    "title": "KPF Community Cadence Target Params",
+    "description": "This document defines the schema for the KPF Community Cadence Target Params",
+    "type": "object",
+    "properties": {
+        "semester": {
+            "type": "string",
+            "description": "Semester",
+            "pattern": "^([0-9]{4}[AB])$",
+            "default": "2024B"
+        },
+        "prog_id": {
+            "type": "string",
+            "description": "Project Id",
+            "pattern": "^[A-Z]{1}[0-9]{3}$",
+            "default": "A123"
+        },
+        "pi": {
+            "type": "string",
+            "description": "Principal Investigator",
+            "default": "Observer Name"
+        },
+        "target_name": {
+            "type": "string",
+            "description": "Target Name"
+        },
+        "v_mag": {
+            "type": "number",
+            "description": "V Magnitude"
+        },
+        "t_eff": {
+            "type": "number",
+            "description": "T Eff"
+        },
+        "simucal_on": {
+            "type": "boolean",
+            "description": "Simucal on or off"
+        },
+        "nominal_exposure_time": {
+            "type": "number",
+            "description": "Nominal Exposure Time (s)"
+        },
+        "maximum_exposure_time": {
+            "type": "number",
+            "description": "Maximum Exposure Time (s)"
+        },
+        "num_visits_per_night": {
+            "type": "number",
+            "default": 1,
+            "description": "Number of visits per night"
+        },
+        "num_unique_nights_per_semester": {
+            "type": "number",
+            "default": 1,
+            "description": "Number of unique nights per semester"
+        },
+        "minimum_intranight_cadence": {
+            "type": "number",
+            "description": "Minimum Intranight Cadence"
+        },
+        "maximum_intranight_cadence": {
+            "type": "number",
+            "description": "Maximum Intranight Cadence"
+        },
+        "num_observations_per_visit": {
+            "type": "number",
+            "default": 1,
+            "description": "Number of observations per visit"
+        }
+    },
+    "required": [
+        "semester",
+        "prog_id",
+        "pi",
+        "target_name",
+        "v_mag",
+        "t_eff",
+        "simucal_on",
+        "nominal_exposure_time",
+        "maximum_exposure_time",
+        "minimum_intranight_cadence",
+        "maximum_intranight_cadence",
+        "num_observations_per_visit",
+        "num_visits_per_night",
+        "num_unique_nights_per_semester"
+    ],
+    "additionalProperties": true
+}
