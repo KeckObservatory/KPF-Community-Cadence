@@ -28,7 +28,7 @@ export interface Target {
     nominal_exposure_time?: number
     maximum_exposure_time?: number,
     minimum_intranight_cadence?: number,
-    maximum_intranight_cadence?: number,
+    minimum_internight_cadence?: number,
     num_observations_per_visit?: number,
     num_visits_per_night?: number,
     num_unique_nights_per_semester?: number
@@ -220,19 +220,19 @@ export const TargetView = () => {
                             <Tooltip title="Write minimum intra night cadence here." placement='left'>
                                 <TextField
                                     // focused
-                                    label={'Min'}
+                                    label={'Min Intranight Cadence'}
                                     id="min-intra-night-cadence"
                                     onChange={(event) => handleTextChange('minimum_intranight_cadence', event.target.value, true)}
                                     value={target.minimum_intranight_cadence}
                                 />
                             </Tooltip>
-                            <Tooltip title="Write maximum intra night cadence here." placement='left'>
+                            <Tooltip title="Write minimum inter night cadence here." placement='left'>
                                 <TextField
                                     // focused
-                                    label={'Max'}
-                                    id="max-intra-night-cadence"
-                                    onChange={(event) => handleTextChange('maximum_intranight_cadence', event.target.value, true)}
-                                    value={target.maximum_intranight_cadence}
+                                    label={'Min Internight Cadence'}
+                                    id="min-inter-night-cadence"
+                                    onChange={(event) => handleTextChange('minimum_internight_cadence', event.target.value, true)}
+                                    value={target.minimum_internight_cadence}
                                 />
                             </Tooltip>
                         </Stack>

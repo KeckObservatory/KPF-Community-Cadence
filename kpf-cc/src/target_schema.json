@@ -58,9 +58,9 @@
             "type": "number",
             "description": "Minimum Intranight Cadence"
         },
-        "maximum_intranight_cadence": {
+        "minimum_internight_cadence": {
             "type": "number",
-            "description": "Maximum Intranight Cadence"
+            "description": "Minimum Internight Cadence"
         },
         "num_observations_per_visit": {
             "type": "number",
@@ -79,7 +79,7 @@
         "nominal_exposure_time",
         "maximum_exposure_time",
         "minimum_intranight_cadence",
-        "maximum_intranight_cadence",
+        "minimum_internight_cadence",
         "num_observations_per_visit",
         "num_visits_per_night",
         "num_unique_nights_per_semester"
