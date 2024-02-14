@@ -1,0 +1,123 @@
+[
+    {
+        "$oid": "6388099f1e00c74a2406e097",
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.547Z",
+        "hostname": "b'NIRES'",
+        "loggername": "ddoi",
+        "level": "WARN",
+        "subsystem": "NIRES",
+        "author": "ttucker",
+        "semid": "2023A_1234",
+        "progid": null,
+        "message": "Taking an exposure"
+    },
+    {
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.575Z",
+        "hostname": "b'NIRES'",
+        "level": "WARN",
+        "subsystem": "NIRES",
+        "author": "ttucker",
+        "loggername": "ddoi",
+        "semid": "2023A_1234",
+        "progid": null,
+        "message": "Configuring for exposure"
+    },
+    {
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.428Z",
+        "hostname": "b'NIRES'",
+        "level": "WARN",
+        "subsystem": "EXECUTION ENGINE",
+        "author": "ttucker",
+        "semid": "2023A_1234",
+        "loggername": "ddoi",
+        "progid": null,
+        "message": "Configure for exposure event sent to queue"
+    },
+    {
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.519Z",
+        "hostname": "b'NIRES'",
+        "level": "WARN",
+        "subsystem": "Ptolemy",
+        "author": "ttucker",
+        "semid": "2023A_1234",
+        "loggername": "ddoi",
+        "progid": null,
+        "message": "Configure for exposure event selected"
+    },
+    {
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.452Z",
+        "hostname": "b'NIRES'",
+        "level": "WARN",
+        "subsystem": "Ptolemy",
+        "author": "ttucker",
+        "semid": "2023A_1234",
+        "loggername": "ddoi",
+        "progid": null,
+        "message": "Sequence 1 selected"
+    },
+    {
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.402Z",
+        "hostname": "b'NIRES'",
+        "level": "WARN",
+        "subsystem": "Ptolemy",
+        "author": "ttucker",
+        "loggername": "ddoi",
+        "semid": "2023A_1234",
+        "progid": null,
+        "message": "Target is aquired"
+    },
+    {
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.353Z",
+        "hostname": "b'NIRES'",
+        "level": "WARN",
+        "subsystem": "EXECUTION ENGINE",
+        "author": "ttucker",
+        "loggername": "ddoi",
+        "semid": "2023A_1234",
+        "progid": null,
+        "message": "Acquisition complete"
+    },
+    {
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.312Z",
+        "hostname": "b'NIRES'",
+        "level": "INFO",
+        "loggername": "ddoi",
+        "subsystem": "EXECUTION ENGINE",
+        "semid": "2023A_1234",
+        "author": "ttucker",
+        "progid": null,
+        "message": "Waiting for target acquisition"
+    },
+    {
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.380Z",
+        "hostname": "b'EXECUTION ENGINE'",
+        "level": "WARN",
+        "loggername": "ddoi",
+        "subsystem": "NIRES",
+        "author": "ttucker",
+        "semid": "2023A_1234",
+        "progid": null,
+        "message": "Begin target Acquisition"
+    },
+    {
+        "utc_sent": "2022-12-01 01:55:43.",
+        "utc_received": "2022-12-01T01:55:43.480Z",
+        "hostname": "b'NIRES'",
+        "level": "WARN",
+        "subsystem": "Ptolemy",
+        "author": "ttucker",
+        "loggername": "ddoi",
+        "semid": "2023A_1234",
+        "progid": null,
+        "message": "Target acquisition event submitted \n here is another line"
+    }
+]
