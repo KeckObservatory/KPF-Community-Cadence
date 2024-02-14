@@ -8,6 +8,8 @@ import { TargetView } from './target_view'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { Control } from './control';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
 
 const username = 'Dr. Observer Observerson'
 
@@ -22,19 +24,38 @@ function App() {
     <ThemeProvider theme={theme} >
       <CssBaseline />
       <TopBar darkState={darkState} handleThemeChange={handleThemeChange} username={username} />
-      <Paper
+      <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+        <Paper
           sx={{
             marginTop: '12px',
             padding: '6px',
-            display: 'flex',
+            maxWidth: '1000px',
+            minWidth: '300px',
             flexDirection: 'column',
-            '& .MuiTextField-root': {},
           }}
-          elevation={3}
-      >
-          <Control />
-      </Paper>
-      <TargetView />
+        >
+          <Paper
+            sx={{
+              padding: '6px',
+              display: 'flex',
+              flexDirection: 'column',
+              '& .MuiTextField-root': {},
+            }}
+            elevation={3}
+          >
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+            >
+              Program Information
+            </Typography>
+            <Control />
+          </Paper>
+          <TargetView />
+        </Paper>
+      </Stack>
     </ThemeProvider>
   )
 }

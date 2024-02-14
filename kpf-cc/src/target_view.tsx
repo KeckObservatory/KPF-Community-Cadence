@@ -144,10 +144,10 @@ export const TargetView = () => {
                     }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                         <Stack justifyContent='center' spacing={2}>
                             <Typography
-                                variant="h6"
-                                color="inherit"
-                                noWrap
-                                gutterBottom
+                                // variant="h6"
+                                // color="inherit"
+                                // noWrap
+                                // gutterBottom
                             >
                                 Intra Night Cadence
                             </Typography>
