@@ -67,7 +67,7 @@ export const Control = (props: Props) => {
                 <Autocomplete
                     disablePortal
                     id="semester-selection"
-                    value={{ label: semester }}
+                    value={semester ? { label: semester }: {label: 'input semester'}}
                     onChange={(_, value) => onChange('semester', value?.label)}
                     options={semesters}
                     sx={{ width: 300 }}
@@ -78,7 +78,7 @@ export const Control = (props: Props) => {
                 <Autocomplete
                     disablePortal
                     id="program-selection"
-                    value={{ label: progid }}
+                    value={progid ? { label: progid }: {label: 'input program'}}
                     onChange={(_, value) => onChange('progid', value?.label)}
                     options={programs}
                     sx={{ width: 300 }}
@@ -89,7 +89,7 @@ export const Control = (props: Props) => {
                 <Autocomplete
                     disablePortal
                     id="program-selection"
-                    value={{ label: pi }}
+                    value={pi ? { label: pi }: {label: 'input pi'}}
                     onChange={(_, value) => onChange('pi', value?.label)}
                     options={pis}
                     sx={{ width: 300 }}

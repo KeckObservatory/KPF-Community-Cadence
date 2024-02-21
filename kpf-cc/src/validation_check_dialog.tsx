@@ -24,14 +24,22 @@ export interface Props {
 function ValidationDialog(props: SimpleDialogProps) {
   const { open, handleClose } = props;
   return (
-    <Dialog onClose={() => handleClose()} open={open}>
+    <Dialog maxWidth="lg" onClose={() => handleClose()} open={open}>
       <DialogTitle>Target Validation Errors</DialogTitle>
       <DialogContent dividers>
         {
           props.errors.map((err) => {
+            console.log(err)
+            let msg = err.message
+            if (err.keyword === 'required') {
+              msg = `${err.params.missingProperty}: ${err.message}`
+            }
+            if (err.keyword === 'type') {
+            msg = `${err.instancePath.substring(1)}: ${err.message}`
+            }
             return (
               <Typography gutterBottom>
-                {err.message}
+                {msg}
               </Typography>)
           })
       }

@@ -22,7 +22,7 @@ export interface Target {
     prog_id: string,
     pi: string,
     target_name?: string,
-    v_mag?: number,
+    j_mag?: number,
     t_eff?: number,
     simucal_on?: boolean,
     nominal_exposure_time?: number
@@ -115,16 +115,16 @@ export const TargetView = () => {
                         <Tooltip title="Write Magnitude Here.">
                             <TextField
                                 // focused
-                                label={'V-mag'}
-                                id="v-magnitude"
-                                value={target.v_mag}
-                                onChange={(event) => handleTextChange('v_mag', event.target.value, true)}
+                                label={'J-mag'}
+                                id="j-magnitude"
+                                value={target.j_mag}
+                                onChange={(event) => handleTextChange('j_mag', event.target.value, true)}
                             />
                         </Tooltip>
                         <Tooltip title="Write Teff Here.">
                             <TextField
                                 // focused
-                                label={'Teff'}
+                                label={'Effective Temperature [K]'}
                                 id="t-eff"
                                 value={target.t_eff}
                                 onChange={(event) => handleTextChange('t_eff', event.target.value, true)}
