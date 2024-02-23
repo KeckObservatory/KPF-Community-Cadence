@@ -32,7 +32,6 @@ function ValidationDialog(props: SimpleDialogProps) {
       <DialogContent dividers>
         {
           props.errors.map((err) => {
-            console.log(err)
             let msg = err.message
             if (err.keyword === 'required') {
               msg = `${err.params.missingProperty}: ${err.message}`
@@ -83,8 +82,6 @@ export default function ValidationDialogButton(props: Props) {
 
 
   const handleClickOpen = () => {
-    console.log('handleClickOpen target', target)
-    // delete ts["required"]
     validate(target)
     if (validate.errors) {
       console.log(validate.errors)
@@ -107,9 +104,6 @@ export default function ValidationDialogButton(props: Props) {
         <IconButton onClick={handleClickOpen}>
           {icon}
         </IconButton>
-        {/* <Button aria-label="help" color="primary" onClick={handleClickOpen} variant="contained">
-          {txt}
-        </Button> */}
       </Tooltip>
       <ValidationDialog
         open={open}

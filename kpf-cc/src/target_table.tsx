@@ -111,7 +111,8 @@ export default function TargetTable() {
   const initTargets = targets.map((target: Target) => {
     return {
       ...target,
-      id: target._id,
+      id: randomId(),
+      // id: target._id,
     }
 
   }) as TargetRow[];
@@ -149,7 +150,7 @@ export default function TargetTable() {
 
   const handleDeleteClick = (id: GridRowId) => () => {
     console.log('deleting', id) //TODO: send to server
-    setRows(rows.filter((row) => row._id !== id));
+    setRows(rows.filter((row) => row.id !== id));
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
@@ -167,12 +168,13 @@ export default function TargetTable() {
   const processRowUpdate = (newRow: GridRowModel) => {
     //sends to server
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
-    debounced_save(updatedRow)
+    //debounced_save(updatedRow)
     setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
     return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    console.log('handleRowModesModelChange', newRowModesModel)
     setRowModesModel(newRowModesModel);
   };
 
@@ -190,18 +192,25 @@ export default function TargetTable() {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
         const [targetName, setTargetname] = React.useState<string>(row.target_name);
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
 
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         React.useEffect(() => { // when targed is edited in target edit dialog
-          console.log('editTarget updated', editTarget)
-          debounced_save(editTarget)
-          debounced_edit_click(id)
+          if (count > 0) {
+            console.log('editTarget updated', editTarget)
+            debounced_save(editTarget)
+            debounced_edit_click(id)
+          }
+          setCount((prev: number) => prev + 1)
         }, [editTarget])
 
         React.useEffect(() => { // when row is edited in edit mode
-          console.log('row updated', row)
-          setEditTarget(row)
-          setTargetname(row.target_name as string)
+          if (count > 0) {
+            console.log('row updated', row)
+            setEditTarget(row)
+            setTargetname(row.target_name as string)
+          }
+          setCount((prev: number) => prev + 1)
         }, [row])
 
         if (isInEditMode) {
@@ -271,8 +280,8 @@ export default function TargetTable() {
         rows={rows}
         columns={columns}
         editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
+        rowModesModel={rowModesModel} //TODO: prevent editing of new rows if scroll event
+        onRowModesModelChange={handleRowModesModelChange} //TODO: prevent editing of new rows if scroll event
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         slots={{
