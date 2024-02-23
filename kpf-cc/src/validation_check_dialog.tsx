@@ -103,7 +103,7 @@ export default function ValidationDialogButton(props: Props) {
 
   return (
     <>
-      <Tooltip title="Select for a big wall of text">
+      <Tooltip title="Select to see target validation errors (if any)">
         <IconButton onClick={handleClickOpen}>
           {icon}
         </IconButton>

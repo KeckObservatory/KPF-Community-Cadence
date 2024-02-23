@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { handleResponse, handleError, intResponse, intError } from './response';
-const SIMBAD_ADDR = "http://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=submit+id&output.format=ASCII&obj.bibsel=off&Ident=M31"
+const SIMBAD_ADDR = "http://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=submit+id&output.format=ASCII&obj.bibsel=off&Ident="
 
 
 const axiosInstance = axios.create({

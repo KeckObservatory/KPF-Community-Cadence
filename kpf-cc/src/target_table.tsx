@@ -6,7 +6,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
-import { useDebounceCallback } from 'usehooks-ts'
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -32,6 +31,8 @@ import { pis, prog_ids, semesters } from './control';
 import ValidationDialogButton from './validation_check_dialog';
 import TargetEditDialogButton from './target_edit_dialog';
 import debounce from 'lodash.debounce';
+import SimbadDialogButton from './simbad_dialog';
+import { useDebounceCallback } from './use_debounce_callback';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -110,26 +111,26 @@ export default function TargetTable() {
   const initTargets = targets.map((target: Target) => {
     return {
       ...target,
-      id: randomId(),
+      id: target._id,
     }
 
   }) as TargetRow[];
   const [rows, setRows] = React.useState(initTargets);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 
-  const debouncedSave = React.useCallback(
-    debounce(async (target) => {
-      console.log('saving to local storage', target)
-    }, 3000),
-    []
-  )
+  const save_target = ((target: Target) => {
+    console.log('debounced save', target) //TODO: send to server
+  })
 
-  const handleRowDBUpdate = (newRow: TargetRow) => {
-    //sends to server
-    console.log('sending to db', newRow)
-  }
+  const debounced_save = useDebounceCallback(save_target, 1000)
 
-  const debouncedDBUpdate = useDebounceCallback(handleRowDBUpdate, 5000);
+  // const debouncedSave = React.useCallback(
+  //   debounce(async (target) => {
+  //     console.log('debounced save', target) //TODO: send to server
+  //   }, 3000),
+  //   []
+  // )
+
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -142,10 +143,12 @@ export default function TargetTable() {
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
+    console.log('rowModesModel', rowModesModel)
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
+    console.log('deleting', id) //TODO: send to server
     setRows(rows.filter((row) => row._id !== id));
   };
 
@@ -163,9 +166,8 @@ export default function TargetTable() {
 
   const processRowUpdate = (newRow: GridRowModel) => {
     //sends to server
-    console.log('newRow', newRow)
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
-    debouncedSave(updatedRow)
+    debounced_save(updatedRow)
     setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
     return updatedRow;
   };
@@ -186,11 +188,21 @@ export default function TargetTable() {
       cellClassName: 'actions',
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
+        const [targetName, setTargetname] = React.useState<string>(row.target_name);
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
-        React.useEffect(() => {
-          processRowUpdate(editTarget)
+        const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
+        React.useEffect(() => { // when targed is edited in target edit dialog
+          console.log('editTarget updated', editTarget)
+          debounced_save(editTarget)
+          debounced_edit_click(id)
         }, [editTarget])
+
+        React.useEffect(() => { // when row is edited in edit mode
+          console.log('row updated', row)
+          setEditTarget(row)
+          setTargetname(row.target_name as string)
+        }, [row])
 
         if (isInEditMode) {
           return [
@@ -213,7 +225,7 @@ export default function TargetTable() {
         }
 
         return [
-
+          <SimbadDialogButton targetName={targetName} />,
           <ValidationDialogButton target={editTarget} />,
           <TargetEditDialogButton target={editTarget} setTarget={setEditTarget} />,
           <GridActionsCellItem

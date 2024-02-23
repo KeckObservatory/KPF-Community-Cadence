@@ -20,6 +20,7 @@ import { StringParam, useQueryParam } from 'use-query-params'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import { Target } from './target_view';
 import { pis, prog_ids, semesters } from './control';
+import debounce from 'lodash.debounce';
 
 interface Props {
     target: Target
@@ -37,19 +38,29 @@ export const TargetEditDialog = (props: TargetEditProps) => {
 
     const { target, setTarget } = props
 
-
-    const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
-        value && 
-            isNumber ? value = Number(value) : value
+    const debouncedSave = React.useCallback(
+        debounce(async (target: Target, key: string, value: number | string | boolean | undefined) => {
+            console.log('debounced save', target) //TODO: send to server
             setTarget((prev: Target) => {
                 return { ...prev, [key]: value }
             })
+        }, 1000),
+        []
+    )
+
+    const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
+        value && isNumber ? value = Number(value) : value
+        //debouncedSave(target, key, value)
+        setTarget((prev: Target) => {
+            return { ...prev, [key]: value }
+        })
     }
 
     const handleSwitchChange = (key: string, event: React.SyntheticEvent<Element, Event>) => {
-        const val = (event.target as any).checked
+        const value = (event.target as HTMLInputElement).checked
+        //debouncedSave(target, key, value)
         setTarget((prev: Target) => {
-            return { ...prev, [key]: val }
+            return { ...prev, [key]: value }
         })
     }
 
@@ -93,7 +104,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         <Autocomplete
                                             disablePortal
                                             id="semester-selection"
-                                            value={target.semester ? { label: target.semester} : { label: 'input semester' }}
+                                            value={target.semester ? { label: target.semester } : { label: 'input semester' }}
                                             onChange={(_, value) => handleTextChange('semester', value?.label)}
                                             options={semesters.map((s) => { return { label: s } })}
                                             sx={{ width: 300 }}
@@ -301,7 +312,7 @@ export default function TargetEditDialogButton(props: Props) {
 
     return (
         <>
-            <Tooltip title="Select for a big wall of text">
+            <Tooltip title="Select to edit target in dialog window">
                 <IconButton onClick={handleClickOpen}>
                     <RocketLaunchIcon />
                 </IconButton>
