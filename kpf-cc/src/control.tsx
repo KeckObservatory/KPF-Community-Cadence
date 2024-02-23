@@ -3,6 +3,7 @@ import TextField from '@mui/material/TextField'
 import React, { useEffect } from 'react'
 import { StringParam, useQueryParam } from 'use-query-params'
 import { Autocomplete, Tooltip } from '@mui/material'
+import targets from './targets.json'
 
 interface Props {
 }
@@ -12,6 +13,17 @@ export interface SPP {
     progid: string
     pi: string
 }
+
+export const semesters = [...new Set(targets.map( (tgt) => {
+return tgt.semester
+}))]
+export const prog_ids = [...new Set(targets.map( (tgt) => {
+return tgt.prog_id
+}))]
+export const pis = [...new Set(targets.map( (tgt) => {
+return tgt.pi
+}))]
+
 
 export const Control = (props: Props) => {
 
@@ -36,40 +48,15 @@ export const Control = (props: Props) => {
         }
     }
 
-    // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-    const semesters = [
-        { label: '2024B' },
-        { label: '2024A' },
-        { label: '2023B' },
-        { label: '2023A' },
-        { label: '2022B' },
-        { label: '2022A' },
-        { label: '2021B' },
-    ]
-
-    const programs = [
-        { label: 'A123' },
-        { label: 'B123' },
-        { label: 'C123' },
-    ]
-
-    const pis = [
-        { label: 'Chet Baker' },
-        { label: 'Sonny Rollins' },
-        { label: 'Miles Davis' },
-        { label: 'Louis Armstrong' },
-        { label: 'Anita O\'Day' },
-    ]
-
     return (
         <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
             <Tooltip title="Select semester">
                 <Autocomplete
                     disablePortal
                     id="semester-selection"
-                    value={semester ? { label: semester }: {label: 'input semester'}}
+                    value={semester ? { label: semester } : { label: 'input semester' }}
                     onChange={(_, value) => onChange('semester', value?.label)}
-                    options={semesters}
+                    options={semesters.map((s) => { return { label: s } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Semester" />}
                 />
@@ -78,9 +65,9 @@ export const Control = (props: Props) => {
                 <Autocomplete
                     disablePortal
                     id="program-selection"
-                    value={progid ? { label: progid }: {label: 'input program'}}
+                    value={progid ? { label: progid } : { label: 'input program' }}
                     onChange={(_, value) => onChange('progid', value?.label)}
-                    options={programs}
+                    options={prog_ids.map((p) => { return { label: p } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Program" />}
                 />
@@ -89,9 +76,9 @@ export const Control = (props: Props) => {
                 <Autocomplete
                     disablePortal
                     id="program-selection"
-                    value={pi ? { label: pi }: {label: 'input pi'}}
+                    value={pi ? { label: pi } : { label: 'input pi' }}
                     onChange={(_, value) => onChange('pi', value?.label)}
-                    options={pis}
+                    options={pis.map((p) => { return { label: p } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="PI" />}
                 />

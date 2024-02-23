@@ -4,11 +4,14 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-import Button from '@mui/material/Button';
-
+import ApprovalIcon from '@mui/icons-material/Approval';
+import VerifiedIcon from '@mui/icons-material/Verified';
+// import NewReleaseIcon from '@mui/icons-material/NewReleases';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import target_schema from './target_schema.json'
 import AJV2019, { ErrorObject } from 'ajv/dist/2019'
 import { Target } from './target_view';
+import { IconButton } from '@mui/material';
 
 
 export interface SimpleDialogProps {
@@ -52,22 +55,36 @@ type Verified = 'verified' | 'unverified' | 'invalid'
 
 export default function ValidationDialogButton(props: Props) {
   const [open, setOpen] = React.useState(false);
-  const [verified, setVerified] = React.useState('unverified' as Verified);
+  const initVerified = props.target.target_valid===true ? 'verified' : props.target.target_valid===false ? 'invalid' : 'unverified'
+  const [verified, setVerified] = React.useState(initVerified as Verified);
   const [errors, setErrors] = React.useState([] as ErrorObject<string, Record<string, any>, unknown>[]);
+  const [icon, setIcon] = React.useState(<ApprovalIcon />)
   const { target } = props
 
   const ajv = new AJV2019({allErrors:true})
 
+  let ts = target_schema as any
+  delete ts["$schema"]
+  const validate = ajv.compile(ts)
+
   React.useEffect(() => {
     setVerified('unverified')
+    validate(target)
+    if (validate.errors) {
+      setErrors(validate.errors)
+      setVerified('invalid')
+      setIcon(<LocalFireDepartmentIcon color="warning" />)
+    }
+    else {
+      setVerified('verified')
+      setIcon(<VerifiedIcon color="success" />)
+    }
   }, [props.target])
 
+
   const handleClickOpen = () => {
-    console.log('target', target)
-    let ts = target_schema as any
-    delete ts["$schema"]
+    console.log('handleClickOpen target', target)
     // delete ts["required"]
-    const validate = ajv.compile(ts)
     validate(target)
     if (validate.errors) {
       console.log(validate.errors)
@@ -84,15 +101,15 @@ export default function ValidationDialogButton(props: Props) {
     setOpen(false);
   };
 
-  let txt = verified.includes('unverified') ? "Validate Target" : `Target Valid \u{1F60C}`
-  txt = verified.includes('invalid') ? `Target Invalid \u{1F525}` : txt
-
   return (
     <>
       <Tooltip title="Select for a big wall of text">
-        <Button aria-label="help" color="primary" onClick={handleClickOpen} variant="contained">
+        <IconButton onClick={handleClickOpen}>
+          {icon}
+        </IconButton>
+        {/* <Button aria-label="help" color="primary" onClick={handleClickOpen} variant="contained">
           {txt}
-        </Button>
+        </Button> */}
       </Tooltip>
       <ValidationDialog
         open={open}

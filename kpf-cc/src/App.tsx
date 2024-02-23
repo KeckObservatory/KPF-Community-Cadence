@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import { Control } from './control';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
+import TargetTable from './target_table';
 
 const username = 'Dr. Observer Observerson'
 
@@ -34,26 +35,7 @@ function App() {
             flexDirection: 'column',
           }}
         >
-          <Paper
-            sx={{
-              padding: '6px',
-              display: 'flex',
-              flexDirection: 'column',
-              '& .MuiTextField-root': {},
-            }}
-            elevation={3}
-          >
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-            >
-              Program Information
-            </Typography>
-            <Control />
-          </Paper>
-          <TargetView />
+          <TargetTable />
         </Paper>
       </Stack>
     </ThemeProvider>

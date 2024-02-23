@@ -13,11 +13,12 @@ import {
 import ValidationDialogButton from './validation_check_dialog'
 import { StringParam, useQueryParam } from 'use-query-params'
 
-export interface Props {
+interface Props {
 
 }
 
 export interface Target {
+    _id?: string,
     semester: string,
     prog_id: string,
     pi: string,
@@ -31,8 +32,10 @@ export interface Target {
     minimum_internight_cadence?: number,
     num_observations_per_visit?: number,
     num_visits_per_night?: number,
-    num_unique_nights_per_semester?: number
+    num_unique_nights_per_semester?: number,
+    target_valid?: boolean
 }
+
 
 export const TargetView = () => {
 
