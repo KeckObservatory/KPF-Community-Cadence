@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import ApprovalIcon from '@mui/icons-material/Approval';
 import VerifiedIcon from '@mui/icons-material/Verified';
-// import NewReleaseIcon from '@mui/icons-material/NewReleases';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import target_schema from './target_schema.json'
 import AJV2019, { ErrorObject } from 'ajv/dist/2019'

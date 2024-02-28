@@ -5,9 +5,6 @@ import { StringParam, useQueryParam } from 'use-query-params'
 import { Autocomplete, Tooltip } from '@mui/material'
 import targets from './targets.json'
 
-interface Props {
-}
-
 export interface SPP {
     semester: string
     progid: string
@@ -25,7 +22,7 @@ return tgt.pi
 }))]
 
 
-export const Control = (props: Props) => {
+export const Control = () => {
 
     const [semester, setSemester] = useQueryParam('semester', StringParam)
     const [progid, setProgid] = useQueryParam('prog_id', StringParam)
