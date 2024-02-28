@@ -18,6 +18,7 @@ import {
 } from '@mui/material'
 import { StringParam, useQueryParam } from 'use-query-params'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import EditIcon from '@mui/icons-material/Edit';
 import { Target } from './target_view';
 import { pis, prog_ids, semesters } from './control';
 import debounce from 'lodash.debounce';
@@ -289,9 +290,6 @@ export default function TargetEditDialogButton(props: Props) {
     const [open, setOpen] = React.useState(false);
     const { target, setTarget } = props
 
-    React.useEffect(() => {
-    }, [props.target])
-
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -304,7 +302,7 @@ export default function TargetEditDialogButton(props: Props) {
         <>
             <Tooltip title="Select to edit target in dialog window">
                 <IconButton onClick={handleClickOpen}>
-                    <RocketLaunchIcon />
+                    <EditIcon />
                 </IconButton>
             </Tooltip>
             <TargetEditDialog

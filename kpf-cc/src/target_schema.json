@@ -26,8 +26,12 @@
             "description": "Target Name"
         },
         "j_mag": {
-            "type": "integer",
-            "description": "V Magnitude"
+            "type": "number",
+            "description": "J Magnitude"
+        },
+        "g_mag": {
+            "type": "number",
+            "description": "G Magnitude"
         },
         "t_eff": {
             "type": "number",
@@ -72,7 +76,58 @@
             "type": "boolean",
             "default": false,
             "description": "Is targed valid?"
+        },
+        "epoch": {
+            "type": "string",
+            "description": "Epoch"
+        },
+        "pm_dec": {
+            "type": "number",
+            "description": "Proper Motion in Dec"
+        },
+        "pm_ra": {
+            "type": "number",
+            "description": "Proper Motion in RA"
+        },
+        "ra": {
+            "type": "string",
+            "description": "Right Asecension"
+        },
+        "dec": {
+            "type": "string",
+            "description": "Declination"
+        },
+        "ra_deg": {
+            "type": "number",
+            "description": "Right Ascension in degrees"
+        },
+        "dec_deg": {
+            "type": "number",
+            "description": "Declination in degrees"
+        },
+        "identifiers": {
+            "type": "object",
+            "description": "Identifier",
+            "properties": {
+                "tic": {
+                    "type": "string",
+                    "description": "TIC Identifier"
+                },
+                "gaia_dr1": {
+                    "type": "string",
+                    "description": "GAIA DR1 Identifier"
+                },
+                "gaia_dr2": {
+                    "type": "string",
+                    "description": "GAIA DR2 Identifier"
+                },
+                "gaia_dr3": {
+                    "type": "string",
+                    "description": "GAIA DR3 Identifier"
+                }
+            }
         }
+
     },
     "required": [
         "semester",

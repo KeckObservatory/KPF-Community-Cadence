@@ -12,12 +12,13 @@ import {
 } from '@mui/material'
 import ValidationDialogButton from './validation_check_dialog'
 import { StringParam, useQueryParam } from 'use-query-params'
+import { SimbadTargetData } from './simbad_dialog'
 
 interface Props {
 
 }
 
-export interface Target {
+export interface Target extends SimbadTargetData{
     _id?: string,
     semester: string,
     prog_id: string,

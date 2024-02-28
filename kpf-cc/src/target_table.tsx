@@ -56,7 +56,7 @@ function convert_schema_to_columns() {
       resizable: true,
       headerName: value.description,
       width: 180,
-      editable: true,
+      editable: false,
     } as GridColDef
     if (key === 'semester') {
       col = {
@@ -123,6 +123,7 @@ export default function TargetTable() {
   const save_target = ((target: Target) => {
     console.log('debounced save', target) //TODO: send to server
     submit_target([target])
+    processRowUpdate(target)
   })
 
   const debounced_save = useDebounceCallback(save_target, 1000)
@@ -163,13 +164,11 @@ export default function TargetTable() {
   const processRowUpdate = (newRow: GridRowModel) => {
     //sends to server
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
-    //debounced_save(updatedRow)
     setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
     return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-    console.log('handleRowModesModelChange', newRowModesModel)
     setRowModesModel(newRowModesModel);
   };
 
@@ -180,65 +179,31 @@ export default function TargetTable() {
     {
       field: 'actions',
       type: 'actions',
+      editable: false,
       headerName: 'Actions',
       width: 300,
       cellClassName: 'actions',
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
-        const [targetName, setTargetname] = React.useState<string>(row.target_name);
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
 
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
-        React.useEffect(() => { // when targed is edited in target edit dialog
+
+        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           if (count > 0) {
-            console.log('editTarget updated', editTarget)
+            console.log('editTarget updated', editTarget, row)
+            //processRowUpdate(editTarget)
             debounced_save(editTarget)
             debounced_edit_click(id)
           }
           setCount((prev: number) => prev + 1)
         }, [editTarget])
 
-        React.useEffect(() => { // when row is edited in edit mode
-          if (count > 0) {
-            console.log('row updated', row)
-            setEditTarget(row)
-            setTargetname(row.target_name as string)
-          }
-          setCount((prev: number) => prev + 1)
-        }, [row])
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ];
-        }
-
         return [
-          <SimbadDialogButton targetName={targetName} />,
+          <SimbadDialogButton target={editTarget} setTarget={setEditTarget}  />,
           <ValidationDialogButton target={editTarget} />,
           <TargetEditDialogButton target={editTarget} setTarget={setEditTarget} />,
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
@@ -252,7 +217,7 @@ export default function TargetTable() {
 
   columns = [...addColumns, ...columns];
 
-  const initVisible = ['actions', 'target_name', 'semester', 'prog_id', 'pi', 'target_valid']
+  const initVisible = ['actions', 'target_name', 'semester', 'prog_id', 'pi', 'ra', 'dec', 'target_valid']
   const visibleColumns = Object.fromEntries(columns.map((col) => {
     const visible = initVisible.includes(col.field)
     return [col.field, visible]
@@ -275,10 +240,10 @@ export default function TargetTable() {
         rows={rows}
         columns={columns}
         editMode="row"
-        rowModesModel={rowModesModel} //TODO: prevent editing of new rows if scroll event
-        onRowModesModelChange={handleRowModesModelChange} //TODO: prevent editing of new rows if scroll event
+        rowModesModel={rowModesModel} 
+        onRowModesModelChange={handleRowModesModelChange} 
         onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
+        // processRowUpdate={processRowUpdate}
         slots={{
           toolbar: EditToolbar,
         }}
