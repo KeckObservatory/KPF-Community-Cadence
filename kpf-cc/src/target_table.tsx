@@ -33,6 +33,7 @@ import TargetEditDialogButton from './target_edit_dialog';
 import debounce from 'lodash.debounce';
 import SimbadDialogButton from './simbad_dialog';
 import { useDebounceCallback } from './use_debounce_callback';
+import { submit_target } from './api/api_root';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -121,17 +122,10 @@ export default function TargetTable() {
 
   const save_target = ((target: Target) => {
     console.log('debounced save', target) //TODO: send to server
+    submit_target([target])
   })
 
   const debounced_save = useDebounceCallback(save_target, 1000)
-
-  // const debouncedSave = React.useCallback(
-  //   debounce(async (target) => {
-  //     console.log('debounced save', target) //TODO: send to server
-  //   }, 3000),
-  //   []
-  // )
-
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -149,7 +143,8 @@ export default function TargetTable() {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
-    console.log('deleting', id) //TODO: send to server
+    const delRow = rows.find((row) => row.id === id);
+    console.log('deleting', id, delRow) //TODO: send to server
     setRows(rows.filter((row) => row.id !== id));
   };
 

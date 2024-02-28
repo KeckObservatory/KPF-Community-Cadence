@@ -38,16 +38,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
 
     const { target, setTarget } = props
 
-    const debouncedSave = React.useCallback(
-        debounce(async (target: Target, key: string, value: number | string | boolean | undefined) => {
-            console.log('debounced save', target) //TODO: send to server
-            setTarget((prev: Target) => {
-                return { ...prev, [key]: value }
-            })
-        }, 1000),
-        []
-    )
-
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         value && isNumber ? value = Number(value) : value
         //debouncedSave(target, key, value)

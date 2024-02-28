@@ -72,6 +72,19 @@ comments = [
     "I hear the jury?s still out on science.",
 ]
 
+targetNames = [ 
+"M31",
+"HD19994",
+"HD75732",
+"HD217107",
+"HD145675",
+"HD210277",
+"HD154345",
+"HD82943",
+"HD50554",
+"HD128311"
+] 
+
 
 status = [
     "Started",
@@ -129,6 +142,7 @@ letters = string.ascii_lowercase
 
 def randString(x=4): return ''.join(random.choice(letters) for i in range(x))
 def randFloat(mag=10): return mag * random.uniform(0, 1)
+def randTargetName(): return random.choice(targetNames)
 def randBool(): return bool(random.choice([0, 1, None]))
 def randInt(lr=0, ur=100): return random.randint(lr, ur)
 def randArrStr(x=1, y=1): return [randString(x)
@@ -235,7 +249,7 @@ def generate_target():
         "semester": randSemester(),
         "prog_id": randProgId(),
         "pi": randPI(),
-        "target_name": randString(),
+        "target_name": randTargetName(),
         "target_valid": randBool(),
         "j_mag": randInt(0, 20),
         "t_eff": randInt(0, 10000),
