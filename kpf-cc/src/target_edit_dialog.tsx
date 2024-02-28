@@ -3,7 +3,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
 import DialogContent from '@mui/material/DialogContent';
-import { useEffect, useState } from 'react'
 import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper'
 import Tooltip from '@mui/material/Tooltip'
@@ -16,12 +15,10 @@ import {
     Switch,
     Typography
 } from '@mui/material'
-import { StringParam, useQueryParam } from 'use-query-params'
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import EditIcon from '@mui/icons-material/Edit';
 import { Target } from './target_view';
 import { pis, prog_ids, semesters } from './control';
-import debounce from 'lodash.debounce';
+import SimbadButton from './simbad_button';
 
 interface Props {
     target: Target
@@ -38,6 +35,11 @@ interface TargetEditProps {
 export const TargetEditDialog = (props: TargetEditProps) => {
 
     const { target, setTarget } = props
+    const [hasSimbad, setHasSimbad] = React.useState(target.identifiers ? true : false)
+
+    React.useEffect(() => {
+        setHasSimbad(target.identifiers ? true : false)
+    }, [target.identifiers])
 
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         value && isNumber ? value = Number(value) : value
@@ -55,6 +57,12 @@ export const TargetEditDialog = (props: TargetEditProps) => {
         })
     }
 
+    const handleSimbadChange = (tgt: Target) => {
+        setTarget(tgt)
+        setHasSimbad(tgt.identifiers ? true : false)
+        handleTextChange('ra', tgt.ra)
+    }
+
     return (
         <Dialog
             maxWidth="lg"
@@ -62,7 +70,12 @@ export const TargetEditDialog = (props: TargetEditProps) => {
             open={props.open}
 
         >
-            <DialogTitle>TargetEdit</DialogTitle>
+            <DialogTitle>
+                <>
+                    <span>TargetEdit</span>
+                    <SimbadButton target={target} setTarget={handleSimbadChange} hasSimbad={hasSimbad} />
+                </>
+            </DialogTitle>
             <DialogContent >
                 <Stack sx={{
                     paddingTop: '16px',
@@ -137,7 +150,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                             >
                                 Target Information
                             </Typography>
-                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 <Tooltip title="Write Target Name Here.">
                                     <TextField
                                         // focused
@@ -148,15 +161,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
 
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write Magnitude Here.">
-                                    <TextField
-                                        // focused
-                                        label={'J-mag'}
-                                        id="j-magnitude"
-                                        value={target.j_mag}
-                                        onChange={(event) => handleTextChange('j_mag', event.target.value, true)}
-                                    />
-                                </Tooltip>
                                 <Tooltip title="Write Teff Here.">
                                     <TextField
                                         // focused
@@ -164,6 +168,90 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         id="t-eff"
                                         value={target.t_eff}
                                         onChange={(event) => handleTextChange('t_eff', event.target.value, true)}
+                                    />
+                                </Tooltip>
+                            </Stack>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                                <Tooltip title="Write RA Here.">
+                                    <TextField
+                                        // focused
+                                        label={'RA'}
+                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        id="ra"
+                                        value={target.ra}
+                                        onChange={(event) => handleTextChange('ra', event.target.value)}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Write Declination Here.">
+                                    <TextField
+                                        // focused
+                                        label={'Dec'}
+                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        id="dec"
+                                        value={target.dec}
+                                        onChange={(event) => handleTextChange('dec', event.target.value)}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Write J Magnitude Here.">
+                                    <TextField
+                                        // focused
+                                        label={'J-mag'}
+                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        id="j-magnitude"
+                                        value={target.j_mag}
+                                        onChange={(event) => handleTextChange('j_mag', event.target.value, true)}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Write G Magnitude Here.">
+                                    <TextField
+                                        // focused
+                                        label={'G-mag'}
+                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        id="g-magnitude"
+                                        value={target.g_mag}
+                                        onChange={(event) => handleTextChange('g_mag', event.target.value, true)}
+                                    />
+                                </Tooltip>
+                            </Stack>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                                <Tooltip title="Write Proper Motion RA Here.">
+                                    <TextField
+                                        // focused
+                                        label={'PM RA'}
+                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        id="pm-ra"
+                                        value={target.pm_ra}
+                                        onChange={(event) => handleTextChange('pm_ra', event.target.value, true)}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Write Proper Motion Dec Here.">
+                                    <TextField
+                                        // focused
+                                        label={'PM Dec'}
+                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        id="pm-dec"
+                                        value={target.pm_dec}
+                                        onChange={(event) => handleTextChange('pm_dec', event.target.value)}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Write Epoch Here.">
+                                    <TextField
+                                        // focused
+                                        label={'Epoch'}
+                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        id="epoch"
+                                        value={target.epoch}
+                                        onChange={(event) => handleTextChange('epoch', event.target.value)}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Write Sys rotational velocity Here.">
+                                    <TextField
+                                        // focused
+                                        label={'Rotational Velocity'}
+                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        id="rot-vel"
+                                        value={target.sys_rv}
+                                        onChange={(event) => handleTextChange('sys_rv', event.target.value, true)}
                                     />
                                 </Tooltip>
                             </Stack>

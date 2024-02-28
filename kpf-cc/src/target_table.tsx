@@ -2,10 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Close';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -30,8 +27,7 @@ import target_schema from './target_schema.json'
 import { pis, prog_ids, semesters } from './control';
 import ValidationDialogButton from './validation_check_dialog';
 import TargetEditDialogButton from './target_edit_dialog';
-import debounce from 'lodash.debounce';
-import SimbadDialogButton from './simbad_dialog';
+import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
 import { submit_target } from './api/api_root';
 
@@ -49,7 +45,9 @@ interface EditToolbarProps {
 }
 
 function convert_schema_to_columns() {
-  const columns = Object.entries(target_schema.properties).map(([key, value]: [string, any]) => {
+  const columns: GridColDef[] = []
+  Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
+
     let col = {
       field: key,
       type: value.type,
@@ -79,7 +77,15 @@ function convert_schema_to_columns() {
         valueOptions: pis,
       }
     }
-    return col
+    if (key === 'identifiers') {
+      col = {
+        ...col,
+        valueGetter: (params) => {
+          return JSON.stringify(params.row?.identifiers)
+        }
+      }
+    }
+    columns.push(col) 
   });
 
   return columns;
@@ -113,7 +119,6 @@ export default function TargetTable() {
     return {
       ...target,
       id: randomId(),
-      // id: target._id,
     }
 
   }) as TargetRow[];
@@ -123,7 +128,6 @@ export default function TargetTable() {
   const save_target = ((target: Target) => {
     console.log('debounced save', target) //TODO: send to server
     submit_target([target])
-    processRowUpdate(target)
   })
 
   const debounced_save = useDebounceCallback(save_target, 1000)
@@ -138,10 +142,6 @@ export default function TargetTable() {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = (id: GridRowId) => () => {
-    console.log('rowModesModel', rowModesModel)
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
 
   const handleDeleteClick = (id: GridRowId) => () => {
     const delRow = rows.find((row) => row.id === id);
@@ -149,17 +149,6 @@ export default function TargetTable() {
     setRows(rows.filter((row) => row.id !== id));
   };
 
-  const handleCancelClick = (id: GridRowId) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-
-    // const editedRow = rows.find((row) => row.id === id);
-    // if (editedRow!.isNew) {
-    //   setRows(rows.filter((row) => row.id !== id));
-    // }
-  };
 
   const processRowUpdate = (newRow: GridRowModel) => {
     //sends to server
@@ -185,23 +174,24 @@ export default function TargetTable() {
       cellClassName: 'actions',
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
+        const [hasSimbad, setHasSimbad] = React.useState(row.identifiers ? true : false);
 
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           if (count > 0) {
             console.log('editTarget updated', editTarget, row)
-            //processRowUpdate(editTarget)
+            processRowUpdate(editTarget)
             debounced_save(editTarget)
+            editTarget.identifiers && setHasSimbad(true)
             debounced_edit_click(id)
           }
           setCount((prev: number) => prev + 1)
         }, [editTarget])
 
         return [
-          <SimbadDialogButton target={editTarget} setTarget={setEditTarget}  />,
+          <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget}  />,
           <ValidationDialogButton target={editTarget} />,
           <TargetEditDialogButton target={editTarget} setTarget={setEditTarget} />,
           <GridActionsCellItem

@@ -12,16 +12,10 @@ import ModeStandbyIcon from '@mui/icons-material/ModeStandby';
 import { Target } from './target_view';
 
 
-export interface SimpleDialogProps {
-    open: boolean;
-    handleClose: Function;
-    simbadOutput?: SimbadTargetData
-    targetName?: string
-}
-
 export interface Props {
-    target: Target 
+    target: Target
     setTarget: Function
+    hasSimbad: boolean
 }
 
 export const ra_dec_to_deg = (time: string | number, dec = false): number => {
@@ -68,20 +62,6 @@ export interface SimbadTargetData {
     g_mag?: number,
     sys_rv?: number
     identifiers?: { [key: string]: string }
-}
-
-function ValidationDialog(props: SimpleDialogProps) {
-    const { open, handleClose } = props;
-    return (
-        <Dialog maxWidth="lg" onClose={() => handleClose()} open={open}>
-            <DialogTitle>{`Simbad Output for Target named ${props.targetName}`}</DialogTitle>
-            <DialogContent dividers>
-                <Typography gutterBottom>
-                    {JSON.stringify(props.simbadOutput)}
-                </Typography>
-            </DialogContent>
-        </Dialog>
-    );
 }
 
 export const get_simbad_data = async (targetName: string): Promise<SimbadTargetData> => {
@@ -137,38 +117,22 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
 }
 
 
-export default function SimbadDialogButton(props: Props) {
-    const [open, setOpen] = React.useState(false);
-    const [simbadOutput, setSimbadOutput] = React.useState({} as SimbadTargetData)
+export default function SimbadButton(props: Props) {
     const { target, setTarget } = props
-    const targetName = target.target_name 
+    const targetName = target.target_name
 
     const handleClickOpen = async () => {
         if (targetName) {
             const simbadData = await get_simbad_data(targetName)
-            setSimbadOutput(simbadData)
-            setTarget( {...target, ...simbadData} )
-            setOpen(true);
+            setTarget({ ...target, ...simbadData })
         }
     }
 
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     return (
-        <>
-            <Tooltip title={`View simbad info for target ${targetName}`}>
-                <IconButton onClick={handleClickOpen}>
-                    <ModeStandbyIcon />
-                </IconButton>
-            </Tooltip>
-            <ValidationDialog
-                open={open}
-                handleClose={handleClose}
-                simbadOutput={simbadOutput}
-                targetName={targetName}
-            />
-        </>
+        <Tooltip title={`Click to add Simbad info to target ${targetName}`}>
+            <IconButton onClick={handleClickOpen}>
+                <ModeStandbyIcon color={props.hasSimbad ? 'success' : 'inherit'} />
+            </IconButton>
+        </Tooltip>
     );
 }
