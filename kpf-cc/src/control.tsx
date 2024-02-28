@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { StringParam, useQueryParam } from 'use-query-params'
 import { Autocomplete, Tooltip } from '@mui/material'
 import targets from './targets.json'

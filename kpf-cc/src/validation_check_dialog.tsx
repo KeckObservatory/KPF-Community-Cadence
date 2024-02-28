@@ -50,12 +50,9 @@ function ValidationDialog(props: SimpleDialogProps) {
   );
 }
 
-type Verified = 'verified' | 'unverified' | 'invalid'
 
 export default function ValidationDialogButton(props: Props) {
   const [open, setOpen] = React.useState(false);
-  const initVerified = props.target.target_valid===true ? 'verified' : props.target.target_valid===false ? 'invalid' : 'unverified'
-  const [verified, setVerified] = React.useState(initVerified as Verified);
   const [errors, setErrors] = React.useState([] as ErrorObject<string, Record<string, any>, unknown>[]);
   const [icon, setIcon] = React.useState(<ApprovalIcon />)
   const { target } = props
@@ -67,15 +64,12 @@ export default function ValidationDialogButton(props: Props) {
   const validate = ajv.compile(ts)
 
   React.useEffect(() => {
-    setVerified('unverified')
     validate(target)
     if (validate.errors) {
       setErrors(validate.errors)
-      setVerified('invalid')
       setIcon(<LocalFireDepartmentIcon color="warning" />)
     }
     else {
-      setVerified('verified')
       setIcon(<VerifiedIcon color="success" />)
     }
   }, [props.target])
@@ -86,11 +80,7 @@ export default function ValidationDialogButton(props: Props) {
     if (validate.errors) {
       console.log(validate.errors)
       setErrors(validate.errors)
-      setVerified('invalid')
       setOpen(true);
-    }
-    else {
-      setVerified('verified')
     }
   };
 

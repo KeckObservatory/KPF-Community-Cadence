@@ -4,7 +4,6 @@ import Dialog from '@mui/material/Dialog';
 import HelpIcon from '@mui/icons-material/Help';
 import IconButton from '@mui/material/IconButton';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 

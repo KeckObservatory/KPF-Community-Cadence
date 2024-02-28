@@ -1,11 +1,5 @@
 
-import * as React from 'react';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-// import NewReleaseIcon from '@mui/icons-material/NewReleases';
 import { IconButton } from '@mui/material';
 import { get_simbad } from './api/api_root';
 import ModeStandbyIcon from '@mui/icons-material/ModeStandby';

@@ -154,7 +154,6 @@ def optionalRandArrString(x, y=1): return random.choice(
     [None, randArrStr(x, y)])
 
 
-def sampleInst(): return random.choice(list(INST_MAPPING.keys()))
 def randPI(): return random.choice(list(pis))
 def randObserver(): return random.choice(observers)
 def randSemester(): return random.choice(semesters)
@@ -174,7 +173,6 @@ def randSemesterList(x=3): return list(np.random.choice(
     semesters, size=random.randint(0, x), replace=False))
 
 
-def rand_kcwi_science(): return random.choice(kcwi_science)
 def z_fill_number(x, zf=2): return str(x).zfill(2)
 
 
