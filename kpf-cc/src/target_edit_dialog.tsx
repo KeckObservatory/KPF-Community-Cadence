@@ -48,9 +48,16 @@ export const TargetEditDialog = (props: TargetEditProps) => {
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         value && isNumber ? value = Number(value) : value
         //debouncedSave(target, key, value)
-        setTarget((prev: Target) => {
-            return { ...prev, [key]: value }
-        })
+        if ('identifiers' in target && key.includes('identifiers')) {
+            setTarget((prev: Target) => {
+                return { ...prev, identifiers: { ...prev.identifiers, [key]: value } }
+            })
+        }
+        else {
+            setTarget((prev: Target) => {
+                return { ...prev, [key]: value }
+            })
+        }
     }
 
     const handleSwitchChange = (key: string, event: React.SyntheticEvent<Element, Event>) => {
@@ -223,10 +230,12 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         <Tooltip title="Gaia DR1 ID">
                                             <TextField
                                                 // focused
+                                                disabled
                                                 label={'Gaia DR1 ID'}
-                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr1' in target.identifiers}}
+                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr1' in target.identifiers }}
                                                 id="gaia-dr1"
                                                 value={target.identifiers.gaia_dr1}
+                                                onChange={(event) => handleTextChange('identifiers.gaia_dr1', event.target.value)}
                                             />
                                         </Tooltip>
                                     )
@@ -237,9 +246,10 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             <TextField
                                                 // focused
                                                 label={'Gaia DR2 ID'}
-                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr2' in target.identifiers}}
+                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr2' in target.identifiers }}
                                                 id="gaia-dr2"
                                                 value={target.identifiers.gaia_dr2}
+                                                onChange={(event) => handleTextChange('identifiers.gaia_dr2', event.target.value)}
                                             />
                                         </Tooltip>
                                     )
@@ -250,9 +260,10 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             <TextField
                                                 // focused
                                                 label={'Gaia DR3 ID'}
-                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr3' in target.identifiers}}
+                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr3' in target.identifiers }}
                                                 id="gaia-dr3"
                                                 value={target.identifiers.gaia_dr3}
+                                                onChange={(event) => handleTextChange('identifiers.gaia_dr3', event.target.value)}
                                             />
                                         </Tooltip>
                                     )
@@ -263,9 +274,10 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             <TextField
                                                 // focused
                                                 label={'TIC ID'}
-                                                InputLabelProps={{ shrink: hasSimbad || 'tic' in target.identifiers}}
+                                                InputLabelProps={{ shrink: hasSimbad || 'tic' in target.identifiers }}
                                                 id="tic"
                                                 value={target.identifiers.tic}
+                                                onChange={(event) => handleTextChange('identifiers.tic', event.target.value)}
                                             />
                                         </Tooltip>
                                     )
