@@ -9,12 +9,13 @@ import TargetTable from './target_table';
 import { useEffect, useState } from 'react';
 import { UserInfo, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
+import { pis, prog_ids, semesters } from './control';
 
 interface State {
   username?: string,
   userinfo?: UserInfo,
   semesters?: string[],
-  programs?: string[],
+  prog_ids?: string[],
   pis?: string[],
 }
 
@@ -35,9 +36,9 @@ function App() {
       }
 
       const semesters = semidsMsg.programs.map((p: any) => p.semid.split('_')[0])
-      const programs = semidsMsg.programs.map((p: any) => p.semid.split('_')[1])
+      const prog_ids = semidsMsg.programs.map((p: any) => p.semid.split('_')[1])
       const pis = semidsMsg.programs.map((p: any) => p.name)
-      setState({username, userinfo, semesters, programs, pis});
+      setState({username, userinfo, semesters, prog_ids, pis});
     };
     fetchData();
   }, []);
@@ -60,7 +61,10 @@ function App() {
             flexDirection: 'column',
           }}
         >
-          <TargetTable />
+          <TargetTable 
+          semesters={state.semesters ?? semesters} 
+          pis={state.pis ?? pis} 
+          prog_ids={state.prog_ids ?? prog_ids}/>
         </Paper>
       </Stack>
     </ThemeProvider>

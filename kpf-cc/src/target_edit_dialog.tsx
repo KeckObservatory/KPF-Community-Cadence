@@ -17,17 +17,21 @@ import {
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
 import { Target } from './target_view';
-import { pis, prog_ids, semesters } from './control';
+// import { pis, prog_ids, semesters } from './control';
 import SimbadButton from './simbad_button';
+import { TargetTableProps } from './target_table';
 
-interface Props {
+interface Props extends TargetTableProps {
     target: Target
     setTarget: Function
 }
 
-interface TargetEditProps {
-    target: Target
-    setTarget: Function
+// interface Props extends TargetTableProps {
+//     target: Target
+//     setTarget: Function
+// }
+
+interface TargetEditProps extends Props, TargetTableProps {
     handleClose: Function
     open: boolean
 }
@@ -110,7 +114,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             id="semester-selection"
                                             value={target.semester ? { label: target.semester } : { label: 'input semester' }}
                                             onChange={(_, value) => handleTextChange('semester', value?.label)}
-                                            options={semesters.map((s) => { return { label: s } })}
+                                            options={props.semesters.map((s) => { return { label: s } })}
                                             sx={{ width: 300 }}
                                             renderInput={(params) => <TextField {...params} label="Semester" />}
                                         />
@@ -121,7 +125,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             id="program-selection"
                                             value={target.prog_id ? { label: target.prog_id } : { label: 'input program' }}
                                             onChange={(_, value) => handleTextChange('prog_id', value?.label)}
-                                            options={prog_ids.map((p) => { return { label: p } })}
+                                            options={props.prog_ids.map((p) => { return { label: p } })}
                                             sx={{ width: 300 }}
                                             renderInput={(params) => <TextField {...params} label="Program" />}
                                         />
@@ -132,7 +136,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             id="program-selection"
                                             value={target.pi ? { label: target.pi } : { label: 'input pi' }}
                                             onChange={(_, value) => handleTextChange('pi', value?.label)}
-                                            options={pis.map((p) => { return { label: p } })}
+                                            options={props.pis.map((p) => { return { label: p } })}
                                             sx={{ width: 300 }}
                                             renderInput={(params) => <TextField {...params} label="PI" />}
                                         />
@@ -176,7 +180,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={'RA'}
-                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        InputLabelProps={{ shrink: hasSimbad || 'ra' in target }}
                                         id="ra"
                                         value={target.ra}
                                         onChange={(event) => handleTextChange('ra', event.target.value)}
@@ -186,7 +190,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={'Dec'}
-                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        InputLabelProps={{ shrink: hasSimbad || 'dec' in target }}
                                         id="dec"
                                         value={target.dec}
                                         onChange={(event) => handleTextChange('dec', event.target.value)}
@@ -196,7 +200,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={'J-mag'}
-                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        InputLabelProps={{ shrink: hasSimbad || 'j_mag' in target }}
                                         id="j-magnitude"
                                         value={target.j_mag}
                                         onChange={(event) => handleTextChange('j_mag', event.target.value, true)}
@@ -206,7 +210,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={'G-mag'}
-                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        InputLabelProps={{ shrink: hasSimbad || 'g_mag' in target }}
                                         id="g-magnitude"
                                         value={target.g_mag}
                                         onChange={(event) => handleTextChange('g_mag', event.target.value, true)}
@@ -214,11 +218,65 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 </Tooltip>
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                                {target.identifiers?.gaia_dr1 &&
+                                    (
+                                        <Tooltip title="Gaia DR1 ID">
+                                            <TextField
+                                                // focused
+                                                label={'Gaia DR1 ID'}
+                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr1' in target.identifiers}}
+                                                id="gaia-dr1"
+                                                value={target.identifiers.gaia_dr1}
+                                            />
+                                        </Tooltip>
+                                    )
+                                }
+                                {target.identifiers?.dr2_id &&
+                                    (
+                                        <Tooltip title="Gaia DR2 ID">
+                                            <TextField
+                                                // focused
+                                                label={'Gaia DR2 ID'}
+                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr2' in target.identifiers}}
+                                                id="gaia-dr2"
+                                                value={target.identifiers.gaia_dr2}
+                                            />
+                                        </Tooltip>
+                                    )
+                                }
+                                {target.identifiers?.dr3_id &&
+                                    (
+                                        <Tooltip title="Gaia DR3 ID">
+                                            <TextField
+                                                // focused
+                                                label={'Gaia DR3 ID'}
+                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr3' in target.identifiers}}
+                                                id="gaia-dr3"
+                                                value={target.identifiers.gaia_dr3}
+                                            />
+                                        </Tooltip>
+                                    )
+                                }
+                                {target.identifiers?.tic &&
+                                    (
+                                        <Tooltip title="TIC ID">
+                                            <TextField
+                                                // focused
+                                                label={'TIC ID'}
+                                                InputLabelProps={{ shrink: hasSimbad || 'tic' in target.identifiers}}
+                                                id="tic"
+                                                value={target.identifiers.tic}
+                                            />
+                                        </Tooltip>
+                                    )
+                                }
+                            </Stack>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 <Tooltip title="Write Proper Motion RA Here.">
                                     <TextField
                                         // focused
                                         label={'PM RA'}
-                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        InputLabelProps={{ shrink: hasSimbad || 'pm_ra' in target }}
                                         id="pm-ra"
                                         value={target.pm_ra}
                                         onChange={(event) => handleTextChange('pm_ra', event.target.value, true)}
@@ -228,7 +286,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={'PM Dec'}
-                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        InputLabelProps={{ shrink: hasSimbad || 'pm_dec' in target }}
                                         id="pm-dec"
                                         value={target.pm_dec}
                                         onChange={(event) => handleTextChange('pm_dec', event.target.value)}
@@ -238,7 +296,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={'Epoch'}
-                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        InputLabelProps={{ shrink: hasSimbad || 'epoch' in target }}
                                         id="epoch"
                                         value={target.epoch}
                                         onChange={(event) => handleTextChange('epoch', event.target.value)}
@@ -248,7 +306,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={'Rotational Velocity'}
-                                        InputLabelProps={{ shrink: hasSimbad }}
+                                        InputLabelProps={{ shrink: hasSimbad || 'sys_rv' in target }}
                                         id="rot-vel"
                                         value={target.sys_rv}
                                         onChange={(event) => handleTextChange('sys_rv', event.target.value, true)}
@@ -398,6 +456,9 @@ export default function TargetEditDialogButton(props: Props) {
                 target={target}
                 setTarget={setTarget}
                 handleClose={handleClose}
+                semesters={props.semesters}
+                prog_ids={props.prog_ids}
+                pis={props.pis}
             />
         </>
     );

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { handleResponse, handleError, intResponse, intError } from './response';
 import { Target } from '../target_view';
-const SIMBAD_ADDR = "http://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=submit+id&output.format=ASCII&obj.bibsel=off&Ident="
+const SIMBAD_ADDR = "https://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=submit+id&output.format=ASCII&obj.bibsel=off&Ident="
 const API_ADDR = "https://www3build.keck.hawaii.edu/api/proposals"
 
 

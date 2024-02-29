@@ -24,7 +24,6 @@ import {
 import targets from './targets.json'
 import { Target } from './target_view';
 import target_schema from './target_schema.json'
-import { pis, prog_ids, semesters } from './control';
 import ValidationDialogButton from './validation_check_dialog';
 import TargetEditDialogButton from './target_edit_dialog';
 import SimbadButton from './simbad_button';
@@ -36,6 +35,12 @@ interface TargetRow extends Target {
   id: string;
 }
 
+export interface TargetTableProps {
+    semesters: string[]
+    prog_ids: string[]
+    pis: string[]
+}
+
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -44,7 +49,7 @@ interface EditToolbarProps {
   ) => void;
 }
 
-function convert_schema_to_columns() {
+function convert_schema_to_columns(semesters: string[], prog_ids: string[], pis: string[]) {
   const columns: GridColDef[] = []
   Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
 
@@ -114,7 +119,7 @@ function EditToolbar(props: EditToolbarProps) {
   );
 }
 
-export default function TargetTable() {
+export default function TargetTable(props: TargetTableProps) {
   const initTargets = targets.map((target: Target) => {
     return {
       ...target,
@@ -161,7 +166,7 @@ export default function TargetTable() {
     setRowModesModel(newRowModesModel);
   };
 
-  let columns = convert_schema_to_columns();
+  let columns = convert_schema_to_columns(props.semesters, props.prog_ids, props.pis);
 
 
   const addColumns: GridColDef[] = [
@@ -193,7 +198,13 @@ export default function TargetTable() {
         return [
           <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget}  />,
           <ValidationDialogButton target={editTarget} />,
-          <TargetEditDialogButton target={editTarget} setTarget={setEditTarget} />,
+          <TargetEditDialogButton 
+          semesters={props.semesters}
+          prog_ids={props.prog_ids}
+          pis={props.pis}
+          target={editTarget} 
+          setTarget={setEditTarget} 
+          />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
