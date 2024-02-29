@@ -66,6 +66,7 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
     const identifiers: { [key: string]: string } = {}
 
     const simbadLines = simbad_output.split('\n')
+    let currDr = 0 
     for (let line of simbadLines) {
         line.startsWith('Bib') && (bibcodesSection = true)
         line.startsWith('Identifiers (') && (identifiersSection = true)
@@ -102,7 +103,11 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             const dr = gaiaMatch ? gaiaMatch[0].split(' ')[1] : ""
             const gaia = gaiaMatch ? gaiaMatch[0].split(' ')[2] : ""
             tic && (identifiers['tic'] = tic)
-            gaia && (identifiers['gaia_' + dr.toLocaleLowerCase()] = gaia)
+            if (dr && gaia) {
+                Number(dr[3]) > currDr && (
+                    identifiers['gaia_id'] = gaia)
+                currDr = Number(dr[3])
+            }
         }
         ;
     }

@@ -50,7 +50,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
         //debouncedSave(target, key, value)
         if ('identifiers' in target && key.includes('identifiers')) {
             setTarget((prev: Target) => {
-                return { ...prev, identifiers: { ...prev.identifiers, [key]: value } }
+                return { ...prev, identifiers: { ...prev.identifiers, [key.split('.')[1]]: value } }
             })
         }
         else {
@@ -225,63 +225,27 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 </Tooltip>
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                {target.identifiers?.gaia_dr1 &&
-                                    (
-                                        <Tooltip title="Gaia DR1 ID">
-                                            <TextField
-                                                // focused
-                                                disabled
-                                                label={'Gaia DR1 ID'}
-                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr1' in target.identifiers }}
-                                                id="gaia-dr1"
-                                                value={target.identifiers.gaia_dr1}
-                                                onChange={(event) => handleTextChange('identifiers.gaia_dr1', event.target.value)}
-                                            />
-                                        </Tooltip>
-                                    )
-                                }
-                                {target.identifiers?.dr2_id &&
-                                    (
-                                        <Tooltip title="Gaia DR2 ID">
-                                            <TextField
-                                                // focused
-                                                label={'Gaia DR2 ID'}
-                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr2' in target.identifiers }}
-                                                id="gaia-dr2"
-                                                value={target.identifiers.gaia_dr2}
-                                                onChange={(event) => handleTextChange('identifiers.gaia_dr2', event.target.value)}
-                                            />
-                                        </Tooltip>
-                                    )
-                                }
-                                {target.identifiers?.dr3_id &&
-                                    (
-                                        <Tooltip title="Gaia DR3 ID">
-                                            <TextField
-                                                // focused
-                                                label={'Gaia DR3 ID'}
-                                                InputLabelProps={{ shrink: hasSimbad || 'gaia_dr3' in target.identifiers }}
-                                                id="gaia-dr3"
-                                                value={target.identifiers.gaia_dr3}
-                                                onChange={(event) => handleTextChange('identifiers.gaia_dr3', event.target.value)}
-                                            />
-                                        </Tooltip>
-                                    )
-                                }
-                                {target.identifiers?.tic &&
-                                    (
-                                        <Tooltip title="TIC ID">
-                                            <TextField
-                                                // focused
-                                                label={'TIC ID'}
-                                                InputLabelProps={{ shrink: hasSimbad || 'tic' in target.identifiers }}
-                                                id="tic"
-                                                value={target.identifiers.tic}
-                                                onChange={(event) => handleTextChange('identifiers.tic', event.target.value)}
-                                            />
-                                        </Tooltip>
-                                    )
-                                }
+                                <Tooltip title="Gaia ID">
+                                    <TextField
+                                        // focused
+                                        disabled
+                                        label={'Gaia ID'}
+                                        InputLabelProps={{ shrink: hasSimbad || target.identifiers?.gaia_id !== undefined }}
+                                        id="gaia-id"
+                                        value={target.identifiers?.gaia_id}
+                                        onChange={(event) => handleTextChange('identifiers.gaia_dr1', event.target.value)}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="TIC ID">
+                                    <TextField
+                                        // focused
+                                        label={'TIC ID'}
+                                        InputLabelProps={{ shrink: hasSimbad || target.identifiers?.tic !== undefined}}
+                                        id="tic"
+                                        value={target.identifiers?.tic}
+                                        onChange={(event) => handleTextChange('identifiers.tic', event.target.value)}
+                                    />
+                                </Tooltip>
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 <Tooltip title="Write Proper Motion RA Here.">
