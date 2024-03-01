@@ -52,7 +52,7 @@ export const Control = () => {
                     //value={context.semester ? { label: context.semester } : { label: 'input semester' }}
                     value={context.semester ? { label: context.semester } : { label: 'semester' }}
                     onChange={(_, value) => onChange('semester', value?.label)}
-                    options={semesters.map((s) => { return { label: s } })}
+                    options={context.semesters.map((s) => { return { label: s } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Semester" />}
                 />
@@ -63,7 +63,7 @@ export const Control = () => {
                     id="program-selection"
                     value={context.progId ? { label: context.progId } : { label: 'program' }}
                     onChange={(_, value) => onChange('progid', value?.label)}
-                    options={prog_ids.map((p) => { return { label: p } })}
+                    options={context.prog_ids.map((p) => { return { label: p } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Program" />}
                 />
@@ -74,7 +74,7 @@ export const Control = () => {
                     id="program-selection"
                     value={context.pi ? { label: context.pi } : { label: 'pi' }}
                     onChange={(_, value) => onChange('pi', value?.label)}
-                    options={pis.map((p) => { return { label: p } })}
+                    options={context.pis.map((p) => { return { label: p } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="PI" />}
                 />

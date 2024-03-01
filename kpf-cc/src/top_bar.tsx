@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import HelpDialogButton from './help_dialog';
 
 interface Props {
-  username: string,
+  username?: string,
   darkState: boolean,
   handleThemeChange: () => void
 }

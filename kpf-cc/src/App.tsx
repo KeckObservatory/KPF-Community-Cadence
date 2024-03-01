@@ -115,12 +115,12 @@ function App() {
           },
           setPi: (pi: string) => {
             setState((st) => {
-              return { ...st, pi: pi}
+              return { ...st, pi: pi }
             })
           }
         } as CCContext
       }>
-        <TopBar darkState={darkState} handleThemeChange={handleThemeChange} username={state.username ?? "Mr. Tyler Coda"} />
+        <TopBar darkState={darkState} handleThemeChange={handleThemeChange} username={state.username} />
         <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
           <Paper
             sx={{
@@ -131,10 +131,7 @@ function App() {
               flexDirection: 'column',
             }}
           >
-            <TargetTable
-              semesters={state.semesters ?? semesters}
-              pis={state.pis ?? pis}
-              prog_ids={state.prog_ids ?? prog_ids} />
+            <TargetTable />
           </Paper>
         </Stack>
       </CommCadContext.Provider>

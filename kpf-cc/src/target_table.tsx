@@ -30,16 +30,11 @@ import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
 import { submit_target } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
+import { useCommCadContext } from './App';
 
 interface TargetRow extends Target {
   isNew?: boolean;
   id: string;
-}
-
-export interface TargetTableProps {
-  semesters: string[]
-  prog_ids: string[]
-  pis: string[]
 }
 
 
@@ -121,7 +116,7 @@ function EditToolbar(props: EditToolbarProps) {
   );
 }
 
-export default function TargetTable(props: TargetTableProps) {
+export default function TargetTable() {
   const initTargets = targets.map((target: Target) => {
     return {
       ...target,
@@ -131,6 +126,7 @@ export default function TargetTable(props: TargetTableProps) {
   }) as TargetRow[];
   const [rows, setRows] = React.useState(initTargets);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+  const context = useCommCadContext()
 
   const save_target = ((target: Target) => {
     console.log('debounced save', target) //TODO: send to server
@@ -168,7 +164,8 @@ export default function TargetTable(props: TargetTableProps) {
     setRowModesModel(newRowModesModel);
   };
 
-  let columns = convert_schema_to_columns(props.semesters, props.prog_ids, props.pis);
+
+  let columns = convert_schema_to_columns(context.semesters, context.prog_ids, context.pis);
 
 
   const addColumns: GridColDef[] = [
@@ -201,9 +198,6 @@ export default function TargetTable(props: TargetTableProps) {
           <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget} />,
           <ValidationDialogButton target={editTarget} />,
           <TargetEditDialogButton
-            semesters={props.semesters}
-            prog_ids={props.prog_ids}
-            pis={props.pis}
             target={editTarget}
             setTarget={setEditTarget}
           />,

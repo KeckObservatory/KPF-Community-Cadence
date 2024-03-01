@@ -17,21 +17,15 @@ import {
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
 import { Target } from './target_view';
-// import { pis, prog_ids, semesters } from './control';
 import SimbadButton from './simbad_button';
-import { TargetTableProps } from './target_table';
+import { useCommCadContext } from './App';
 
-interface Props extends TargetTableProps {
+interface Props {
     target: Target
     setTarget: Function
 }
 
-// interface Props extends TargetTableProps {
-//     target: Target
-//     setTarget: Function
-// }
-
-interface TargetEditProps extends Props, TargetTableProps {
+interface TargetEditProps extends Props {
     handleClose: Function
     open: boolean
 }
@@ -40,6 +34,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
 
     const { target, setTarget } = props
     const [hasSimbad, setHasSimbad] = React.useState(target.identifiers ? true : false)
+    const context = useCommCadContext()
 
     React.useEffect(() => {
         setHasSimbad(target.identifiers ? true : false)
@@ -121,7 +116,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             id="semester-selection"
                                             value={target.semester ? { label: target.semester } : { label: 'input semester' }}
                                             onChange={(_, value) => handleTextChange('semester', value?.label)}
-                                            options={props.semesters.map((s) => { return { label: s } })}
+                                            options={context.semesters.map((s) => { return { label: s } })}
                                             sx={{ width: 300 }}
                                             renderInput={(params) => <TextField {...params} label="Semester" />}
                                         />
@@ -132,7 +127,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             id="program-selection"
                                             value={target.prog_id ? { label: target.prog_id } : { label: 'input program' }}
                                             onChange={(_, value) => handleTextChange('prog_id', value?.label)}
-                                            options={props.prog_ids.map((p) => { return { label: p } })}
+                                            options={context.prog_ids.map((p) => { return { label: p } })}
                                             sx={{ width: 300 }}
                                             renderInput={(params) => <TextField {...params} label="Program" />}
                                         />
@@ -143,7 +138,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             id="program-selection"
                                             value={target.pi ? { label: target.pi } : { label: 'input pi' }}
                                             onChange={(_, value) => handleTextChange('pi', value?.label)}
-                                            options={props.pis.map((p) => { return { label: p } })}
+                                            options={context.pis.map((p) => { return { label: p } })}
                                             sx={{ width: 300 }}
                                             renderInput={(params) => <TextField {...params} label="PI" />}
                                         />
@@ -446,9 +441,6 @@ export default function TargetEditDialogButton(props: Props) {
                 target={target}
                 setTarget={setTarget}
                 handleClose={handleClose}
-                semesters={props.semesters}
-                prog_ids={props.prog_ids}
-                pis={props.pis}
             />
         </>
     );
