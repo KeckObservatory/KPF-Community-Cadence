@@ -109,21 +109,14 @@
             "type": "string",
             "description": "Notes/comments"
         },
-        "identifiers": {
-            "type": "object",
-            "description": "Identifier",
-            "properties": {
-                "tic": {
-                    "type": "string",
-                    "description": "TIC Identifier"
-                },
-                "gaia_id": {
-                    "type": "string",
-                    "description": "GAIA Identifier"
-                }
-            }
+        "tic_id": {
+            "type": "string",
+            "description": "TIC Identifier"
+        },
+        "gaia_id": {
+            "type": "string",
+            "description": "GAIA Identifier"
         }
-
     },
     "required": [
         "semester",

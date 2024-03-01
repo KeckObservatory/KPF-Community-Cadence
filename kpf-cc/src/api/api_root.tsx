@@ -85,11 +85,20 @@ export const delete_target = (oid: string): Promise<string> => {
 export interface SubmitResp {
     details: string,
     message: string,
-    success: string
+    success: string,
+    [key: string]: any,
 }
 
-export const submit_target = (targets: Target[]): Promise<SubmitResp> => {
-    const url = API_ADDR + `/submitTarget?action=submit`
+export const save_target = (targets: Target[], semester: string, progId: string, action='save', edit=false): Promise<SubmitResp> => {
+    const tgts = targets.map((t) => {
+        return {
+            ...t,
+            action: action
+        }
+    })
+    let url = API_ADDR
+    url += edit ? '/editTarget' : '/submitTarget'
+    url += `?semester=${semester}&progid=${progId}&targets=${JSON.stringify(tgts)}`
     return axiosInstance.put(url, {targets})
         .then(handleResponse)
         .catch(handleError)
@@ -102,8 +111,8 @@ export const get_target = (oid: string): Promise<string> => {
         .catch(handleError)
 }
 
-export const get_all_targets= (oid: string[]): Promise<string> => {
-    const url = API_ADDR + `/getAllTargets?id=${oid}`
+export const get_all_targets= (semester: string, progid: string): Promise<SubmitResp> => {
+    const url = API_ADDR + `/getAllTargets?semester=${semester}&progid=${progid}`
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)

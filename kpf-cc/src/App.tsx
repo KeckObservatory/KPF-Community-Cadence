@@ -7,9 +7,11 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TargetTable from './target_table';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { UserInfo, get_semids, get_userinfo } from './api/api_root';
+import { UserInfo, get_all_targets, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
-import { pis, prog_ids, semesters } from './control';
+import { Control, pis, prog_ids, semesters } from './control';
+import { Target } from './target_view';
+import Skeleton from '@mui/material/Skeleton';
 
 export interface CCContext {
   username: string,
@@ -20,6 +22,8 @@ export interface CCContext {
   semester?: string,
   progId?: string,
   pi?: string,
+  targets?: Target[],
+  setTargets?: Function,
   setObserverId: Function
   setSemester: Function
   setProgId: Function
@@ -35,6 +39,7 @@ const init_cc_context: CCContext = {
   semester: "XXXX",
   progId: "XXXX",
   pi: "XXXX",
+  setTargets: () => { },
   setObserverId: () => { },
   setSemester: () => { },
   setProgId: () => { },
@@ -54,6 +59,7 @@ interface State {
   semester?: string,
   progId?: string,
   pi?: string,
+  targets?: Target[],
 }
 
 function App() {
@@ -75,8 +81,15 @@ function App() {
 
       const semesters = semidsMsg.programs.map((p: any) => p.semid.split('_')[0])
       const prog_ids = semidsMsg.programs.map((p: any) => p.semid.split('_')[1])
+      let targets: Target[] = []
+      for (let idx = 0; idx < semidsMsg.programs.length; idx++) {
+        const [semester, progid] = semidsMsg.programs[idx].semid.split('_')
+        const tgts = await get_all_targets(semester, progid);
+        console.log(tgts)
+        tgts.status === 'SUCCESS' && (targets = [...targets, ...JSON.parse(tgts.targets)])
+      }
       const pis = semidsMsg.programs.map((p: any) => p.name)
-      setState({ obsid: obsid, username, userinfo, semesters, prog_ids, pis });
+      setState({ obsid: obsid, username, userinfo, semesters, prog_ids, pis, targets });
     };
     fetchData();
   }, []);
@@ -98,6 +111,12 @@ function App() {
           semester: state.semester,
           progId: state.progId,
           pi: state.pi,
+          targets: state.targets,
+          setTargets: (targets: Target[]) => {
+            setState((st) => {
+              return { ...st, targets: targets }
+            })
+          },
           setSemester: (sem: string) => {
             setState((st) => {
               return { ...st, semester: sem }
@@ -127,11 +146,14 @@ function App() {
               marginTop: '12px',
               padding: '6px',
               maxWidth: '2000px',
-              minWidth: '300px',
+              minWidth: '1500px',
               flexDirection: 'column',
             }}
           >
-            <TargetTable />
+            <Control />
+            {state.targets ? (
+              <TargetTable />
+            ) : <Skeleton variant="rectangular" width="100%" height={500} />}
           </Paper>
         </Stack>
       </CommCadContext.Provider>

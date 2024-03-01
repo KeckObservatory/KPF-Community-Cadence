@@ -55,7 +55,8 @@ export interface SimbadTargetData {
     j_mag?: number,
     g_mag?: number,
     sys_rv?: number
-    identifiers?: { [key: string]: string }
+    gaia_id?: string,
+    tic_id?: string
 }
 
 export const get_simbad_data = async (targetName: string): Promise<SimbadTargetData> => {
@@ -63,7 +64,6 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
     let bibcodesSection = false
     let identifiersSection = false
     const simbadData: SimbadTargetData = {}
-    const identifiers: { [key: string]: string } = {}
 
     const simbadLines = simbad_output.split('\n')
     let currDr = 0 
@@ -102,16 +102,15 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             let gaiaMatch = line.match(new RegExp('Gaia\\s\\w+\\s\\w+'))
             const dr = gaiaMatch ? gaiaMatch[0].split(' ')[1] : ""
             const gaia = gaiaMatch ? gaiaMatch[0].split(' ')[2] : ""
-            tic && (identifiers['tic'] = tic)
+            tic && (simbadData['tic_id'] = tic)
             if (dr && gaia) {
                 Number(dr[2]) > currDr && (
-                    identifiers['gaia_id'] = gaia)
+                    simbadData['gaia_id'] = gaia)
                 currDr = Number(dr[2])
             }
         }
         ;
     }
-    simbadData['identifiers'] = identifiers
     return simbadData
 }
 

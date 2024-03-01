@@ -45,7 +45,7 @@ export const Control = () => {
 
     return (
         <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-            <Tooltip title="Select semester">
+            <Tooltip placement="top" title="Select semester">
                 <Autocomplete
                     disablePortal
                     id="semester-selection"
@@ -57,7 +57,7 @@ export const Control = () => {
                     renderInput={(params) => <TextField {...params} label="Semester" />}
                 />
             </Tooltip>
-            <Tooltip title="Select program">
+            <Tooltip placement="top" title="Select program">
                 <Autocomplete
                     disablePortal
                     id="program-selection"
@@ -68,7 +68,7 @@ export const Control = () => {
                     renderInput={(params) => <TextField {...params} label="Program" />}
                 />
             </Tooltip>
-            <Tooltip title="Select PI">
+            <Tooltip placement="top" title="Select PI">
                 <Autocomplete
                     disablePortal
                     id="program-selection"

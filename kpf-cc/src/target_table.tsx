@@ -21,14 +21,13 @@ import {
   randomId,
 } from '@mui/x-data-grid-generator';
 
-import targets from './targets.json'
 import { Target } from './target_view';
 import target_schema from './target_schema.json'
 import ValidationDialogButton from './validation_check_dialog';
 import TargetEditDialogButton from './target_edit_dialog';
 import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
-import { submit_target } from './api/api_root';
+import { save_target } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext } from './App';
 
@@ -78,14 +77,6 @@ function convert_schema_to_columns(semesters: string[], prog_ids: string[], pis:
         valueOptions: pis,
       }
     }
-    if (key === 'identifiers') {
-      col = {
-        ...col,
-        valueGetter: (params) => {
-          return JSON.stringify(params.row?.identifiers)
-        }
-      }
-    }
     columns.push(col)
   });
 
@@ -95,14 +86,42 @@ function convert_schema_to_columns(semesters: string[], prog_ids: string[], pis:
 
 function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
+  const context = useCommCadContext()
 
-  const handleClick = () => {
+  const handleClick = async () => {
     const id = randomId();
-    setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }));
+    if (context.semester === undefined || context.progId === undefined || context.pi === undefined) {
+      console.error('semester, progId, or pi is undefined') //TODO notify user
+      return
+    }
+
+    let newTarget: Partial<TargetRow> = {}
+    Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
+      // @ts-ignore
+      newTarget[key] = value.default
+    })
+    newTarget = {
+        ...newTarget,
+        id: id,
+        target_name: '',
+        semester: context.semester ?? "",
+        prog_id: context.progId ?? "",
+        pi: context.pi ?? ""
+      } as Target
+    const resp = await save_target([newTarget as Target],
+       newTarget.semester as string,
+       newTarget.prog_id as string,
+       'save', false
+       )
+    console.log('submitted target', resp)
+    if (resp.success === 'SUCCESS') {
+      console.log()
+      setRows((oldRows) => [resp.targets[0], ...oldRows]);
+      setRowModesModel((oldModel) => ({
+        ...oldModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'target_name' },
+      }));
+    }
   };
 
   return (
@@ -117,7 +136,8 @@ function EditToolbar(props: EditToolbarProps) {
 }
 
 export default function TargetTable() {
-  const initTargets = targets.map((target: Target) => {
+  const context = useCommCadContext()
+  const initTargets = context.targets?.map((target: Target) => {
     return {
       ...target,
       id: randomId(),
@@ -126,14 +146,15 @@ export default function TargetTable() {
   }) as TargetRow[];
   const [rows, setRows] = React.useState(initTargets);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
-  const context = useCommCadContext()
 
-  const save_target = ((target: Target) => {
+  const edit_target = async (target: Target) => {
     console.log('debounced save', target) //TODO: send to server
-    submit_target([target])
-  })
+    const resp = await save_target([target], target.semester, target.prog_id, 'save', false)
+    console.log('save response', resp)
+    return resp
+  }
 
-  const debounced_save = useDebounceCallback(save_target, 1000)
+  const debounced_save = useDebounceCallback(edit_target, 1000)
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -179,7 +200,7 @@ export default function TargetTable() {
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
-        const [hasSimbad, setHasSimbad] = React.useState(row.identifiers ? true : false);
+        const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
 
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
 
@@ -187,8 +208,10 @@ export default function TargetTable() {
           if (count > 0) {
             console.log('editTarget updated', editTarget, row)
             processRowUpdate(editTarget)
-            debounced_save(editTarget)
-            editTarget.identifiers && setHasSimbad(true)
+            debounced_save(editTarget)?.then((resp) => {
+              console.log('save response', resp)
+            })
+            editTarget.tic_id || editTarget.gaia_id && setHasSimbad(true)
             debounced_edit_click(id)
           }
           setCount((prev: number) => prev + 1)

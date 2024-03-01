@@ -17,7 +17,7 @@ import { Control } from './control';
 import { useCommCadContext } from './App';
 import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
-import { submit_target } from './api/api_root';
+import { save_target } from './api/api_root';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 
 
@@ -113,7 +113,7 @@ const TargetStepper = (props: Props) => {
     const save_targets = async () => {
         console.log('saving targets')
         console.log(targets)
-        const resp = await submit_target(targets)
+        const resp = await save_target(targets, context.semester ?? "", context.progId ?? "")
         console.log(resp)
         if (resp.success === 'SUCCESS') {
             props.setOpen(false)
