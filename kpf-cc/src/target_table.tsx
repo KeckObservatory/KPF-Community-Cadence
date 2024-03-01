@@ -27,9 +27,10 @@ import ValidationDialogButton from './validation_check_dialog';
 import TargetEditDialogButton from './target_edit_dialog';
 import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
-import { save_target } from './api/api_root';
+import { delete_target, save_target } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext } from './App';
+import PublishIcon from '@mui/icons-material/Publish';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -83,37 +84,42 @@ function convert_schema_to_columns(semesters: string[], prog_ids: string[], pis:
   return columns;
 }
 
+export const create_new_target = (semester: string, progId: string, pi: string, id?: string, target_name?: string) => {
+  let newTarget: Partial<TargetRow> = {}
+  Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
+    // @ts-ignore
+    newTarget[key] = value.default
+  })
+  newTarget = {
+    ...newTarget,
+    id: id,
+    target_name: target_name,
+    semester: semester,
+    prog_id: progId,
+    pi: pi
+  } as Target
+  return newTarget
+}
+
 
 function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
   const context = useCommCadContext()
 
   const handleClick = async () => {
-    const id = randomId();
     if (context.semester === undefined || context.progId === undefined || context.pi === undefined) {
       console.error('semester, progId, or pi is undefined') //TODO notify user
       return
     }
 
-    let newTarget: Partial<TargetRow> = {}
-    Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
-      // @ts-ignore
-      newTarget[key] = value.default
-    })
-    newTarget = {
-        ...newTarget,
-        id: id,
-        target_name: '',
-        semester: context.semester ?? "",
-        prog_id: context.progId ?? "",
-        pi: context.pi ?? ""
-      } as Target
+    const id = randomId();
+    const newTarget = create_new_target(context.semester, context.progId, context.pi, id)
+
     const resp = await save_target([newTarget as Target],
-       newTarget.semester as string,
-       newTarget.prog_id as string,
-       'save', false
-       )
-    console.log('submitted target', resp)
+      newTarget.semester as string,
+      newTarget.prog_id as string,
+      'save', false
+    )
     if (resp.success === 'SUCCESS') {
       console.log()
       setRows((oldRows) => [resp.targets[0], ...oldRows]);
@@ -147,14 +153,25 @@ export default function TargetTable() {
   const [rows, setRows] = React.useState(initTargets);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 
+  React.useEffect(() => {
+    const newTargets = context.targets?.map((target: Target) => {
+      return {
+        ...target,
+        id: randomId(),
+      }
+    }) as TargetRow[]
+    console.log('updating targets', newTargets)
+    setRows(newTargets)
+  }, [context.targets])
+
   const edit_target = async (target: Target) => {
-    console.log('debounced save', target) //TODO: send to server
+    console.log('debounced save', target)
     const resp = await save_target([target], target.semester, target.prog_id, 'save', false)
     console.log('save response', resp)
     return resp
   }
 
-  const debounced_save = useDebounceCallback(edit_target, 1000)
+  const debounced_save = useDebounceCallback(edit_target, 2000)
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -167,10 +184,26 @@ export default function TargetTable() {
   };
 
 
-  const handleDeleteClick = (id: GridRowId) => () => {
+  const handleDeleteClick = async (id: GridRowId) => {
     const delRow = rows.find((row) => row.id === id);
-    console.log('deleting', id, delRow) //TODO: send to server
-    setRows(rows.filter((row) => row.id !== id));
+    console.log('deleting', id, delRow)
+    const resp = await delete_target(delRow as Target)
+    console.log(resp)
+    resp.success === 'SUCCESS' && setRows(rows.filter((row) => row.id !== id));
+    resp.success !== 'SUCCESS' && console.error('delete failed', resp)
+  };
+
+  const handlePublishClick = async (id: GridRowId) => {
+    const pubRow = rows.find((row) => row.id === id);
+    console.log('publishing', id, pubRow)
+    const resp = await save_target([pubRow as Target], 
+      pubRow?.semester as string, 
+      pubRow?.prog_id as string, 
+      'submit', 
+      false)
+    console.log(resp)
+    resp.success === 'SUCCESS' && processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow);
+    resp.success !== 'SUCCESS' && console.error('publish failed', resp) //TODO: let user know
   };
 
 
@@ -218,6 +251,12 @@ export default function TargetTable() {
         }, [editTarget])
 
         return [
+          <GridActionsCellItem
+            icon={<PublishIcon/>}
+            label="Publish"
+            onClick={() => handlePublishClick(id)}
+            color="inherit"
+          />,
           <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget} />,
           <ValidationDialogButton target={editTarget} />,
           <TargetEditDialogButton
@@ -227,7 +266,7 @@ export default function TargetTable() {
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
-            onClick={handleDeleteClick(id)}
+            onClick={() => handleDeleteClick(id)}
             color="inherit"
           />,
         ];

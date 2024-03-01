@@ -13,16 +13,21 @@ import { Control, pis, prog_ids, semesters } from './control';
 import { Target } from './target_view';
 import Skeleton from '@mui/material/Skeleton';
 
-export interface CCContext {
+
+interface State {
   username: string,
-  obsid: string
+  obsid: number,
+  userinfo?: UserInfo,
   semesters: string[],
   prog_ids: string[],
   pis: string[],
-  semester?: string,
-  progId?: string,
-  pi?: string,
-  targets?: Target[],
+  semester: string,
+  progId: string,
+  pi: string,
+  targets: Target[],
+}
+
+export interface CCContext extends State {
   setTargets?: Function,
   setObserverId: Function
   setSemester: Function
@@ -32,13 +37,15 @@ export interface CCContext {
 
 const init_cc_context: CCContext = {
   username: "Dr. Observer Observerson",
-  obsid: "XXXX",
+  userinfo: undefined,
+  obsid: 1234,
   semesters: semesters,
   prog_ids: prog_ids,
   pis: pis,
   semester: "XXXX",
   progId: "XXXX",
   pi: "XXXX",
+  targets: [],
   setTargets: () => { },
   setObserverId: () => { },
   setSemester: () => { },
@@ -49,22 +56,10 @@ const init_cc_context: CCContext = {
 const CommCadContext = createContext<CCContext>(init_cc_context)
 export const useCommCadContext = () => useContext(CommCadContext)
 
-interface State {
-  username?: string,
-  obsid?: number,
-  userinfo?: UserInfo,
-  semesters?: string[],
-  prog_ids?: string[],
-  pis?: string[],
-  semester?: string,
-  progId?: string,
-  pi?: string,
-  targets?: Target[],
-}
 
 function App() {
   const [darkState, setDarkState] = useQueryParam('darkState', withDefault(BooleanParam, true));
-  const [state, setState] = useState({} as State);
+  const [state, setState] = useState<State>({} as State);
   const theme = handleTheme(darkState)
 
 
@@ -82,14 +77,32 @@ function App() {
       const semesters = semidsMsg.programs.map((p: any) => p.semid.split('_')[0])
       const prog_ids = semidsMsg.programs.map((p: any) => p.semid.split('_')[1])
       let targets: Target[] = []
-      for (let idx = 0; idx < semidsMsg.programs.length; idx++) {
-        const [semester, progid] = semidsMsg.programs[idx].semid.split('_')
-        const tgts = await get_all_targets(semester, progid);
-        console.log(tgts)
-        tgts.status === 'SUCCESS' && (targets = [...targets, ...JSON.parse(tgts.targets)])
+      const allTargets = false //TODO: see if it makes sense to get all targets
+      if (allTargets) {
+        for (let idx = 0; idx < semidsMsg.programs.length; idx++) {
+          const [semester, progid] = semidsMsg.programs[idx].semid.split('_')
+          const resp = await get_all_targets(semester, progid);
+          resp.success === 'SUCCESS' && (targets = [...targets, ...resp.targets])
+        }
       }
+      else{
+        const resp = await get_all_targets(semesters[0], prog_ids[0]);
+        resp.success === 'SUCCESS' && (targets = resp.targets)
+      }
+
       const pis = semidsMsg.programs.map((p: any) => p.name)
-      setState({ obsid: obsid, username, userinfo, semesters, prog_ids, pis, targets });
+      setState({
+        obsid: obsid,
+        username,
+        userinfo,
+        semesters,
+        prog_ids,
+        pis,
+        semester: semesters[0],
+        progId: prog_ids[0],
+        pi: pis[0],
+        targets
+      });
     };
     fetchData();
   }, []);

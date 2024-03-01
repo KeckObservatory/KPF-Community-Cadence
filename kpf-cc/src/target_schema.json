@@ -6,19 +6,16 @@
         "semester": {
             "type": "string",
             "description": "Semester",
-            "pattern": "^([0-9]{4}[AB])$",
-            "default": "2024B"
+            "pattern": "^([0-9]{4}[AB])$"
         },
         "prog_id": {
             "type": "string",
             "description": "Project Id",
-            "pattern": "^[A-Z]{1}[0-9]{3}$",
-            "default": "A123"
+            "pattern": "^[A-Z]{1}[0-9]{3}$"
         },
         "pi": {
             "type": "string",
-            "description": "Principal Investigator",
-            "default": "Observer Name"
+            "description": "Principal Investigator"
         },
         "target_name": {
             "type": "string",
@@ -39,14 +36,17 @@
         },
         "simucal_on": {
             "type": "boolean",
+            "default": true,
             "description": "Simucal on or off"
         },
         "nominal_exposure_time": {
             "type": "integer",
+            "default": 60,
             "description": "Nominal Exposure Time (s)"
         },
         "maximum_exposure_time": {
             "type": "integer",
+            "default": 60,
             "description": "Maximum Exposure Time (s)"
         },
         "num_visits_per_night": {
@@ -61,10 +61,12 @@
         },
         "minimum_intranight_cadence": {
             "type": "integer",
+            "default": 1,
             "description": "Minimum Intranight Cadence"
         },
         "minimum_internight_cadence": {
             "type": "integer",
+            "default": 1,
             "description": "Minimum Internight Cadence"
         },
         "num_observations_per_visit": {

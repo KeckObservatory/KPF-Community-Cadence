@@ -75,12 +75,6 @@ export const get_simbad = (obj: string): Promise<string> => {
         .catch(handleError)
 }
 
-export const delete_target = (oid: string): Promise<string> => {
-    const url = API_ADDR + `/deleteTarget?id=${oid}`
-    return axiosInstance.delete(url)
-        .then(handleResponse)
-        .catch(handleError)
-}
 
 export interface SubmitResp {
     details: string,
@@ -89,11 +83,22 @@ export interface SubmitResp {
     [key: string]: any,
 }
 
-export const save_target = (targets: Target[], semester: string, progId: string, action='save', edit=false): Promise<SubmitResp> => {
+export const delete_target = (tgt: Target): Promise<SubmitResp> => {
+    const url = API_ADDR + `/deleteTarget?id=${tgt._id}`
+    return axiosInstance.delete(url)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+export const save_target = (targets: Target[],
+    semester: string,
+    progId: string,
+    action = 'save',
+    edit = false): Promise<SubmitResp> => {
     let url = API_ADDR
     url += edit ? '/editTarget' : '/submitTarget'
-    url += `?action=${action}&semester=${semester}&progid=${progId}&targets=${JSON.stringify(targets)}`
-    return axiosInstance.put(url, {targets})
+    url += `?action=${action}&semester=${semester}&progid=${progId}`
+    return axiosInstance.put(url, { targets })
         .then(handleResponse)
         .catch(handleError)
 }
@@ -105,21 +110,21 @@ export const get_target = (oid: string): Promise<string> => {
         .catch(handleError)
 }
 
-export const get_all_targets= (semester: string, progid: string): Promise<SubmitResp> => {
+export const get_all_targets = (semester: string, progid: string): Promise<SubmitResp> => {
     const url = API_ADDR + `/getAllTargets?semester=${semester}&progid=${progid}`
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
 }
 
-export const get_semids= (oid?: number): Promise<SemidResp> => {
+export const get_semids = (oid?: number): Promise<SemidResp> => {
     const url = API_ADDR + '/getProgramIDs?' + (oid ? `obsid=${oid}` : '')
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
 }
 
-export const get_userinfo= (): Promise<UserInfo> => {
+export const get_userinfo = (): Promise<UserInfo> => {
     const url = "https://www3build.keck.hawaii.edu/userinfo"
     return axiosInstance.get(url)
         .then(handleResponse)

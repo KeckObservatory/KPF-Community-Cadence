@@ -19,6 +19,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
 import { save_target } from './api/api_root';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
+import { create_new_target } from './target_table';
 
 
 interface Props {
@@ -42,6 +43,7 @@ function LinearProgressWithLabel(props: LinearProgressProps &
     const { targetNames, setTargets, open } = props
     const [progress, setProgress] = React.useState(0)
     const generate_targets_from_list = async () => {
+        setLabel('Loading Targets')
         const tgts: Target[] = []
         for (let idx = 0; idx < targetNames.length; idx++) {
             const tgtName = targetNames[idx]
@@ -49,14 +51,14 @@ function LinearProgressWithLabel(props: LinearProgressProps &
             console.log(tgtName)
             if (!tgtName) continue
             if (!open) break
-            const target: Target = {
-                semester: context.semester ?? "",
-                prog_id: context.progId ?? "",
-                pi: context.pi ?? "",
-                target_name: tgtName 
-            }
+            const target = create_new_target(
+                context.semester ?? "", 
+                context.progId ?? "", 
+                context.pi ?? "", 
+                undefined,
+                tgtName)
             const simbadData = await get_simbad_data(tgtName)
-            tgts.push({ ...target, ...simbadData })
+            tgts.push({ ...target, ...simbadData } as Target)
             setProgress(((idx + 1) / targetNames.length) * 100)
         }
 
@@ -66,7 +68,9 @@ function LinearProgressWithLabel(props: LinearProgressProps &
     }
     return (
         <>
-            <Button onClick={generate_targets_from_list}>{label}</Button>
+            <Button
+                disabled={label.includes('Loading')}
+                onClick={generate_targets_from_list}>{label}</Button>
             {targetName && (
                 <Typography variant="body2" color="text.secondary">
                     {targetName}
@@ -95,28 +99,25 @@ const TargetStepper = (props: Props) => {
     const [targets, setTargets] = React.useState([] as Target[])
     const context = useCommCadContext()
     const [canContinue, setCanContinue] = React.useState(false)
-    const [ saveMessage, setSaveMessage ] = React.useState('All steps completed - Targets are ready to be saved')
+    const [saveMessage, setSaveMessage] = React.useState('All steps completed - Targets are ready to be saved')
 
 
     React.useEffect(() => {
-        console.log(targets.length, activeStep)
         let cont = false
-        if (activeStep === 0) { cont = (context.semester && context.progId && context.pi)? true : false}
+        if (activeStep === 0) { cont = (context.semester && context.progId && context.pi) ? true : false }
         if (activeStep === 1) { cont = targetNames.length > 0 }
-        if (activeStep === 2) { 
+        if (activeStep === 2) {
             cont = targets.length > 0
             setSaveMessage('All steps completed - Targets are ready to be saved')
-         }
+        }
         setCanContinue(cont)
     }, [context, targetNames, targets, activeStep])
 
     const save_targets = async () => {
-        console.log('saving targets')
-        console.log(targets)
         const resp = await save_target(targets, context.semester ?? "", context.progId ?? "")
-        console.log(resp)
         if (resp.success === 'SUCCESS') {
             props.setOpen(false)
+            context.setTargets && context.setTargets(resp.targets)
         }
         else {
             console.error('Failed to save targets', resp)
