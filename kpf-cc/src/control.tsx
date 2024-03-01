@@ -44,7 +44,7 @@ export const Control = () => {
     }
 
     return (
-        <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+        <Stack sx={{ marginBottom: '4px', marginTop: '8px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
             <Tooltip placement="top" title="Select semester">
                 <Autocomplete
                     disablePortal

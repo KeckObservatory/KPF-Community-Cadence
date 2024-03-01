@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import { ErrorObject } from 'ajv/dist/2019'
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -23,7 +24,7 @@ import {
 
 import { Target } from './target_view';
 import target_schema from './target_schema.json'
-import ValidationDialogButton from './validation_check_dialog';
+import ValidationDialogButton, { validate } from './validation_check_dialog';
 import TargetEditDialogButton from './target_edit_dialog';
 import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
@@ -31,6 +32,7 @@ import { delete_target, save_target } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext } from './App';
 import PublishIcon from '@mui/icons-material/Publish';
+import Tooltip from '@mui/material/Tooltip';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -202,7 +204,7 @@ export default function TargetTable() {
       'submit',
       false)
     console.log(resp)
-    resp.success === 'SUCCESS' ? 
+    resp.success === 'SUCCESS' ?
       processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow) :
       console.error('publish failed', resp) //TODO: let user know
   };
@@ -235,6 +237,14 @@ export default function TargetTable() {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
+        const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>([]);
+
+        const setEditTargetAndValidate = (row: TargetRow) => {
+            validate(row)
+            const errs = validate.errors
+            setErrors(errs ?? [])
+            setEditTarget({ ...row, target_feasible: errs ? false : true})
+        }
 
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
 
@@ -245,6 +255,7 @@ export default function TargetTable() {
             debounced_save(editTarget)?.then((resp) => {
               console.log('save response', resp)
             })
+            validate(editTarget)
             editTarget.tic_id || editTarget.gaia_id && setHasSimbad(true)
             debounced_edit_click(id)
           }
@@ -254,17 +265,19 @@ export default function TargetTable() {
         const publishColor = editTarget.target_feasible ? editTarget.target_feasible === true ? 'primary' : 'warning' : undefined
 
         return [
-          <GridActionsCellItem
-            icon={<PublishIcon color={publishColor} />}
-            label="Publish"
-            onClick={() => handlePublishClick(id)}
-            color="inherit"
-          />,
-          <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget} />,
-          <ValidationDialogButton target={editTarget} />,
+          <Tooltip placement="top" title="Submit Target">
+            <GridActionsCellItem
+              disabled={!editTarget.target_feasible}
+              icon={<PublishIcon color={publishColor} />}
+              label="Publish"
+              onClick={() => handlePublishClick(id)}
+              color="inherit"
+            /></Tooltip>,
+          <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTargetAndValidate} />,
+          <ValidationDialogButton errors={errors} target={editTarget} />,
           <TargetEditDialogButton
             target={editTarget}
-            setTarget={setEditTarget}
+            setTarget={setEditTargetAndValidate}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}

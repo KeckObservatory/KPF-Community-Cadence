@@ -20,8 +20,14 @@ export interface SimpleDialogProps {
 }
 
 export interface Props {
-  target: Target
+  errors : ErrorObject<string, Record<string, any>, unknown>[];
+  target : Target
 }
+
+const ajv = new AJV2019({allErrors:true})
+let ts = target_schema as any
+delete ts["$schema"]
+export const validate = ajv.compile(ts)
 
 function ValidationDialog(props: SimpleDialogProps) {
   const { open, handleClose } = props;
@@ -52,33 +58,21 @@ function ValidationDialog(props: SimpleDialogProps) {
 
 export default function ValidationDialogButton(props: Props) {
   const [open, setOpen] = React.useState(false);
-  const [errors, setErrors] = React.useState([] as ErrorObject<string, Record<string, any>, unknown>[]);
   const [icon, setIcon] = React.useState(<ApprovalIcon />)
-  const { target } = props
-
-  const ajv = new AJV2019({allErrors:true})
-
-  let ts = target_schema as any
-  delete ts["$schema"]
-  const validate = ajv.compile(ts)
 
   React.useEffect(() => {
-    validate(target)
-    if (validate.errors) {
-      setErrors(validate.errors)
+    if (props.errors) {
       setIcon(<LocalFireDepartmentIcon color="warning" />)
     }
     else {
       setIcon(<VerifiedIcon color="success" />)
     }
-  }, [props.target])
+  }, [props.target, props.errors])
 
 
   const handleClickOpen = () => {
-    validate(target)
-    if (validate.errors) {
-      console.log(validate.errors)
-      setErrors(validate.errors)
+    if (props.errors) {
+      console.log(props.errors)
       setOpen(true);
     }
   };
@@ -97,7 +91,7 @@ export default function ValidationDialogButton(props: Props) {
       <ValidationDialog
         open={open}
         handleClose={handleClose}
-        errors={errors}
+        errors={props.errors}
       />
     </>
   );
