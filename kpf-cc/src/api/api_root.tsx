@@ -90,15 +90,9 @@ export interface SubmitResp {
 }
 
 export const save_target = (targets: Target[], semester: string, progId: string, action='save', edit=false): Promise<SubmitResp> => {
-    const tgts = targets.map((t) => {
-        return {
-            ...t,
-            action: action
-        }
-    })
     let url = API_ADDR
     url += edit ? '/editTarget' : '/submitTarget'
-    url += `?semester=${semester}&progid=${progId}&targets=${JSON.stringify(tgts)}`
+    url += `?action=${action}&semester=${semester}&progid=${progId}&targets=${JSON.stringify(targets)}`
     return axiosInstance.put(url, {targets})
         .then(handleResponse)
         .catch(handleError)
