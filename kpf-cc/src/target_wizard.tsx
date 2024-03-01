@@ -53,7 +53,7 @@ function LinearProgressWithLabel(props: LinearProgressProps &
                 semester: context.semester ?? "",
                 prog_id: context.progId ?? "",
                 pi: context.pi ?? "",
-                target_name: targetName
+                target_name: tgtName 
             }
             const simbadData = await get_simbad_data(tgtName)
             tgts.push({ ...target, ...simbadData })
