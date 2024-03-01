@@ -196,14 +196,15 @@ export default function TargetTable() {
   const handlePublishClick = async (id: GridRowId) => {
     const pubRow = rows.find((row) => row.id === id);
     console.log('publishing', id, pubRow)
-    const resp = await save_target([pubRow as Target], 
-      pubRow?.semester as string, 
-      pubRow?.prog_id as string, 
-      'submit', 
+    const resp = await save_target([pubRow as Target],
+      pubRow?.semester as string,
+      pubRow?.prog_id as string,
+      'submit',
       false)
     console.log(resp)
-    resp.success === 'SUCCESS' && processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow);
-    resp.success !== 'SUCCESS' && console.error('publish failed', resp) //TODO: let user know
+    resp.success === 'SUCCESS' ? 
+      processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow) :
+      console.error('publish failed', resp) //TODO: let user know
   };
 
 
@@ -250,9 +251,11 @@ export default function TargetTable() {
           setCount((prev: number) => prev + 1)
         }, [editTarget])
 
+        const publishColor = editTarget.target_feasible ? editTarget.target_feasible === true ? 'primary' : 'warning' : undefined
+
         return [
           <GridActionsCellItem
-            icon={<PublishIcon/>}
+            icon={<PublishIcon color={publishColor} />}
             label="Publish"
             onClick={() => handlePublishClick(id)}
             color="inherit"
@@ -276,7 +279,7 @@ export default function TargetTable() {
 
   columns = [...addColumns, ...columns];
 
-  const initVisible = ['actions', 'target_name', 'semester', 'prog_id', 'pi', 'ra', 'dec', 'target_valid']
+  const initVisible = ['actions', 'target_name', 'semester', 'prog_id', 'pi', 'ra', 'dec', 'target_feasible']
   const visibleColumns = Object.fromEntries(columns.map((col) => {
     const visible = initVisible.includes(col.field)
     return [col.field, visible]

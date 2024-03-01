@@ -249,7 +249,7 @@ def generate_target():
         "prog_id": randProgId(),
         "pi": randPI(),
         "target_name": randTargetName(),
-        "target_valid": randBool(),
+        "target_feasible": randBool(),
         "j_mag": randInt(0, 20),
         "t_eff": randInt(0, 10000),
         "simucal_on": randBool(),

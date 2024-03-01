@@ -74,7 +74,7 @@
             "default": 1,
             "description": "Number of observations per visit"
         },
-        "target_valid": {
+        "target_feasible": {
             "type": "boolean",
             "default": false,
             "description": "Is targed valid?"
