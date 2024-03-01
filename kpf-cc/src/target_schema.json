@@ -105,6 +105,10 @@
             "type": "number",
             "description": "Declination in degrees"
         },
+        "comment": {
+            "type": "string",
+            "description": "Notes/comments"
+        },
         "identifiers": {
             "type": "object",
             "description": "Identifier",
@@ -113,17 +117,9 @@
                     "type": "string",
                     "description": "TIC Identifier"
                 },
-                "gaia_dr1": {
+                "gaia_id": {
                     "type": "string",
-                    "description": "GAIA DR1 Identifier"
-                },
-                "gaia_dr2": {
-                    "type": "string",
-                    "description": "GAIA DR2 Identifier"
-                },
-                "gaia_dr3": {
-                    "type": "string",
-                    "description": "GAIA DR3 Identifier"
+                    "description": "GAIA Identifier"
                 }
             }
         }

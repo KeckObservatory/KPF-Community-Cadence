@@ -30,7 +30,8 @@ export interface Target extends SimbadTargetData{
     num_observations_per_visit?: number,
     num_visits_per_night?: number,
     num_unique_nights_per_semester?: number,
-    target_valid?: boolean
+    target_valid?: boolean,
+    comment?: string
 }
 
 

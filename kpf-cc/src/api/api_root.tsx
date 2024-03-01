@@ -82,7 +82,13 @@ export const delete_target = (oid: string): Promise<string> => {
         .catch(handleError)
 }
 
-export const submit_target = (targets: Target[]): Promise<string> => {
+export interface SubmitResp {
+    details: string,
+    message: string,
+    success: string
+}
+
+export const submit_target = (targets: Target[]): Promise<SubmitResp> => {
     const url = API_ADDR + `/submitTarget?action=submit`
     return axiosInstance.put(url, {targets})
         .then(handleResponse)

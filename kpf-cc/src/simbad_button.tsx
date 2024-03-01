@@ -104,9 +104,9 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             const gaia = gaiaMatch ? gaiaMatch[0].split(' ')[2] : ""
             tic && (identifiers['tic'] = tic)
             if (dr && gaia) {
-                Number(dr[3]) > currDr && (
+                Number(dr[2]) > currDr && (
                     identifiers['gaia_id'] = gaia)
-                currDr = Number(dr[3])
+                currDr = Number(dr[2])
             }
         }
         ;

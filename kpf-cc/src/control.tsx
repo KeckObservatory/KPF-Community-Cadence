@@ -1,9 +1,9 @@
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { useEffect } from 'react'
-import { StringParam, useQueryParam } from 'use-query-params'
 import { Autocomplete, Tooltip } from '@mui/material'
 import targets from './targets.json'
+import { useCommCadContext } from './App'
 
 export interface SPP {
     semester: string
@@ -24,9 +24,7 @@ return tgt.pi
 
 export const Control = () => {
 
-    const [semester, setSemester] = useQueryParam('semester', StringParam)
-    const [progid, setProgid] = useQueryParam('prog_id', StringParam)
-    const [pi, setPI] = useQueryParam('pi', StringParam)
+    const context = useCommCadContext()
 
     useEffect(() => {
     }, [])
@@ -34,13 +32,13 @@ export const Control = () => {
     const onChange = (key: String, value: string | undefined | null) => {
         if (value) {
             if (key === 'semester') {
-                setSemester(value)
+                context.setSemester(value)
             }
             else if (key === 'progid') {
-                setProgid(value)
+                context.setProgId(value)
             }
             else if (key === 'pi') {
-                setPI(value)
+                context.setPi(value)
             }
         }
     }
@@ -51,7 +49,8 @@ export const Control = () => {
                 <Autocomplete
                     disablePortal
                     id="semester-selection"
-                    value={semester ? { label: semester } : { label: 'input semester' }}
+                    //value={context.semester ? { label: context.semester } : { label: 'input semester' }}
+                    value={context.semester ? { label: context.semester } : { label: 'semester' }}
                     onChange={(_, value) => onChange('semester', value?.label)}
                     options={semesters.map((s) => { return { label: s } })}
                     sx={{ width: 300 }}
@@ -62,7 +61,7 @@ export const Control = () => {
                 <Autocomplete
                     disablePortal
                     id="program-selection"
-                    value={progid ? { label: progid } : { label: 'input program' }}
+                    value={context.progId ? { label: context.progId } : { label: 'program' }}
                     onChange={(_, value) => onChange('progid', value?.label)}
                     options={prog_ids.map((p) => { return { label: p } })}
                     sx={{ width: 300 }}
@@ -73,7 +72,7 @@ export const Control = () => {
                 <Autocomplete
                     disablePortal
                     id="program-selection"
-                    value={pi ? { label: pi } : { label: 'input pi' }}
+                    value={context.pi ? { label: context.pi } : { label: 'pi' }}
                     onChange={(_, value) => onChange('pi', value?.label)}
                     options={pis.map((p) => { return { label: p } })}
                     sx={{ width: 300 }}

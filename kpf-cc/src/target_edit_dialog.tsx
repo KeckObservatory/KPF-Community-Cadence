@@ -228,7 +228,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 <Tooltip title="Gaia ID">
                                     <TextField
                                         // focused
-                                        disabled
                                         label={'Gaia ID'}
                                         InputLabelProps={{ shrink: hasSimbad || target.identifiers?.gaia_id !== undefined }}
                                         id="gaia-id"
@@ -240,7 +239,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={'TIC ID'}
-                                        InputLabelProps={{ shrink: hasSimbad || target.identifiers?.tic !== undefined}}
+                                        InputLabelProps={{ shrink: hasSimbad || target.identifiers?.tic !== undefined }}
                                         id="tic"
                                         value={target.identifiers?.tic}
                                         onChange={(event) => handleTextChange('identifiers.tic', event.target.value)}
@@ -370,7 +369,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 </Tooltip>
                             </Stack>
                             <Stack sx={{
-                                marginBottom: '4px',
+                                marginBottom: '24px',
                             }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 <Stack justifyContent='center' spacing={2}>
                                     <Typography
@@ -398,6 +397,21 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         />
                                     </Tooltip>
                                 </Stack>
+                            </Stack>
+                        </Box>
+                        <Box>
+                            <Stack sx={{
+                                marginBottom: '4px',
+                            }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
+                                <TextField
+                                    // focused
+                                    multiline
+                                    maxRows={4}
+                                    label={'Comment'}
+                                    id="comment"
+                                    onChange={(event) => handleTextChange('comment', event.target.value)}
+                                    value={target.comment}
+                                />
                             </Stack>
                         </Box>
                     </Paper>

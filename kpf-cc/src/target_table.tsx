@@ -29,6 +29,7 @@ import TargetEditDialogButton from './target_edit_dialog';
 import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
 import { submit_target } from './api/api_root';
+import { TargetWizardButton } from './target_wizard';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -36,9 +37,9 @@ interface TargetRow extends Target {
 }
 
 export interface TargetTableProps {
-    semesters: string[]
-    prog_ids: string[]
-    pis: string[]
+  semesters: string[]
+  prog_ids: string[]
+  pis: string[]
 }
 
 
@@ -90,7 +91,7 @@ function convert_schema_to_columns(semesters: string[], prog_ids: string[], pis:
         }
       }
     }
-    columns.push(col) 
+    columns.push(col)
   });
 
   return columns;
@@ -115,6 +116,7 @@ function EditToolbar(props: EditToolbarProps) {
         Add Target
       </Button>
       <GridToolbar />
+      <TargetWizardButton />
     </GridToolbarContainer>
   );
 }
@@ -196,14 +198,14 @@ export default function TargetTable(props: TargetTableProps) {
         }, [editTarget])
 
         return [
-          <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget}  />,
+          <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget} />,
           <ValidationDialogButton target={editTarget} />,
-          <TargetEditDialogButton 
-          semesters={props.semesters}
-          prog_ids={props.prog_ids}
-          pis={props.pis}
-          target={editTarget} 
-          setTarget={setEditTarget} 
+          <TargetEditDialogButton
+            semesters={props.semesters}
+            prog_ids={props.prog_ids}
+            pis={props.pis}
+            target={editTarget}
+            setTarget={setEditTarget}
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
@@ -241,15 +243,15 @@ export default function TargetTable(props: TargetTableProps) {
         rows={rows}
         columns={columns}
         editMode="row"
-        rowModesModel={rowModesModel} 
-        onRowModesModelChange={handleRowModesModelChange} 
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         // processRowUpdate={processRowUpdate}
         slots={{
           toolbar: EditToolbar,
         }}
         slotProps={{
-          toolbar: { setRows, setRowModesModel },
+          toolbar: { setRows, setRowModesModel, },
         }}
         initialState={{
           columns: {

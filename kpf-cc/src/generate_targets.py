@@ -64,12 +64,12 @@ observers = [
 ]
 
 comments = [
-    "Here?s some money. Go see a star war.",
-    "I don?t understand the question and I won?t respond to it.",
+    "Here's some money. Go see a star war.",
+    "I don't understand the question and I won?t respond to it.",
     "I am one of the few honest people I have ever known.",
-    "I?m a scholar. I enjoy scholarly pursuits.",
-    "I?ve made a huge tiny mistake.",
-    "I hear the jury?s still out on science.",
+    "I'm a scholar. I enjoy scholarly pursuits.",
+    "I've made a huge tiny mistake.",
+    "I hear the jury's still out on science.",
 ]
 
 targetNames = [ 
@@ -244,6 +244,7 @@ def generate_semesters(nSem, nLen=5, maxLen=6):
 def generate_target():
     return {
         "_id": randString(24),
+        "comment": optionalRandComment(),
         "semester": randSemester(),
         "prog_id": randProgId(),
         "pi": randPI(),
