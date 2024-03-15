@@ -34,19 +34,17 @@
             "type": "number",
             "description": "Effective Temperature"
         },
-        "simucal_on": {
+        "simulcal_on": {
             "type": "boolean",
             "default": true,
-            "description": "Simucal on or off"
+            "description": "simulcal on or off"
         },
         "nominal_exposure_time": {
             "type": "integer",
-            "default": 60,
             "description": "Nominal Exposure Time (s)"
         },
         "maximum_exposure_time": {
             "type": "integer",
-            "default": 60,
             "description": "Maximum Exposure Time (s)"
         },
         "num_visits_per_night": {
@@ -56,27 +54,22 @@
         },
         "num_unique_nights_per_semester": {
             "type": "integer",
-            "default": 1,
             "description": "Number of unique nights per semester"
         },
         "minimum_intranight_cadence": {
             "type": "integer",
-            "default": 1,
             "description": "Minimum Intranight Cadence"
         },
         "minimum_internight_cadence": {
             "type": "integer",
-            "default": 1,
             "description": "Minimum Internight Cadence"
         },
         "num_observations_per_visit": {
             "type": "integer",
-            "default": 1,
             "description": "Number of observations per visit"
         },
         "target_feasible": {
             "type": ["boolean", "null"],
-            "default": false,
             "description": "Is targed valid?"
         },
         "epoch": {
@@ -127,7 +120,7 @@
         "target_name",
         "j_mag",
         "t_eff",
-        "simucal_on",
+        "simulcal_on",
         "nominal_exposure_time",
         "maximum_exposure_time",
         "minimum_intranight_cadence",

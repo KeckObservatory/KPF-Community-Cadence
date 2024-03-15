@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 import { handleResponse, handleError, intResponse, intError } from './response';
-import { Target } from '../target_view';
+import { Target } from '../App';
 const SIMBAD_ADDR = "https://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=submit+id&output.format=ASCII&obj.bibsel=off&Ident="
 const API_ADDR = "https://www3build.keck.hawaii.edu/api/proposals"
+//const API_ADDR = "/api/proposals"
 
 
 export interface UserInfo {

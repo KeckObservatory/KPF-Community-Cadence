@@ -3,7 +3,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { IconButton } from '@mui/material';
 import { get_simbad } from './api/api_root';
 import ModeStandbyIcon from '@mui/icons-material/ModeStandby';
-import { Target } from './target_view';
+import { Target } from './App';
 
 
 export interface Props {

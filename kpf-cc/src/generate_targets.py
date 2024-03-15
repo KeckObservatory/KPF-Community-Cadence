@@ -252,7 +252,7 @@ def generate_target():
         "target_feasible": randBool(),
         "j_mag": randInt(0, 20),
         "t_eff": randInt(0, 10000),
-        "simucal_on": randBool(),
+        "simulcal_on": randBool(),
         "nominal_exposure_time": randInt(1, 1000),
         "maximum_exposure_time": randInt(1, 1000),
         "num_visits_per_night": randInt(1, 10),

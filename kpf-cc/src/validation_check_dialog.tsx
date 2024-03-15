@@ -9,7 +9,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import target_schema from './target_schema.json'
 import AJV2019, { ErrorObject } from 'ajv/dist/2019'
-import { Target } from './target_view';
+import { Target } from './App';
 import { IconButton } from '@mui/material';
 
 
@@ -61,7 +61,7 @@ export default function ValidationDialogButton(props: Props) {
   const [icon, setIcon] = React.useState(<ApprovalIcon />)
 
   React.useEffect(() => {
-    if (props.errors) {
+    if (props.errors.length > 0) {
       setIcon(<LocalFireDepartmentIcon color="warning" />)
     }
     else {
@@ -71,7 +71,7 @@ export default function ValidationDialogButton(props: Props) {
 
 
   const handleClickOpen = () => {
-    if (props.errors) {
+    if (props.errors.length > 0) {
       console.log(props.errors)
       setOpen(true);
     }

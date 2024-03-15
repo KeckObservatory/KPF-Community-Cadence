@@ -16,9 +16,8 @@ import {
     Typography
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
-import { Target } from './target_view';
 import SimbadButton from './simbad_button';
-import { useCommCadContext } from './App';
+import { useCommCadContext, Target } from './App';
 
 interface Props {
     target: Target
@@ -289,10 +288,10 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 <Tooltip title="Is SimulCal On?">
                                     <FormGroup>
                                         <FormControlLabel
-                                            onChange={(event) => handleSwitchChange('simucal_on', event)}
-                                            value={target.simucal_on}
+                                            onChange={(event) => handleSwitchChange('simulcal_on', event)}
+                                            value={target.simulcal_on}
                                             control={<Switch defaultChecked />}
-                                            label="Simucal On?" />
+                                            label="simulcal On?" />
                                     </FormGroup>
                                 </Tooltip>
                                 <Tooltip title="Write Nominal Exposure Time here (s).">

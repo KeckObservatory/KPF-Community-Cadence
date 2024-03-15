@@ -10,9 +10,28 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { UserInfo, get_all_targets, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control, pis, prog_ids, semesters } from './control';
-import { Target } from './target_view';
 import Skeleton from '@mui/material/Skeleton';
+import { SimbadTargetData } from './simbad_button';
 
+export interface Target extends SimbadTargetData{
+  _id?: string,
+  semester: string,
+  prog_id: string,
+  pi: string,
+  target_name?: string,
+  j_mag?: number,
+  t_eff?: number,
+  simulcal_on?: boolean,
+  nominal_exposure_time?: number
+  maximum_exposure_time?: number,
+  minimum_intranight_cadence?: number,
+  minimum_internight_cadence?: number,
+  num_observations_per_visit?: number,
+  num_visits_per_night?: number,
+  num_unique_nights_per_semester?: number,
+  target_feasible?: boolean,
+  comment?: string
+}
 
 interface State {
   username: string,
