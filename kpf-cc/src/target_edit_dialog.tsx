@@ -363,22 +363,13 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     >
                                         Intra Night Cadence
                                     </Typography>
-                                    <Tooltip title="Write minimum intra night cadence here." placement='left'>
+                                    <Tooltip title="Write num inter night cadence here." placement='left'>
                                         <TextField
                                             // focused
-                                            label={'Min Intranight Cadence'}
-                                            id="min-intra-night-cadence"
-                                            onChange={(event) => handleTextChange('minimum_intranight_cadence', event.target.value, true)}
-                                            value={target.minimum_intranight_cadence}
-                                        />
-                                    </Tooltip>
-                                    <Tooltip title="Write minimum inter night cadence here." placement='left'>
-                                        <TextField
-                                            // focused
-                                            label={'Min Internight Cadence'}
-                                            id="min-inter-night-cadence"
-                                            onChange={(event) => handleTextChange('minimum_internight_cadence', event.target.value, true)}
-                                            value={target.minimum_internight_cadence}
+                                            label={'Num Internight Cadence'}
+                                            id="num-inter-night-cadence"
+                                            onChange={(event) => handleTextChange('num_internight_cadence', event.target.value, true)}
+                                            value={target.num_internight_cadence}
                                         />
                                     </Tooltip>
                                 </Stack>

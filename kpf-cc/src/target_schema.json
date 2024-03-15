@@ -56,13 +56,9 @@
             "type": "integer",
             "description": "Number of unique nights per semester"
         },
-        "minimum_intranight_cadence": {
+        "num_internight_cadence": {
             "type": "integer",
-            "description": "Minimum Intranight Cadence"
-        },
-        "minimum_internight_cadence": {
-            "type": "integer",
-            "description": "Minimum Internight Cadence"
+            "description": "Number of internight cadence"
         },
         "num_observations_per_visit": {
             "type": "integer",
@@ -111,6 +107,34 @@
         "gaia_id": {
             "type": "string",
             "description": "GAIA Identifier"
+        },
+        "rise_semester_day": {
+            "type": "integer",
+            "description": "Rise Semester Day"
+        },
+        "sets_semester_day": {
+            "type": "integer",
+            "description": "Sets Semester Day"
+        },
+        "status": {
+            "type": "string",
+            "description": "Target Status"
+        },
+        "submitter": {
+            "type": "string",
+            "description": "Submitter"
+        },
+        "total_observations_requested": {
+            "type": "integer",
+            "description": "Total Observations Requested"
+        },
+        "total_time_for_target": {
+            "type": "number",
+            "description": "Total Time for Target"
+        },
+        "total_time_for_target_hours": {
+            "type": "number",
+            "description": "Total Time for Target (hours)"
         }
     },
     "required": [
@@ -123,8 +147,7 @@
         "simulcal_on",
         "nominal_exposure_time",
         "maximum_exposure_time",
-        "minimum_intranight_cadence",
-        "minimum_internight_cadence",
+        "num_internight_cadence",
         "num_observations_per_visit",
         "num_visits_per_night",
         "num_unique_nights_per_semester"
