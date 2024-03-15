@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { ErrorObject } from 'ajv/dist/2019'
+import RefreshIcon from '@mui/icons-material/Refresh';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -167,6 +168,7 @@ export default function TargetTable() {
 
   const edit_target = async (target: Target) => {
     console.log('debounced save', target)
+
     const resp = await save_target([target], target.semester, target.prog_id, 'save', false)
     console.log('save response', resp)
     return resp
@@ -194,7 +196,7 @@ export default function TargetTable() {
     resp.success !== 'SUCCESS' && console.error('delete failed', resp)
   };
 
-  const handlePublishClick = async (id: GridRowId) => {
+  const handlePublishClick = async (id: GridRowId, setResubmit: Function) => {
     const pubRow = rows.find((row) => row.id === id);
     console.log('publishing', id, pubRow)
     const resp = await save_target([pubRow as Target],
@@ -203,9 +205,13 @@ export default function TargetTable() {
       'submit',
       false)
     console.log(resp)
-    resp.success === 'SUCCESS' ?
-      processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow) :
+    if (resp.success === 'SUCCESS') {
+      setResubmit(false);
+      processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow)
+    }
+    else {
       console.error('publish failed', resp) //TODO: let user know
+    }
   };
 
 
@@ -234,6 +240,7 @@ export default function TargetTable() {
       cellClassName: 'actions',
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
+        const [resubmit, setResubmit] = React.useState(false);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
         validate(row)
@@ -251,12 +258,16 @@ export default function TargetTable() {
             validate(editTarget)
             setErrors(validate.errors ? validate.errors : [])
             editTarget.tic_id || editTarget.gaia_id && setHasSimbad(true)
+            setResubmit(true)
             debounced_edit_click(id)
           }
           setCount((prev: number) => prev + 1)
         }, [editTarget])
 
-        const publishText = errors.length > 0 ? 'Validate target before submitting' : 'Submit target for review'
+        let publishText = errors.length > 0 ? 'Validate target before submitting' : 'Submit target for review'
+        if (resubmit) {
+          publishText = 'Resubmit edited target for review'
+        }
 
         return [
           <Tooltip
@@ -266,10 +277,12 @@ export default function TargetTable() {
             <GridActionsCellItem
               disabled={errors.length > 0}
               icon={
+                resubmit ?
+                <RefreshIcon /> :
                 <PublishIcon />
               }
               label="Publish"
-              onClick={() => handlePublishClick(id)}
+              onClick={() => handlePublishClick(id, setResubmit)}
               color="inherit"
             /></Tooltip>,
           <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget} />,

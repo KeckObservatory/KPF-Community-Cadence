@@ -116,6 +116,10 @@
             "type": "integer",
             "description": "Sets Semester Day"
         },
+        "details": {
+            "type": "string",
+            "description": "Submittal Details"
+        },
         "status": {
             "type": "string",
             "description": "Target Status"
