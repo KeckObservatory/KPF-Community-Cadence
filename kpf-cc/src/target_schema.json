@@ -70,7 +70,7 @@
         },
         "target_feasible": {
             "type": ["boolean", "null"],
-            "description": "Is targed valid?"
+            "description": "Is target feasible?"
         },
         "epoch": {
             "type": "string",
