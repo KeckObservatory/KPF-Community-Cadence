@@ -29,7 +29,16 @@ export interface Target extends SimbadTargetData{
   num_visits_per_night?: number,
   num_unique_nights_per_semester?: number,
   target_feasible?: boolean,
-  comment?: string
+  needs_resubmit?: boolean,
+  comment?: string,
+  rise_semester_day?: number,
+  sets_semester_day?: number,
+  details?: string,
+  status?: string,
+  submitter?: string,
+  total_observations_requested?: number,
+  total_time_for_target?: number,
+  total_time_for_target_hours?: number,
 }
 
 interface State {

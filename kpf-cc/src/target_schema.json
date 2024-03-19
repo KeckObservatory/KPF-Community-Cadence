@@ -64,6 +64,10 @@
             "type": "integer",
             "description": "Number of observations per visit"
         },
+        "needs_resubmit": {
+            "type": ["boolean", "null"],
+            "description": "Does target require resubmit?"
+        },
         "target_feasible": {
             "type": ["boolean", "null"],
             "description": "Is target feasible?"
