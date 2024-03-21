@@ -9,15 +9,13 @@ import TargetTable from './target_table';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { UserInfo, get_all_targets, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
-import { Control, pis, prog_ids, semesters } from './control';
+import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
 import { SimbadTargetData } from './simbad_button';
 
 export interface Target extends SimbadTargetData{
   _id?: string,
-  semester: string,
-  prog_id: string,
-  pi: string,
+  semid: string,
   target_name?: string,
   j_mag?: number,
   t_eff?: number,
@@ -45,39 +43,35 @@ interface State {
   username: string,
   obsid: number,
   userinfo?: UserInfo,
-  semesters: string[],
-  prog_ids: string[],
-  pis: string[],
-  semester: string,
-  progId: string,
-  pi: string,
+  semids: string[],
+  semid: string,
   targets: Target[],
+  total_nights: number,
+  total_observations: number
 }
 
 export interface CCContext extends State {
   setTargets?: Function,
   setObserverId: Function
-  setSemester: Function
-  setProgId: Function
-  setPi: Function
+  setSemid: Function 
+  setTotalNights: Function
+  setTotalObservations: Function
 }
 
 const init_cc_context: CCContext = {
   username: "Dr. Observer Observerson",
   userinfo: undefined,
   obsid: 1234,
-  semesters: semesters,
-  prog_ids: prog_ids,
-  pis: pis,
-  semester: "XXXX",
-  progId: "XXXX",
-  pi: "XXXX",
+  semid: "XXXX_XXXX",
+  semids: [],
   targets: [],
+  total_nights: 0,
+  total_observations: 0,
+  setSemid: () => { },
   setTargets: () => { },
   setObserverId: () => { },
-  setSemester: () => { },
-  setProgId: () => { },
-  setPi: () => { },
+  setTotalNights: () => { },
+  setTotalObservations: () => { },
 }
 
 const CommCadContext = createContext<CCContext>(init_cc_context)
@@ -101,33 +95,34 @@ function App() {
         return
       }
 
-      const semesters = semidsMsg.programs.map((p: any) => p.semid.split('_')[0])
-      const prog_ids = semidsMsg.programs.map((p: any) => p.semid.split('_')[1])
+      const semids = semidsMsg.programs.map((p: any) => p.semid)
       let targets: Target[] = []
       const allTargets = false //TODO: see if it makes sense to get all targets
+      const semid = semids[0]
+      let total_nights = 0
+      let total_observations = 0
       if (allTargets) {
         for (let idx = 0; idx < semidsMsg.programs.length; idx++) {
-          const [semester, progid] = semidsMsg.programs[idx].semid.split('_')
-          const resp = await get_all_targets(semester, progid);
+          const semid = semidsMsg.programs[idx].semid
+          const resp = await get_all_targets(semid);
           resp.success === 'SUCCESS' && (targets = [...targets, ...resp.targets])
         }
       }
       else{
-        const resp = await get_all_targets(semesters[0], prog_ids[0]);
+        const resp = await get_all_targets(semid);
         resp.success === 'SUCCESS' && (targets = resp.targets)
+        total_nights = resp.total_nights
+        total_observations = resp.total_observations
       }
 
-      const pis = semidsMsg.programs.map((p: any) => p.name)
       setState({
         obsid: obsid,
         username,
         userinfo,
-        semesters,
-        prog_ids,
-        pis,
-        semester: semesters[0],
-        progId: prog_ids[0],
-        pi: pis[0],
+        semid,
+        semids: semids,
+        total_nights,
+        total_observations,
         targets
       });
     };
@@ -145,21 +140,24 @@ function App() {
         {
           username: state.username ?? "Dr. Observer Observerson",
           obsid: state.userinfo?.Id ?? "XXXX",
-          semesters: state.semesters ?? semesters,
-          prog_ids: state.prog_ids ?? prog_ids,
-          pis: state.pis ?? pis,
-          semester: state.semester,
-          progId: state.progId,
-          pi: state.pi,
+          semids: state.semids ?? [],
+          semid: state.semid ?? "XXXX_XXXX",
+          total_nights: state.total_nights,
+          total_observations: state.total_observations,
           targets: state.targets,
           setTargets: (targets: Target[]) => {
             setState((st) => {
               return { ...st, targets: targets }
             })
           },
-          setSemester: (sem: string) => {
+          setSemid: (semid: string) => {
             setState((st) => {
-              return { ...st, semester: sem }
+              return { ...st, semid }
+            })
+          },
+          setSemids: (semids: string[]) => {
+            setState((st) => {
+              return { ...st, semids }
             })
           },
           setObserverId: (oid: string) => {
@@ -167,14 +165,14 @@ function App() {
               return { ...st, observer_id: oid }
             })
           },
-          setProgId: (pid: string) => {
+          setTotalNights: (total_nights: number) => {
             setState((st) => {
-              return { ...st, progId: pid }
+              return { ...st, total_nights}
             })
           },
-          setPi: (pi: string) => {
+          setTotalObservations: (total_observations: number) => {
             setState((st) => {
-              return { ...st, pi: pi }
+              return { ...st, total_observations}
             })
           }
         } as CCContext

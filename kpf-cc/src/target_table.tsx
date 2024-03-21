@@ -47,7 +47,7 @@ interface EditToolbarProps {
   ) => void;
 }
 
-function convert_schema_to_columns(semesters: string[], prog_ids: string[], pis: string[]) {
+function convert_schema_to_columns(semids: string[]) {
   const columns: GridColDef[] = []
   Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
 
@@ -59,25 +59,11 @@ function convert_schema_to_columns(semesters: string[], prog_ids: string[], pis:
       width: 180,
       editable: false,
     } as GridColDef
-    if (key === 'semester') {
+    if (key === 'semids') {
       col = {
         ...col,
         type: 'singleSelect',
-        valueOptions: semesters,
-      }
-    }
-    if (key === 'prog_id') {
-      col = {
-        ...col,
-        type: 'singleSelect',
-        valueOptions: prog_ids,
-      }
-    }
-    if (key === 'pi') {
-      col = {
-        ...col,
-        type: 'singleSelect',
-        valueOptions: pis,
+        valueOptions: semids,
       }
     }
     columns.push(col)
@@ -86,7 +72,7 @@ function convert_schema_to_columns(semesters: string[], prog_ids: string[], pis:
   return columns;
 }
 
-export const create_new_target = (semester: string, progId: string, pi: string, id?: string, target_name?: string) => {
+export const create_new_target = (semid: string, id?: string, target_name?: string) => {
   let newTarget: Partial<TargetRow> = {}
   Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
     // @ts-ignore
@@ -96,9 +82,7 @@ export const create_new_target = (semester: string, progId: string, pi: string, 
     ...newTarget,
     id: id,
     target_name: target_name,
-    semester: semester,
-    prog_id: progId,
-    pi: pi
+    semid: semid,
   } as Target
   return newTarget
 }
@@ -109,17 +93,16 @@ function EditToolbar(props: EditToolbarProps) {
   const context = useCommCadContext()
 
   const handleClick = async () => {
-    if (context.semester === undefined || context.progId === undefined || context.pi === undefined) {
-      console.error('semester, progId, or pi is undefined') //TODO notify user
+    if (context.semid === undefined ) {
+      console.error('semid is undefined') //TODO notify user
       return
     }
 
     const id = randomId();
-    const newTarget = create_new_target(context.semester, context.progId, context.pi, id)
+    const newTarget = create_new_target(context.semid, id)
 
     const resp = await save_target([newTarget as Target],
-      newTarget.semester as string,
-      newTarget.prog_id as string,
+      newTarget.semid as string,
       'save', false
     )
     if (resp.success === 'SUCCESS') {
@@ -135,7 +118,7 @@ function EditToolbar(props: EditToolbarProps) {
   };
 
   return (
-    <GridToolbarContainer>
+    <GridToolbarContainer sx={{justifyContent: 'center'}}>
       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
         Add Target
       </Button>
@@ -171,7 +154,7 @@ export default function TargetTable() {
   const edit_target = async (target: Target) => {
     console.log('debounced save', target)
 
-    const resp = await save_target([target], target.semester, target.prog_id, 'save', false)
+    const resp = await save_target([target], target.semid, 'save', false)
     console.log('save response', resp)
     return resp
   }
@@ -194,7 +177,11 @@ export default function TargetTable() {
     console.log('deleting', id, delRow)
     const resp = await delete_target(delRow as Target)
     console.log(resp)
-    resp.success === 'SUCCESS' && setRows(rows.filter((row) => row.id !== id));
+    if (resp.success === 'SUCCESS') {
+      context.total_nights = resp.total_nights
+      context.total_observations = resp.total_observations
+      setRows(rows.filter((row) => row.id !== id));
+    }
     resp.success !== 'SUCCESS' && console.error('delete failed', resp)
   };
 
@@ -207,12 +194,13 @@ export default function TargetTable() {
     pubRow.needs_resubmit = false //assume publish is sucessfull. If not, resubmit will = true 
     console.log('publishing', id, pubRow)
     const resp = await save_target([pubRow as Target],
-      pubRow?.semester as string,
-      pubRow?.prog_id as string,
+      pubRow?.semid as string,
       'submit',
       false)
     console.log(resp)
     if (resp.success === 'SUCCESS') {
+      context.total_nights = resp.total_nights
+      context.total_observations = resp.total_observations
       setResubmit(false);
       processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow)
     }
@@ -234,7 +222,7 @@ export default function TargetTable() {
   };
 
 
-  let columns = convert_schema_to_columns(context.semesters, context.prog_ids, context.pis);
+  let columns = convert_schema_to_columns(context.semids);
 
 
   const addColumns: GridColDef[] = [
@@ -247,7 +235,7 @@ export default function TargetTable() {
       cellClassName: 'actions',
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
-        const [resubmit, setResubmit] = React.useState<boolean>(row.needs_resubmit ?? false);
+        const [resubmit, setResubmit] = React.useState<boolean>(row.needs_resubmit);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
         validate(row)
@@ -260,8 +248,8 @@ export default function TargetTable() {
             processRowUpdate({...editTarget, needs_resubmit: true})
             debounced_save({...editTarget, needs_resubmit: true})?.then((resp) => {
               console.log('save response', resp)
-              setResubmit(true)
             })
+            setResubmit(true)
             validate(editTarget)
             setErrors(validate.errors ? validate.errors : [])
             editTarget.tic_id || editTarget.gaia_id && setHasSimbad(true)
@@ -283,7 +271,7 @@ export default function TargetTable() {
             <GridActionsCellItem
               disabled={errors.length > 0}
               icon={
-                resubmit?
+                resubmit===true?
                 <RefreshIcon /> :
                 <PublishIcon />
               }

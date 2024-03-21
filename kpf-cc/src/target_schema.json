@@ -3,19 +3,10 @@
     "description": "This document defines the schema for the KPF Community Cadence Target Params",
     "type": "object",
     "properties": {
-        "semester": {
+        "semid": {
             "type": "string",
             "description": "Semester",
-            "pattern": "^([0-9]{4}[AB])$"
-        },
-        "prog_id": {
-            "type": "string",
-            "description": "Project Id",
-            "pattern": "^[A-Z]{1}[0-9]{3}$"
-        },
-        "pi": {
-            "type": "string",
-            "description": "Principal Investigator"
+            "pattern": "^([0-9]{4}[AB]_[A-Z]{1}[0-9]{3})$"
         },
         "target_name": {
             "type": "string",
@@ -146,9 +137,7 @@
         }
     },
     "required": [
-        "semester",
-        "prog_id",
-        "pi",
+        "semid",
         "target_name",
         "j_mag",
         "t_eff",

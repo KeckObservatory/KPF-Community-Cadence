@@ -51,9 +51,7 @@ function LinearProgressWithLabel(props: LinearProgressProps &
             if (!tgtName) continue
             if (!open) break
             const target = create_new_target(
-                context.semester ?? "", 
-                context.progId ?? "", 
-                context.pi ?? "", 
+                context.semid ?? "", 
                 undefined,
                 tgtName)
             const simbadData = await get_simbad_data(tgtName)
@@ -103,7 +101,7 @@ const TargetStepper = (props: Props) => {
 
     React.useEffect(() => {
         let cont = false
-        if (activeStep === 0) { cont = (context.semester && context.progId && context.pi) ? true : false }
+        if (activeStep === 0) { cont = (context.semid ) ? true : false }
         if (activeStep === 1) { cont = targetNames.length > 0 }
         if (activeStep === 2) {
             cont = targets.length > 0
@@ -113,7 +111,7 @@ const TargetStepper = (props: Props) => {
     }, [context, targetNames, targets, activeStep])
 
     const save_targets = async () => {
-        const resp = await save_target(targets, context.semester ?? "", context.progId ?? "")
+        const resp = await save_target(targets, context.semid ?? '')
         if (resp.success === 'SUCCESS') {
             props.setOpen(false)
             context.setTargets && context.setTargets(resp.targets)

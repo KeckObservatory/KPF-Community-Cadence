@@ -100,37 +100,15 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     Program Information
                                 </Typography>
                                 <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                    <Tooltip title="Select semester">
+                                    <Tooltip title="Select semid">
                                         <Autocomplete
                                             disablePortal
                                             id="semester-selection"
-                                            value={target.semester ? { label: target.semester } : { label: 'input semester' }}
-                                            onChange={(_, value) => handleTextChange('semester', value?.label)}
-                                            options={context.semesters.map((s) => { return { label: s } })}
+                                            value={target.semid? { label: target.semid} : { label: 'input semid' }}
+                                            onChange={(_, value) => handleTextChange('semid', value?.label)}
+                                            options={context.semids.map((s) => { return { label: s } })}
                                             sx={{ width: 300 }}
                                             renderInput={(params) => <TextField {...params} label="Semester" />}
-                                        />
-                                    </Tooltip>
-                                    <Tooltip title="Select program">
-                                        <Autocomplete
-                                            disablePortal
-                                            id="program-selection"
-                                            value={target.prog_id ? { label: target.prog_id } : { label: 'input program' }}
-                                            onChange={(_, value) => handleTextChange('prog_id', value?.label)}
-                                            options={context.prog_ids.map((p) => { return { label: p } })}
-                                            sx={{ width: 300 }}
-                                            renderInput={(params) => <TextField {...params} label="Program" />}
-                                        />
-                                    </Tooltip>
-                                    <Tooltip title="Select PI">
-                                        <Autocomplete
-                                            disablePortal
-                                            id="program-selection"
-                                            value={target.pi ? { label: target.pi } : { label: 'input pi' }}
-                                            onChange={(_, value) => handleTextChange('pi', value?.label)}
-                                            options={context.pis.map((p) => { return { label: p } })}
-                                            sx={{ width: 300 }}
-                                            renderInput={(params) => <TextField {...params} label="PI" />}
                                         />
                                     </Tooltip>
                                 </Stack>

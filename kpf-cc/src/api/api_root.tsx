@@ -48,9 +48,8 @@ interface SemidResp {
 }
 
 const axiosInstance = axios.create({
-    withCredentials: true,
+    withCredentials: false,
     headers: {
-        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
         'withCredentials': false,
     }
@@ -92,13 +91,12 @@ export const delete_target = (tgt: Target): Promise<SubmitResp> => {
 }
 
 export const save_target = (targets: Target[],
-    semester: string,
-    progId: string,
+    semid: string,
     action = 'save',
     edit = false): Promise<SubmitResp> => {
     let url = API_ADDR
     url += edit ? '/editTarget' : '/submitTarget'
-    url += `?action=${action}&semester=${semester}&progid=${progId}`
+    url += `?action=${action}&semid=${semid}`
     return axiosInstance.put(url, { targets })
         .then(handleResponse)
         .catch(handleError)
@@ -111,8 +109,8 @@ export const get_target = (oid: string): Promise<string> => {
         .catch(handleError)
 }
 
-export const get_all_targets = (semester: string, progid: string): Promise<SubmitResp> => {
-    const url = API_ADDR + `/getAllTargets?semester=${semester}&progid=${progid}`
+export const get_all_targets = (semid: string): Promise<SubmitResp> => {
+    const url = API_ADDR + `/getAllTargets?semid=${semid}`
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
