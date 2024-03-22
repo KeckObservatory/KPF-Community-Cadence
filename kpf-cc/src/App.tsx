@@ -46,7 +46,7 @@ interface State {
   semids: string[],
   semid: string,
   targets: Target[],
-  total_nights: number,
+  total_hours: number,
   total_observations: number
 }
 
@@ -65,7 +65,7 @@ const init_cc_context: CCContext = {
   semid: "XXXX_XXXX",
   semids: [],
   targets: [],
-  total_nights: 0,
+  total_hours: 0,
   total_observations: 0,
   setSemid: () => { },
   setTargets: () => { },
@@ -99,7 +99,7 @@ function App() {
       let targets: Target[] = []
       const allTargets = false //TODO: see if it makes sense to get all targets
       const semid = semids[0]
-      let total_nights = 0
+      let total_hours = 0
       let total_observations = 0
       if (allTargets) {
         for (let idx = 0; idx < semidsMsg.programs.length; idx++) {
@@ -111,7 +111,7 @@ function App() {
       else{
         const resp = await get_all_targets(semid);
         resp.success === 'SUCCESS' && (targets = resp.targets)
-        total_nights = resp.total_nights
+        total_hours = resp.total_hours
         total_observations = resp.total_observations
       }
 
@@ -121,7 +121,7 @@ function App() {
         userinfo,
         semid,
         semids: semids,
-        total_nights,
+        total_hours,
         total_observations,
         targets
       });
@@ -142,7 +142,7 @@ function App() {
           obsid: state.userinfo?.Id ?? "XXXX",
           semids: state.semids ?? [],
           semid: state.semid ?? "XXXX_XXXX",
-          total_nights: state.total_nights,
+          total_hours: state.total_hours,
           total_observations: state.total_observations,
           targets: state.targets,
           setTargets: (targets: Target[]) => {
@@ -165,9 +165,9 @@ function App() {
               return { ...st, observer_id: oid }
             })
           },
-          setTotalNights: (total_nights: number) => {
+          setTotalNights: (total_hours: number) => {
             setState((st) => {
-              return { ...st, total_nights}
+              return { ...st, total_hours}
             })
           },
           setTotalObservations: (total_observations: number) => {

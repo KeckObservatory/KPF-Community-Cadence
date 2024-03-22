@@ -178,8 +178,8 @@ export default function TargetTable() {
     const resp = await delete_target(delRow as Target)
     console.log(resp)
     if (resp.success === 'SUCCESS') {
-      context.total_nights = resp.total_nights
-      context.total_observations = resp.total_observations
+      context.setTotalNights(resp.total_hours)
+      context.setTotalObservations(resp.total_observations)
       setRows(rows.filter((row) => row.id !== id));
     }
     resp.success !== 'SUCCESS' && console.error('delete failed', resp)
@@ -199,8 +199,8 @@ export default function TargetTable() {
       false)
     console.log(resp)
     if (resp.success === 'SUCCESS') {
-      context.total_nights = resp.total_nights
-      context.total_observations = resp.total_observations
+      context.setTotalNights(resp.total_hours)
+      context.setTotalObservations(resp.total_observations)
       setResubmit(false);
       processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow)
     }

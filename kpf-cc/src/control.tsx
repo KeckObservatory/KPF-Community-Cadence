@@ -45,7 +45,7 @@ export const Control = () => {
                     renderInput={(params) => <TextField {...params} label="Semester" />}
                 />
             </Tooltip>
-            <Typography variant="h6" component="div">Total Nights: {(context.total_nights)?.toFixed(4)} total nights</Typography>
+            <Typography variant="h6" component="div">Total Nights [hours]: {(context.total_hours)?.toFixed(4)} total nights</Typography>
             <Typography variant="h6" component="div">Total Observations: {context.total_observations} total observations</Typography>
 
         </Stack>
