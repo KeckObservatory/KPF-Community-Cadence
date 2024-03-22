@@ -103,12 +103,12 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <Tooltip title="Select semid">
                                         <Autocomplete
                                             disablePortal
-                                            id="semester-selection"
+                                            id="semid-selection"
                                             value={target.semid? { label: target.semid} : { label: 'input semid' }}
                                             onChange={(_, value) => handleTextChange('semid', value?.label)}
                                             options={context.semids.map((s) => { return { label: s } })}
                                             sx={{ width: 300 }}
-                                            renderInput={(params) => <TextField {...params} label="Semester" />}
+                                            renderInput={(params) => <TextField {...params} label="Semid" />}
                                         />
                                     </Tooltip>
                                 </Stack>

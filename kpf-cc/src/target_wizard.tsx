@@ -137,7 +137,7 @@ const TargetStepper = (props: Props) => {
 
     const stepComponents = [
         {
-            label: 'Select Semester, Program, and PI',
+            label: 'Select Semid',
             component: <Control />
         },
         {

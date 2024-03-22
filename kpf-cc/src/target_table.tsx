@@ -305,7 +305,7 @@ export default function TargetTable() {
 
   columns = [...addColumns, ...columns];
 
-  const initVisible = ['actions', 'target_name', 'semester', 'prog_id', 'pi', 'ra', 'dec', 'target_feasible']
+  const initVisible = ['actions', 'target_name', 'semid', 'prog_id', 'pi', 'ra', 'dec', 'target_feasible']
   const visibleColumns = Object.fromEntries(columns.map((col) => {
     const visible = initVisible.includes(col.field)
     return [col.field, visible]
