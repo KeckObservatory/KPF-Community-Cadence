@@ -109,7 +109,8 @@ function EditToolbar(props: EditToolbarProps) {
       console.log()
       let tgt = resp.targets[0]
       tgt.need_resubmit = false
-      setRows((oldRows) => [resp.targets[0], ...oldRows]);
+      context.setTargets([...context.targets, tgt])
+      setRows((oldRows) => [tgt, ...oldRows]);
       setRowModesModel((oldModel) => ({
         ...oldModel,
         [id]: { mode: GridRowModes.Edit, fieldToFocus: 'target_name' },
@@ -122,7 +123,9 @@ function EditToolbar(props: EditToolbarProps) {
       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
         Add Target
       </Button>
-      <GridToolbar />
+      <GridToolbar 
+        csvOptions={{ allColumns: true }}
+      />
       <TargetWizardButton />
     </GridToolbarContainer>
   );
@@ -178,9 +181,12 @@ export default function TargetTable() {
     const resp = await delete_target(delRow as Target)
     console.log(resp)
     if (resp.success === 'SUCCESS') {
-      context.setTotalNights(resp.total_hours)
+      context.setTotalHours(resp.total_hours)
       context.setTotalObservations(resp.total_observations)
       setRows(rows.filter((row) => row.id !== id));
+      //context.setTargets((tgts: Target[]) => { return tgts.filter((tgt) => tgt._id !== delRow?._id) })
+      context.setTargets([...context.targets.filter((tgt) => tgt._id !== delRow?._id)])
+      
     }
     resp.success !== 'SUCCESS' && console.error('delete failed', resp)
   };
@@ -199,7 +205,7 @@ export default function TargetTable() {
       false)
     console.log(resp)
     if (resp.success === 'SUCCESS') {
-      context.setTotalNights(resp.total_hours)
+      context.setTotalHours(resp.total_hours)
       context.setTotalObservations(resp.total_observations)
       setResubmit(false);
       processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow)
@@ -232,6 +238,7 @@ export default function TargetTable() {
       editable: false,
       headerName: 'Actions',
       width: 300,
+      disableExport: true,
       cellClassName: 'actions',
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);

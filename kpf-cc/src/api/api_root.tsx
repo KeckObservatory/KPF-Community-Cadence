@@ -124,7 +124,7 @@ export const get_semids = (oid?: number): Promise<SemidResp> => {
 }
 
 export const get_userinfo = (): Promise<UserInfo> => {
-    const url = "https://www3build.keck.hawaii.edu/userinfo"
+    const url = "/userinfo"
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)

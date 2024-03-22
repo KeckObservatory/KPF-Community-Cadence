@@ -7,6 +7,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Tooltip } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
+import { Target } from './App';
+import target_schema from './target_schema.json'
 
 interface Props {
     setTargetNames: Function
@@ -17,6 +19,11 @@ interface UploadProps extends Props {
     setLabel?: Function,
     setOpen?: Function
 }
+
+
+let hdrToKeyMapping = Object.fromEntries(Object.entries(target_schema.properties).map(([key, value]: [string, any]) => {
+    return[value.description as string, key as keyof Target]
+}))
 
 
 export function UploadComponent(props: UploadProps) {
@@ -30,12 +37,19 @@ export function UploadComponent(props: UploadProps) {
         fileReader.readAsText(file, "UTF-8");
         fileReader.onload = e => {
             const contents = e.target?.result as string
-            const lines = contents.split('\n')
-                .map(s => s.replace('\r', '').replace(',', ''))
-                .slice(1)
-            console.log(lines)
+            const [header, ...lines] = contents.split('\n')
+                .map(s => s.replace('\r', '').split(','))
+            const tgts = lines.map((item) => {
+                const tgt = {} as Target;
+                header.forEach((desc, index) => {
+                    const key = hdrToKeyMapping[desc] as keyof Target
+                    tgt[key] = item.at(index) as keyof Target[keyof Target]
+                });
+                return tgt;
+            });
+            console.log(header, lines, tgts)
             props.setOpen && props.setOpen(false)
-            props.setTargetNames(lines)
+            props.setTargetNames(tgts.map(tgt => tgt.target_name))
         };
     };
     return (

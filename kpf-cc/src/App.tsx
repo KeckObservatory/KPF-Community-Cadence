@@ -51,10 +51,10 @@ interface State {
 }
 
 export interface CCContext extends State {
-  setTargets?: Function,
+  setTargets: Function,
   setObserverId: Function
   setSemid: Function 
-  setTotalNights: Function
+  setTotalHours: Function
   setTotalObservations: Function
 }
 
@@ -70,7 +70,7 @@ const init_cc_context: CCContext = {
   setSemid: () => { },
   setTargets: () => { },
   setObserverId: () => { },
-  setTotalNights: () => { },
+  setTotalHours: () => { },
   setTotalObservations: () => { },
 }
 
@@ -165,7 +165,7 @@ function App() {
               return { ...st, observer_id: oid }
             })
           },
-          setTotalNights: (total_hours: number) => {
+          setTotalHours: (total_hours: number) => {
             setState((st) => {
               return { ...st, total_hours}
             })

@@ -1,0 +1,12 @@
+Semid,Target Name,J Magnitude,G Magnitude,Effective Temperature,simulcal on or off,Nominal Exposure Time (s),Maximum Exposure Time (s),Number of visits per night,Number of unique nights per semester,Number of internight cadence,Number of observations per visit,Does target require resubmit?,Is target feasible?,Epoch,Proper Motion in Dec,Proper Motion in RA,Right Ascension,Declination,Right Ascension in degrees,Declination in degrees,message from the scheduler,Notes/comments,TIC Identifier,GAIA Identifier,Rise Semester Day,Sets Semester Day,Submittal Details,Target Status,Submitter,Total Observations Requested,Total Time for Target,Total Time for Target (hours)
+2023A_E309,M32,6.277,,,yes,,,1,,,,,,J2000,-5,-17,00:42:41.82480,+40:51:54.6120,10.674,40.865,,,,,,,,,Tyler Tucker,,,
+2023A_E309,HD19994,4.17,4.922,,yes,,,1,,,,,,J2000,-68.888,193.549,03:12:46.4365677072,-01:11:45.955808988,48.193,-1.196,,,49845357,3.26533544326052E+018,,,,,Tyler Tucker,,,
+2023A_E309,HD75732,4.59,5.733,,yes,,,1,,,,,,J2000,-233.517,-485.681,08:52:35.8111044043,+28:19:50.954994470,133.149,28.331,,,332064670,7.04967037090947E+017,,,,,Tyler Tucker,,,
+2023A_E309,HD217107,4.949,5.997,,yes,,,1,,,,,,J2000,-15.04,-6.819,22:58:15.5408995872,-02:23:43.383234768,344.565,-2.395,,,38271828,2.64891404035732E+018,,,,,Tyler Tucker,,,
+2023A_E309,HD145675,5.158,6.395,,yes,,,1,,,,,,J2000,-297.025,131.745,16:10:24.3156759007,+43:49:03.507406809,242.601,43.818,,,219483057,1.38529380814562E+018,,,,,Tyler Tucker,,,
+2023A_E309,HD210277,5.275,6.359,,yes,,,1,,,,,,J2000,-450.617,85.407,22:09:29.8657847411,-07:32:55.162082226,332.374,-7.549,,,50227884,2.61970654475742E+018,,,,,Tyler Tucker,,,
+2023A_E309,HD154345,5.411,6.584,,yes,,,1,,,,,,J2000,853.639,123.274,17:02:36.4038090379,+47:04:54.764174452,255.652,47.082,,,198562505,1.35993852025357E+018,,,,,Tyler Tucker,,,
+2023A_E309,HD82943,5.509,6.402,,yes,,,1,,,,,,J2000,-174.33,1.44,09:34:50.7353072232,-12:07:46.369202196,143.711,-12.13,,,405485269,5.69178213057868E+018,,,,,Tyler Tucker,,,
+2023A_E309,HD50554,5.776,6.715,,yes,,,1,,,,,,J2000,-96.668,-35.839,06:54:42.8261485848,+24:14:44.005690212,103.678,24.246,,,80224448,3.38047901534212E+018,,,,,Tyler Tucker,,,
+2023A_E309,HD128311,5.772,7.181,,yes,,,1,,,,,,J2000,-250.457,204.813,14:36:00.5602765558,+09:44:47.454573266,219.002,9.747,,,349606708,1.17620988673341E+018,,,,,Tyler Tucker,,,
+2023A_E309,,,,,yes,,,1,,,,,,,,,,,,,,,,,,,,,Tyler Tucker,,,

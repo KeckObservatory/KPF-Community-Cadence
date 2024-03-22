@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { Autocomplete, Tooltip, Typography } from '@mui/material'
 import targets from './targets.json'
 import { useCommCadContext } from './App'
+import { get_all_targets } from './api/api_root';
 
 export interface SPP {
     semester: string
@@ -11,7 +12,7 @@ export interface SPP {
     pi: string
 }
 
-export const semids = [...new Set(targets.map( (tgt) => {
+export const semids = [...new Set(targets.map((tgt) => {
     return `${tgt.semester}_${tgt.prog_id}`
 }))]
 
@@ -23,10 +24,12 @@ export const Control = () => {
     useEffect(() => {
     }, [])
 
-    const onChange = (key: String, value: string | undefined | null) => {
+    const onChange = async (key: String, value: string | undefined | null) => {
         if (value) {
             if (key === 'semid') {
                 context.setSemid(value)
+                const resp = await get_all_targets(value);
+                resp.success === 'SUCCESS' && (context.setTargets(resp.targets))
             }
         }
     }
@@ -38,15 +41,15 @@ export const Control = () => {
                     disablePortal
                     id="semester-selection"
                     //value={context.semester ? { label: context.semester } : { label: 'input semester' }}
-                    value={context.semid ? { label: context.semid} : { label: 'semester' }}
+                    value={context.semid ? { label: context.semid } : { label: 'semester' }}
                     onChange={(_, value) => onChange('semester', value?.label)}
                     options={context.semids.map((s) => { return { label: s } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Semester" />}
                 />
             </Tooltip>
-            <Typography variant="h6" component="div">Total Nights [hours]: {(context.total_hours)?.toFixed(4)} total nights</Typography>
-            <Typography variant="h6" component="div">Total Observations: {context.total_observations} total observations</Typography>
+            <Typography variant="h6" component="div">Total Hours: {(context.total_hours)?.toFixed(4)}</Typography>
+            <Typography variant="h6" component="div">Total Observations: {context.total_observations}</Typography>
 
         </Stack>
     )

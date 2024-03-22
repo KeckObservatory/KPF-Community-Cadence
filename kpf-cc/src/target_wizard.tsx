@@ -114,7 +114,9 @@ const TargetStepper = (props: Props) => {
         const resp = await save_target(targets, context.semid ?? '')
         if (resp.success === 'SUCCESS') {
             props.setOpen(false)
-            context.setTargets && context.setTargets(resp.targets)
+            context.setTargets([...context.targets, ...resp.targets])
+            context.setTotalHours(resp.total_hours)
+            context.setTotalObservations(resp.total_observations)
         }
         else {
             console.error('Failed to save targets', resp)

@@ -5,7 +5,7 @@
     "properties": {
         "semid": {
             "type": "string",
-            "description": "Semester",
+            "description": "Semid",
             "pattern": "^([0-9]{4}[AB]_[A-Z]{1}[0-9]{3})$"
         },
         "target_name": {
@@ -77,7 +77,7 @@
         },
         "ra": {
             "type": "string",
-            "description": "Right Asecension"
+            "description": "Right Ascension"
         },
         "dec": {
             "type": "string",
@@ -90,6 +90,10 @@
         "dec_deg": {
             "type": "number",
             "description": "Declination in degrees"
+        },
+        "message": {
+            "type": "string",
+            "description": "message from the scheduler"
         },
         "comment": {
             "type": "string",
