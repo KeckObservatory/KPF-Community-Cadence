@@ -20,10 +20,19 @@ export const Control = () => {
 
     const onChange = async (key: String, value: string | undefined | null) => {
         if (value) {
-            if (key === 'semid') {
+            if (key === 'semid' && value !== context.semid) {
                 context.setSemid(value)
                 const resp = await get_all_targets(value);
-                resp.success === 'SUCCESS' && (context.setTargets(resp.targets))
+                if (resp.success === 'SUCCESS') {
+                    context.setTotalHours(resp.total_hours)
+                    context.setTotalObservations(resp.total_observations)
+                    context.setTargets(resp.targets)
+                }
+                else if (resp.message.includes('NO_TARGETS_FOUND')) {
+                    context.setTotalHours(0)
+                    context.setTotalObservations(0)
+                    context.setTargets(resp.targets)
+                }
             }
         }
     }

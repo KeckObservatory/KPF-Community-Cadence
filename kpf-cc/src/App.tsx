@@ -81,6 +81,7 @@ export const useCommCadContext = () => useContext(CommCadContext)
 function App() {
   const [darkState, setDarkState] = useQueryParam('darkState', withDefault(BooleanParam, true));
   const [state, setState] = useState<State>({} as State);
+  const [init, setInit] = useState<boolean>(false);
   const theme = handleTheme(darkState)
 
 
@@ -125,6 +126,7 @@ function App() {
         total_observations,
         targets
       });
+      setInit(true)
     };
     fetchData();
   }, []);
@@ -189,7 +191,7 @@ function App() {
             }}
           >
             <Control />
-            {state.targets ? (
+            {init ? (
               <TargetTable />
             ) : <Skeleton variant="rectangular" width="100%" height={500} />}
           </Paper>

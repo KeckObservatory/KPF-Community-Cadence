@@ -325,6 +325,7 @@ export default function TargetTable() {
       }}
     >
       <DataGrid
+        disableRowSelectionOnClick
         rows={rows}
         columns={columns}
         editMode="row"
