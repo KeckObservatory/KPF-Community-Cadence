@@ -367,12 +367,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 marginBottom: '24px',
                             }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 <Stack justifyContent='center' spacing={2}>
-                                    <Typography
-                                        align='center'
-                                        noWrap
-                                    >
-                                        Intra Night Cadence
-                                    </Typography>
                                     <Tooltip title="Write num inter night cadence here." placement='left'>
                                         <TextField
                                             // focused
