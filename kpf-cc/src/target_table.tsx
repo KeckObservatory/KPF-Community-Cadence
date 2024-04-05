@@ -52,10 +52,10 @@ interface EditToolbarProps {
 }
 
 const target_feisable_chip = (params: GridRenderCellParams) => {
-  let text = params.value == null ? 'Unknown '
-    : params.value ? 'Feasible '
-      : 'Infeasible '
-  text += params.row.details ?? ""
+  let text = params.value == null ? 'Unknown'
+    : params.value ? 'Feasible'
+      : 'Infeasible'
+  params.row.details && (text += ": " + params.row.details)
   return (
     <Tooltip
       placement='left'
