@@ -61,7 +61,8 @@
         },
         "num_observations_per_visit": {
             "type": "integer",
-            "description": "Number of observations per visit"
+            "description": "Number of observations per visit",
+            "short_description": "Num obs/visit"
         },
         "needs_resubmit": {
             "type": ["boolean", "null"],

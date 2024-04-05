@@ -7,6 +7,7 @@ import { ErrorObject } from 'ajv/dist/2019'
 import RefreshIcon from '@mui/icons-material/Refresh';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -50,6 +51,33 @@ interface EditToolbarProps {
   ) => void;
 }
 
+const target_feisable_chip = (params: GridRenderCellParams) => {
+  console.log('params', params)
+  let text = params.value == null ? 'Unknown'
+        : params.value ? 'Feasible'
+          : 'Infeasible'
+  text += params.row.details
+  return (
+    <Tooltip 
+    placement='left'
+    title={text}>
+      <Chip
+        variant="outlined"
+        color={
+          params.value == null ? 'warning'
+            : params.value ? 'success'
+              : 'error'
+        }
+        icon={
+          params.value == null ? <SentimentNeutralIcon />
+            : params.value ? <InsertEmoticonIcon />
+              : <MoodBadIcon />
+        }
+      />
+    </Tooltip>
+  )
+}
+
 function convert_schema_to_columns(semids: string[]) {
   const columns: GridColDef[] = []
   Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
@@ -69,16 +97,9 @@ function convert_schema_to_columns(semids: string[]) {
       }
     }
     if (key === 'target_feasible') {
-      console.log('key', key, 'value', value)
       col = {
         ...col,
-        renderCell: (params: GridRenderCellParams) => {
-          return <Chip
-            variant="outlined"
-            color={params.value ? 'success' : 'error'}
-            icon={params.value ? <InsertEmoticonIcon /> : <MoodBadIcon />}
-            label={params.value ? 'Feasible' : 'Infeasible'} />
-        },
+        renderCell: target_feisable_chip
       }
     }
     columns.push(col)
@@ -368,6 +389,7 @@ export default function TargetTable() {
     'target_name',
     'target_feasible',
     'nominal_exposure_time',
+    'num_observations_per_visit',
     'num_unique_nights_per_semester',
     'num_internight_cadence',
     'num_intranight_cadence',
