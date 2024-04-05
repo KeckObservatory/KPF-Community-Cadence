@@ -25,6 +25,7 @@ export interface Target extends SimbadTargetData {
   nominal_exposure_time?: number
   maximum_exposure_time?: number,
   num_internight_cadence?: number,
+  num_intranight_cadence: number,
   num_observations_per_visit?: number,
   num_visits_per_night?: number,
   num_unique_nights_per_semester?: number,

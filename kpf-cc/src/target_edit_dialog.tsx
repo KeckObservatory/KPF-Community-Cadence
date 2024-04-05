@@ -376,6 +376,15 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             value={target.num_internight_cadence}
                                         />
                                     </Tooltip>
+                                    <Tooltip title="Write num intra night cadence here." placement='left'>
+                                        <TextField
+                                            // focused
+                                            label={'Num Intranight Cadence'}
+                                            id="num-intra-night-cadence"
+                                            onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}
+                                            value={target.num_intranight_cadence}
+                                        />
+                                    </Tooltip>
                                 </Stack>
                             </Stack>
                         </Box>

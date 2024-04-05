@@ -32,7 +32,8 @@
         },
         "nominal_exposure_time": {
             "type": "integer",
-            "description": "Nominal Exposure Time (s)"
+            "description": "Nominal Exposure Time (s)",
+            "short_description": "Nom Exp Time (s)"
         },
         "maximum_exposure_time": {
             "type": "integer",
@@ -45,11 +46,18 @@
         },
         "num_unique_nights_per_semester": {
             "type": "integer",
-            "description": "Number of unique nights per semester"
+            "description": "Number of unique nights per semester",
+            "short_description": "Num of nights/sem"
         },
         "num_internight_cadence": {
             "type": "integer",
-            "description": "Number of internight cadence"
+            "description": "Number of internight cadence",
+            "short_description": "Internight cadence"
+        },
+        "num_intranight_cadence": {
+            "type": "integer",
+            "description": "Number of intranight cadence",
+            "short_description": "Intranight cadence"
         },
         "num_observations_per_visit": {
             "type": "integer",

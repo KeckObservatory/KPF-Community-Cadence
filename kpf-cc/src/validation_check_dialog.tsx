@@ -27,6 +27,7 @@ export interface Props {
 const ajv = new AJV2019({allErrors:true})
 let ts = target_schema as any
 delete ts["$schema"]
+ajv.addKeyword("short_description")
 export const validate = ajv.compile(ts)
 
 function ValidationDialog(props: SimpleDialogProps) {
@@ -83,7 +84,7 @@ export default function ValidationDialogButton(props: Props) {
 
   return (
     <>
-      <Tooltip title="Select to see target validation errors (if any)">
+      <Tooltip title="Select to see target validation errors">
         <IconButton onClick={handleClickOpen}>
           {icon}
         </IconButton>

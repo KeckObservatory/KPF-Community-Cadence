@@ -57,7 +57,7 @@ function convert_schema_to_columns(semids: string[]) {
       field: key,
       type: value.type,
       resizable: true,
-      headerName: value.description,
+      headerName: value.short_description ?? value.description,
       width: 180,
       editable: false,
     } as GridColDef
@@ -321,13 +321,15 @@ export default function TargetTable() {
           }
         } : {}
 
-        return [
+        const valid = errors.length === 0
+
+        const firstButton = valid ?
           <Tooltip
             title={publishText}
             placement="top"
             arrow key="publish" >
             <GridActionsCellItem
-              disabled={errors.length > 0}
+              disabled={!valid}
               icon={
                 (resubmit === true) ?
                   <RefreshIcon
@@ -338,9 +340,12 @@ export default function TargetTable() {
               label="Publish"
               onClick={() => handlePublishClick(id, setResubmit, setIconSpin)}
               color="inherit"
-            /></Tooltip>,
+            /></Tooltip> :
+          < ValidationDialogButton errors={errors} target={editTarget} />
+
+        return [
+          firstButton,
           <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget} />,
-          <ValidationDialogButton errors={errors} target={editTarget} />,
           <TargetEditDialogButton
             target={editTarget}
             setTarget={setEditTarget}
@@ -358,7 +363,16 @@ export default function TargetTable() {
 
   columns = [...addColumns, ...columns];
 
-  const initVisible = ['actions', 'target_name', 'semid', 'prog_id', 'pi', 'ra', 'dec', 'target_feasible']
+  const initVisible = [
+    'actions',
+    'target_name',
+    'target_feasible',
+    'nominal_exposure_time',
+    'num_unique_nights_per_semester',
+    'num_internight_cadence',
+    'num_intranight_cadence',
+    'require_resubmit'
+  ]
   const visibleColumns = Object.fromEntries(columns.map((col) => {
     const visible = initVisible.includes(col.field)
     return [col.field, visible]
