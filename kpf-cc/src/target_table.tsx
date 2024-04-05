@@ -52,7 +52,6 @@ interface EditToolbarProps {
 }
 
 const target_feisable_chip = (params: GridRenderCellParams) => {
-  console.log('params', params)
   let text = params.value == null ? 'Unknown '
     : params.value ? 'Feasible '
       : 'Infeasible '
@@ -143,7 +142,6 @@ function EditToolbar(props: EditToolbarProps) {
       'save', false
     )
     if (resp.success === 'SUCCESS') {
-      console.log()
       let tgt = resp.targets[0]
       tgt.need_resubmit = false
       context.setTargets([tgt, ...context.targets])
@@ -182,20 +180,18 @@ export default function TargetTable() {
     }
   }) as TargetRow[];
   const [rows, setRows] = React.useState(initTargets);
-  const [visibleColumns, setVisibleColumns] = React.useState<{[key: string]: boolean}>({});
+  const [visibleColumns, setVisibleColumns] = React.useState<{ [key: string]: boolean }>({});
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const snackbarContext = useSnackbarContext()
 
   React.useEffect(() => {
     const set_visible_columns = async () => {
       const cfg = await get_config()
-      console.log('config', cfg)
-      const visibleCols = Object.fromEntries(columns.map((col) => {
+      const vc = Object.fromEntries(columns.map((col) => {
         const visible = cfg.default_table_columns.includes(col.field)
         return [col.field, visible]
       }));
-      console.log('visibleCols', visibleCols)
-      setVisibleColumns(visibleCols)
+      setVisibleColumns(vc)
     }
     set_visible_columns()
   }, [])
@@ -207,13 +203,10 @@ export default function TargetTable() {
         id: randomId(),
       }
     }) as TargetRow[]
-    console.log('updating targets', newTargets)
     setRows(newTargets)
   }, [context.targets])
 
   const edit_target = async (target: Target) => {
-    console.log('debounced save', target)
-
     const resp = await save_target([target], target.semid, 'save', false)
     if (resp.success !== 'SUCCESS') {
       console.error('save failed', resp)
@@ -238,9 +231,7 @@ export default function TargetTable() {
 
   const handleDeleteClick = async (id: GridRowId) => {
     const delRow = rows.find((row) => row.id === id);
-    console.log('deleting', id, delRow)
     const resp = await delete_target(delRow as Target)
-    console.log(resp)
     if (resp.success === 'SUCCESS') {
       resp.total_hours && context.setTotalHours(resp.total_hours)
       resp.total_observations && context.setTotalObservations(resp.total_observations)
@@ -262,13 +253,11 @@ export default function TargetTable() {
       return
     }
     pubRow.needs_resubmit = false //assume publish is sucessfull. If not, resubmit will = true 
-    console.log('publishing', id, pubRow)
     try {
       const resp = await save_target([pubRow as Target],
         pubRow?.semid as string,
         'submit',
         false)
-      console.log(resp)
       if (resp.success === 'SUCCESS') {
         context.setTotalHours(resp.total_hours)
         context.setTotalObservations(resp.total_observations)
@@ -326,7 +315,6 @@ export default function TargetTable() {
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           if (count > 0) {
-            console.log('editTarget updated', editTarget, row)
             processRowUpdate({ ...editTarget, needs_resubmit: true })
             debounced_save({ ...editTarget, needs_resubmit: true })?.then((resp) => {
               console.log('save response', resp)
@@ -414,27 +402,29 @@ export default function TargetTable() {
         },
       }}
     >
-      <DataGrid
-        disableRowSelectionOnClick
-        rows={rows}
-        columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        slots={{
-          toolbar: EditToolbar,
-        }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel, },
-        }}
-        initialState={{
-          columns: {
-            columnVisibilityModel:
-              visibleColumns
-          }
-        }}
-      />
+      {Object.keys(visibleColumns).length > 0 && (
+        <DataGrid
+          disableRowSelectionOnClick
+          rows={rows}
+          columns={columns}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStop={handleRowEditStop}
+          slots={{
+            toolbar: EditToolbar,
+          }}
+          slotProps={{
+            toolbar: { setRows, setRowModesModel, },
+          }}
+          initialState={{
+            columns: {
+              columnVisibilityModel:
+                visibleColumns
+            }
+          }}
+        />
+      )}
     </Box>
   );
 }
