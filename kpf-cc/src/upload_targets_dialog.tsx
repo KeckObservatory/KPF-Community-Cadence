@@ -22,40 +22,73 @@ interface UploadProps extends Props {
 
 
 let hdrToKeyMapping = Object.fromEntries(Object.entries(target_schema.properties).map(([key, value]: [string, any]) => {
-    return[value.description as string, key as keyof Target]
+    return [value.description as string, key as keyof Target]
 }))
 
 
 export function UploadComponent(props: UploadProps) {
 
+    const parse_csv = (contents: string) => {
+        const [header, ...lines] = contents.split('\n')
+            .map(s => s.replace('\r', '').split(','))
+        const tgts = lines.map((item) => {
+            const tgt = {} as Target;
+            header.forEach((desc, index) => {
+                const key = hdrToKeyMapping[desc] as keyof Target
+                tgt[key] = item.at(index) as keyof Target[keyof Target]
+            });
+            return tgt;
+        });
+        return tgts
+    }
+
+    const parse_txt = (contents: string) => {
+        const tgts = contents.split('\n').map((row) => {
+            //const [target_name, rah, ram, ras, dech, decm, decs, epoch, ...opts] = row.replace(/\s\s+/g, ' ').split(' ')
+            const target_name = row
+            const tgt = {
+                target_name,
+            } as Partial<Target>;
+            return tgt;
+        });
+        return tgts
+    }
+
+    // const parse_txt = (contents: string) => {
+    //     const [header, ...lines] = contents.split('\n')
+    //         .map(s => s.replace('\r', '').split(','))
+    //     const tgts = lines.map((item) => {
+    //         const tgt = {} as Target;
+    //         header.forEach((desc, index) => {
+    //             const key = hdrToKeyMapping[desc] as keyof Target
+    //             tgt[key] = item.at(index) as keyof Target[keyof Target]
+    //         });
+    //         return tgt;
+    //     });
+    //     return tgts
+    // }
+
     const fileLoad = (evt: React.ChangeEvent<HTMLInputElement>) => {
         let file: File = new File([], 'empty')
         evt.target?.files && (file = evt.target?.files[0])
-        console.log(file)
         props.setLabel && props.setLabel(`${file.name} Uploaded`)
+        const ext = file.name.split('.').pop()
+        console.log('file', file, ext)
         const fileReader = new FileReader()
         fileReader.readAsText(file, "UTF-8");
         fileReader.onload = e => {
             const contents = e.target?.result as string
-            const [header, ...lines] = contents.split('\n')
-                .map(s => s.replace('\r', '').split(','))
-            const tgts = lines.map((item) => {
-                const tgt = {} as Target;
-                header.forEach((desc, index) => {
-                    const key = hdrToKeyMapping[desc] as keyof Target
-                    tgt[key] = item.at(index) as keyof Target[keyof Target]
-                });
-                return tgt;
-            });
-            console.log(header, lines, tgts)
+            const tgts = ext?.includes('csv') ? parse_csv(contents) : parse_txt(contents)
             props.setOpen && props.setOpen(false)
+            console.log('tgts', tgts)
             props.setTargetNames(tgts.map(tgt => tgt.target_name))
         };
     };
+
     return (
         <>
             <input
-                accept="*.csv"
+                accept="*.csv,*.txt,*.json"
                 style={{ display: 'none' }}
                 id="raised-button-file"
                 type="file"

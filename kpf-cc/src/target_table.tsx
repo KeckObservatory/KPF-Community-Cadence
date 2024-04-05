@@ -109,7 +109,7 @@ function EditToolbar(props: EditToolbarProps) {
       console.log()
       let tgt = resp.targets[0]
       tgt.need_resubmit = false
-      context.setTargets([...context.targets, tgt])
+      context.setTargets([tgt, ...context.targets])
       setRows((oldRows) => [tgt, ...oldRows]);
       setRowModesModel((oldModel) => ({
         ...oldModel,
