@@ -29,9 +29,22 @@ export const Control = () => {
                     context.setTotalObservations(resp.total_observations)
                     context.setTargets(resp.targets)
                 }
-                else if (resp.message.includes('NO_TARGETS_FOUND')) {
+                else {
                     snackbarContext.setSnackbarMessage(
-                        {severity: 'error', message: `No targets found for semid ${value}`})
+                        {
+                            severity: 'error',
+                            message: `Error fetching targets for semid ${value}. Details: ${resp.details}`
+                        })
+                    context.setTotalHours(0)
+                    context.setTotalObservations(0)
+                    context.setTargets([])
+                }
+                if (resp.message.includes('NO_TARGETS_FOUND')) {
+                    snackbarContext.setSnackbarMessage(
+                        {
+                            severity: 'error',
+                            message: `No targets found for semid ${value}. Details: ${resp.details}`
+                        })
                     context.setTotalHours(0)
                     context.setTotalObservations(0)
                     context.setTargets(resp.targets)

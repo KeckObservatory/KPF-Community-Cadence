@@ -123,7 +123,7 @@ const TargetStepper = (props: Props) => {
             console.error('Failed to save targets', resp)
             setSaveMessage(`Failed to save targets: ${resp.details}`)
             snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `Target not submitted` })
+                { severity: 'error', message: `Target not submitted. Details: ${resp.details}` })
         }
     }
 
@@ -261,10 +261,7 @@ export const TargetWizardButton = () => {
     };
     return (
         <div>
-            {/* <Button sx={{ width: "100%" }} variant="contained" onClick={handleClickOpen}>
-                New Targets from csv
-            </Button> */}
-            <Tooltip title="Upload Targets from .csv file">
+            <Tooltip title="Upload Targets from .csv or .txt file">
                 <Button onClick={handleClickOpen} startIcon={<UploadIcon />}>
                     Upload Targets
                 </Button>

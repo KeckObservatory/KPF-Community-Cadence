@@ -80,8 +80,8 @@ const CommCadContext = createContext<CCContext>(init_cc_context)
 export const useCommCadContext = () => useContext(CommCadContext)
 
 export interface SnackbarMessage {
-  message: string;
-  severity?: 'success' | 'error' | 'warning' | 'info'; 
+  message?: string;
+  severity?: 'success' | 'error' | 'warning' | 'info';
 }
 
 export interface SnackbarContextProps {
@@ -95,7 +95,7 @@ export interface SnackbarContextProps {
 const init_snackbar_context: SnackbarContextProps = {
   snackbarOpen: false,
   setSnackbarOpen: () => { },
-  snackbarMessage: {severity: 'success', message: 'defaultMessage'},
+  snackbarMessage: { severity: 'success', message: 'defaultMessage' },
   setSnackbarMessage: () => { },
 }
 
@@ -109,7 +109,7 @@ function App() {
   const [init, setInit] = useState<boolean>(false);
   const theme = handleTheme(darkState)
   const [openSnackbar, setOpenSnackbar] = useState(false)
-  const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>({severity: 'success', message: 'default message'})
+  const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>({})
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,8 +119,8 @@ function App() {
       const obsid = userinfo.Id;
       const semidResp = await get_semids(obsid);
       if (semidResp.success !== 'SUCCESS') {
-        setSnackbarMessage({severity: 'error', message: 'Failed to get semids'})
-        setOpenSnackbar(true)
+        setSnackbarMessage({ severity: 'error', 
+        message: `Failed to get semids. Details: ${semidResp.details}` })
         return
       }
 
@@ -128,8 +128,10 @@ function App() {
       const semid = semids[0]
       const resp = await get_all_targets(semid);
       if (resp.success !== 'SUCCESS') {
-        setSnackbarMessage({severity: 'error', message: 'Failed to get targets'})
-        setOpenSnackbar(true)
+        setSnackbarMessage({
+          severity: 'error',
+          message: `Failed to get Targets. Details: ${resp.details}`
+        })
         return
       }
       const targets: Target[] = resp.targets
@@ -150,6 +152,10 @@ function App() {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    snackbarMessage.message && setOpenSnackbar(true)
+  }, [snackbarMessage])
 
   const handleThemeChange = (): void => {
     setDarkState(!darkState);
@@ -207,21 +213,21 @@ function App() {
           snackbarMessage: snackbarMessage,
           setSnackbarMessage: setSnackbarMessage
         }}>
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          autoHideDuration={3000}
-          open={openSnackbar}
-          onClose={() => setOpenSnackbar(false)}
-        >
-          <Alert
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            autoHideDuration={3000}
+            open={openSnackbar}
             onClose={() => setOpenSnackbar(false)}
-            severity={snackbarMessage.severity}
-            variant="filled"
-            sx={{ width: '100%' }}
           >
-            {snackbarMessage.message} 
-          </Alert>
-        </Snackbar>
+            <Alert
+              onClose={() => setOpenSnackbar(false)}
+              severity={snackbarMessage.severity}
+              variant="filled"
+              sx={{ width: '100%' }}
+            >
+              {snackbarMessage.message}
+            </Alert>
+          </Snackbar>
           <Stack sx={{ marginBottom: '4px', marginTop: '12px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
             <Paper
               sx={{

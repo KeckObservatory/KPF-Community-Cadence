@@ -43,13 +43,14 @@ interface NameSemid {
 interface SemidResp {
     message: string,
     obsid: number,
+    details?: string,
     programs: NameSemid[]
     success: string
 }
 
 const axiosInstance = axios.create({
     withCredentials: false,
-    timeout: 2000,
+    // timeout: 2000,
     headers: {
         'Content-Type': 'application/json',
         'withCredentials': false,

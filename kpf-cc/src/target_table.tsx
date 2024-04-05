@@ -135,7 +135,7 @@ function EditToolbar(props: EditToolbarProps) {
     else {
       console.error('save failed', resp)
       snackbarContext.setSnackbarMessage(
-        { severity: 'error', message: `Target not saved` })
+        { severity: 'error', message: `Target not saved. Details: ${resp.details}` })
     }
   };
 
@@ -182,7 +182,7 @@ export default function TargetTable() {
     if (resp.success !== 'SUCCESS') {
       console.error('save failed', resp)
       snackbarContext.setSnackbarMessage(
-        { severity: 'error', message: `Target not saved` })
+        { severity: 'error', message: `Target not saved. Details: ${resp.details}` })
     }
     return resp
   }
@@ -214,7 +214,7 @@ export default function TargetTable() {
     else {
       console.error('delete failed', resp)
       snackbarContext.setSnackbarMessage(
-        { severity: 'error', message: `Target not deleted` })
+        { severity: 'error', message: `Target not deleted. Details: ${resp.details}` })
     }
   }
 
@@ -242,7 +242,7 @@ export default function TargetTable() {
       else {
         console.error('publish failed', resp)
         snackbarContext.setSnackbarMessage(
-          { severity: 'error', message: `Target not submitted` })
+          { severity: 'error', message: `Target not submitted. Details: ${resp.details}` })
       }
     }
     catch (err) {
@@ -281,7 +281,7 @@ export default function TargetTable() {
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
         const [resubmit, setResubmit] = React.useState<boolean>(row.needs_resubmit);
-        const [iconSpin, setIconSpin] = React.useState<boolean>(row.needs_resubmit);
+        const [iconSpin, setIconSpin] = React.useState<boolean>(false);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
         validate(row)
@@ -313,7 +313,7 @@ export default function TargetTable() {
           animation: "spin 2s linear infinite",
           "@keyframes spin": {
             "0%": {
-              transform: "rotate(360deg)",
+              transform: "rotate(-360deg)",
             },
             "100%": {
               transform: "rotate(0deg)",
@@ -329,7 +329,7 @@ export default function TargetTable() {
             <GridActionsCellItem
               disabled={errors.length > 0}
               icon={
-                resubmit === true ?
+                (resubmit === true) ?
                   <RefreshIcon
                     sx={refreshStyle}
                     color='warning' /> :
