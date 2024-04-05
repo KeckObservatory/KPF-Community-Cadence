@@ -34,7 +34,7 @@ import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
 import { delete_target, save_target } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
-import { useCommCadContext, Target, useSnackbarContext } from './App';
+import { useCommCadContext, Target, useSnackbarContext, get_config } from './App';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Chip, Tooltip } from '@mui/material';
 
@@ -54,13 +54,13 @@ interface EditToolbarProps {
 const target_feisable_chip = (params: GridRenderCellParams) => {
   console.log('params', params)
   let text = params.value == null ? 'Unknown '
-        : params.value ? 'Feasible '
-          : 'Infeasible '
+    : params.value ? 'Feasible '
+      : 'Infeasible '
   text += params.row.details ?? ""
   return (
-    <Tooltip 
-    placement='left'
-    title={text}>
+    <Tooltip
+      placement='left'
+      title={text}>
       <Chip
         variant="outlined"
         color={
@@ -182,8 +182,23 @@ export default function TargetTable() {
     }
   }) as TargetRow[];
   const [rows, setRows] = React.useState(initTargets);
+  const [visibleColumns, setVisibleColumns] = React.useState<{[key: string]: boolean}>({});
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const snackbarContext = useSnackbarContext()
+
+  React.useEffect(() => {
+    const set_visible_columns = async () => {
+      const cfg = await get_config()
+      console.log('config', cfg)
+      const visibleCols = Object.fromEntries(columns.map((col) => {
+        const visible = cfg.default_table_columns.includes(col.field)
+        return [col.field, visible]
+      }));
+      console.log('visibleCols', visibleCols)
+      setVisibleColumns(visibleCols)
+    }
+    set_visible_columns()
+  }, [])
 
   React.useEffect(() => {
     const newTargets = context.targets?.map((target: Target) => {
@@ -384,21 +399,7 @@ export default function TargetTable() {
 
   columns = [...addColumns, ...columns];
 
-  const initVisible = [
-    'actions',
-    'target_name',
-    'target_feasible',
-    'nominal_exposure_time',
-    'num_observations_per_visit',
-    'num_unique_nights_per_semester',
-    'num_internight_cadence',
-    'num_intranight_cadence',
-    'require_resubmit'
-  ]
-  const visibleColumns = Object.fromEntries(columns.map((col) => {
-    const visible = initVisible.includes(col.field)
-    return [col.field, visible]
-  }));
+
 
   return (
     <Box

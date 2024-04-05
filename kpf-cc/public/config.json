@@ -1,0 +1,13 @@
+{
+    "default_table_columns": [
+        "actions",
+        "target_name",
+        "target_feasible",
+        "nominal_exposure_time",
+        "num_observations_per_visit",
+        "num_unique_nights_per_semester",
+        "num_internight_cadence",
+        "num_intranight_cadence",
+        "require_resubmit"
+    ]
+}

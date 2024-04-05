@@ -15,6 +15,17 @@ import { SimbadTargetData } from './simbad_button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
+
+export const CONFIG_PATH = './config.json'
+
+export const get_config = async () => {
+  const resp = await fetch(
+    CONFIG_PATH
+  )
+  const json = await resp.json()
+  return json
+}
+
 export interface Target extends SimbadTargetData {
   _id?: string,
   semid: string,
@@ -120,8 +131,10 @@ function App() {
       const obsid = userinfo.Id;
       const semidResp = await get_semids(obsid);
       if (semidResp.success !== 'SUCCESS') {
-        setSnackbarMessage({ severity: 'error', 
-        message: `Failed to get semids. Details: ${semidResp.details}` })
+        setSnackbarMessage({
+          severity: 'error',
+          message: `Failed to get semids. Details: ${semidResp.details}`
+        })
         return
       }
 
