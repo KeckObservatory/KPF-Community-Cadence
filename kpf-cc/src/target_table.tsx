@@ -5,6 +5,8 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { ErrorObject } from 'ajv/dist/2019'
 import RefreshIcon from '@mui/icons-material/Refresh';
+import MoodBadIcon from '@mui/icons-material/MoodBad';
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -18,6 +20,7 @@ import {
   GridRowModel,
   GridRowEditStopReasons,
   GridToolbar,
+  GridRenderCellParams,
 } from '@mui/x-data-grid';
 import {
   randomId,
@@ -30,9 +33,9 @@ import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
 import { delete_target, save_target } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
-import { useCommCadContext, Target } from './App';
+import { useCommCadContext, Target, useSnackbarContext } from './App';
 import PublishIcon from '@mui/icons-material/Publish';
-import { Tooltip } from '@mui/material';
+import { Chip, Tooltip } from '@mui/material';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -50,7 +53,6 @@ interface EditToolbarProps {
 function convert_schema_to_columns(semids: string[]) {
   const columns: GridColDef[] = []
   Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
-
     let col = {
       field: key,
       type: value.type,
@@ -64,6 +66,19 @@ function convert_schema_to_columns(semids: string[]) {
         ...col,
         type: 'singleSelect',
         valueOptions: semids,
+      }
+    }
+    if (key === 'target_feasible') {
+      console.log('key', key, 'value', value)
+      col = {
+        ...col,
+        renderCell: (params: GridRenderCellParams) => {
+          return <Chip
+            variant="outlined"
+            color={params.value ? 'success' : 'error'}
+            icon={params.value ? <InsertEmoticonIcon /> : <MoodBadIcon />}
+            label={params.value ? 'Feasible' : 'Infeasible'} />
+        },
       }
     }
     columns.push(col)
@@ -91,9 +106,10 @@ export const create_new_target = (semid: string, id?: string, target_name?: stri
 function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
   const context = useCommCadContext()
+  const snackbarContext = useSnackbarContext()
 
   const handleClick = async () => {
-    if (context.semid === undefined ) {
+    if (context.semid === undefined) {
       console.error('semid is undefined') //TODO notify user
       return
     }
@@ -116,14 +132,19 @@ function EditToolbar(props: EditToolbarProps) {
         [id]: { mode: GridRowModes.Edit, fieldToFocus: 'target_name' },
       }));
     }
+    else {
+      console.error('save failed', resp)
+      snackbarContext.setSnackbarMessage(
+        { severity: 'error', message: `Target not saved` })
+    }
   };
 
   return (
-    <GridToolbarContainer sx={{justifyContent: 'center'}}>
+    <GridToolbarContainer sx={{ justifyContent: 'center' }}>
       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
         Add Target
       </Button>
-      <GridToolbar 
+      <GridToolbar
         csvOptions={{ allColumns: true }}
       />
       <TargetWizardButton />
@@ -138,10 +159,10 @@ export default function TargetTable() {
       ...target,
       id: randomId(),
     }
-
   }) as TargetRow[];
   const [rows, setRows] = React.useState(initTargets);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+  const snackbarContext = useSnackbarContext()
 
   React.useEffect(() => {
     const newTargets = context.targets?.map((target: Target) => {
@@ -158,7 +179,11 @@ export default function TargetTable() {
     console.log('debounced save', target)
 
     const resp = await save_target([target], target.semid, 'save', false)
-    console.log('save response', resp)
+    if (resp.success !== 'SUCCESS') {
+      console.error('save failed', resp)
+      snackbarContext.setSnackbarMessage(
+        { severity: 'error', message: `Target not saved` })
+    }
     return resp
   }
 
@@ -181,17 +206,20 @@ export default function TargetTable() {
     const resp = await delete_target(delRow as Target)
     console.log(resp)
     if (resp.success === 'SUCCESS') {
-      context.setTotalHours(resp.total_hours)
-      context.setTotalObservations(resp.total_observations)
+      resp.total_hours && context.setTotalHours(resp.total_hours)
+      resp.total_observations && context.setTotalObservations(resp.total_observations)
       setRows(rows.filter((row) => row.id !== id));
-      //context.setTargets((tgts: Target[]) => { return tgts.filter((tgt) => tgt._id !== delRow?._id) })
       context.setTargets([...context.targets.filter((tgt) => tgt._id !== delRow?._id)])
-      
     }
-    resp.success !== 'SUCCESS' && console.error('delete failed', resp)
-  };
+    else {
+      console.error('delete failed', resp)
+      snackbarContext.setSnackbarMessage(
+        { severity: 'error', message: `Target not deleted` })
+    }
+  }
 
-  const handlePublishClick = async (id: GridRowId, setResubmit: Function) => {
+  const handlePublishClick = async (id: GridRowId, setResubmit: Function, setIconSpin: Function) => {
+    setIconSpin(true)
     let pubRow = rows.find((row) => row.id === id);
     if (pubRow === undefined) {
       console.error('row not found', id)
@@ -199,19 +227,29 @@ export default function TargetTable() {
     }
     pubRow.needs_resubmit = false //assume publish is sucessfull. If not, resubmit will = true 
     console.log('publishing', id, pubRow)
-    const resp = await save_target([pubRow as Target],
-      pubRow?.semid as string,
-      'submit',
-      false)
-    console.log(resp)
-    if (resp.success === 'SUCCESS') {
-      context.setTotalHours(resp.total_hours)
-      context.setTotalObservations(resp.total_observations)
-      setResubmit(false);
-      processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow)
+    try {
+      const resp = await save_target([pubRow as Target],
+        pubRow?.semid as string,
+        'submit',
+        false)
+      console.log(resp)
+      if (resp.success === 'SUCCESS') {
+        context.setTotalHours(resp.total_hours)
+        context.setTotalObservations(resp.total_observations)
+        setResubmit(false);
+        processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow)
+      }
+      else {
+        console.error('publish failed', resp)
+        snackbarContext.setSnackbarMessage(
+          { severity: 'error', message: `Target not submitted` })
+      }
     }
-    else {
-      console.error('publish failed', resp) //TODO: let user know
+    catch (err) {
+      console.error('save_target error', err)
+    }
+    finally {
+      setIconSpin(false)
     }
   };
 
@@ -243,6 +281,7 @@ export default function TargetTable() {
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
         const [resubmit, setResubmit] = React.useState<boolean>(row.needs_resubmit);
+        const [iconSpin, setIconSpin] = React.useState<boolean>(row.needs_resubmit);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
         validate(row)
@@ -252,8 +291,8 @@ export default function TargetTable() {
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           if (count > 0) {
             console.log('editTarget updated', editTarget, row)
-            processRowUpdate({...editTarget, needs_resubmit: true})
-            debounced_save({...editTarget, needs_resubmit: true})?.then((resp) => {
+            processRowUpdate({ ...editTarget, needs_resubmit: true })
+            debounced_save({ ...editTarget, needs_resubmit: true })?.then((resp) => {
               console.log('save response', resp)
             })
             setResubmit(true)
@@ -270,6 +309,18 @@ export default function TargetTable() {
           publishText = 'Resubmit edited target for review'
         }
 
+        const refreshStyle = iconSpin ? {
+          animation: "spin 2s linear infinite",
+          "@keyframes spin": {
+            "0%": {
+              transform: "rotate(360deg)",
+            },
+            "100%": {
+              transform: "rotate(0deg)",
+            }
+          }
+        } : {}
+
         return [
           <Tooltip
             title={publishText}
@@ -278,12 +329,14 @@ export default function TargetTable() {
             <GridActionsCellItem
               disabled={errors.length > 0}
               icon={
-                resubmit===true?
-                <RefreshIcon /> :
-                <PublishIcon />
+                resubmit === true ?
+                  <RefreshIcon
+                    sx={refreshStyle}
+                    color='warning' /> :
+                  <PublishIcon />
               }
               label="Publish"
-              onClick={() => handlePublishClick(id, setResubmit)}
+              onClick={() => handlePublishClick(id, setResubmit, setIconSpin)}
               color="inherit"
             /></Tooltip>,
           <SimbadButton hasSimbad={hasSimbad} target={editTarget} setTarget={setEditTarget} />,

@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { useEffect } from 'react'
 import { Autocomplete, Tooltip, Typography } from '@mui/material'
-import { useCommCadContext } from './App'
+import { useCommCadContext, useSnackbarContext } from './App'
 import { get_all_targets } from './api/api_root';
 
 export interface SPP {
@@ -14,6 +14,7 @@ export interface SPP {
 export const Control = () => {
 
     const context = useCommCadContext()
+    const snackbarContext = useSnackbarContext()
 
     useEffect(() => {
     }, [])
@@ -29,6 +30,8 @@ export const Control = () => {
                     context.setTargets(resp.targets)
                 }
                 else if (resp.message.includes('NO_TARGETS_FOUND')) {
+                    snackbarContext.setSnackbarMessage(
+                        {severity: 'error', message: `No targets found for semid ${value}`})
                     context.setTotalHours(0)
                     context.setTotalObservations(0)
                     context.setTargets(resp.targets)

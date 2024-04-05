@@ -39,7 +39,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
         setHasSimbad(target.tic_id || target.gaia_id ? true : false)
     }, [target.tic_id, target.gaia_id])
 
-    function raDecFormat(input: string) {
+    const raDecFormat = (input: string) => {
         // Strip all characters from the input digits and keep pos/neg sign
         const sign = input.length > 0 ? input[0].replace(/[^+-]/, "") : ""
         input = input.replace(/[^0-9]+/g, "");
@@ -62,12 +62,19 @@ export const TargetEditDialog = (props: TargetEditProps) => {
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         value && isNumber ? value = Number(value) : value
         if (value && (key === 'ra' || key === 'dec')) {
-            key==='ra' && String(value).replace(/[^+-]/, "")
+            key === 'ra' && String(value).replace(/[^+-]/, "")
             value = raDecFormat(value as string)
         }
-        setTarget((prev: Target) => {
-            return { ...prev, [key]: value }
-        })
+        if (key.includes('exposure_time')) { //nominal equivalent to maximum
+            setTarget((prev: Target) => {
+                return { ...prev, 'nominal_exposure_time': value, 'maximum_exposure_time': value }
+            })
+        }
+        else {
+            setTarget((prev: Target) => {
+                return { ...prev, [key]: value }
+            })
+        }
     }
 
 
@@ -129,7 +136,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         <Autocomplete
                                             disablePortal
                                             id="semid-selection"
-                                            value={target.semid? { label: target.semid} : { label: 'input semid' }}
+                                            value={target.semid ? { label: target.semid } : { label: 'input semid' }}
                                             onChange={(_, value) => handleTextChange('semid', value?.label)}
                                             options={context.semids.map((s) => { return { label: s } })}
                                             sx={{ width: 300 }}

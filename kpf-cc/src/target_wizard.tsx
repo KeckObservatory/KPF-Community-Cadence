@@ -13,7 +13,7 @@ import Button from '@mui/material/Button';
 import { UploadComponent } from './upload_targets_dialog';
 import { get_simbad_data } from './simbad_button';
 import { Control } from './control';
-import { useCommCadContext, Target } from './App';
+import { useCommCadContext, useSnackbarContext, Target } from './App';
 import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
 import { save_target } from './api/api_root';
@@ -51,7 +51,7 @@ function LinearProgressWithLabel(props: LinearProgressProps &
             if (!tgtName) continue
             if (!open) break
             const target = create_new_target(
-                context.semid ?? "", 
+                context.semid ?? "",
                 undefined,
                 tgtName)
             const simbadData = await get_simbad_data(tgtName)
@@ -98,10 +98,11 @@ const TargetStepper = (props: Props) => {
     const [canContinue, setCanContinue] = React.useState(false)
     const [saveMessage, setSaveMessage] = React.useState('All steps completed - Targets are ready to be saved')
 
+    const snackbarContext = useSnackbarContext()
 
     React.useEffect(() => {
         let cont = false
-        if (activeStep === 0) { cont = (context.semid ) ? true : false }
+        if (activeStep === 0) { cont = (context.semid) ? true : false }
         if (activeStep === 1) { cont = targetNames.length > 0 }
         if (activeStep === 2) {
             cont = targets.length > 0
@@ -121,6 +122,8 @@ const TargetStepper = (props: Props) => {
         else {
             console.error('Failed to save targets', resp)
             setSaveMessage(`Failed to save targets: ${resp.details}`)
+            snackbarContext.setSnackbarMessage(
+                { severity: 'error', message: `Target not submitted` })
         }
     }
 

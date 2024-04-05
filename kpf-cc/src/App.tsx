@@ -12,8 +12,10 @@ import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
 import { SimbadTargetData } from './simbad_button';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
-export interface Target extends SimbadTargetData{
+export interface Target extends SimbadTargetData {
   _id?: string,
   semid: string,
   target_name?: string,
@@ -53,7 +55,7 @@ interface State {
 export interface CCContext extends State {
   setTargets: Function,
   setObserverId: Function
-  setSemid: Function 
+  setSemid: Function
   setTotalHours: Function
   setTotalObservations: Function
 }
@@ -77,44 +79,62 @@ const init_cc_context: CCContext = {
 const CommCadContext = createContext<CCContext>(init_cc_context)
 export const useCommCadContext = () => useContext(CommCadContext)
 
+export interface SnackbarMessage {
+  message: string;
+  severity?: 'success' | 'error' | 'warning' | 'info'; 
+}
+
+export interface SnackbarContextProps {
+  snackbarOpen: boolean;
+  setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  snackbarMessage: SnackbarMessage;
+  setSnackbarMessage: React.Dispatch<React.SetStateAction<SnackbarMessage>>;
+}
+
+
+const init_snackbar_context: SnackbarContextProps = {
+  snackbarOpen: false,
+  setSnackbarOpen: () => { },
+  snackbarMessage: {severity: 'success', message: 'defaultMessage'},
+  setSnackbarMessage: () => { },
+}
+
+const SnackbarContext = createContext<SnackbarContextProps>(init_snackbar_context);
+export const useSnackbarContext = () => useContext(SnackbarContext);
+
 
 function App() {
   const [darkState, setDarkState] = useQueryParam('darkState', withDefault(BooleanParam, true));
   const [state, setState] = useState<State>({} as State);
   const [init, setInit] = useState<boolean>(false);
   const theme = handleTheme(darkState)
-
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>({severity: 'success', message: 'default message'})
 
   useEffect(() => {
     const fetchData = async () => {
       const userinfo = await get_userinfo();
-      const username = userinfo.Title + ' ' + userinfo.FirstName + ' ' + userinfo.LastName;
-      const obsid = userinfo.Id ?? 4866;
-      const semidsMsg = await get_semids(obsid);
-      if (semidsMsg.success !== 'SUCCESS') {
-        console.error('Failed to get semids', semidsMsg)
+      const title = userinfo.Title ? userinfo.Title + ' ' : ''
+      const username = `${title}${userinfo.FirstName} ${userinfo.LastName}`;
+      const obsid = userinfo.Id;
+      const semidResp = await get_semids(obsid);
+      if (semidResp.success !== 'SUCCESS') {
+        setSnackbarMessage({severity: 'error', message: 'Failed to get semids'})
+        setOpenSnackbar(true)
         return
       }
 
-      const semids = semidsMsg.programs.map((p: any) => p.semid)
-      let targets: Target[] = []
-      const allTargets = false //TODO: see if it makes sense to get all targets
+      const semids = semidResp.programs.map((p: any) => p.semid)
       const semid = semids[0]
-      let total_hours = 0
-      let total_observations = 0
-      if (allTargets) {
-        for (let idx = 0; idx < semidsMsg.programs.length; idx++) {
-          const semid = semidsMsg.programs[idx].semid
-          const resp = await get_all_targets(semid);
-          resp.success === 'SUCCESS' && (targets = [...targets, ...resp.targets])
-        }
+      const resp = await get_all_targets(semid);
+      if (resp.success !== 'SUCCESS') {
+        setSnackbarMessage({severity: 'error', message: 'Failed to get targets'})
+        setOpenSnackbar(true)
+        return
       }
-      else{
-        const resp = await get_all_targets(semid);
-        resp.success === 'SUCCESS' && (targets = resp.targets)
-        total_hours = resp.total_hours
-        total_observations = resp.total_observations
-      }
+      const targets: Target[] = resp.targets
+      const total_hours = resp.total_hours
+      const total_observations = resp.total_observations
 
       setState({
         obsid: obsid,
@@ -169,33 +189,56 @@ function App() {
           },
           setTotalHours: (total_hours: number) => {
             setState((st) => {
-              return { ...st, total_hours}
+              return { ...st, total_hours }
             })
           },
           setTotalObservations: (total_observations: number) => {
             setState((st) => {
-              return { ...st, total_observations}
+              return { ...st, total_observations }
             })
           }
         } as CCContext
       }>
+
         <TopBar darkState={darkState} handleThemeChange={handleThemeChange} username={state.username} />
-        <Stack sx={{ marginBottom: '4px', marginTop: '12px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-          <Paper
-            sx={{
-              marginTop: '12px',
-              padding: '6px',
-              maxWidth: '2000px',
-              minWidth: '1500px',
-              flexDirection: 'column',
-            }}
+        <SnackbarContext.Provider value={{
+          snackbarOpen: openSnackbar,
+          setSnackbarOpen: setOpenSnackbar,
+          snackbarMessage: snackbarMessage,
+          setSnackbarMessage: setSnackbarMessage
+        }}>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          autoHideDuration={3000}
+          open={openSnackbar}
+          onClose={() => setOpenSnackbar(false)}
+        >
+          <Alert
+            onClose={() => setOpenSnackbar(false)}
+            severity={snackbarMessage.severity}
+            variant="filled"
+            sx={{ width: '100%' }}
           >
-            <Control />
-            {init ? (
-              <TargetTable />
-            ) : <Skeleton variant="rectangular" width="100%" height={500} />}
-          </Paper>
-        </Stack>
+            {snackbarMessage.message} 
+          </Alert>
+        </Snackbar>
+          <Stack sx={{ marginBottom: '4px', marginTop: '12px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+            <Paper
+              sx={{
+                marginTop: '12px',
+                padding: '6px',
+                maxWidth: '2000px',
+                minWidth: '1500px',
+                flexDirection: 'column',
+              }}
+            >
+              <Control />
+              {init ? (
+                <TargetTable />
+              ) : <Skeleton variant="rectangular" width="100%" height={500} />}
+            </Paper>
+          </Stack>
+        </SnackbarContext.Provider>
       </CommCadContext.Provider>
     </ThemeProvider >
   )

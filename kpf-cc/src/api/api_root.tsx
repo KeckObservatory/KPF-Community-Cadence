@@ -49,6 +49,7 @@ interface SemidResp {
 
 const axiosInstance = axios.create({
     withCredentials: false,
+    timeout: 2000,
     headers: {
         'Content-Type': 'application/json',
         'withCredentials': false,
