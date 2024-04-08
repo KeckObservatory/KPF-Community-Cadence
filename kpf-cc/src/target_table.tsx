@@ -359,7 +359,9 @@ export default function TargetTable() {
                   <RefreshIcon
                     sx={refreshStyle}
                     color='warning' /> :
-                  <PublishIcon />
+                  <PublishIcon 
+                    sx={refreshStyle}
+                  />
               }
               label="Publish"
               onClick={() => handlePublishClick(id, setResubmit, setIconSpin)}
