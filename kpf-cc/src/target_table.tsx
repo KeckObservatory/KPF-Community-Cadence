@@ -426,8 +426,8 @@ export default function TargetTable() {
           slotProps={{
             toolbar: { setRows, setRowModesModel, },
           }}
+          pinnedColumns={pinnedColumns}
           initialState={{
-            pinnedColumns: pinnedColumns, 
             columns: {
               columnVisibilityModel:
                 visibleColumns
