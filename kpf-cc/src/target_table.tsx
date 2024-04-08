@@ -192,6 +192,7 @@ export default function TargetTable() {
   React.useEffect(() => {
     const set_visible_columns = async () => {
       const cfg = await get_config()
+      console.log('cfg', cfg)
       setPinnedColumns(cfg.pinned_table_columns)
       const vc = Object.fromEntries(columns.map((col) => {
         const visible = cfg.default_table_columns.includes(col.field)
