@@ -20,11 +20,11 @@ export interface SimpleDialogProps {
 }
 
 export interface Props {
-  errors : ErrorObject<string, Record<string, any>, unknown>[];
-  target : Target
+  errors: ErrorObject<string, Record<string, any>, unknown>[];
+  target: Target
 }
 
-const ajv = new AJV2019({allErrors:true})
+const ajv = new AJV2019({ allErrors: true })
 let ts = target_schema as any
 delete ts["$schema"]
 ajv.addKeyword("short_description")
@@ -42,15 +42,15 @@ function ValidationDialog(props: SimpleDialogProps) {
             if (err.keyword === 'required') {
               msg = `${err.params.missingProperty}: ${err.message}`
             }
-            if (err.keyword === 'type') {
-            msg = `${err.instancePath.substring(1)}: ${err.message}`
+            if (err.keyword === 'type' || err.keyword === 'pattern') {
+              msg = `${err.instancePath.substring(1)}: ${err.message}`
             }
             return (
               <Typography gutterBottom>
                 {msg}
               </Typography>)
           })
-      }
+        }
       </DialogContent>
     </Dialog>
   );
