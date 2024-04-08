@@ -361,6 +361,7 @@ export default function TargetTable() {
                     color='warning' /> :
                   <PublishIcon 
                     sx={refreshStyle}
+                    color={row.message.includes('TARGET_SUBMITTED') && 'success'}
                   />
               }
               label="Publish"
