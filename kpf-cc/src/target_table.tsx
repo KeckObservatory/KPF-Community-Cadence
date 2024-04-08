@@ -355,13 +355,13 @@ export default function TargetTable() {
             <GridActionsCellItem
               disabled={!valid}
               icon={
-                (resubmit === true && row.message.includes('TARGET_SUBMITTED')) ?
+                (resubmit === true && row.message?.includes('TARGET_SUBMITTED')) ?
                   <RefreshIcon
                     sx={refreshStyle}
                     color='warning' /> :
                   <PublishIcon 
                     sx={refreshStyle}
-                    color={row.message.includes('TARGET_SUBMITTED') && 'success'}
+                    color={row.message?.includes('TARGET_SUBMITTED') && 'success'}
                   />
               }
               label="Publish"
