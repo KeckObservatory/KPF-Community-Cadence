@@ -345,7 +345,7 @@ export default function TargetTable() {
           }
         } : {}
 
-        const valid = errors.length === 0
+        const valid = errors.length === 0 
 
         const firstButton = valid ?
           <Tooltip
@@ -355,7 +355,7 @@ export default function TargetTable() {
             <GridActionsCellItem
               disabled={!valid}
               icon={
-                (resubmit === true) ?
+                (resubmit === true && row.message.includes('TARGET_SUBMITTED')) ?
                   <RefreshIcon
                     sx={refreshStyle}
                     color='warning' /> :
