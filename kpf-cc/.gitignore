@@ -12,6 +12,7 @@ dist
 build
 dist-ssr
 *.local
+license.json
 
 # Editor directories and files
 .vscode/*

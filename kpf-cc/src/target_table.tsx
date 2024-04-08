@@ -12,9 +12,10 @@ import {
   GridRowsProp,
   GridRowModesModel,
   GridRowModes,
-  DataGrid,
+  DataGridPro,
   GridColDef,
   GridToolbarContainer,
+  GridPinnedColumnFields,
   GridActionsCellItem,
   GridEventListener,
   GridRowId,
@@ -22,7 +23,7 @@ import {
   GridRowEditStopReasons,
   GridToolbar,
   GridRenderCellParams,
-} from '@mui/x-data-grid';
+} from '@mui/x-data-grid-pro';
 import {
   randomId,
 } from '@mui/x-data-grid-generator';
@@ -181,12 +182,17 @@ export default function TargetTable() {
   }) as TargetRow[];
   const [rows, setRows] = React.useState(initTargets);
   const [visibleColumns, setVisibleColumns] = React.useState<{ [key: string]: boolean }>({});
+  const [pinnedColumns, setPinnedColumns] = React.useState<GridPinnedColumnFields>({
+    left: [],
+    right: [],
+  });
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const snackbarContext = useSnackbarContext()
 
   React.useEffect(() => {
     const set_visible_columns = async () => {
       const cfg = await get_config()
+      setPinnedColumns(cfg.default_table_columns)
       const vc = Object.fromEntries(columns.map((col) => {
         const visible = cfg.default_table_columns.includes(col.field)
         return [col.field, visible]
@@ -391,7 +397,6 @@ export default function TargetTable() {
   columns = [...addColumns, ...columns];
 
 
-
   return (
     <Box
       sx={{
@@ -406,7 +411,7 @@ export default function TargetTable() {
       }}
     >
       {Object.keys(visibleColumns).length > 0 && (
-        <DataGrid
+        <DataGridPro
           disableRowSelectionOnClick
           rows={rows}
           columns={columns}
@@ -415,12 +420,14 @@ export default function TargetTable() {
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
           slots={{
-            toolbar: EditToolbar,
+            //@ts-ignore
+            toolbar: <EditToolbar {...props} setRows={setRows} setRowModesModel={setRowModesModel} />,
           }}
           slotProps={{
             toolbar: { setRows, setRowModesModel, },
           }}
           initialState={{
+            pinnedColumns: pinnedColumns ?? {},
             columns: {
               columnVisibilityModel:
                 visibleColumns

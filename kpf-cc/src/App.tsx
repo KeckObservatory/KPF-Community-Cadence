@@ -14,6 +14,9 @@ import Skeleton from '@mui/material/Skeleton';
 import { SimbadTargetData } from './simbad_button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { LicenseInfo } from '@mui/x-license';
+import licenseKey from './license.json'
+
 
 
 export const CONFIG_PATH = './config.json'
@@ -25,6 +28,10 @@ export const get_config = async () => {
   const json = await resp.json()
   return json
 }
+
+LicenseInfo.setLicenseKey(
+  licenseKey.license_key
+)
 
 export interface Target extends SimbadTargetData {
   _id?: string,

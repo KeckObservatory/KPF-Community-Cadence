@@ -9,5 +9,9 @@
         "num_internight_cadence",
         "num_intranight_cadence",
         "require_resubmit"
-    ]
+    ],
+    "pinned_table_columns": {
+        "left": ["actions", "target_name"],
+        "right": [ "target_feasible"]
+    }
 }
