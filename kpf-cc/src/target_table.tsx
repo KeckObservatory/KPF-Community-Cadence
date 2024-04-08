@@ -192,7 +192,7 @@ export default function TargetTable() {
   React.useEffect(() => {
     const set_visible_columns = async () => {
       const cfg = await get_config()
-      setPinnedColumns(cfg.default_table_columns)
+      setPinnedColumns(cfg.pinned_table_columns)
       const vc = Object.fromEntries(columns.map((col) => {
         const visible = cfg.default_table_columns.includes(col.field)
         return [col.field, visible]
@@ -427,7 +427,7 @@ export default function TargetTable() {
             toolbar: { setRows, setRowModesModel, },
           }}
           initialState={{
-            pinnedColumns: pinnedColumns ?? {},
+            pinnedColumns: pinnedColumns, 
             columns: {
               columnVisibilityModel:
                 visibleColumns
