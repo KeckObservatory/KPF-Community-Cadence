@@ -355,7 +355,7 @@ export default function TargetTable() {
             <GridActionsCellItem
               disabled={!valid}
               icon={
-                (resubmit === true && row.message?.includes('TARGET_SUBMITTED')) ?
+                (resubmit === true && row.message?.includes('TARGET_SAVED')) ?
                   <RefreshIcon
                     sx={refreshStyle}
                     color='warning' /> :
