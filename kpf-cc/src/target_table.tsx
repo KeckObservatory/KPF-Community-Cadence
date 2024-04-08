@@ -420,8 +420,8 @@ export default function TargetTable() {
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
           slots={{
-            //@ts-ignore
-            toolbar: <EditToolbar {...props} setRows={setRows} setRowModesModel={setRowModesModel} />,
+            // @ts-ignore
+            toolbar: EditToolbar, 
           }}
           slotProps={{
             toolbar: { setRows, setRowModesModel, },
