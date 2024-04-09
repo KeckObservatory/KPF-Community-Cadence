@@ -40,7 +40,7 @@ export interface Target extends SimbadTargetData {
   j_mag?: number,
   t_eff?: number,
   submitted: boolean,
-  state: string,
+  state?: string,
   simulcal_on?: boolean,
   nominal_exposure_time?: number
   maximum_exposure_time?: number,
