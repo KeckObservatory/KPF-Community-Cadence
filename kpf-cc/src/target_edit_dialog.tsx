@@ -65,16 +65,16 @@ export const TargetEditDialog = (props: TargetEditProps) => {
             key === 'ra' && String(value).replace(/[^+-]/, "")
             value = raDecFormat(value as string)
         }
-        if (key.includes('exposure_time')) { //nominal equivalent to maximum
-            setTarget((prev: Target) => {
-                return { ...prev, 'nominal_exposure_time': value, 'maximum_exposure_time': value }
-            })
-        }
-        else {
-            setTarget((prev: Target) => {
-                return { ...prev, [key]: value }
-            })
-        }
+
+        setTarget((prev: Target) => {
+            let tgt = { ...prev, [key]: value, 'message': 'TARGET_EDITED' }
+            if (key.includes('exposure_time')) { //nominal equivalent to maximum
+                tgt = { ...tgt, 
+                    'nominal_exposure_time': value as number, 
+                    'maximum_exposure_time': value as number}
+            }
+            return tgt
+        })
     }
 
 
