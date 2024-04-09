@@ -319,7 +319,7 @@ export default function TargetTable() {
         const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
         validate(row)
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
-        const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state.includes('TARGET_SUBMITTED'));
+        const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state?.includes('TARGET_SUBMITTED'));
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
