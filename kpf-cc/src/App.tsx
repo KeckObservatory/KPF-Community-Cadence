@@ -149,16 +149,21 @@ function App() {
       const semids = semidResp.programs.map((p: any) => p.semid)
       const semid = semids[0]
       const resp = await get_all_targets(semid);
-      if (resp.success !== 'SUCCESS') {
+
+      let targets: Target[] = []
+      let total_hours = 0
+      let total_observations = 0
+      if (resp.success === 'SUCCESS') {
+        targets = resp.targets
+        total_hours = resp.total_hours
+        total_observations = resp.total_observations
+      }
+      else {
         setSnackbarMessage({
           severity: 'error',
           message: `Failed to get Targets. Details: ${resp.details}`
         })
-        return
       }
-      const targets: Target[] = resp.targets
-      const total_hours = resp.total_hours
-      const total_observations = resp.total_observations
 
       setState({
         obsid: obsid,
