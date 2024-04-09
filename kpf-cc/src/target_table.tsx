@@ -319,16 +319,16 @@ export default function TargetTable() {
         const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
         validate(row)
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
-        const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.message.includes('TARGET_SUBMITTED'));
+        const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state.includes('TARGET_SUBMITTED'));
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           if (count > 0) {
             processRowUpdate(editTarget)
-            editTarget.message.includes('TARGET_EDITED') && debounced_save(editTarget)
+            editTarget.state.includes('TARGET_EDITED') && debounced_save(editTarget)
             validate(editTarget)
             const newErrors = validate.errors ? validate.errors : []
-            const newResubmit = editTarget.submitted && editTarget.message.includes('TARGET_EDITED')
+            const newResubmit = editTarget.submitted && editTarget.state.includes('TARGET_EDITED')
             console.log('editTarget', editTarget, 'newResubmit', newResubmit )
             setResubmit(newResubmit)
             setErrors(newErrors)
