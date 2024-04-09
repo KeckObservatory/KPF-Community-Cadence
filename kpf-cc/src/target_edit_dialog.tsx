@@ -81,12 +81,16 @@ export const TargetEditDialog = (props: TargetEditProps) => {
     const handleSwitchChange = (key: string, event: React.SyntheticEvent<Element, Event>) => {
         const value = (event.target as HTMLInputElement).checked
         setTarget((prev: Target) => {
-            return { ...prev, [key]: value }
+            let tgt = { ...prev, [key]: value, 'message': 'TARGET_EDITED' }
+            return tgt 
         })
     }
 
     const handleSimbadChange = (tgt: Target) => {
-        setTarget(tgt)
+        setTarget((prev: Target) => {
+            tgt = { ...tgt, ...prev, 'message': 'TARGET_EDITED' }
+            return tgt
+        })
         setHasSimbad(tgt.tic_id || tgt.gaia_id ? true : false)
         handleTextChange('ra', tgt.ra)
     }

@@ -119,7 +119,7 @@ export const create_new_target = (semid: string, id?: string, target_name?: stri
     id: id,
     target_name: target_name,
     semid: semid,
-    message: 'TARGET_CREATED'
+    state: 'TARGET_CREATED'
   } as Target
   return newTarget
 }
@@ -325,20 +325,10 @@ export default function TargetTable() {
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           if (count > 0) {
             processRowUpdate(editTarget)
-            debounced_save(editTarget)?.then((resp) => {
-              console.log('save response', resp)
-            })
+            editTarget.message.includes('TARGET_EDITED') && debounced_save(editTarget)
             validate(editTarget)
             const newErrors = validate.errors ? validate.errors : []
-            // setResubmit(newErrors.length === 0 
-            //   && editTarget.submitted 
-            //   && editTarget.message.includes('TARGET_SAVED')
-            //   && editTarget.target_feasible === null 
-            //   )
-            const newResubmit = 
-              (editTarget.submitted
-              && editTarget.message.includes('TARGET_SAVED'))
-              || editTarget.message.includes('TARGET_EDITED')
+            const newResubmit = editTarget.submitted && editTarget.message.includes('TARGET_EDITED')
             console.log('editTarget', editTarget, 'newResubmit', newResubmit )
             setResubmit(newResubmit)
             setErrors(newErrors)

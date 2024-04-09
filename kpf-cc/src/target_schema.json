@@ -100,9 +100,9 @@
             "type": "number",
             "description": "Declination in degrees"
         },
-        "message": {
+        "state": {
             "type": "string",
-            "description": "message from the scheduler"
+            "description": "Tells the state of the target (editied, saved, or submitted)"
         },
         "comment": {
             "type": "string",
