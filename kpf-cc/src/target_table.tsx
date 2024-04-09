@@ -335,9 +335,9 @@ export default function TargetTable() {
             //   && editTarget.message.includes('TARGET_SAVED')
             //   && editTarget.target_feasible === null 
             //   )
+            console.log('editTarget', editTarget)
             setResubmit(
-               editTarget.submitted 
-               && editTarget.target_feasible === null 
+              editTarget.submitted ?? false
               )
             setErrors(newErrors)
             if(editTarget.tic_id || editTarget.gaia_id) setHasSimbad(true)
