@@ -119,6 +119,7 @@ export const create_new_target = (semid: string, id?: string, target_name?: stri
     id: id,
     target_name: target_name,
     semid: semid,
+    message: 'TARGET_CREATED'
   } as Target
   return newTarget
 }
@@ -326,7 +327,12 @@ export default function TargetTable() {
             debounced_save({ ...editTarget, needs_resubmit: true })?.then((resp) => {
               console.log('save response', resp)
             })
-            setResubmit(true)
+
+            const refreshTarget = errors.length > 0 
+            && editTarget.message.includes('TARGET_SAVED')
+            && editTarget.total_time_for_target === null
+
+            setResubmit(refreshTarget)
             validate(editTarget)
             setErrors(validate.errors ? validate.errors : [])
             editTarget.tic_id || editTarget.gaia_id && setHasSimbad(true)
@@ -352,7 +358,7 @@ export default function TargetTable() {
           }
         } : {}
 
-        const valid = errors.length === 0 
+        const valid = errors.length === 0
 
         const firstButton = valid ?
           <Tooltip
@@ -361,15 +367,14 @@ export default function TargetTable() {
             arrow key="publish" >
             <GridActionsCellItem
               disabled={!valid}
-              icon={
-                (resubmit === true && row.message?.includes('TARGET_SAVED')) ?
-                  <RefreshIcon
-                    sx={refreshStyle}
-                    color='warning' /> :
-                  <PublishIcon 
-                    sx={refreshStyle}
-                    color={row.message?.includes('TARGET_SUBMITTED') ? 'success' : 'inherit'}
-                  />
+              icon={resubmit ?
+                <RefreshIcon
+                  sx={refreshStyle}
+                  color='warning' /> :
+                <PublishIcon
+                  sx={refreshStyle}
+                  color={row.message?.includes('TARGET_SUBMITTED') ? 'success' : 'inherit'}
+                />
               }
               label="Publish"
               onClick={() => handlePublishClick(id, setResubmit, setIconSpin)}
@@ -422,7 +427,7 @@ export default function TargetTable() {
           onRowEditStop={handleRowEditStop}
           slots={{
             // @ts-ignore
-            toolbar: EditToolbar, 
+            toolbar: EditToolbar,
           }}
           slotProps={{
             toolbar: { setRows, setRowModesModel, },

@@ -39,6 +39,7 @@ export interface Target extends SimbadTargetData {
   target_name?: string,
   j_mag?: number,
   t_eff?: number,
+  message: string,
   simulcal_on?: boolean,
   nominal_exposure_time?: number
   maximum_exposure_time?: number,
