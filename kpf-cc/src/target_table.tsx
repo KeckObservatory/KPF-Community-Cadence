@@ -330,7 +330,15 @@ export default function TargetTable() {
             })
             validate(editTarget)
             const newErrors = validate.errors ? validate.errors : []
-            setResubmit(newErrors.length === 0 && editTarget.submitted && editTarget.message.includes('TARGET_SAVED'))
+            // setResubmit(newErrors.length === 0 
+            //   && editTarget.submitted 
+            //   && editTarget.message.includes('TARGET_SAVED')
+            //   && editTarget.target_feasible === null 
+            //   )
+            setResubmit(
+               editTarget.submitted 
+               && editTarget.target_feasible === null 
+              )
             setErrors(newErrors)
             if(editTarget.tic_id || editTarget.gaia_id) setHasSimbad(true)
             debounced_edit_click(id)
