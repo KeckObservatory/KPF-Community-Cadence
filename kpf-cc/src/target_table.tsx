@@ -253,7 +253,7 @@ export default function TargetTable() {
     }
   }
 
-  const handlePublishClick = async (id: GridRowId, setResubmit: Function, setIconSpin: Function) => {
+  const handlePublishClick = async (id: GridRowId, setResubmit: Function, setIconSpin: Function, setEditTarget: Function) => {
     setIconSpin(true)
     let pubRow = rows.find((row) => row.id === id);
     if (pubRow === undefined) {
@@ -269,7 +269,9 @@ export default function TargetTable() {
         context.setTotalHours(resp.total_hours)
         context.setTotalObservations(resp.total_observations)
         setResubmit(false);
-        processRowUpdate({ ...pubRow, ...resp.targets[0] } as TargetRow)
+        const tgt = { ...pubRow, ...resp.targets[0] } as TargetRow
+        processRowUpdate(tgt)
+        setEditTarget(tgt)
       }
       else {
         console.error('publish failed', resp)
@@ -372,7 +374,7 @@ export default function TargetTable() {
                 />
               }
               label="Publish"
-              onClick={() => handlePublishClick(id, setResubmit, setIconSpin)}
+              onClick={() => handlePublishClick(id, setResubmit, setIconSpin, setEditTarget)}
               color="inherit"
             /></Tooltip> :
           < ValidationDialogButton errors={errors} target={editTarget} />
