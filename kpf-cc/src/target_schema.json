@@ -64,9 +64,9 @@
             "description": "Number of observations per visit",
             "short_description": "Num obs/visit"
         },
-        "needs_resubmit": {
+        "submitted": {
             "type": ["boolean", "null"],
-            "description": "Does target require resubmit?"
+            "description": "Has target been submitted yet?"
         },
         "target_feasible": {
             "type": ["boolean", "null"],

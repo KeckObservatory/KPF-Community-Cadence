@@ -260,7 +260,6 @@ export default function TargetTable() {
       console.error('row not found', id)
       return
     }
-    pubRow.needs_resubmit = false //assume publish is sucessfull. If not, resubmit will = true 
     try {
       const resp = await save_target([pubRow as Target],
         pubRow?.semid as string,
@@ -313,26 +312,22 @@ export default function TargetTable() {
       cellClassName: 'actions',
       getActions: ({ id, row }) => {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
-        const [resubmit, setResubmit] = React.useState<boolean>(row.needs_resubmit);
         const [iconSpin, setIconSpin] = React.useState<boolean>(false);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
         validate(row)
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
+        const [resubmit, setResubmit] = React.useState<boolean>(row.submitted ?? false);
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           if (count > 0) {
-            processRowUpdate({ ...editTarget, needs_resubmit: true })
-            debounced_save({ ...editTarget, needs_resubmit: true })?.then((resp) => {
+            processRowUpdate(editTarget)
+            debounced_save(editTarget)?.then((resp) => {
               console.log('save response', resp)
             })
 
-            const refreshTarget = errors.length > 0 
-            && editTarget.message.includes('TARGET_SAVED')
-            && editTarget.total_time_for_target === null
-
-            setResubmit(refreshTarget)
+            setResubmit(editTarget.submitted ?? false )
             validate(editTarget)
             setErrors(validate.errors ? validate.errors : [])
             editTarget.tic_id || editTarget.gaia_id && setHasSimbad(true)

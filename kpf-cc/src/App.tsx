@@ -39,6 +39,7 @@ export interface Target extends SimbadTargetData {
   target_name?: string,
   j_mag?: number,
   t_eff?: number,
+  submitted: boolean,
   message: string,
   simulcal_on?: boolean,
   nominal_exposure_time?: number
@@ -49,7 +50,6 @@ export interface Target extends SimbadTargetData {
   num_visits_per_night?: number,
   num_unique_nights_per_semester?: number,
   target_feasible?: boolean,
-  needs_resubmit?: boolean,
   comment?: string,
   rise_semester_day?: number,
   sets_semester_day?: number,
