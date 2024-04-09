@@ -67,7 +67,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
         }
 
         setTarget((prev: Target) => {
-            let tgt = { ...prev, [key]: value, 'message': 'TARGET_EDITED' }
+            let tgt = { ...prev, [key]: value, "state": 'TARGET_EDITED' }
             if (key.includes('exposure_time')) { //nominal equivalent to maximum
                 tgt = { ...tgt, 
                     'nominal_exposure_time': value as number, 
@@ -81,14 +81,14 @@ export const TargetEditDialog = (props: TargetEditProps) => {
     const handleSwitchChange = (key: string, event: React.SyntheticEvent<Element, Event>) => {
         const value = (event.target as HTMLInputElement).checked
         setTarget((prev: Target) => {
-            let tgt = { ...prev, [key]: value, 'message': 'TARGET_EDITED' }
+            let tgt = { ...prev, [key]: value, "state": 'TARGET_EDITED' }
             return tgt 
         })
     }
 
     const handleSimbadChange = (tgt: Target) => {
         setTarget((prev: Target) => {
-            tgt = { ...tgt, ...prev, 'message': 'TARGET_EDITED' }
+            tgt = { ...tgt, ...prev, "state": 'TARGET_EDITED' }
             return tgt
         })
         setHasSimbad(tgt.tic_id || tgt.gaia_id ? true : false)
