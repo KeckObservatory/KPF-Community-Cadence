@@ -370,7 +370,7 @@ export default function TargetTable() {
                   color='warning' /> :
                 <PublishIcon
                   sx={refreshStyle}
-                  color={row.message?.includes('TARGET_SUBMITTED') ? 'success' : 'inherit'}
+                  color={row.state?.includes('TARGET_SUBMITTED') ? 'success' : 'inherit'}
                 />
               }
               label="Publish"
