@@ -241,8 +241,8 @@ export default function TargetTable() {
     const delRow = rows.find((row) => row.id === id);
     const resp = await delete_target(delRow as Target)
     if (resp.success === 'SUCCESS') {
-      resp.total_hours && context.setTotalHours(resp.total_hours)
-      resp.total_observations && context.setTotalObservations(resp.total_observations)
+      context.setTotalHours(resp.total_hours)
+      context.setTotalObservations(resp.total_observations)
       setRows(rows.filter((row) => row.id !== id));
       context.setTargets([...context.targets.filter((tgt) => tgt._id !== delRow?._id)])
     }
