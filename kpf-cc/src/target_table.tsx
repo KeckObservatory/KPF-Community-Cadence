@@ -326,11 +326,11 @@ export default function TargetTable() {
             debounced_save(editTarget)?.then((resp) => {
               console.log('save response', resp)
             })
-
-            setResubmit(errors.length === 0 && editTarget.submitted && editTarget.message.includes('TARGET_SAVED'))
             validate(editTarget)
-            setErrors(validate.errors ? validate.errors : [])
-            editTarget.tic_id || editTarget.gaia_id && setHasSimbad(true)
+            const newErrors = validate.errors ? validate.errors : []
+            setResubmit(newErrors.length === 0 && editTarget.submitted && editTarget.message.includes('TARGET_SAVED'))
+            setErrors(newErrors)
+            if(editTarget.tic_id || editTarget.gaia_id) setHasSimbad(true)
             debounced_edit_click(id)
           }
           setCount((prev: number) => prev + 1)
