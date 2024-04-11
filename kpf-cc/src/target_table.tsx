@@ -19,7 +19,7 @@ import {
   GridActionsCellItem,
   GridEventListener,
   GridRowId,
-  GridRowModel,
+  GridCsvExportOptions,
   GridRowEditStopReasons,
   GridToolbar,
   GridRenderCellParams,
@@ -166,7 +166,7 @@ function EditToolbar(props: EditToolbarProps) {
         Add Target
       </Button>
       <GridToolbar
-        csvOptions={{ allColumns: true }}
+        csvOptions={{ allColumns: true, fileName: `${context.semid}_KPFCC.csv` }}
       />
       <TargetWizardButton />
     </GridToolbarContainer>
@@ -386,12 +386,18 @@ export default function TargetTable() {
             target={editTarget}
             setTarget={setEditTarget}
           />,
+          <Tooltip
+            title={publishText}
+            placement="top"
+            arrow key="Delete This Target" >
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={() => handleDeleteClick(id)}
             color="inherit"
-          />,
+          />
+          </Tooltip>
+          ,
         ];
       }
     }
@@ -427,7 +433,7 @@ export default function TargetTable() {
             toolbar: EditToolbar,
           }}
           slotProps={{
-            toolbar: { setRows, setRowModesModel, },
+            toolbar: { setRows, setRowModesModel },
           }}
           pinnedColumns={pinnedColumns}
           initialState={{

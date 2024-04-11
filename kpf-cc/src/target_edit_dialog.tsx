@@ -73,6 +73,12 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                     'nominal_exposure_time': value as number, 
                     'maximum_exposure_time': value as number}
             }
+            if (key.includes('num_visits_per_night') && value === 1) { //num_visits_per_night equivalent to num_observations_per_visit
+                tgt = { ...tgt,
+                        'num_intranight_cadence': 0,
+                }
+
+            }
             return tgt
         })
     }
@@ -382,7 +388,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     </Tooltip>
                                     <Tooltip title="Write num intra night cadence here." placement='left'>
                                         <TextField
-                                            // focused
+                                            disabled={target.num_visits_per_night === 1} 
                                             label={'Num Intranight Cadence'}
                                             id="num-intra-night-cadence"
                                             onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}

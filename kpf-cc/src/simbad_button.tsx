@@ -105,7 +105,7 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             tic && (simbadData['tic_id'] = tic)
             if (dr && gaia) {
                 Number(dr[2]) > currDr && (
-                    simbadData['gaia_id'] = gaia)
+                    simbadData['gaia_id'] = `${dr}${gaia}`)
                 currDr = Number(dr[2])
             }
         }
@@ -122,6 +122,8 @@ export default function SimbadButton(props: Props) {
     const handleClickOpen = async () => {
         if (targetName) {
             const simbadData = await get_simbad_data(targetName)
+            simbadData['tic'] ?? (simbadData['tic'] = 'No_TIC_Name')
+            simbadData['gaia_id'] ?? (simbadData['gaia_id'] = 'No_Gaia_Name')
             setTarget({ ...target, ...simbadData, "state": 'TARGET_EDITED'})
         }
     }

@@ -66,7 +66,7 @@ export const Control = () => {
                     renderInput={(params) => <TextField {...params} label="Semid" />}
                 />
             </Tooltip>
-            <Typography variant="h6" component="div">Total Hours: {(context.total_hours)?.toFixed(4)}</Typography>
+            <Typography variant="h6" component="div">Total Hours: {(context.total_hours)?.toFixed(2)}</Typography>
             <Typography variant="h6" component="div">Total Observations: {context.total_observations}</Typography>
 
         </Stack>
