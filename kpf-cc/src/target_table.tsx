@@ -309,7 +309,7 @@ export default function TargetTable() {
       type: 'actions',
       editable: false,
       headerName: 'Actions',
-      width: 300,
+      width: 200,
       disableExport: true,
       cellClassName: 'actions',
       getActions: ({ id, row }) => {
