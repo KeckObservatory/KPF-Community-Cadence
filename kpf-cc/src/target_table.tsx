@@ -166,7 +166,7 @@ function EditToolbar(props: EditToolbarProps) {
         Add Target
       </Button>
       <GridToolbar
-        csvOptions={{ allColumns: true, fileName: `${context.semid}_KPFCC.csv` }}
+        csvOptions={{ allColumns: true, fileName: `${context.semid}_KPFCC` }}
       />
       <TargetWizardButton />
     </GridToolbarContainer>
