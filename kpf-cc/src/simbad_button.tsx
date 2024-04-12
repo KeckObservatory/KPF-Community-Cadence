@@ -105,7 +105,7 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             tic && (simbadData['tic_id'] = tic)
             if (dr && gaia) {
                 Number(dr[2]) > currDr && (
-                    simbadData['gaia_id'] = `${dr}${gaia}`)
+                    simbadData['gaia_id'] = `${gaia}`)
                 currDr = Number(dr[2])
             }
         }
