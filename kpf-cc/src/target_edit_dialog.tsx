@@ -386,7 +386,9 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             value={target.num_internight_cadence}
                                         />
                                     </Tooltip>
-                                    <Tooltip title="Write num intra night cadence here." placement='left'>
+                                    <Tooltip 
+                                    title={`Write num intra night cadence here.${target.num_visits_per_night === 1 ? ' Disabled because num_visits_per_night is 1' : ''}`}
+                                    placement='left'>
                                         <TextField
                                             disabled={target.num_visits_per_night === 1} 
                                             label={'Num Intranight Cadence'}
