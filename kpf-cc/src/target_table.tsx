@@ -387,7 +387,7 @@ export default function TargetTable() {
             setTarget={setEditTarget}
           />,
           <Tooltip
-            title={publishText}
+            title={"Delete this request"}
             placement="top"
             arrow key="Delete This Target" >
           <GridActionsCellItem
