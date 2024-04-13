@@ -329,7 +329,7 @@ export default function TargetTable() {
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
         const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state?.includes('TARGET_SUBMITTED'));
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
-        const apiRef = useGridApiContext();
+        // const apiRef = useGridApiContext();
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           if (count > 0) {
