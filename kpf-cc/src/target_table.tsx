@@ -23,6 +23,7 @@ import {
   GridRowEditStopReasons,
   GridToolbar,
   GridRenderCellParams,
+  useGridApiContext
 } from '@mui/x-data-grid-pro';
 import {
   randomId,
@@ -228,9 +229,9 @@ export default function TargetTable() {
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     console.log('handleRowEditStop', params, event)
-    let tgt = params.row as TargetRow
-    let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
-    processRowUpdate(editTarget)
+    // let tgt = params.row as TargetRow
+    // let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
+    // processRowUpdate(editTarget)
     // editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
     // validate(editTarget)
     // const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
@@ -328,6 +329,7 @@ export default function TargetTable() {
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
         const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state?.includes('TARGET_SUBMITTED'));
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
+        const apiRef = useGridApiContext();
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           if (count > 0) {
@@ -436,6 +438,7 @@ export default function TargetTable() {
         <DataGridPro
           disableRowSelectionOnClick
           rows={rows}
+          processRowUpdate={processRowUpdate}
           columns={columns}
           editMode="row"
           rowModesModel={rowModesModel}
