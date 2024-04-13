@@ -340,6 +340,12 @@ export default function TargetTable() {
           setCount((prev: number) => prev + 1)
         }, [editTarget])
 
+        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+          console.log('row has been edited', row, editTarget)
+        }, [row])
+
+
+
         let publishText = errors.length > 0 ? 'Validate target before submitting' : 'Submit target for review'
         if (resubmit && errors.length == 0) {
           publishText = 'Resubmit edited target for review'
