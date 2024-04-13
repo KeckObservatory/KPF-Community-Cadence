@@ -28,6 +28,7 @@ const ajv = new AJV2019({ allErrors: true })
 let ts = target_schema as any
 delete ts["$schema"]
 ajv.addKeyword("short_description")
+ajv.addKeyword("not_editable_by_user")
 export const validate = ajv.compile(ts)
 
 function ValidationDialog(props: SimpleDialogProps) {
