@@ -87,7 +87,7 @@ function convert_schema_to_columns(semids: string[]) {
       resizable: true,
       headerName: value.short_description ?? value.description,
       width: 180,
-      editable: value.not_editable_by_user ?? true , //TODO: GET inline editing to work with rows
+      editable: value.not_editable_by_user ? false : true, //TODO: GET inline editing to work with rows
     } as GridColDef
     if (key === 'semids') {
       col = {
