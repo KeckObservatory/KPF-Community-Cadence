@@ -228,7 +228,13 @@ export default function TargetTable() {
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     console.log('handleRowEditStop', params, event)
-    //let editedRow = rows.find((row) => row.id === id);
+    let tgt = params.row as TargetRow
+    let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
+    processRowUpdate(editTarget)
+    editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
+    validate(editTarget)
+    const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
+    console.log('editTarget', editTarget, 'newResubmit', newResubmit )
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
@@ -341,7 +347,7 @@ export default function TargetTable() {
         }, [editTarget])
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-          console.log('row has been edited', row, editTarget)
+          console.log('row has been edited', row), editTarget
         }, [row])
 
 
