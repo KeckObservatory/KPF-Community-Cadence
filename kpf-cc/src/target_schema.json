@@ -6,7 +6,8 @@
         "semid": {
             "type": "string",
             "description": "Semester ID",
-            "pattern": "^([0-9]{4}[AB]_[A-Z]{1}[0-9]{3})$"
+            "pattern": "^([0-9]{4}[AB]_[A-Z]{1}[0-9]{3})$",
+            "not_editable_by_user": true
         },
         "target_name": {
             "type": "string",
@@ -67,11 +68,13 @@
         },
         "submitted": {
             "type": ["boolean", "null"],
-            "description": "Has target been submitted yet?"
+            "description": "Has target been submitted yet?",
+            "not_editable_by_user": true
         },
         "target_feasible": {
             "type": ["boolean", "null"],
-            "description": "Request Feasibility"
+            "description": "Request Feasibility",
+            "not_editable_by_user": true
         },
         "epoch": {
             "type": "string",
@@ -103,7 +106,8 @@
         },
         "state": {
             "type": "string",
-            "description": "Tells the state of the target (editied, saved, or submitted)"
+            "description": "Tells the state of the target (editied, saved, or submitted)",
+            "not_editable_by_user": true
         },
         "comment": {
             "type": "string",
@@ -119,23 +123,29 @@
         },
         "rise_semester_day": {
             "type": "integer",
-            "description": "Rise Date"
+            "description": "Rise Date",
+            "not_editable_by_user": true
         },
         "sets_semester_day": {
             "type": "integer",
-            "description": "Set Date"
+            "description": "Set Date",
+            "not_editable_by_user": true
         },
         "details": {
             "type": "string",
-            "description": "Submittal Details"
+            "description": "Submittal Details",
+            "not_editable_by_user": true
         },
         "status": {
             "type": "string",
-            "description": "Target Status"
+            "description": "Target Status",
+            "not_editable_by_user": true
+
         },
         "submitter": {
             "type": "string",
-            "description": "Submitter"
+            "description": "Submitter",
+            "not_editable_by_user": true
         },
         "total_observations_requested": {
             "type": "integer",

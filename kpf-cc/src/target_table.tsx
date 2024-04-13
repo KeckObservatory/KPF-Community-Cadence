@@ -87,7 +87,7 @@ function convert_schema_to_columns(semids: string[]) {
       resizable: true,
       headerName: value.short_description ?? value.description,
       width: 180,
-      editable: false,
+      editable: value.not_editable_by_user ?? true , //TODO: GET inline editing to work with rows
     } as GridColDef
     if (key === 'semids') {
       col = {
@@ -227,6 +227,8 @@ export default function TargetTable() {
   const debounced_save = useDebounceCallback(edit_target, 2000)
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
+    console.log('handleRowEditStop', params, event)
+    //let editedRow = rows.find((row) => row.id === id);
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
@@ -307,7 +309,7 @@ export default function TargetTable() {
     {
       field: 'actions',
       type: 'actions',
-      editable: false,
+      editable: false, 
       headerName: 'Actions',
       width: 200,
       disableExport: true,
