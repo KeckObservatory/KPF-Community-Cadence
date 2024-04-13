@@ -231,13 +231,13 @@ export default function TargetTable() {
     let tgt = params.row as TargetRow
     let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
     processRowUpdate(editTarget)
-    editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
-    validate(editTarget)
-    const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
-    console.log('editTarget', editTarget, 'newResubmit', newResubmit )
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
+    // editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
+    // validate(editTarget)
+    // const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
+    // console.log('editTarget', editTarget, 'newResubmit', newResubmit )
+    // if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+    //   event.defaultMuiPrevented = true;
+    // }
   };
 
   const handleEditClick = (id: GridRowId) => () => {
