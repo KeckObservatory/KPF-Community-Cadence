@@ -234,10 +234,9 @@ export default function TargetTable() {
     // editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
     // validate(editTarget)
     // const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
-    // console.log('editTarget', editTarget, 'newResubmit', newResubmit )
-    // if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-    //   event.defaultMuiPrevented = true;
-    // }
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
   };
 
   const handleEditClick = (id: GridRowId) => () => {
