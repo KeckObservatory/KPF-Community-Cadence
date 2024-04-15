@@ -27,7 +27,7 @@
             "description": "Effective Temperature"
         },
         "rotational_velocity": {
-            "type": "float",
+            "type": "number",
             "description": "Rotational Velocity",
             "short_description": "rot vel"
         },
@@ -57,12 +57,12 @@
             "short_description": "# of Nights Per Semester"
         },
         "num_internight_cadence": {
-            "type": "float",
+            "type": "number",
             "description": "Number of internight cadence",
             "short_description": "Minimum Inter-Night Cadence"
         },
         "num_intranight_cadence": {
-            "type": "float",
+            "type": "number",
             "description": "Number of intranight cadence",
             "short_description": "Minimum Intra-Night Cadence"
         },
