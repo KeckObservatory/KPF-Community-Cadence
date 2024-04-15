@@ -438,7 +438,7 @@ export default function TargetTable() {
     >
       {Object.keys(visibleColumns).length > 0 && (
         <DataGridPro
-          disableRowSelectionOnClick
+          // disableRowSelectionOnClick
           rows={rows}
           processRowUpdate={processRowUpdate}
           columns={columns}
