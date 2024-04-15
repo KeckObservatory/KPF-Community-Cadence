@@ -442,7 +442,7 @@ export default function TargetTable() {
           rows={rows}
           processRowUpdate={processRowUpdate}
           columns={columns}
-          editMode="row"
+          // editMode="row" //enable to disable stop on focus out
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
