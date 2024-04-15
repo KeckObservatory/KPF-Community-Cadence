@@ -63,8 +63,8 @@
         },
         "num_observations_per_visit": {
             "type": "integer",
-            "description": "Number of observations per visit",
-            "short_description": "# of Observations per Visit"
+            "description": "Number of exposures per visit",
+            "short_description": "# of Exposures per Visit"
         },
         "submitted": {
             "type": ["boolean", "null"],
