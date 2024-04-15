@@ -299,11 +299,13 @@ export default function TargetTable() {
   const processRowUpdate = (newRow: GridRowModel) => {
     //sends to server
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
+    console.log('processRowUpdate', updatedRow)
     setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
     return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    console.log('handleRowModesModelChange', newRowModesModel)
     setRowModesModel(newRowModesModel);
   };
 
