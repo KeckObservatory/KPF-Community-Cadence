@@ -228,9 +228,9 @@ export default function TargetTable() {
   const debounced_save = useDebounceCallback(edit_target, 2000)
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
-    console.log('handleRowEditStop', params, event)
-    // let tgt = params.row as TargetRow
-    // let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
+    let tgt = params.row as TargetRow
+    let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
+    console.log('handleRowEditStop', params, event, 'editTarget', editTarget)
     // processRowUpdate(editTarget)
     // editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
     // validate(editTarget)

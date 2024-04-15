@@ -52,12 +52,12 @@
             "short_description": "# of Nights Per Semester"
         },
         "num_internight_cadence": {
-            "type": "integer",
+            "type": "float",
             "description": "Number of internight cadence",
             "short_description": "Minimum Inter-Night Cadence"
         },
         "num_intranight_cadence": {
-            "type": "integer",
+            "type": "float",
             "description": "Number of intranight cadence",
             "short_description": "Minimum Intra-Night Cadence"
         },

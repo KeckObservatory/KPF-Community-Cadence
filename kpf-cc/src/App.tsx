@@ -66,13 +66,13 @@ interface State {
   obsid: number,
   userinfo?: UserInfo,
   semids: string[],
-  semid: string,
   targets: Target[],
   total_hours: number,
   total_observations: number
 }
 
 export interface CCContext extends State {
+  semid: string,
   setTargets: Function,
   setObserverId: Function
   setSemid: Function
@@ -84,7 +84,7 @@ const init_cc_context: CCContext = {
   username: "Dr. Observer Observerson",
   userinfo: undefined,
   obsid: 1234,
-  semid: "XXXX_XXXX",
+  semid: 'XXXX_XXXX',
   semids: [],
   targets: [],
   total_hours: 0,
@@ -125,6 +125,7 @@ export const useSnackbarContext = () => useContext(SnackbarContext);
 
 function App() {
   const [darkState, setDarkState] = useQueryParam('darkState', withDefault(BooleanParam, true));
+  const [semid, setSemid] = useQueryParam<string>('semid');
   const [state, setState] = useState<State>({} as State);
   const [init, setInit] = useState<boolean>(false);
   const theme = handleTheme(darkState)
@@ -147,7 +148,10 @@ function App() {
       }
 
       const semids = semidResp.programs.map((p: any) => p.semid)
-      const semid = semids[0]
+      // const semid = semids[0]
+      if (semid === undefined) {
+        setSemid(semids[0])
+      }
       const resp = await get_all_targets(semid);
 
       let targets: Target[] = []
@@ -169,7 +173,6 @@ function App() {
         obsid: obsid,
         username,
         userinfo,
-        semid,
         semids: semids,
         total_hours,
         total_observations,
@@ -196,7 +199,7 @@ function App() {
           username: state.username ?? "Dr. Observer Observerson",
           obsid: state.userinfo?.Id ?? "XXXX",
           semids: state.semids ?? [],
-          semid: state.semid ?? "XXXX_XXXX",
+          semid: semid ?? "XXXX_XXXX",
           total_hours: state.total_hours,
           total_observations: state.total_observations,
           targets: state.targets,
@@ -205,11 +208,7 @@ function App() {
               return { ...st, targets: targets }
             })
           },
-          setSemid: (semid: string) => {
-            setState((st) => {
-              return { ...st, semid }
-            })
-          },
+          setSemid,
           setSemids: (semids: string[]) => {
             setState((st) => {
               return { ...st, semids }
