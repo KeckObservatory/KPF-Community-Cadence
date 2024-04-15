@@ -30,6 +30,10 @@ interface TargetEditProps extends Props {
     open: boolean
 }
 
+export interface TargetProps { [key: string]: { description: string, short_description?: string } }
+
+const targetProps = target_schema.properties as TargetProps
+
 export const TargetEditDialog = (props: TargetEditProps) => {
 
     const { target, setTarget } = props
@@ -70,13 +74,16 @@ export const TargetEditDialog = (props: TargetEditProps) => {
         setTarget((prev: Target) => {
             let tgt = { ...prev, [key]: value, "state": 'TARGET_EDITED' }
             if (key.includes('exposure_time')) { //nominal equivalent to maximum
-                tgt = { ...tgt, 
-                    'nominal_exposure_time': value as number, 
-                    'maximum_exposure_time': value as number}
+                tgt = {
+                    ...tgt,
+                    'nominal_exposure_time': value as number,
+                    'maximum_exposure_time': value as number
+                }
             }
-            if (key.includes('num_visits_per_night') && value === 1) { //num_visits_per_night equivalent to num_observations_per_visit
-                tgt = { ...tgt,
-                        'num_intranight_cadence': 0,
+            if (key.includes('num_visits_per_night') && value === 1) { //num_visits_per_night equivalent to num_exposures_per_visit
+                tgt = {
+                    ...tgt,
+                    'num_intranight_cadence': 0,
                 }
 
             }
@@ -84,12 +91,21 @@ export const TargetEditDialog = (props: TargetEditProps) => {
         })
     }
 
+    const input_label = (param: keyof Target, tooltip = false): string => {
+        return tooltip ?
+            targetProps[param].description
+            :
+            targetProps[param].short_description ?? targetProps[param].description
+    }
+
+
+
 
     const handleSwitchChange = (key: string, event: React.SyntheticEvent<Element, Event>) => {
         const value = (event.target as HTMLInputElement).checked
         setTarget((prev: Target) => {
             let tgt = { ...prev, [key]: value, "state": 'TARGET_EDITED' }
-            return tgt 
+            return tgt
         })
     }
 
@@ -143,7 +159,8 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     Program Information
                                 </Typography>
                                 <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                    <Tooltip title="Select semid">
+                                    <Tooltip title="Select semid"
+                                    >
                                         <Autocomplete
                                             disablePortal
                                             id="semid-selection"
@@ -168,20 +185,20 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 Target Information
                             </Typography>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title="Write Target Name Here.">
+                                <Tooltip title={input_label('target_name', true)}>
                                     <TextField
                                         // focused
-                                        label={'TargetName'}
+                                        label={input_label('target_name')}
                                         id="target-name"
                                         value={target.target_name}
                                         onChange={(event) => handleTextChange('target_name', event.target.value)}
 
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write Teff Here.">
+                                <Tooltip title={input_label('t_eff', true)}>
                                     <TextField
                                         // focused
-                                        label={'Effective Temperature [K]'}
+                                        label={input_label('t_eff')}
                                         id="t-eff"
                                         value={target.t_eff}
                                         onChange={(event) => handleTextChange('t_eff', event.target.value, true)}
@@ -189,40 +206,40 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 </Tooltip>
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title="Write RA Here.">
+                                <Tooltip title={input_label('ra', true)}>
                                     <TextField
                                         // focused
-                                        label={'RA'}
+                                        label={input_label('ra')}
                                         InputLabelProps={{ shrink: hasSimbad || 'ra' in target }}
                                         id="ra"
                                         value={target.ra}
                                         onChange={(event) => handleTextChange('ra', event.target.value)}
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write Declination Here.">
+                                <Tooltip title={input_label('dec', true)}>
                                     <TextField
                                         // focused
-                                        label={'Dec'}
+                                        label={input_label('dec')}
                                         InputLabelProps={{ shrink: hasSimbad || 'dec' in target }}
                                         id="dec"
                                         value={target.dec}
                                         onChange={(event) => handleTextChange('dec', event.target.value)}
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write J Magnitude Here.">
+                                <Tooltip title={input_label('j_mag', true)}>
                                     <TextField
                                         // focused
-                                        label={'J-mag'}
+                                        label={input_label('j_mag')}
                                         InputLabelProps={{ shrink: hasSimbad || 'j_mag' in target }}
                                         id="j-magnitude"
                                         value={target.j_mag}
                                         onChange={(event) => handleTextChange('j_mag', event.target.value, true)}
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write G Magnitude Here.">
+                                <Tooltip title={input_label('g_mag', true)}>
                                     <TextField
                                         // focused
-                                        label={'G-mag'}
+                                        label={input_label('g_mag')}
                                         InputLabelProps={{ shrink: hasSimbad || 'g_mag' in target }}
                                         id="g-magnitude"
                                         value={target.g_mag}
@@ -231,20 +248,20 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 </Tooltip>
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title="Gaia ID">
+                                <Tooltip title={input_label('gaia_id', true)}>
                                     <TextField
                                         // focused
-                                        label={'Gaia ID'}
+                                        label={input_label('gaia_id')}
                                         InputLabelProps={{ shrink: hasSimbad || target.gaia_id !== undefined }}
                                         id="gaia-id"
                                         value={target.gaia_id}
                                         onChange={(event) => handleTextChange('gaia_id', event.target.value)}
                                     />
                                 </Tooltip>
-                                <Tooltip title="TIC ID">
+                                <Tooltip title={input_label('tic_id', true)}>
                                     <TextField
                                         // focused
-                                        label={'TIC ID'}
+                                        label={input_label('tic_id')}
                                         InputLabelProps={{ shrink: hasSimbad || target.tic !== undefined }}
                                         id="tic"
                                         value={target.tic}
@@ -253,40 +270,40 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 </Tooltip>
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title="Write Proper Motion RA Here.">
+                                <Tooltip title={input_label('pm_ra', true)}>
                                     <TextField
                                         // focused
-                                        label={'PM RA'}
+                                        label={input_label('pm_ra')}
                                         InputLabelProps={{ shrink: hasSimbad || 'pm_ra' in target }}
                                         id="pm-ra"
                                         value={target.pm_ra}
                                         onChange={(event) => handleTextChange('pm_ra', event.target.value, true)}
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write Proper Motion Dec Here.">
+                                <Tooltip title={input_label('pm_dec', true)}>
                                     <TextField
                                         // focused
-                                        label={'PM Dec'}
+                                        label={input_label('pm_dec')}
                                         InputLabelProps={{ shrink: hasSimbad || 'pm_dec' in target }}
                                         id="pm-dec"
                                         value={target.pm_dec}
                                         onChange={(event) => handleTextChange('pm_dec', event.target.value)}
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write Epoch Here.">
+                                <Tooltip title={input_label('epoch', true)}>
                                     <TextField
                                         // focused
-                                        label={'Epoch'}
+                                        label={input_label('epoch')}
                                         InputLabelProps={{ shrink: hasSimbad || 'epoch' in target }}
                                         id="epoch"
                                         value={target.epoch}
                                         onChange={(event) => handleTextChange('epoch', event.target.value)}
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write Sys rotational velocity Here.">
+                                <Tooltip title={input_label('rotational_velocity', true)}>
                                     <TextField
                                         // focused
-                                        label={'Rotational Velocity'}
+                                        label={input_label('rotational_velocity')}
                                         InputLabelProps={{ shrink: hasSimbad || 'sys_rv' in target }}
                                         id="rot-vel"
                                         value={target.sys_rv}
@@ -306,28 +323,28 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 Observation Info
                             </Typography>
                             <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title="Is SimulCal On?">
+                                <Tooltip title={input_label('simulcal_on', true)}>
                                     <FormGroup>
                                         <FormControlLabel
                                             onChange={(event) => handleSwitchChange('simulcal_on', event)}
                                             value={target.simulcal_on}
                                             control={<Switch defaultChecked />}
-                                            label="simulcal On?" />
+                                            label={input_label('simulcal_on')} />
                                     </FormGroup>
                                 </Tooltip>
-                                <Tooltip title="Write Nominal Exposure Time here (s).">
+                                <Tooltip title={input_label('nominal_exposure_time', true)}>
                                     <TextField
                                         // focused
-                                        label={'Nominal Exposure Time'}
+                                        label={input_label('nominal_exposure_time')}
                                         id="exposure-time"
                                         onChange={(event) => handleTextChange('nominal_exposure_time', event.target.value, true)}
                                         value={target.nominal_exposure_time}
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write Maximum Exposure Time here (s).">
+                                <Tooltip title={input_label('maximum_exposure_time', true)}>
                                     <TextField
                                         // focused
-                                        label={'Maximum Exposure Time'}
+                                        label={input_label('maximum_exposure_time')}
                                         onChange={(event) => handleTextChange('maximum_exposure_time', event.target.value, true)}
                                         id="max-exposure-time"
                                         value={target.maximum_exposure_time}
@@ -346,28 +363,28 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 Cadence Information
                             </Typography>
                             <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title="Write Observation per visit here.">
+                                <Tooltip title={input_label('num_exposures_per_visit', true)}>
                                     <TextField
                                         // focused
-                                        label={'Observation per visit'}
+                                        label={input_label('num_exposures_per_visit')}
                                         id="obs-per-visit"
-                                        onChange={(event) => handleTextChange('num_observations_per_visit', event.target.value, true)}
-                                        value={target.num_observations_per_visit}
+                                        onChange={(event) => handleTextChange('num_exposures_per_visit', event.target.value, true)}
+                                        value={target.num_exposures_per_visit}
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write Visits per night here.">
+                                <Tooltip title={input_label('num_visits_per_night', true)}>
                                     <TextField
                                         // focused
-                                        label={'Visits per night'}
+                                        label={input_label('num_visits_per_night')}
                                         id="visits-per-night"
                                         onChange={(event) => handleTextChange('num_visits_per_night', event.target.value, true)}
                                         value={target.num_visits_per_night}
                                     />
                                 </Tooltip>
-                                <Tooltip title="Write # unique nights per semester here.">
+                                <Tooltip title={input_label('num_unique_nights_per_semester', true)}>
                                     <TextField
                                         // focused
-                                        label={'# unique nights per semester'}
+                                        label={input_label('num_unique_nights_per_semester')}
                                         id="unique-nights"
                                         onChange={(event) => handleTextChange('num_unique_nights_per_semester', event.target.value, true)}
                                         value={target.num_unique_nights_per_semester}
@@ -378,21 +395,22 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 marginBottom: '24px',
                             }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 <Stack justifyContent='center' spacing={2}>
-                                    <Tooltip title="Write num inter night cadence here." placement='left'>
+                                    <Tooltip title={input_label('num_internight_cadence', true)}>
                                         <TextField
                                             // focused
-                                            label={'Num Internight Cadence'}
+                                            label={input_label('num_internight_cadence')}
                                             id="num-inter-night-cadence"
                                             onChange={(event) => handleTextChange('num_internight_cadence', event.target.value, true)}
                                             value={target.num_internight_cadence}
                                         />
                                     </Tooltip>
-                                    <Tooltip 
-                                    title={`Write num intra night cadence here.${target.num_visits_per_night === 1 ? ' Disabled because num_visits_per_night is 1' : ''}`}
-                                    placement='left'>
+                                    <Tooltip
+                                        title={`${input_label('num_internight_cadence', true)}.${target.num_visits_per_night === 1 ? ' Disabled because num_visits_per_night is 1' : ''}`}
+                                        placement='left'
+                                    >
                                         <TextField
-                                            disabled={target.num_visits_per_night === 1} 
-                                            label={'Num Intranight Cadence'}
+                                            disabled={target.num_visits_per_night === 1}
+                                            label={input_label('num_intranight_cadence')}
                                             id="num-intra-night-cadence"
                                             onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}
                                             value={target.num_intranight_cadence}
@@ -409,7 +427,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     // focused
                                     multiline
                                     maxRows={4}
-                                    label={'Comment'}
+                                    label={input_label('comment')}
                                     id="comment"
                                     onChange={(event) => handleTextChange('comment', event.target.value)}
                                     value={target.comment}

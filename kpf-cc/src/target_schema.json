@@ -26,6 +26,11 @@
             "type": "number",
             "description": "Effective Temperature"
         },
+        "rotational_velocity": {
+            "type": "float",
+            "description": "Rotational Velocity",
+            "short_description": "rot vel"
+        },
         "simulcal_on": {
             "type": "boolean",
             "default": true,
@@ -61,7 +66,7 @@
             "description": "Number of intranight cadence",
             "short_description": "Minimum Intra-Night Cadence"
         },
-        "num_observations_per_visit": {
+        "num_exposures_per_visit": {
             "type": "integer",
             "description": "Number of exposures per visit",
             "short_description": "# of Exposures per Visit"
@@ -169,7 +174,7 @@
         "nominal_exposure_time",
         "maximum_exposure_time",
         "num_internight_cadence",
-        "num_observations_per_visit",
+        "num_exposures_per_visit",
         "num_visits_per_night",
         "num_unique_nights_per_semester"
         

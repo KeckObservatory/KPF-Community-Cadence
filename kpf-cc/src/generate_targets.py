@@ -259,7 +259,7 @@ def generate_target():
         "num_unique_nights_per_semester": randInt(1, 50),
         "minimum_intranight_cadence": randInt(1, 10),
         "minimum_internight_cadence": randInt(1, 10),
-        "num_observations_per_visit": randInt(1, 10),        
+        "num_exposures_per_visit": randInt(1, 10),        
     }
 
 

@@ -16,7 +16,7 @@
         "num_unique_nights_per_semester": 32,
         "minimum_intranight_cadence": 10,
         "minimum_internight_cadence": 2,
-        "num_observations_per_visit": 1
+        "num_exposures_per_visit": 1
     },
     {
         "_id": "dkethtseplyxcgzsoymwyzxx",
@@ -35,7 +35,7 @@
         "num_unique_nights_per_semester": 16,
         "minimum_intranight_cadence": 2,
         "minimum_internight_cadence": 8,
-        "num_observations_per_visit": 7
+        "num_exposures_per_visit": 7
     },
     {
         "_id": "jxvwiddraitrmngbyviuqish",
@@ -54,7 +54,7 @@
         "num_unique_nights_per_semester": 49,
         "minimum_intranight_cadence": 9,
         "minimum_internight_cadence": 8,
-        "num_observations_per_visit": 5
+        "num_exposures_per_visit": 5
     },
     {
         "_id": "nvigsghifmxhwtnbbldpbjlc",
@@ -72,7 +72,7 @@
         "num_unique_nights_per_semester": 29,
         "minimum_intranight_cadence": 6,
         "minimum_internight_cadence": 3,
-        "num_observations_per_visit": 6
+        "num_exposures_per_visit": 6
     },
     {
         "_id": "ajvrfwqisdduiahateqgejyj",
@@ -91,7 +91,7 @@
         "num_unique_nights_per_semester": 6,
         "minimum_intranight_cadence": 1,
         "minimum_internight_cadence": 9,
-        "num_observations_per_visit": 1
+        "num_exposures_per_visit": 1
     },
     {
         "_id": "qpcmaqiqozvqnkerzmesnmhe",
@@ -109,7 +109,7 @@
         "num_unique_nights_per_semester": 24,
         "minimum_intranight_cadence": 5,
         "minimum_internight_cadence": 7,
-        "num_observations_per_visit": 2
+        "num_exposures_per_visit": 2
     },
     {
         "_id": "wpzeodamjzzrtvftkwgqrkro",
@@ -128,7 +128,7 @@
         "num_unique_nights_per_semester": 10,
         "minimum_intranight_cadence": 8,
         "minimum_internight_cadence": 2,
-        "num_observations_per_visit": 8
+        "num_exposures_per_visit": 8
     },
     {
         "_id": "gzrcnxuwycsahiqmqbawnyyp",
@@ -147,7 +147,7 @@
         "num_unique_nights_per_semester": 16,
         "minimum_intranight_cadence": 6,
         "minimum_internight_cadence": 9,
-        "num_observations_per_visit": 1
+        "num_exposures_per_visit": 1
     },
     {
         "_id": "knipoxmwazuxkufwivbsnfce",
@@ -166,7 +166,7 @@
         "num_unique_nights_per_semester": 10,
         "minimum_intranight_cadence": 10,
         "minimum_internight_cadence": 3,
-        "num_observations_per_visit": 5
+        "num_exposures_per_visit": 5
     },
     {
         "_id": "rsdlbrzyebxwiggjvjhedqfj",
@@ -185,7 +185,7 @@
         "num_unique_nights_per_semester": 18,
         "minimum_intranight_cadence": 9,
         "minimum_internight_cadence": 7,
-        "num_observations_per_visit": 3
+        "num_exposures_per_visit": 3
     },
     {
         "_id": "bsfuljbuyleczhcffspqkowa",
@@ -204,7 +204,7 @@
         "num_unique_nights_per_semester": 39,
         "minimum_intranight_cadence": 6,
         "minimum_internight_cadence": 2,
-        "num_observations_per_visit": 4
+        "num_exposures_per_visit": 4
     },
     {
         "_id": "fmwiozdilhconzvlchukcfim",
@@ -222,7 +222,7 @@
         "num_unique_nights_per_semester": 44,
         "minimum_intranight_cadence": 2,
         "minimum_internight_cadence": 2,
-        "num_observations_per_visit": 4
+        "num_exposures_per_visit": 4
     },
     {
         "_id": "nfrgixqpoyaixrvsmukrkcjk",
@@ -241,7 +241,7 @@
         "num_unique_nights_per_semester": 6,
         "minimum_intranight_cadence": 3,
         "minimum_internight_cadence": 6,
-        "num_observations_per_visit": 7
+        "num_exposures_per_visit": 7
     },
     {
         "_id": "macqlnuyewdxjycfehhctzfe",
@@ -260,7 +260,7 @@
         "num_unique_nights_per_semester": 15,
         "minimum_intranight_cadence": 8,
         "minimum_internight_cadence": 2,
-        "num_observations_per_visit": 5
+        "num_exposures_per_visit": 5
     },
     {
         "_id": "ijugifskqqoestejcescknxr",
@@ -278,7 +278,7 @@
         "num_unique_nights_per_semester": 50,
         "minimum_intranight_cadence": 1,
         "minimum_internight_cadence": 6,
-        "num_observations_per_visit": 6
+        "num_exposures_per_visit": 6
     },
     {
         "_id": "jvxizlwddmovyffndyztglgx",
@@ -296,7 +296,7 @@
         "num_unique_nights_per_semester": 8,
         "minimum_intranight_cadence": 6,
         "minimum_internight_cadence": 9,
-        "num_observations_per_visit": 9
+        "num_exposures_per_visit": 9
     },
     {
         "_id": "wozklbcbrfugjixnlykizryd",
@@ -314,7 +314,7 @@
         "num_unique_nights_per_semester": 50,
         "minimum_intranight_cadence": 7,
         "minimum_internight_cadence": 6,
-        "num_observations_per_visit": 5
+        "num_exposures_per_visit": 5
     },
     {
         "_id": "wasoqszeendxvhfmgfowqgmh",
@@ -333,7 +333,7 @@
         "num_unique_nights_per_semester": 13,
         "minimum_intranight_cadence": 3,
         "minimum_internight_cadence": 7,
-        "num_observations_per_visit": 1
+        "num_exposures_per_visit": 1
     },
     {
         "_id": "vdjpxkulcordatvtvxtrobfz",
@@ -352,7 +352,7 @@
         "num_unique_nights_per_semester": 31,
         "minimum_intranight_cadence": 3,
         "minimum_internight_cadence": 8,
-        "num_observations_per_visit": 6
+        "num_exposures_per_visit": 6
     },
     {
         "_id": "srgxexiodcwsxzidlspwtqro",
@@ -371,6 +371,6 @@
         "num_unique_nights_per_semester": 30,
         "minimum_intranight_cadence": 6,
         "minimum_internight_cadence": 8,
-        "num_observations_per_visit": 1
+        "num_exposures_per_visit": 1
     }
 ]
