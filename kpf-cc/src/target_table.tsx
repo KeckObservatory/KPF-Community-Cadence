@@ -296,7 +296,7 @@ export default function TargetTable() {
   };
 
 
-  const processRowUpdate = (newRow: GridRowModel, originalRow: GridRowModel) => {
+  const processRowUpdate = (newRow: GridRowModel, originalRow?: GridRowModel) => {
     //sends to server
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
     console.log('processRowUpdate', updatedRow, 'originalRow', originalRow)
