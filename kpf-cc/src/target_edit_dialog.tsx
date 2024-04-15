@@ -30,9 +30,57 @@ interface TargetEditProps extends Props {
     open: boolean
 }
 
-export interface TargetProps { [key: string]: { description: string, short_description?: string } }
+export interface TargetProps {
+    [key: string]: {
+        description: string,
+        type: string | string[],
+        short_description?: string,
+        default?: unknown,
+        not_editable_by_user?: boolean,
+    }
+}
 
 const targetProps = target_schema.properties as TargetProps
+
+export const raDecFormat = (input: string) => {
+    // Strip all characters from the input digits and keep pos/neg sign
+    const sign = input.length > 0 ? input[0].replace(/[^+-]/, "") : ""
+    input = input.replace(/[^0-9]+/g, "");
+
+    // Based upon the length of the string, we add formatting as necessary
+    var size = input.length;
+    if (size < 3) {
+        input = input;
+    }
+    else if (size < 5) {
+        input = input.substring(0, 2) + ':' + input.substring(2, 4);
+    } else if (size < 7) {
+        input = input.substring(0, 2) + ':' + input.substring(2, 4) + ':' + input.substring(4, 6);
+    } else {
+        input = input.substring(0, 2) + ':' + input.substring(2, 4) + ':' + input.substring(4, 6) + '.' + input.substring(6);
+    }
+    return sign + input;
+}
+
+export const rowSetter = (tgt: Target, key: string, value?: string | number | boolean) => {
+    tgt = { ...tgt, [key]: value, "state": 'TARGET_EDITED' }
+    if (key.includes('exposure_time')) { //nominal equivalent to maximum
+        tgt = {
+            ...tgt,
+            'nominal_exposure_time': Number(value),
+            'maximum_exposure_time': Number(value)
+        }
+    }
+    if (key.includes('num_visits_per_night') && value === 1) { //num_visits_per_night equivalent to num_exposures_per_visit
+        tgt = {
+            ...tgt,
+            'num_intranight_cadence': 0,
+        }
+
+    }
+    return tgt
+}
+
 
 export const TargetEditDialog = (props: TargetEditProps) => {
 
@@ -44,26 +92,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
         setHasSimbad(target.tic_id || target.gaia_id ? true : false)
     }, [target.tic_id, target.gaia_id])
 
-    const raDecFormat = (input: string) => {
-        // Strip all characters from the input digits and keep pos/neg sign
-        const sign = input.length > 0 ? input[0].replace(/[^+-]/, "") : ""
-        input = input.replace(/[^0-9]+/g, "");
-
-        // Based upon the length of the string, we add formatting as necessary
-        var size = input.length;
-        if (size < 3) {
-            input = input;
-        }
-        else if (size < 5) {
-            input = input.substring(0, 2) + ':' + input.substring(2, 4);
-        } else if (size < 7) {
-            input = input.substring(0, 2) + ':' + input.substring(2, 4) + ':' + input.substring(4, 6);
-        } else {
-            input = input.substring(0, 2) + ':' + input.substring(2, 4) + ':' + input.substring(4, 6) + '.' + input.substring(6);
-        }
-        return sign + input;
-    }
-
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         value && isNumber ? value = Number(value) : value
         if (value && (key === 'ra' || key === 'dec')) {
@@ -71,23 +99,9 @@ export const TargetEditDialog = (props: TargetEditProps) => {
             value = raDecFormat(value as string)
         }
 
-        setTarget((prev: Target) => {
-            let tgt = { ...prev, [key]: value, "state": 'TARGET_EDITED' }
-            if (key.includes('exposure_time')) { //nominal equivalent to maximum
-                tgt = {
-                    ...tgt,
-                    'nominal_exposure_time': value as number,
-                    'maximum_exposure_time': value as number
-                }
-            }
-            if (key.includes('num_visits_per_night') && value === 1) { //num_visits_per_night equivalent to num_exposures_per_visit
-                tgt = {
-                    ...tgt,
-                    'num_intranight_cadence': 0,
-                }
 
-            }
-            return tgt
+        setTarget((prev: Target) => {
+            return rowSetter(prev, key, value)
         })
     }
 
@@ -300,10 +314,10 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         onChange={(event) => handleTextChange('epoch', event.target.value)}
                                     />
                                 </Tooltip>
-                                <Tooltip title={input_label('rotational_velocity', true)}>
+                                <Tooltip title={input_label('systemic_velocity', true)}>
                                     <TextField
                                         // focused
-                                        label={input_label('rotational_velocity')}
+                                        label={input_label('systemic_velocity')}
                                         InputLabelProps={{ shrink: hasSimbad || 'sys_rv' in target }}
                                         id="rot-vel"
                                         value={target.sys_rv}

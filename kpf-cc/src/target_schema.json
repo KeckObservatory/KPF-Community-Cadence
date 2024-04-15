@@ -24,55 +24,55 @@
         },
         "t_eff": {
             "type": "number",
-            "description": "Effective Temperature"
+            "description": "Effective Temperature [Kelvin]"
         },
-        "rotational_velocity": {
+        "systemic_velocity": {
             "type": "number",
-            "description": "Rotational Velocity"
+            "description": "Systemic Velocity [km/s]"
         },
         "simulcal_on": {
             "type": "boolean",
             "default": true,
-            "description": "simulcal on or off",
+            "description": "Simulcal On or Off",
             "short_description": "Simucal"
         },
         "nominal_exposure_time": {
             "type": "integer",
-            "description": "Nominal Exposure Time (s)"
+            "description": "Nominal Exposure Time [s]"
         },
         "maximum_exposure_time": {
             "type": "integer",
-            "description": "Maximum Exposure Time (s)"
+            "description": "Maximum Exposure Time [s]"
         },
         "num_visits_per_night": {
             "type": "integer",
             "default": 1,
-            "description": "Number of visits per night",
-            "short_description": "# visits per night"
+            "description": "Number of Visits per Night",
+            "short_description": "# Visits per Night"
         },
         "num_unique_nights_per_semester": {
             "type": "integer",
-            "description": "Number of unique nights per semester",
+            "description": "Number of Unique Nights per Semester",
             "short_description": "# of Nights Per Semester"
         },
         "num_internight_cadence": {
-            "type": "number",
-            "description": "Number of internight cadence",
+            "type": "integer",
+            "description": "Number of Internight Cadence",
             "short_description": "Minimum Inter-Night Cadence"
         },
         "num_intranight_cadence": {
             "type": "number",
-            "description": "Number of intranight cadence",
+            "description": "Number of Intranight Cadence",
             "short_description": "Minimum Intra-Night Cadence"
         },
         "num_exposures_per_visit": {
             "type": "integer",
-            "description": "Number of exposures per visit",
+            "description": "Number of Exposures per Visit",
             "short_description": "# of Exposures per Visit"
         },
         "submitted": {
             "type": ["boolean", "null"],
-            "description": "Has target been submitted yet?",
+            "description": "Has Target Been Submitted Yet?",
             "not_editable_by_user": true
         },
         "target_feasible": {
@@ -86,31 +86,32 @@
         },
         "pm_dec": {
             "type": "number",
-            "description": "Proper Motion in Dec"
+            "description": "Proper Motion in Dec [miliarcseconds/year]"
         },
         "pm_ra": {
             "type": "number",
-            "description": "Proper Motion in RA"
+            "description": "Proper Motion in RA [miliarcseconds/year]"
         },
         "ra": {
             "type": "string",
-            "description": "Right Ascension"
+            "description": "Right Ascension [hourangle]"
         },
         "dec": {
             "type": "string",
-            "description": "Declination"
+            "description": "Declination [dd:mm:ss]"
         },
         "ra_deg": {
             "type": "number",
-            "description": "Right Ascension in degrees"
+            "description": "Right Ascension [degrees]"
         },
         "dec_deg": {
             "type": "number",
-            "description": "Declination in degrees"
+            "description": "Declination [degrees]"
         },
         "state": {
             "type": "string",
             "description": "Tells the state of the target (editied, saved, or submitted)",
+            "short_description": "Target State",
             "not_editable_by_user": true
         },
         "comment": {
@@ -127,12 +128,12 @@
         },
         "rise_semester_day": {
             "type": "integer",
-            "description": "Rise Date",
+            "description": "Rise Day of Semester",
             "not_editable_by_user": true
         },
         "sets_semester_day": {
             "type": "integer",
-            "description": "Set Date",
+            "description": "Set Day of Semester",
             "not_editable_by_user": true
         },
         "details": {
@@ -144,7 +145,6 @@
             "type": "string",
             "description": "Target Status",
             "not_editable_by_user": true
-
         },
         "submitter": {
             "type": "string",
@@ -157,11 +157,11 @@
         },
         "total_time_for_target": {
             "type": "number",
-            "description": "Total Time for Target"
+            "description": "Total Time for Target [hours]"
         },
         "total_time_for_target_hours": {
             "type": "number",
-            "description": "Total Time for Target (hours)"
+            "description": "Total Time for Target [hours]"
         }
     },
     "required": [

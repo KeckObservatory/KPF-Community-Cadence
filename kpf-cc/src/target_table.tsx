@@ -22,6 +22,8 @@ import {
   GridRowModel,
   GridToolbar,
   GridRenderCellParams,
+  GridValueSetter,
+  GridValueParser,
   // useGridApiContext
 } from '@mui/x-data-grid-pro';
 import {
@@ -30,7 +32,7 @@ import {
 
 import target_schema from './target_schema.json'
 import ValidationDialogButton, { validate } from './validation_check_dialog';
-import TargetEditDialogButton from './target_edit_dialog';
+import TargetEditDialogButton, { raDecFormat } from './target_edit_dialog';
 import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
 import { delete_target, save_target } from './api/api_root';
@@ -80,14 +82,49 @@ const target_feisable_chip = (params: GridRenderCellParams) => {
 
 function convert_schema_to_columns(semids: string[]) {
   const columns: GridColDef[] = []
-  Object.entries(target_schema.properties).forEach(([key, value]: [string, any]) => {
+
+
+  Object.entries(target_schema.properties).forEach(([key, valueProps]: [string, any]) => {
+
+    const valueParser: GridValueParser = (value: any) => {
+      if (valueProps.type === 'number') {
+        return Number(value)
+      }
+      if (value && (key === 'ra' || key === 'dec')) {
+        key === 'ra' && String(value).replace(/[^+-]/, "")
+        value = raDecFormat(value as string)
+      }
+      return value
+    }
+
+    const valueSetter: GridValueSetter<TargetRow> = (value: any, tgt: TargetRow) => {
+      tgt = { ...tgt, [key]: value, "state": 'TARGET_EDITED' }
+      if (key.includes('exposure_time')) { //nominal equivalent to maximum
+        tgt = {
+          ...tgt,
+          'nominal_exposure_time': Number(value),
+          'maximum_exposure_time': Number(value)
+        }
+      }
+      if (key.includes('num_visits_per_night') && value === 1) { //num_visits_per_night equivalent to num_exposures_per_visit
+        tgt = {
+          ...tgt,
+          'num_intranight_cadence': 0,
+        }
+
+      }
+      return tgt
+    }
+
     let col = {
       field: key,
-      type: value.type,
+      valueParser: valueParser,
+      valueSetter: valueSetter,
+      type: valueProps.type,
       resizable: true,
-      headerName: value.short_description ?? value.description,
+      headerName: valueProps.short_description ?? valueProps.description,
       width: 180,
-      editable: value.not_editable_by_user ? false : true, //TODO: GET inline editing to work with rows
+      editable: valueProps.not_editable_by_user ? false : true, //TODO: GET inline editing to work with rows
     } as GridColDef
     if (key === 'semids') {
       col = {
@@ -322,7 +359,7 @@ export default function TargetTable() {
     {
       field: 'actions',
       type: 'actions',
-      editable: false, 
+      editable: false,
       headerName: 'Actions',
       width: 200,
       disableExport: true,
@@ -345,10 +382,10 @@ export default function TargetTable() {
             validate(editTarget)
             const newErrors = validate.errors ? validate.errors : []
             const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
-            console.log('editTarget', editTarget, 'newResubmit', newResubmit )
+            console.log('editTarget', editTarget, 'newResubmit', newResubmit)
             setResubmit(newResubmit ?? false)
             setErrors(newErrors)
-            if(editTarget.tic_id || editTarget.gaia_id) setHasSimbad(true)
+            if (editTarget.tic_id || editTarget.gaia_id) setHasSimbad(true)
             debounced_edit_click(id)
           }
           setCount((prev: number) => prev + 1)
@@ -412,12 +449,12 @@ export default function TargetTable() {
             title={"Delete this request"}
             placement="top"
             arrow key="Delete This Target" >
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={() => handleDeleteClick(id)}
-            color="inherit"
-          />
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={() => handleDeleteClick(id)}
+              color="inherit"
+            />
           </Tooltip>
           ,
         ];
@@ -447,7 +484,7 @@ export default function TargetTable() {
           rows={rows}
           processRowUpdate={processRowUpdate}
           columns={columns}
-          // editMode="row" //enable to disable stop on focus out
+          // editMode="row" //enable to edit row instead of cell
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
