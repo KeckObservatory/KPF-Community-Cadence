@@ -296,10 +296,10 @@ export default function TargetTable() {
   };
 
 
-  const processRowUpdate = (newRow: GridRowModel) => {
+  const processRowUpdate = (newRow: GridRowModel, originalRow: GridRowModel) => {
     //sends to server
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
-    console.log('processRowUpdate', updatedRow)
+    console.log('processRowUpdate', updatedRow, 'originalRow', originalRow)
     setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
     return updatedRow;
   };
@@ -438,7 +438,7 @@ export default function TargetTable() {
     >
       {Object.keys(visibleColumns).length > 0 && (
         <DataGridPro
-          // disableRowSelectionOnClick
+          // disableRowSelectionOnClick //add to prevent row selection on row click
           rows={rows}
           processRowUpdate={processRowUpdate}
           columns={columns}
