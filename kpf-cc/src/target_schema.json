@@ -28,7 +28,7 @@
         },
         "rotational_velocity": {
             "type": "number",
-            "description": "Rotational Velocity",
+            "description": "Rotational Velocity"
         },
         "simulcal_on": {
             "type": "boolean",
