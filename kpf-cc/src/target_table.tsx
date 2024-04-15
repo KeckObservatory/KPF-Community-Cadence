@@ -20,7 +20,6 @@ import {
   GridEventListener,
   GridRowId,
   GridRowModel,
-  GridRowEditStopReasons,
   GridToolbar,
   GridRenderCellParams,
   // useGridApiContext
@@ -227,6 +226,12 @@ export default function TargetTable() {
 
   const debounced_save = useDebounceCallback(edit_target, 2000)
 
+  const handleCellEditStop: GridEventListener<'cellEditStop'> = (params, event) => {
+    let tgt = params.row as TargetRow
+    let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
+    console.log('handleCellEditStop', params, event, 'editTarget', editTarget)
+  }
+
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     let tgt = params.row as TargetRow
     let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
@@ -235,9 +240,9 @@ export default function TargetTable() {
     // editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
     // validate(editTarget)
     // const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
+    // if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+    //   event.defaultMuiPrevented = true;
+    // }
   };
 
   const handleEditClick = (id: GridRowId) => () => {
@@ -446,6 +451,7 @@ export default function TargetTable() {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
+          onCellEditStop={handleCellEditStop}
           slots={{
             // @ts-ignore
             toolbar: EditToolbar,
