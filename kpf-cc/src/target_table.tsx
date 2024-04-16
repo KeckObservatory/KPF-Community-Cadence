@@ -24,7 +24,9 @@ import {
   GridRenderCellParams,
   GridValueSetter,
   GridValueParser,
-  // useGridApiContext
+  GridEventListener,
+  useGridApiContext,
+  useGridApiEventHandler
 } from '@mui/x-data-grid-pro';
 import {
   randomId,
@@ -40,6 +42,7 @@ import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext, Target, useSnackbarContext, get_config } from './App';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Chip, Tooltip } from '@mui/material';
+import { update } from 'lodash';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -376,7 +379,14 @@ export default function TargetTable() {
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
         const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state?.includes('TARGET_SUBMITTED'));
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
-        // const apiRef = useGridApiContext();
+        const apiRef = useGridApiContext();
+
+
+        const handleEvent: GridEventListener<'cellEditStop'> = (params, event, details) => {
+          console.log('cellEditStop handleEvent', params, event, details)
+        }
+
+        useGridApiEventHandler(apiRef, 'cellEditStop', handleEvent)
 
         const handleRowChange = () => {
           if (count > 0) {
