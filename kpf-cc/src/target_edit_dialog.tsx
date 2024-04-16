@@ -93,6 +93,9 @@ export const TargetEditDialog = (props: TargetEditProps) => {
     }, [target.tic_id, target.gaia_id])
 
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
+        //add trailing zero if string ends in a decimal 
+        value && isNumber && typeof value === 'string' ? value.replace(/(\d+)\.$/, "$1.0") : value 
+        //convert to number if isNumber is true
         value && isNumber ? value = Number(value) : value
         if (value && (key === 'ra' || key === 'dec')) {
             key === 'ra' && String(value).replace(/[^+-]/, "")
