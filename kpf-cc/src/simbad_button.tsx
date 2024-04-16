@@ -122,8 +122,8 @@ export default function SimbadButton(props: Props) {
     const handleClick = async () => {
         if (targetName) {
             const simbadData = await get_simbad_data(targetName)
-            simbadData.tic_id && (simbadData['tic_id'] = 'No_TIC_Name')
-            simbadData.gaia_id && (simbadData['gaia_id'] = 'No_Gaia_Name')
+            !simbadData.tic_id && (simbadData['tic_id'] = 'No_TIC_Name')
+            !simbadData.gaia_id && (simbadData['gaia_id'] = 'No_Gaia_Name')
             setTarget({ ...target, ...simbadData, "state": 'TARGET_EDITED'})
         }
     }
