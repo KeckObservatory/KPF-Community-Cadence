@@ -43,7 +43,7 @@ export const Control = () => {
                     snackbarContext.setSnackbarMessage(
                         {
                             severity: 'error',
-                            message: `No targets found for semid ${value}. Details: ${resp.details}`
+                            message: `No targets found for semid ${value}. Details: ${resp.details ?? resp.message}`
                         })
                     context.setTotalHours(0)
                     context.setTotalObservations(0)
