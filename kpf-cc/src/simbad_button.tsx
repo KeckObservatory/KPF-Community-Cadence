@@ -99,6 +99,7 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             && (line.includes('Gaia') || line.includes('TIC'))) {
             let ticMatch = line.match(new RegExp('TIC\\s\\w+'))
             const tic = ticMatch ? ticMatch[0].split(' ')[1] : ""
+            line.includes('TIC') && console.log('line', line, 'ticMatch', ticMatch, 'tic', tic)
             let gaiaMatch = line.match(new RegExp('Gaia\\s\\w+\\s\\w+'))
             const dr = gaiaMatch ? gaiaMatch[0].split(' ')[1] : ""
             const gaia = gaiaMatch ? gaiaMatch[0].split(' ')[2] : ""
