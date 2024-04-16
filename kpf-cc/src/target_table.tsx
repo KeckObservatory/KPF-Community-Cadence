@@ -394,11 +394,11 @@ export default function TargetTable() {
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
           handleRowChange()
           setCount((prev: number) => prev + 1)
-        }, [editTarget, row])
+        }, [editTarget])
 
-        // React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-        //   console.log('row has been edited', row), editTarget
-        // }, [row])
+        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+          console.log('row has been edited', row, editTarget)
+        }, [row])
 
 
 
