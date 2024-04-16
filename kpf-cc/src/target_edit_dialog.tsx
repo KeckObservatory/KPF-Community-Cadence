@@ -125,7 +125,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
 
     const handleSimbadChange = (tgt: Target) => {
         setTarget((prev: Target) => {
-            tgt = { ...tgt, ...prev, "state": 'TARGET_EDITED' }
+            tgt = { ...prev, ...tgt, "state": 'TARGET_EDITED' }
             return tgt
         })
         setHasSimbad(tgt.tic_id || tgt.gaia_id ? true : false)
