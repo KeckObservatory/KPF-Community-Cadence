@@ -383,7 +383,7 @@ export default function TargetTable() {
           setTimeout(() => { //wait for cell to update before setting editTarget
             const value = apiRef.current.getCellValue(id, params.field);
             console.log('cellEditStop handleEvent', params, event, details)
-            setEditTarget( {...editTarget, [params.field]: value} )
+            setEditTarget( {...editTarget, 'state': 'TARGET_EDITED', [params.field]: value} )
           }, 100)
         }
 
