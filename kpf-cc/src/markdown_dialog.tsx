@@ -16,7 +16,6 @@ export interface MarkdownDialogProps {
 
 function MarkdownDialog(props: MarkdownDialogProps) {
   const { open, handleClose } = props;
-  console.log('msg', props.msg)
 
   return (
     <Dialog 

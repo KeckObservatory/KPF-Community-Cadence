@@ -127,7 +127,7 @@ function convert_schema_to_columns(semids: string[]) {
       resizable: true,
       headerName: valueProps.short_description ?? valueProps.description,
       width: 180,
-      editable: valueProps.not_editable_by_user ? false : true, //TODO: GET inline editing to work with rows
+      editable: valueProps.not_editable_by_user ? false : true, 
     } as GridColDef
     if (key === 'semids') {
       col = {
@@ -170,9 +170,11 @@ function EditToolbar(props: EditToolbarProps) {
   const context = useCommCadContext()
   const snackbarContext = useSnackbarContext()
 
-  const handleClick = async () => {
+  const handleAddTarget= async () => {
     if (context.semid === undefined) {
-      console.error('semid is undefined') //TODO notify user
+      console.error('semid is undefined') 
+      snackbarContext.setSnackbarMessage(
+        { severity: 'error', message: `semid is undefined` })
       return
     }
 
@@ -202,7 +204,7 @@ function EditToolbar(props: EditToolbarProps) {
 
   return (
     <GridToolbarContainer sx={{ justifyContent: 'center' }}>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+      <Button color="primary" startIcon={<AddIcon />} onClick={handleAddTarget}>
         Add Target
       </Button>
       <GridToolbar
@@ -252,7 +254,7 @@ export default function TargetTable() {
       }
     }) as TargetRow[]
     setRows(newTargets)
-  }, [context.targets])
+  }, [context.semid])
 
   const edit_target = async (target: Target) => {
     const resp = await save_target([target], target.semid, 'save', false)
@@ -265,25 +267,6 @@ export default function TargetTable() {
   }
 
   const debounced_save = useDebounceCallback(edit_target, 2000)
-
-  // const handleCellEditStop: GridEventListener<'cellEditStop'> = (params, event) => {
-  //   let tgt = params.row as TargetRow
-  //   let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
-  //   console.log('handleCellEditStop', params, event, 'editTarget', editTarget)
-  // }
-
-  // const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
-  //   let tgt = params.row as TargetRow
-  //   let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
-  //   console.log('handleRowEditStop', params, event, 'editTarget', editTarget)
-  //   // processRowUpdate(editTarget)
-  //   // editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
-  //   // validate(editTarget)
-  //   // const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
-  //   // if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-  //   //   event.defaultMuiPrevented = true;
-  //   // }
-  // };
 
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
