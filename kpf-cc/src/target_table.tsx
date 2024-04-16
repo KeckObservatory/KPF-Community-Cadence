@@ -24,7 +24,7 @@ import {
   GridRenderCellParams,
   GridValueSetter,
   GridValueParser,
-  // useGridApiContext
+  useGridApiContext
 } from '@mui/x-data-grid-pro';
 import {
   randomId,
@@ -87,10 +87,10 @@ function convert_schema_to_columns(semids: string[]) {
   Object.entries(target_schema.properties).forEach(([key, valueProps]: [string, any]) => {
 
     const valueParser: GridValueParser = (value: any) => {
-      if (valueProps.type === 'number') {
+      if (['number', 'integer'].includes(valueProps.type)) {
         return Number(value)
       }
-      if (value && (key === 'ra' || key === 'dec')) {
+      if (value && ['ra', 'dec'].includes(key)) {
         key === 'ra' && String(value).replace(/[^+-]/, "")
         value = raDecFormat(value as string)
       }
@@ -344,6 +344,8 @@ export default function TargetTable() {
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
     console.log('processRowUpdate', updatedRow)
     setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
+    newRow.state?.includes('TARGET_EDITED') && debounced_save(newRow as TargetRow)
+    debounced_save(updatedRow)
     return updatedRow;
   };
 
@@ -374,7 +376,7 @@ export default function TargetTable() {
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
         const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state?.includes('TARGET_SUBMITTED'));
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
-        // const apiRef = useGridApiContext();
+        const apiRef = useGridApiContext();
 
         const handleRowChange = () => {
           if (count > 0) {
@@ -396,11 +398,11 @@ export default function TargetTable() {
           setCount((prev: number) => prev + 1)
         }, [editTarget])
 
-        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-          console.log('row has been edited', row, editTarget)
-        }, [row])
-
-
+        // React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+        //   console.log('row has been edited', row, editTarget)
+        //   apiRef.current.stopCellEditMode
+        //   // setEditTarget(row)
+        // }, [row])
 
         let publishText = errors.length > 0 ? 'Validate target before submitting' : 'Submit target for review'
         if (resubmit && errors.length == 0) {
