@@ -98,10 +98,10 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             && bibcodesSection === false
             && (line.includes('Gaia') || line.includes('TIC'))) {
             let ticMatch = line.match(new RegExp('TIC\\s\\w+'))
-            const tic = ticMatch ? ticMatch[0].split(' ')[1] : undefined
+            const tic = ticMatch ? ticMatch[0].split(' ')[1] : 'No_TIC_Name'
             let gaiaMatch = line.match(new RegExp('Gaia\\s\\w+\\s\\w+'))
-            const dr = gaiaMatch ? gaiaMatch[0].split(' ')[1] : undefined 
-            const gaia = gaiaMatch ? gaiaMatch[0].split(' ')[2] : undefined
+            const dr = gaiaMatch ? gaiaMatch[0].split(' ')[1] : '' 
+            const gaia = gaiaMatch ? gaiaMatch[0].split(' ')[2] : 'No_Gaia_Name'
             tic && (simbadData['tic_id'] = tic)
             if (dr && gaia) {
                 Number(dr[2]) > currDr && (
@@ -122,8 +122,6 @@ export default function SimbadButton(props: Props) {
     const handleClick = async () => {
         if (targetName) {
             const simbadData = await get_simbad_data(targetName)
-            !simbadData.tic_id && (simbadData['tic_id'] = 'No_TIC_Name')
-            !simbadData.gaia_id && (simbadData['gaia_id'] = 'No_Gaia_Name')
             setTarget({ ...target, ...simbadData, "state": 'TARGET_EDITED'})
         }
     }
