@@ -263,13 +263,13 @@ export default function TargetTable() {
     setTimeout(() => {
       const newTargets = context.targets?.map((target: Target) => {
         return {
-          ...target,
           id: randomId(),
+          ...target,
         }
       }) as TargetRow[]
       console.log('new targets', newTargets)
       setRows(newTargets)
-    }, 100)
+    }, 300)
   }, [refreshTable, context.semid])
 
   const edit_target = async (target: Target) => {
