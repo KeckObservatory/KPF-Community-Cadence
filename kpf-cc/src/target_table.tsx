@@ -264,24 +264,24 @@ export default function TargetTable() {
 
   const debounced_save = useDebounceCallback(edit_target, 2000)
 
-  const handleCellEditStop: GridEventListener<'cellEditStop'> = (params, event) => {
-    let tgt = params.row as TargetRow
-    let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
-    console.log('handleCellEditStop', params, event, 'editTarget', editTarget)
-  }
+  // const handleCellEditStop: GridEventListener<'cellEditStop'> = (params, event) => {
+  //   let tgt = params.row as TargetRow
+  //   let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
+  //   console.log('handleCellEditStop', params, event, 'editTarget', editTarget)
+  // }
 
-  const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
-    let tgt = params.row as TargetRow
-    let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
-    console.log('handleRowEditStop', params, event, 'editTarget', editTarget)
-    // processRowUpdate(editTarget)
-    // editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
-    // validate(editTarget)
-    // const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
-    // if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-    //   event.defaultMuiPrevented = true;
-    // }
-  };
+  // const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
+  //   let tgt = params.row as TargetRow
+  //   let editTarget = rows.find((row) => row.id === tgt.id) as TargetRow
+  //   console.log('handleRowEditStop', params, event, 'editTarget', editTarget)
+  //   // processRowUpdate(editTarget)
+  //   // editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
+  //   // validate(editTarget)
+  //   // const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
+  //   // if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+  //   //   event.defaultMuiPrevented = true;
+  //   // }
+  // };
 
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -339,10 +339,10 @@ export default function TargetTable() {
   };
 
 
-  const processRowUpdate = (newRow: GridRowModel, originalRow?: GridRowModel) => {
+  const processRowUpdate = (newRow: GridRowModel) => {
     //sends to server
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
-    console.log('processRowUpdate', updatedRow, 'originalRow', originalRow)
+    console.log('processRowUpdate', updatedRow)
     setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
     return updatedRow;
   };
@@ -376,7 +376,7 @@ export default function TargetTable() {
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         // const apiRef = useGridApiContext();
 
-        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+        const handleRowChange = () => {
           if (count > 0) {
             processRowUpdate(editTarget)
             editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
@@ -389,12 +389,16 @@ export default function TargetTable() {
             if (editTarget.tic_id || editTarget.gaia_id) setHasSimbad(true)
             debounced_edit_click(id)
           }
-          setCount((prev: number) => prev + 1)
-        }, [editTarget])
+        }
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-          console.log('row has been edited', row), editTarget
-        }, [row])
+          handleRowChange()
+          setCount((prev: number) => prev + 1)
+        }, [editTarget, row])
+
+        // React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+        //   console.log('row has been edited', row), editTarget
+        // }, [row])
 
 
 
@@ -488,8 +492,8 @@ export default function TargetTable() {
           // editMode="row" //enable to edit row instead of cell
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          onCellEditStop={handleCellEditStop}
+          // onRowEditStop={handleRowEditStop}
+          // onCellEditStop={handleCellEditStop}
           slots={{
             // @ts-ignore
             toolbar: EditToolbar,
