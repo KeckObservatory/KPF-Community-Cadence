@@ -42,7 +42,6 @@ import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext, Target, useSnackbarContext, get_config } from './App';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Chip, Tooltip } from '@mui/material';
-import { set } from 'lodash';
 
 interface TargetRow extends Target {
   isNew?: boolean;
