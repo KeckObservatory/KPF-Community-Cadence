@@ -166,7 +166,7 @@ function App() {
       else {
         setSnackbarMessage({
           severity: 'error',
-          message: `Failed to get Targets. Details: ${resp.details}`
+          message: `Failed to get Targets. Details: ${resp.message}`
         })
       }
 
@@ -233,7 +233,10 @@ function App() {
         } as CCContext
       }>
 
-        <TopBar darkState={darkState} handleThemeChange={handleThemeChange} username={state.username} />
+        <TopBar 
+        darkState={darkState} 
+        handleThemeChange={handleThemeChange} 
+        username={state.username} />
         <SnackbarContext.Provider value={{
           snackbarOpen: openSnackbar,
           setSnackbarOpen: setOpenSnackbar,

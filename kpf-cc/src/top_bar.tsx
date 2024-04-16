@@ -3,9 +3,11 @@ import Switch from "@mui/material/Switch"
 import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography'
-import LogoutIcon from '@mui/icons-material/Logout';
-import IconButton from '@mui/material/IconButton';
-import HelpDialogButton from './help_dialog';
+import InfoIcon from '@mui/icons-material/Info';
+import HelpIcon from '@mui/icons-material/Help';
+import { useEffect, useState } from 'react';
+import { get_config } from './App';
+import MarkdownDialogButton from './markdown_dialog';
 
 interface Props {
   username?: string,
@@ -14,6 +16,30 @@ interface Props {
 }
 
 export function TopBar(props: Props) {
+
+  const [welcomeMsg, setWelcomeMsg] = useState<string>('')
+  const [motivationMsg, setMotivationMsg] = useState<string>('')
+
+
+  useEffect(() => {
+
+    const init_msgs = async () => {
+
+      const config = await get_config()
+      const welcomeResp = await fetch(config.welcome_path)
+      const motivationResp = await fetch(config.motivation_path)
+      const wtxt = await welcomeResp.text()
+      const mtxt = await motivationResp.text()
+      console.log('welcome', wtxt, 'motivation', mtxt)
+      setMotivationMsg(wtxt)
+      setWelcomeMsg(mtxt)
+    }
+
+    init_msgs()
+
+
+  }, [])
+
 
 
   return (
@@ -51,12 +77,18 @@ export function TopBar(props: Props) {
         >
           Welcome {props.username}
         </Typography>
-        <Tooltip title="Select to logout via observer portal">
-          <IconButton aria-label="logout" color="primary">
-            <LogoutIcon />
-          </IconButton>
-        </Tooltip>
-          <HelpDialogButton />
+        <MarkdownDialogButton
+          icon={<HelpIcon />}
+          msg={motivationMsg}
+          tooltipMsg='Select to view Motivation message'
+          header='Motivation'
+        />
+        <MarkdownDialogButton
+          icon={<InfoIcon />}
+          msg={welcomeMsg}
+          tooltipMsg='Select to view Welcome message'
+          header='Welcome'
+        />
         <Tooltip title="Toggle on for dark mode">
           <Switch
             checked={props.darkState}

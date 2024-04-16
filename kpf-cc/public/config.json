@@ -13,5 +13,7 @@
     "pinned_table_columns": {
         "left": ["actions", "target_name"],
         "right": [ "target_feasible"]
-    }
+    },
+    "motivation_path": "./motivationMsg.md",
+    "welcome_path": "./welcomeMsg.md"
 }
