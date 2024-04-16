@@ -381,10 +381,10 @@ export default function TargetTable() {
 
 
         const handleEvent: GridEventListener<'cellEditStop'> = (params, event, details) => {
-          setTimeout(() => {
-            params.value = apiRef.current.getCellValue(id, params.field);
+          setTimeout(() => { //wait for cell to update before setting editTarget
+            const value = apiRef.current.getCellValue(id, params.field);
             console.log('cellEditStop handleEvent', params, event, details)
-            setEditTarget( {...editTarget, [params.field]: params.value} )
+            setEditTarget( {...editTarget, [params.field]: value} )
           }, 100)
         }
 
