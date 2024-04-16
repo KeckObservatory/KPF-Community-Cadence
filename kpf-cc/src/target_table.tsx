@@ -371,7 +371,7 @@ export default function TargetTable() {
         const [editTarget, setEditTarget] = React.useState<TargetRow>(row);
         const [iconSpin, setIconSpin] = React.useState<boolean>(false);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
-        const [hasSimbad, setHasSimbad] = React.useState(row.tic_id | row.gaia_id ? true : false);
+        const [hasSimbad, setHasSimbad] = React.useState(row.tic_id || row.gaia_id ? true : false);
         validate(row)
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
         const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state?.includes('TARGET_SUBMITTED'));

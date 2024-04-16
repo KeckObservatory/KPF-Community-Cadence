@@ -33,6 +33,7 @@ export function TopBar(props: Props) {
     const init_msgs = async () => {
 
       const config = await get_config()
+      console.log('config', config)
       const welcomeResp = await fetch(config.welcome_path)
       const motivationResp = await fetch(config.motivation_path)
       const wtxt = await welcomeResp.text()
