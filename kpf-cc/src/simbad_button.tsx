@@ -99,7 +99,6 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             && (line.includes('Gaia') || line.includes('TIC'))) {
             let ticMatch = line.match(new RegExp('TIC\\s\\w+'))
             const tic = ticMatch ? ticMatch[0].split(' ')[1] : ""
-            line.includes('TIC') && console.log('line', line, 'ticMatch', ticMatch, 'tic', tic)
             let gaiaMatch = line.match(new RegExp('Gaia\\s\\w+\\s\\w+'))
             const dr = gaiaMatch ? gaiaMatch[0].split(' ')[1] : ""
             const gaia = gaiaMatch ? gaiaMatch[0].split(' ')[2] : ""
@@ -120,19 +119,18 @@ export default function SimbadButton(props: Props) {
     const { target, setTarget } = props
     const targetName = target.target_name
 
-    const handleClickOpen = async () => {
+    const handleClick = async () => {
         if (targetName) {
             const simbadData = await get_simbad_data(targetName)
-            simbadData['tic']===undefined && (simbadData['tic'] = 'No_TIC_Name')
+            simbadData['tic_id']===undefined && (simbadData['tic_id'] = 'No_TIC_Name')
             simbadData['gaia_id']===undefined && (simbadData['gaia_id'] = 'No_Gaia_Name')
-            console.log('simbadData', simbadData)
             setTarget({ ...target, ...simbadData, "state": 'TARGET_EDITED'})
         }
     }
 
     return (
         <Tooltip title={`Click to add Simbad info to target ${targetName}`}>
-            <IconButton onClick={handleClickOpen}>
+            <IconButton onClick={handleClick}>
                 <ModeStandbyIcon color={props.hasSimbad ? 'success' : 'inherit'} />
             </IconButton>
         </Tooltip>

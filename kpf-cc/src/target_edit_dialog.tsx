@@ -276,9 +276,9 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('tic_id')}
-                                        InputLabelProps={{ shrink: hasSimbad || target.tic !== undefined }}
+                                        InputLabelProps={{ shrink: hasSimbad || target.tic_id!== undefined }}
                                         id="tic"
-                                        value={target.tic}
+                                        value={target.tic_id}
                                         onChange={(event) => handleTextChange('tic_id', event.target.value)}
                                     />
                                 </Tooltip>
