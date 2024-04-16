@@ -248,7 +248,6 @@ export default function TargetTable() {
   React.useEffect(() => {
     const set_visible_columns = async () => {
       const cfg = await get_config()
-      console.log('cfg', cfg)
       setPinnedColumns(cfg.pinned_table_columns)
       const vc = Object.fromEntries(columns.map((col) => {
         const visible = cfg.default_table_columns.includes(col.field)
@@ -267,7 +266,6 @@ export default function TargetTable() {
           ...target,
         }
       }) as TargetRow[]
-      console.log('new targets', newTargets)
       setRows(newTargets)
     }, 300)
   }, [refreshTable, context.semid])
@@ -343,13 +341,11 @@ export default function TargetTable() {
   const processRowUpdate = (newRow: GridRowModel) => {
     //sends to server
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
-    console.log('processRowUpdate', updatedRow)
     setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
     return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-    console.log('handleRowModesModelChange', newRowModesModel)
     setRowModesModel(newRowModesModel);
   };
 
@@ -381,7 +377,6 @@ export default function TargetTable() {
         const handleEvent: GridEventListener<'cellEditStop'> = (params, event, details) => {
           setTimeout(() => { //wait for cell to update before setting editTarget
             const value = apiRef.current.getCellValue(id, params.field);
-            console.log('cellEditStop handleEvent', params, event, details)
             setEditTarget({ ...editTarget, 'state': 'TARGET_EDITED', [params.field]: value })
           }, 100)
         }
@@ -395,7 +390,6 @@ export default function TargetTable() {
             validate(editTarget)
             const newErrors = validate.errors ? validate.errors : []
             const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
-            console.log('editTarget', editTarget, 'newResubmit', newResubmit)
             setResubmit(newResubmit ?? false)
             setErrors(newErrors)
             if (editTarget.tic_id || editTarget.gaia_id) setHasSimbad(true)

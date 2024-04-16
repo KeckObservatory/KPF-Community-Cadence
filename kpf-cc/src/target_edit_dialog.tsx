@@ -99,7 +99,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
             value = raDecFormat(value as string)
         }
 
-
         setTarget((prev: Target) => {
             return rowSetter(prev, key, value)
         })
@@ -419,7 +418,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         />
                                     </Tooltip>
                                     <Tooltip
-                                        title={`${input_label('num_internight_cadence', true)}.${target.num_visits_per_night === 1 ? ' Disabled because num_visits_per_night is 1' : ''}`}
+                                        title={`${input_label('num_intranight_cadence', true)}.${target.num_visits_per_night === 1 ? ' Disabled because num_visits_per_night is 1' : ''}`}
                                         placement='left'
                                     >
                                         <TextField
