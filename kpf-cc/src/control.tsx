@@ -22,7 +22,6 @@ export const Control = () => {
     const onChange = async (key: String, value: string | undefined | null) => {
         if (value) {
             if (key === 'semid' && value !== context.semid) {
-                context.setSemid(value)
                 const resp = await get_all_targets(value);
                 if (resp.success === 'SUCCESS') {
                     context.setTotalHours(resp.total_hours)
@@ -50,6 +49,7 @@ export const Control = () => {
                     context.setTargets(resp.targets)
                 }
             }
+            context.setSemid(value)
         }
     }
 
