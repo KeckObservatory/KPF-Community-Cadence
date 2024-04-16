@@ -42,6 +42,7 @@ import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext, Target, useSnackbarContext, get_config } from './App';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Chip, Tooltip } from '@mui/material';
+import { set } from 'lodash';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -346,8 +347,6 @@ export default function TargetTable() {
     const updatedRow = { ...newRow, isNew: false } as TargetRow;
     console.log('processRowUpdate', updatedRow)
     setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
-    newRow.state?.includes('TARGET_EDITED') && debounced_save(newRow as TargetRow)
-    debounced_save(updatedRow)
     return updatedRow;
   };
 
@@ -385,6 +384,7 @@ export default function TargetTable() {
           setTimeout(() => {
             params.value = apiRef.current.getCellValue(id, params.field);
             console.log('cellEditStop handleEvent', params, event, details)
+            setEditTarget( {...editTarget, [params.field]: params.value} )
           }, 100)
         }
 
