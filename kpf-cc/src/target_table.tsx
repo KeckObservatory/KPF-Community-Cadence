@@ -24,7 +24,7 @@ import {
   GridRenderCellParams,
   GridValueSetter,
   GridValueParser,
-  useGridApiContext
+  // useGridApiContext
 } from '@mui/x-data-grid-pro';
 import {
   randomId,
@@ -376,7 +376,7 @@ export default function TargetTable() {
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
         const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state?.includes('TARGET_SUBMITTED'));
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
-        const apiRef = useGridApiContext();
+        // const apiRef = useGridApiContext();
 
         const handleRowChange = () => {
           if (count > 0) {

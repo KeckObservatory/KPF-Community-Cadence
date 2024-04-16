@@ -39,8 +39,8 @@ export interface Target extends SimbadTargetData {
   target_name?: string,
   j_mag?: number,
   t_eff?: number,
-  rotational_velocity?: number,
-  submitted: boolean,
+  systemic_velocity?: number,
+  submitted?: boolean,
   state?: string,
   simulcal_on?: boolean,
   nominal_exposure_time?: number
