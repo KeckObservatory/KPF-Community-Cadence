@@ -17,7 +17,6 @@ import {
   GridToolbarContainer,
   GridPinnedColumnFields,
   GridActionsCellItem,
-  // GridEventListener,
   GridRowId,
   GridRowModel,
   GridToolbar,
@@ -374,7 +373,7 @@ export default function TargetTable() {
         const apiRef = useGridApiContext();
 
 
-        const handleEvent: GridEventListener<'cellEditStop'> = (params, event, details) => {
+        const handleEvent: GridEventListener<'cellEditStop'> = (params) => {
           setTimeout(() => { //wait for cell to update before setting editTarget
             const value = apiRef.current.getCellValue(id, params.field);
             setEditTarget({ ...editTarget, 'state': 'TARGET_EDITED', [params.field]: value })
