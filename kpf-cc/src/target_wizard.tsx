@@ -18,7 +18,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
 import { save_target } from './api/api_root';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { create_new_target } from './target_table';
+import { create_new_target, useRefreshTableContext } from './target_table';
 
 
 interface Props {
@@ -67,7 +67,9 @@ function LinearProgressWithLabel(props: LinearProgressProps &
         <>
             <Button
                 disabled={label.includes('Loading')}
-                onClick={generate_targets_from_list}>{label}</Button>
+                onClick={generate_targets_from_list}>
+                {label}
+            </Button>
             {targetName && (
                 <Typography variant="body2" color="text.secondary">
                     {targetName}
@@ -95,6 +97,7 @@ const TargetStepper = (props: Props) => {
     const [targetNames, setTargetNames] = React.useState([] as string[])
     const [targets, setTargets] = React.useState([] as Target[])
     const context = useCommCadContext()
+    const refreshTableContext = useRefreshTableContext()
     const [canContinue, setCanContinue] = React.useState(false)
     const [saveMessage, setSaveMessage] = React.useState('All steps completed - Targets are ready to be saved')
 
@@ -117,13 +120,18 @@ const TargetStepper = (props: Props) => {
             props.setOpen(false)
             context.setTargets([...context.targets, ...resp.targets])
             context.setTotalHours(resp.total_hours)
+            refreshTableContext.setRefreshTable((prev: number) => {return prev+1})
             context.setTotalObservations(resp.total_observations)
+            snackbarContext.setSnackbarMessage(
+                { severity: 'success', message: `Targets saved!` }
+            )
         }
         else {
             console.error('Failed to save targets', resp)
             setSaveMessage(`Failed to save targets: ${resp.details}`)
             snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `Target not submitted. Details: ${resp.details}` })
+                { severity: 'error', message: `Target not submitted. Details: ${resp.details}` }
+            )
         }
     }
 

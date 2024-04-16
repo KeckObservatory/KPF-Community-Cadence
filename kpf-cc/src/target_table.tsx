@@ -43,6 +43,18 @@ import { useCommCadContext, Target, useSnackbarContext, get_config } from './App
 import PublishIcon from '@mui/icons-material/Publish';
 import { Chip, Tooltip } from '@mui/material';
 
+export interface RefreshTableContext {
+  refreshTable: number
+  setRefreshTable: Function
+
+}
+
+const refreshTableContext = React.createContext<RefreshTableContext>({
+  refreshTable: 0,
+  setRefreshTable: () => { }
+})
+export const useRefreshTableContext = () => React.useContext(refreshTableContext)
+
 interface TargetRow extends Target {
   isNew?: boolean;
   id: string;
@@ -224,6 +236,7 @@ export default function TargetTable() {
     }
   }) as TargetRow[];
   const [rows, setRows] = React.useState(initTargets);
+  const [refreshTable, setRefreshTable] = React.useState(0)
   const [visibleColumns, setVisibleColumns] = React.useState<{ [key: string]: boolean }>({});
   const [pinnedColumns, setPinnedColumns] = React.useState<GridPinnedColumnFields>({
     left: [],
@@ -254,7 +267,7 @@ export default function TargetTable() {
       }
     }) as TargetRow[]
     setRows(newTargets)
-  }, [context.semid])
+  }, [refreshTable, context.semid])
 
   const edit_target = async (target: Target) => {
     const resp = await save_target([target], target.semid, 'save', false)
@@ -467,6 +480,7 @@ export default function TargetTable() {
 
 
   return (
+    <refreshTableContext.Provider value={{refreshTable, setRefreshTable}}>
     <Box
       sx={{
         height: 500,
@@ -507,5 +521,6 @@ export default function TargetTable() {
         />
       )}
     </Box>
+    </refreshTableContext.Provider>
   );
 }
