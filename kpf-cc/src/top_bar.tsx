@@ -37,7 +37,7 @@ export function TopBar(props: Props) {
       const motivationResp = await fetch(config.motivation_path)
       const wtxt = await welcomeResp.text()
       const mtxt = await motivationResp.text()
-      console.log('welcome', wtxt, 'motivation', mtxt)
+      console.log('welcome', config.welcome_path, wtxt, 'motivation', config.motivation_path, mtxt)
       setMotivationMsg(wtxt)
       setWelcomeMsg(mtxt)
     }

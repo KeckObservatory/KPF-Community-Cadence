@@ -85,7 +85,7 @@ export interface SubmitResp {
 }
 
 export const observer_logout = (): Promise<SubmitResp> => {
-    const url = API_ADDR + '/observerLogout'
+    const url = API_ADDR + '/logout'
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
