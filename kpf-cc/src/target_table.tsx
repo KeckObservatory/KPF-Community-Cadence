@@ -382,7 +382,10 @@ export default function TargetTable() {
 
 
         const handleEvent: GridEventListener<'cellEditStop'> = (params, event, details) => {
-          console.log('cellEditStop handleEvent', params, event, details)
+          setTimeout(() => {
+            params.value = apiRef.current.getCellValue(id, params.field);
+            console.log('cellEditStop handleEvent', params, event, details)
+          }, 100)
         }
 
         useGridApiEventHandler(apiRef, 'cellEditStop', handleEvent)
