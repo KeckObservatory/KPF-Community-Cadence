@@ -267,6 +267,7 @@ export default function TargetTable() {
           id: randomId(),
         }
       }) as TargetRow[]
+      console.log('new targets', newTargets)
       setRows(newTargets)
     }, 100)
   }, [refreshTable, context.semid])
