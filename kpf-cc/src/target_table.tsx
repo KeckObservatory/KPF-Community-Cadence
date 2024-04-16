@@ -139,7 +139,7 @@ function convert_schema_to_columns(semids: string[]) {
       resizable: true,
       headerName: valueProps.short_description ?? valueProps.description,
       width: 180,
-      editable: valueProps.not_editable_by_user ? false : true, 
+      editable: valueProps.not_editable_by_user ? false : true,
     } as GridColDef
     if (key === 'semids') {
       col = {
@@ -182,9 +182,9 @@ function EditToolbar(props: EditToolbarProps) {
   const context = useCommCadContext()
   const snackbarContext = useSnackbarContext()
 
-  const handleAddTarget= async () => {
+  const handleAddTarget = async () => {
     if (context.semid === undefined) {
-      console.error('semid is undefined') 
+      console.error('semid is undefined')
       snackbarContext.setSnackbarMessage(
         { severity: 'error', message: `semid is undefined` })
       return
@@ -260,13 +260,15 @@ export default function TargetTable() {
   }, [])
 
   React.useEffect(() => {
-    const newTargets = context.targets?.map((target: Target) => {
-      return {
-        ...target,
-        id: randomId(),
-      }
-    }) as TargetRow[]
-    setRows(newTargets)
+    setTimeout(() => {
+      const newTargets = context.targets?.map((target: Target) => {
+        return {
+          ...target,
+          id: randomId(),
+        }
+      }) as TargetRow[]
+      setRows(newTargets)
+    }, 100)
   }, [refreshTable, context.semid])
 
   const edit_target = async (target: Target) => {
@@ -379,7 +381,7 @@ export default function TargetTable() {
           setTimeout(() => { //wait for cell to update before setting editTarget
             const value = apiRef.current.getCellValue(id, params.field);
             console.log('cellEditStop handleEvent', params, event, details)
-            setEditTarget( {...editTarget, 'state': 'TARGET_EDITED', [params.field]: value} )
+            setEditTarget({ ...editTarget, 'state': 'TARGET_EDITED', [params.field]: value })
           }, 100)
         }
 
@@ -480,47 +482,47 @@ export default function TargetTable() {
 
 
   return (
-    <refreshTableContext.Provider value={{refreshTable, setRefreshTable}}>
-    <Box
-      sx={{
-        height: 500,
-        width: '100%',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
-      }}
-    >
-      {Object.keys(visibleColumns).length > 0 && (
-        <DataGridPro
-          // disableRowSelectionOnClick //add to prevent row selection on row click
-          rows={rows}
-          processRowUpdate={processRowUpdate}
-          columns={columns}
-          // editMode="row" //enable to edit row instead of cell
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          // onRowEditStop={handleRowEditStop}
-          // onCellEditStop={handleCellEditStop}
-          slots={{
-            // @ts-ignore
-            toolbar: EditToolbar,
-          }}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
-          pinnedColumns={pinnedColumns}
-          initialState={{
-            columns: {
-              columnVisibilityModel:
-                visibleColumns
-            }
-          }}
-        />
-      )}
-    </Box>
+    <refreshTableContext.Provider value={{ refreshTable, setRefreshTable }}>
+      <Box
+        sx={{
+          height: 500,
+          width: '100%',
+          '& .actions': {
+            color: 'text.secondary',
+          },
+          '& .textPrimary': {
+            color: 'text.primary',
+          },
+        }}
+      >
+        {Object.keys(visibleColumns).length > 0 && (
+          <DataGridPro
+            // disableRowSelectionOnClick //add to prevent row selection on row click
+            rows={rows}
+            processRowUpdate={processRowUpdate}
+            columns={columns}
+            // editMode="row" //enable to edit row instead of cell
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            // onRowEditStop={handleRowEditStop}
+            // onCellEditStop={handleCellEditStop}
+            slots={{
+              // @ts-ignore
+              toolbar: EditToolbar,
+            }}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+            pinnedColumns={pinnedColumns}
+            initialState={{
+              columns: {
+                columnVisibilityModel:
+                  visibleColumns
+              }
+            }}
+          />
+        )}
+      </Box>
     </refreshTableContext.Provider>
   );
 }
