@@ -5,9 +5,15 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography'
 import InfoIcon from '@mui/icons-material/Info';
 import HelpIcon from '@mui/icons-material/Help';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useEffect, useState } from 'react';
 import { get_config } from './App';
 import MarkdownDialogButton from './markdown_dialog';
+import IconButton from '@mui/material/IconButton';
+import { observer_logout } from './api/api_root';
+import Button from '@mui/material/Button';
+import Sparkles from 'react-sparkle';
+import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 
 interface Props {
   username?: string,
@@ -19,6 +25,7 @@ export function TopBar(props: Props) {
 
   const [welcomeMsg, setWelcomeMsg] = useState<string>('')
   const [motivationMsg, setMotivationMsg] = useState<string>('')
+  const [surveyClicked, setSurveyClicked] = useQueryParam<boolean>('survey_clicked', withDefault(BooleanParam, false))
 
 
   useEffect(() => {
@@ -41,6 +48,19 @@ export function TopBar(props: Props) {
   }, [])
 
 
+  const handleLogout = async () => {
+    observer_logout().then((resp: any) => {
+      console.log(resp)
+    }).finally(() => {
+      window.location.reload();
+    })
+  }
+
+  const handleSurveyClick = () => {
+    setSurveyClicked(true)
+    window.open('https://forms.gle/MjgHD2Tode7Dvv6g8', '_blank')
+  }
+
 
   return (
     <AppBar
@@ -52,7 +72,6 @@ export function TopBar(props: Props) {
           paddingLeft: '20px'
         }}
       >
-
         <Typography
           component="h1"
           variant="h6"
@@ -65,6 +84,18 @@ export function TopBar(props: Props) {
         >
           KPF Community Cadence Coversheet Webform
         </Typography>
+        <Tooltip title="Plz, select me to take a survey">
+          <Button
+            variant='contained'
+            onClick={handleSurveyClick}>
+            <span className="container">
+              Submit Survey
+              {!surveyClicked &&
+                <Sparkles color="teal" overflowPx={8} />}
+            </span>
+            {/* Submit Survey */}
+          </Button>
+        </Tooltip>
         <Typography
           component="h3"
           variant="h6"
@@ -77,6 +108,13 @@ export function TopBar(props: Props) {
         >
           Welcome {props.username}
         </Typography>
+
+        <Tooltip title="Select to logout via observer portal">
+          <IconButton onClick={handleLogout}
+            aria-label="logout" color="primary">
+            <LogoutIcon />
+          </IconButton>
+        </Tooltip>
         <MarkdownDialogButton
           icon={<HelpIcon />}
           msg={motivationMsg}

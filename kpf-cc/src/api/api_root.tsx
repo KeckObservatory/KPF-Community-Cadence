@@ -84,6 +84,13 @@ export interface SubmitResp {
     [key: string]: any,
 }
 
+export const observer_logout = (): Promise<SubmitResp> => {
+    const url = API_ADDR + '/observerLogout'
+    return axiosInstance.get(url)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
 export const delete_target = (tgt: Target): Promise<SubmitResp> => {
     const url = API_ADDR + `/deleteTarget?id=${tgt._id}`
     return axiosInstance.delete(url)
