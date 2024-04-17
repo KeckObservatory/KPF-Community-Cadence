@@ -55,7 +55,7 @@ export const Control = () => {
 
     return (
         <Stack sx={{ marginBottom: '4px', marginTop: '8px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-            <Tooltip placement="top" title="Select semid">
+            <Tooltip placement="top" title="Select Semester Id.">
                 <Autocomplete
                     disablePortal
                     id="semid-selection"
@@ -63,7 +63,7 @@ export const Control = () => {
                     onChange={(_, value) => onChange('semid', value?.label)}
                     options={context.semids.map((s) => { return { label: s } })}
                     sx={{ width: 300 }}
-                    renderInput={(params) => <TextField {...params} label="Semid" />}
+                    renderInput={(params) => <TextField {...params} label="Semester ID" />}
                 />
             </Tooltip>
             <Typography variant="h6" component="div">Total Hours: {(context.total_hours)?.toFixed(2)}</Typography>
