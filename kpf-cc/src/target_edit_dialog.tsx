@@ -95,7 +95,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         //add trailing zero if string ends in a decimal 
         console.log(value)
-        value && isNumber ? String(value).replace(/(\d+)\.$/, "$1.0") : value 
+        value = String(value).replace(/(\d+)\.$/, "$1.0")
         console.log(value)
         //convert to number if isNumber is true
         value && isNumber ? value = Number(value) : value
@@ -432,7 +432,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             label={input_label('num_intranight_cadence')}
                                             id="num-intra-night-cadence"
                                             onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}
-                                            value={target.num_intranight_cadence.toFixed(3)}
+                                            value={target.num_intranight_cadence}
                                         />
                                     </Tooltip>
                                 </Stack>
