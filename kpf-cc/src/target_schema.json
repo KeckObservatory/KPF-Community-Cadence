@@ -61,7 +61,7 @@
             "short_description": "Minimum Inter-Night Cadence"
         },
         "num_intranight_cadence": {
-            "type": "number",
+            "type": ["string", "number"],
             "description": "Number of Intranight Cadence",
             "short_description": "Minimum Intra-Night Cadence"
         },

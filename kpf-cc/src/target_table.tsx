@@ -126,7 +126,6 @@ function convert_schema_to_columns(semids: string[]) {
         }
 
       }
-      console.log('valueSetter', key, value, tgt)
       return tgt
     }
 

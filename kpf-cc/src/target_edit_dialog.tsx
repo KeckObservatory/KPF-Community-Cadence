@@ -426,8 +426,8 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         label={input_label('num_intranight_cadence')}
                                         InputLabelProps={{ shrink: hasSimbad || 'num_intranight_cadence' in target }}
                                         id="num-intra-night-cadence"
-                                        value={String(target.num_intranight_cadence).replace(/(\d+)\.$/, "$1.0")}
-                                        onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}
+                                        value={target.num_intranight_cadence}
+                                        onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, false)}
                                     />
                                     </Tooltip>
                                 </Stack>
