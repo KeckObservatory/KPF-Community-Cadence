@@ -94,19 +94,13 @@ export const TargetEditDialog = (props: TargetEditProps) => {
 
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         //add trailing zero if string ends in a decimal 
-        console.log(value)
-        value = String(value).replace(/(\d+)\.$/, "$1.0")
-        console.log(value)
-        //convert to number if isNumber is true
-        value && isNumber ? value = Number(value) : value
-        console.log(value)
+        value = isNumber ? String(value).replace(/(\d+)\.$/, "$1.0") : value
         if (value && (key === 'ra' || key === 'dec')) {
             key === 'ra' && String(value).replace(/[^+-]/, "")
             value = raDecFormat(value as string)
         }
-
         setTarget((prev: Target) => {
-            return rowSetter(prev, key, value)
+            return rowSetter(prev, key, isNumber ? Number(value) : value)
         })
     }
 
@@ -306,7 +300,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         InputLabelProps={{ shrink: hasSimbad || 'pm_dec' in target }}
                                         id="pm-dec"
                                         value={target.pm_dec}
-                                        onChange={(event) => handleTextChange('pm_dec', event.target.value)}
+                                        onChange={(event) => handleTextChange('pm_dec', event.target.value, true)}
                                     />
                                 </Tooltip>
                                 <Tooltip title={input_label('epoch', true)}>
@@ -432,16 +426,9 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         label={input_label('num_intranight_cadence')}
                                         InputLabelProps={{ shrink: hasSimbad || 'num_intranight_cadence' in target }}
                                         id="num-intra-night-cadence"
-                                        value={target.num_intranight_cadence}
-                                        onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value)}
+                                        value={String(target.num_intranight_cadence).replace(/(\d+)\.$/, "$1.0")}
+                                        onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}
                                     />
-                                        {/* <TextField
-                                            disabled={target.num_visits_per_night === 1}
-                                            label={input_label('num_intranight_cadence')}
-                                            id="num-intra-night-cadence"
-                                            value={target.num_intranight_cadence}
-                                            onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}
-                                        /> */}
                                     </Tooltip>
                                 </Stack>
                             </Stack>
