@@ -419,21 +419,29 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             // focused
                                             label={input_label('num_internight_cadence')}
                                             id="num-inter-night-cadence"
-                                            onChange={(event) => handleTextChange('num_internight_cadence', event.target.value, true)}
                                             value={target.num_internight_cadence}
+                                            onChange={(event) => handleTextChange('num_internight_cadence', event.target.value, true)}
                                         />
                                     </Tooltip>
                                     <Tooltip
                                         title={`${input_label('num_intranight_cadence', true)}.${target.num_visits_per_night === 1 ? ' Disabled because num_visits_per_night is 1' : ''}`}
                                         placement='left'
                                     >
-                                        <TextField
+                                    <TextField
+                                        // focused
+                                        label={input_label('num_intranight_cadence')}
+                                        InputLabelProps={{ shrink: hasSimbad || 'num_intranight_cadence' in target }}
+                                        id="num-intra-night-cadence"
+                                        value={target.pm_dec}
+                                        onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value)}
+                                    />
+                                        {/* <TextField
                                             disabled={target.num_visits_per_night === 1}
                                             label={input_label('num_intranight_cadence')}
                                             id="num-intra-night-cadence"
-                                            onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}
                                             value={target.num_intranight_cadence}
-                                        />
+                                            onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}
+                                        /> */}
                                     </Tooltip>
                                 </Stack>
                             </Stack>
