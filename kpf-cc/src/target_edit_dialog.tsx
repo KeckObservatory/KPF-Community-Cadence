@@ -432,7 +432,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         label={input_label('num_intranight_cadence')}
                                         InputLabelProps={{ shrink: hasSimbad || 'num_intranight_cadence' in target }}
                                         id="num-intra-night-cadence"
-                                        value={target.pm_dec}
+                                        value={target.num_internight_cadence}
                                         onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value)}
                                     />
                                         {/* <TextField
