@@ -432,7 +432,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             label={input_label('num_intranight_cadence')}
                                             id="num-intra-night-cadence"
                                             onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, true)}
-                                            value={target.num_intranight_cadence}
+                                            value={target.num_intranight_cadence.toFixed(3)}
                                         />
                                     </Tooltip>
                                 </Stack>
