@@ -12,7 +12,6 @@ import MarkdownDialogButton from './markdown_dialog';
 import IconButton from '@mui/material/IconButton';
 import { observer_logout } from './api/api_root';
 import Button from '@mui/material/Button';
-import Sparkles from 'react-sparkle';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 
 interface Props {
@@ -25,7 +24,6 @@ export function TopBar(props: Props) {
 
   const [welcomeMsg, setWelcomeMsg] = useState<string>('')
   const [motivationMsg, setMotivationMsg] = useState<string>('')
-  const [surveyClicked, setSurveyClicked] = useQueryParam<boolean>('survey_clicked', withDefault(BooleanParam, false))
 
 
   useEffect(() => {
@@ -56,7 +54,6 @@ export function TopBar(props: Props) {
   }
 
   const handleSurveyClick = () => {
-    setSurveyClicked(true)
     window.open('https://forms.gle/MjgHD2Tode7Dvv6g8', '_blank')
   }
 
@@ -87,12 +84,7 @@ export function TopBar(props: Props) {
           <Button
             variant='contained'
             onClick={handleSurveyClick}>
-            <span className="container">
               Submit Survey
-              {!surveyClicked &&
-                <Sparkles color="teal" overflowPx={8} />}
-            </span>
-            {/* Submit Survey */}
           </Button>
         </Tooltip>
         <Typography

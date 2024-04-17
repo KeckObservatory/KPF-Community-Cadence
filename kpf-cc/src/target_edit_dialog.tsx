@@ -95,7 +95,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         //add trailing zero if string ends in a decimal 
         console.log(value)
-        value && isNumber && typeof value === 'string' ? value.replace(/(\d+)\.$/, "$1.0") : value 
+        value && isNumber ? String(value).replace(/(\d+)\.$/, "$1.0") : value 
         console.log(value)
         //convert to number if isNumber is true
         value && isNumber ? value = Number(value) : value
