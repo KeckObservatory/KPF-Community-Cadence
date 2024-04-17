@@ -12,7 +12,6 @@ import MarkdownDialogButton from './markdown_dialog';
 import IconButton from '@mui/material/IconButton';
 import { observer_logout } from './api/api_root';
 import Button from '@mui/material/Button';
-import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 
 interface Props {
   username?: string,
