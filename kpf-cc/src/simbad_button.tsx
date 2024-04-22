@@ -70,7 +70,7 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
     let currDr = 0 
     for (let line of simbadLines) {
         if (line.startsWith('!!')) {
-            simbadData['comment'] = line.split('!!')[1]
+            simbadData['comment'] = line.split('!! ')[1]
         }
         line.startsWith('Bib') && (bibcodesSection = true)
         line.startsWith('Identifiers (') && (identifiersSection = true)
