@@ -51,7 +51,6 @@ export interface Target extends SimbadTargetData {
   num_visits_per_night?: number,
   num_unique_nights_per_semester?: number,
   target_feasible?: boolean,
-  comment?: string,
   rise_semester_day?: number,
   sets_semester_day?: number,
   details?: string,

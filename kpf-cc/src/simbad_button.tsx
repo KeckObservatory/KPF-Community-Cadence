@@ -56,7 +56,8 @@ export interface SimbadTargetData {
     g_mag?: number,
     sys_rv?: number
     gaia_id?: string,
-    tic_id?: string
+    tic_id?: string,
+    comment?: string
 }
 
 export const get_simbad_data = async (targetName: string): Promise<SimbadTargetData> => {
@@ -68,6 +69,9 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
     const simbadLines = simbad_output.split('\n')
     let currDr = 0 
     for (let line of simbadLines) {
+        if (line.startsWith('!!')) {
+            simbadData['comment'] = line.split('!!')[1]
+        }
         line.startsWith('Bib') && (bibcodesSection = true)
         line.startsWith('Identifiers (') && (identifiersSection = true)
         if (line.startsWith('Coordinates(ICRS')) {
