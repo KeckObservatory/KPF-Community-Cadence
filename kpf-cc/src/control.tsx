@@ -51,7 +51,7 @@ export const Control = () => {
             context.setTotalObservations(0)
             context.setTargets(resp.targets)
         }
-        value !== 'ALL' && context.setSemid(value)
+        context.setSemid(value)
     }
 
     return (
