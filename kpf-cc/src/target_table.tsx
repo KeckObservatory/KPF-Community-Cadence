@@ -234,7 +234,7 @@ export default function TargetTable() {
     }
   }) as TargetRow[] : [] as TargetRow[];
 
-  console.log('init targets', initTargets)
+  console.log('init targets')
   const [rows, setRows] = React.useState(initTargets);
   const [refreshTable, setRefreshTable] = React.useState(0)
   const [visibleColumns, setVisibleColumns] = React.useState<{ [key: string]: boolean }>({});
@@ -492,15 +492,11 @@ export default function TargetTable() {
       >
         {Object.keys(visibleColumns).length > 0 && (
           <DataGridPro
-            // disableRowSelectionOnClick //add to prevent row selection on row click
-            rows={rows}
+            rows={rows ?? []}
             processRowUpdate={processRowUpdate}
             columns={columns}
-            // editMode="row" //enable to edit row instead of cell
             rowModesModel={rowModesModel}
             onRowModesModelChange={handleRowModesModelChange}
-            // onRowEditStop={handleRowEditStop}
-            // onCellEditStop={handleCellEditStop}
             slots={{
               // @ts-ignore
               toolbar: EditToolbar,
