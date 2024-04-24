@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField'
 import { useEffect } from 'react'
 import { Autocomplete, Tooltip, Typography } from '@mui/material'
 import { useCommCadContext, useSnackbarContext } from './App'
-import { get_all_targets } from './api/api_root';
+import { get_all_semester_targets, get_all_targets } from './api/api_root';
 
 export interface SPP {
     semid: string
@@ -22,34 +22,33 @@ export const Control = () => {
     const onChange = async (value: string | undefined | null) => {
         if (!value) return
 
-        if ( value !== context.semid ) {
-            const semester = value === 'ALL' ? context.semid.split('_')[0] : undefined
-            const resp = await get_all_targets(value, semester);
-            if (resp.success === 'SUCCESS') {
-                context.setTotalHours(resp.total_hours)
-                context.setTotalObservations(resp.total_observations)
-                context.setTargets(resp.targets)
-            }
-            else {
-                snackbarContext.setSnackbarMessage(
-                    {
-                        severity: 'error',
-                        message: `Error fetching targets for semid ${value}. Details: ${resp.details}`
-                    })
-                context.setTotalHours(0)
-                context.setTotalObservations(0)
-                context.setTargets([])
-            }
-            if (resp.message.includes('NO_TARGETS_FOUND')) {
-                snackbarContext.setSnackbarMessage(
-                    {
-                        severity: 'error',
-                        message: `No targets found for semid ${value}. Details: ${resp.details ?? resp.message}`
-                    })
-                context.setTotalHours(0)
-                context.setTotalObservations(0)
-                context.setTargets(resp.targets)
-            }
+        if( value === context.semid ) return
+        const resp = value=== 'ALL' ? await get_all_semester_targets(context.semid.split('_')[0]) 
+                                    : await get_all_targets(value);
+        if (resp.success === 'SUCCESS') {
+            context.setTotalHours(resp.total_hours)
+            context.setTotalObservations(resp.total_observations)
+            context.setTargets(resp.targets)
+        }
+        else {
+            snackbarContext.setSnackbarMessage(
+                {
+                    severity: 'error',
+                    message: `Error fetching targets for semid ${value}. Details: ${resp.details}`
+                })
+            context.setTotalHours(0)
+            context.setTotalObservations(0)
+            context.setTargets([])
+        }
+        if (resp.message.includes('NO_TARGETS_FOUND')) {
+            snackbarContext.setSnackbarMessage(
+                {
+                    severity: 'error',
+                    message: `No targets found for semid ${value}. Details: ${resp.details ?? resp.message}`
+                })
+            context.setTotalHours(0)
+            context.setTotalObservations(0)
+            context.setTargets(resp.targets)
         }
         value !== 'ALL' && context.setSemid(value)
     }

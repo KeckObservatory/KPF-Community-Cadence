@@ -118,8 +118,16 @@ export const get_target = (oid: string): Promise<string> => {
         .catch(handleError)
 }
 
-export const get_all_targets = (semid: string, semester?: string): Promise<SubmitResp> => {
-    const queryParams = semester ? `semester=${semester}` : `semid=${semid}`
+export const get_all_semester_targets = (semester?: string): Promise<SubmitResp> => {
+    const queryParams = `semester=${semester}`
+    const url = API_ADDR + `/getAllSemesterTargets?${queryParams}`
+    return axiosInstance.get(url)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+export const get_all_targets = (semid: string): Promise<SubmitResp> => {
+    const queryParams = `semid=${semid}`
     const url = API_ADDR + `/getAllTargets?${queryParams}`
     return axiosInstance.get(url)
         .then(handleResponse)
