@@ -227,12 +227,14 @@ function EditToolbar(props: EditToolbarProps) {
 
 export default function TargetTable() {
   const context = useCommCadContext()
-  const initTargets = context.targets?.map((target: Target) => {
+  const initTargets = context.targets ? context.targets.map((target: Target) => {
     return {
       ...target,
       id: randomId(),
     }
-  }) as TargetRow[];
+  }) as TargetRow[] : [] as TargetRow[];
+
+  console.log('init targets', initTargets)
   const [rows, setRows] = React.useState(initTargets);
   const [refreshTable, setRefreshTable] = React.useState(0)
   const [visibleColumns, setVisibleColumns] = React.useState<{ [key: string]: boolean }>({});
