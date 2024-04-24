@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TargetTable from './target_table';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { UserInfo, get_all_targets, get_semids, get_userinfo } from './api/api_root';
+import { UserInfo, get_all_semester_targets, get_all_targets, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
@@ -155,7 +155,8 @@ function App() {
       if (semidResp.isAdmin === 'true') {
         semids = ['ALL', ...semids]
       }
-      const resp = await get_all_targets(semid);
+      const resp = semid === 'ALL' ? await get_all_semester_targets(semids[1].split('_')[0]) 
+                                   : await get_all_targets(semid);
 
       let targets: Target[] = []
       let total_hours = 0
