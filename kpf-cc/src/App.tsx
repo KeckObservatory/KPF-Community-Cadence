@@ -147,13 +147,13 @@ function App() {
         return
       }
 
-      const semids = semidResp.programs.map((p: any) => p.semid)
-      if (semidResp.isAdmin === 'true') {
-        semids.push('ALL')
-      }
+      let semids = semidResp.programs.map((p: any) => p.semid)
       // const semid = semids[0]
       if (semid === undefined) {
         setSemid(semids[0])
+      }
+      if (semidResp.isAdmin === 'true') {
+        semids = ['ALL', ...semids]
       }
       const resp = await get_all_targets(semid);
 
