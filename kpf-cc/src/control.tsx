@@ -23,7 +23,7 @@ export const Control = () => {
         if (!value) return
 
         if ( value !== context.semid ) {
-            const semester = value === 'ALL' ? value.split('_')[0] : undefined
+            const semester = value === 'ALL' ? context.semid.split('_')[0] : undefined
             const resp = await get_all_targets(value, semester);
             if (resp.success === 'SUCCESS') {
                 context.setTotalHours(resp.total_hours)
