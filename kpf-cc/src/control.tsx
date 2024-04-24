@@ -26,8 +26,9 @@ export const Control = () => {
         const resp = value=== 'ALL' ? await get_all_semester_targets(context.semid.split('_')[0]) 
                                     : await get_all_targets(value);
         if (resp.success === 'SUCCESS') {
-            context.setTotalHours(resp.total_hours)
-            context.setTotalObservations(resp.total_observations)
+            console.log('setting targets', resp)
+            context.setTotalHours(resp.total_hours ?? 0)
+            context.setTotalObservations(resp.total_observations ?? 0)
             context.setTargets(resp.targets)
         }
         else {
