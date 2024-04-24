@@ -148,6 +148,9 @@ function App() {
       }
 
       const semids = semidResp.programs.map((p: any) => p.semid)
+      if (semidResp.isAdmin === 'true') {
+        semids.push('ALL')
+      }
       // const semid = semids[0]
       if (semid === undefined) {
         setSemid(semids[0])

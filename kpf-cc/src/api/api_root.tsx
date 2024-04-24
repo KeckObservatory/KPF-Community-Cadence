@@ -42,6 +42,7 @@ interface NameSemid {
 interface SemidResp {
     message: string,
     obsid: number,
+    isAdmin: string,
     details?: string,
     programs: NameSemid[]
     success: string
@@ -117,8 +118,9 @@ export const get_target = (oid: string): Promise<string> => {
         .catch(handleError)
 }
 
-export const get_all_targets = (semid: string): Promise<SubmitResp> => {
-    const url = API_ADDR + `/getAllTargets?semid=${semid}`
+export const get_all_targets = (semid: string, semester?: string): Promise<SubmitResp> => {
+    const queryParams = semester ? `semester=${semester}` : `semid=${semid}`
+    const url = API_ADDR + `/getAllTargets?${queryParams}`
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)

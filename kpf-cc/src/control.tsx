@@ -19,38 +19,39 @@ export const Control = () => {
     useEffect(() => {
     }, [])
 
-    const onChange = async (key: String, value: string | undefined | null) => {
-        if (value) {
-            if (key === 'semid' && value !== context.semid) {
-                const resp = await get_all_targets(value);
-                if (resp.success === 'SUCCESS') {
-                    context.setTotalHours(resp.total_hours)
-                    context.setTotalObservations(resp.total_observations)
-                    context.setTargets(resp.targets)
-                }
-                else {
-                    snackbarContext.setSnackbarMessage(
-                        {
-                            severity: 'error',
-                            message: `Error fetching targets for semid ${value}. Details: ${resp.details}`
-                        })
-                    context.setTotalHours(0)
-                    context.setTotalObservations(0)
-                    context.setTargets([])
-                }
-                if (resp.message.includes('NO_TARGETS_FOUND')) {
-                    snackbarContext.setSnackbarMessage(
-                        {
-                            severity: 'error',
-                            message: `No targets found for semid ${value}. Details: ${resp.details ?? resp.message}`
-                        })
-                    context.setTotalHours(0)
-                    context.setTotalObservations(0)
-                    context.setTargets(resp.targets)
-                }
+    const onChange = async (value: string | undefined | null) => {
+        if (!value) return
+
+        if ( value !== context.semid ) {
+            const semester = value === 'ALL' ? value.split('_')[0] : undefined
+            const resp = await get_all_targets(value, semester);
+            if (resp.success === 'SUCCESS') {
+                context.setTotalHours(resp.total_hours)
+                context.setTotalObservations(resp.total_observations)
+                context.setTargets(resp.targets)
             }
-            context.setSemid(value)
+            else {
+                snackbarContext.setSnackbarMessage(
+                    {
+                        severity: 'error',
+                        message: `Error fetching targets for semid ${value}. Details: ${resp.details}`
+                    })
+                context.setTotalHours(0)
+                context.setTotalObservations(0)
+                context.setTargets([])
+            }
+            if (resp.message.includes('NO_TARGETS_FOUND')) {
+                snackbarContext.setSnackbarMessage(
+                    {
+                        severity: 'error',
+                        message: `No targets found for semid ${value}. Details: ${resp.details ?? resp.message}`
+                    })
+                context.setTotalHours(0)
+                context.setTotalObservations(0)
+                context.setTargets(resp.targets)
+            }
         }
+        value !== 'ALL' && context.setSemid(value)
     }
 
     return (
@@ -60,7 +61,7 @@ export const Control = () => {
                     disablePortal
                     id="semid-selection"
                     value={context.semid ? { label: context.semid } : { label: 'semid' }}
-                    onChange={(_, value) => onChange('semid', value?.label)}
+                    onChange={(_, value) => onChange(value?.label)}
                     options={context.semids.map((s) => { return { label: s } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Semester ID" />}
