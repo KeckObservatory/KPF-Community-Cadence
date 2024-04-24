@@ -180,6 +180,7 @@ function EditToolbar(props: EditToolbarProps) {
   const context = useCommCadContext()
   const snackbarContext = useSnackbarContext()
 
+
   const handleAddTarget = async () => {
     if (context.semid === undefined) {
       console.error('semid is undefined')
@@ -212,9 +213,11 @@ function EditToolbar(props: EditToolbarProps) {
     }
   };
 
+  const debouncedAddTarget = useDebounceCallback(handleAddTarget, 500)
+
   return (
     <GridToolbarContainer sx={{ justifyContent: 'center' }}>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleAddTarget}>
+      <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddTarget}>
         Add Target
       </Button>
       <GridToolbar
