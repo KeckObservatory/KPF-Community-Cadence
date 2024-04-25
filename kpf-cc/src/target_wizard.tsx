@@ -13,12 +13,12 @@ import Button from '@mui/material/Button';
 import { UploadComponent } from './upload_targets_dialog';
 import { get_simbad_data } from './simbad_button';
 import { Control } from './control';
-import { useCommCadContext, useSnackbarContext, Target } from './App';
+import { useCommCadContext, useRefreshTableContext, useSnackbarContext, Target } from './App';
 import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
 import { save_target } from './api/api_root';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { create_new_target, useRefreshTableContext } from './target_table';
+import { create_new_target } from './target_table';
 
 
 interface Props {
