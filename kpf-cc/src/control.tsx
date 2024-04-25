@@ -13,10 +13,9 @@ export interface SPP {
 
 interface Props {
     isAdmin: boolean
-
 }
 
-const cartesian = (sets: unknown[][]) => {
+const cartesian = (sets: string[][]) => {
     return sets.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
 }
 
@@ -27,8 +26,12 @@ export const Control = (props: Props) => {
 
     const date = new Date()
     let initSemester = date.getFullYear() + date.getMonth() < 8 || date.getMonth() > 2 ? 'B' : 'A'
-    const [semester, setSemester] = useState<string| undefined>(initSemester)
-    const semesters = cartesian([[date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1], ['A', 'B']]).map((s) => s.join(''),)
+    const [semester, setSemester] = useState<string | undefined>(initSemester)
+    const semestersArr = cartesian([[date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1].map(s => String(s)),
+    ['A', 'B']])
+
+    const semesters = semestersArr.map((s: any) => s.join(''))
+    console.log('semesters', semesters)
 
     const onSemesterChange = (value: string | undefined | null) => {
         if (!value) return
