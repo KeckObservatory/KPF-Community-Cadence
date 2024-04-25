@@ -66,7 +66,6 @@ export const Control = (props: Props) => {
             context.setTotalObservations(0)
             context.setTargets(resp.targets)
         }
-        context.setSemid(value)
     }
 
     const onSemesterClick = async () => {
@@ -81,6 +80,7 @@ export const Control = (props: Props) => {
         const resp = await get_all_targets(value)
         setSemester(undefined)
         handleResponse(resp, value)
+        context.setSemid(value)
     }
 
 
