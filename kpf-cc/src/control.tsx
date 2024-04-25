@@ -16,7 +16,7 @@ interface Props {
 }
 
 const cartesian = (sets: string[][]) => {
-    return sets.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+    return sets.reduce((a, b) => a.flatMap(d => b.map(e => [d, e]).flat()));
 }
 
 export const Control = (props: Props) => {
