@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { useEffect, useState } from 'react'
 import { Autocomplete, Button, Tooltip, Typography } from '@mui/material'
-import { useCommCadContext, useSnackbarContext } from './App'
+import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App'
 import { SubmitResp, get_all_semester_targets, get_all_targets } from './api/api_root';
 
 export interface SPP {
@@ -30,10 +30,12 @@ export const Control = (props: Props) => {
     const semestersArr = cartesian([[date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1].map(s => String(s)),
     ['A', 'B']])
     const semesters = semestersArr.join('').split(/(?=\d{4}[AB])/)
+    const refreshContext = useRefreshTableContext()
 
     const onSemesterChange = (value: string | undefined | null) => {
         if (!value) return
         setSemester(value)
+
     }
 
     useEffect(() => {
@@ -72,6 +74,7 @@ export const Control = (props: Props) => {
         if (!semester) return
         const resp = await get_all_semester_targets(semester)
         handleResponse(resp, semester)
+        refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     }
 
 

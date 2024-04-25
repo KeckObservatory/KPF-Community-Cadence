@@ -38,21 +38,11 @@ import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
 import { delete_target, save_target } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
-import { useCommCadContext, Target, useSnackbarContext, get_config } from './App';
+import { useCommCadContext, Target, useSnackbarContext, get_config, useRefreshTableContext } from './App';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Chip, Tooltip } from '@mui/material';
 
-export interface RefreshTableContext {
-  refreshTable: number
-  setRefreshTable: Function
 
-}
-
-const refreshTableContext = React.createContext<RefreshTableContext>({
-  refreshTable: 0,
-  setRefreshTable: () => { }
-})
-export const useRefreshTableContext = () => React.useContext(refreshTableContext)
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -239,7 +229,6 @@ export default function TargetTable() {
 
   console.log('init targets')
   const [rows, setRows] = React.useState(initTargets);
-  const [refreshTable, setRefreshTable] = React.useState(0)
   const [visibleColumns, setVisibleColumns] = React.useState<{ [key: string]: boolean }>({});
   const [pinnedColumns, setPinnedColumns] = React.useState<GridPinnedColumnFields>({
     left: [],
@@ -247,6 +236,7 @@ export default function TargetTable() {
   });
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const snackbarContext = useSnackbarContext()
+  const refreshContext = useRefreshTableContext()
 
   React.useEffect(() => {
     const set_visible_columns = async () => {
@@ -271,7 +261,7 @@ export default function TargetTable() {
       }) as TargetRow[]
       setRows(newTargets)
     }, 300)
-  }, [refreshTable, context.semid])
+  }, [refreshContext.refreshTable, context.semid])
 
   const edit_target = async (target: Target) => {
     const resp = await save_target([target], target.semid, 'save', false)
@@ -480,43 +470,41 @@ export default function TargetTable() {
 
 
   return (
-    <refreshTableContext.Provider value={{ refreshTable, setRefreshTable }}>
-      <Box
-        sx={{
-          height: 500,
-          width: '100%',
-          '& .actions': {
-            color: 'text.secondary',
-          },
-          '& .textPrimary': {
-            color: 'text.primary',
-          },
-        }}
-      >
-        {Object.keys(visibleColumns).length > 0 && (
-          <DataGridPro
-            rows={rows ?? []}
-            processRowUpdate={processRowUpdate}
-            columns={columns}
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            slots={{
-              // @ts-ignore
-              toolbar: EditToolbar,
-            }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-            pinnedColumns={pinnedColumns}
-            initialState={{
-              columns: {
-                columnVisibilityModel:
-                  visibleColumns
-              }
-            }}
-          />
-        )}
-      </Box>
-    </refreshTableContext.Provider>
+    <Box
+      sx={{
+        height: 500,
+        width: '100%',
+        '& .actions': {
+          color: 'text.secondary',
+        },
+        '& .textPrimary': {
+          color: 'text.primary',
+        },
+      }}
+    >
+      {Object.keys(visibleColumns).length > 0 && (
+        <DataGridPro
+          rows={rows ?? []}
+          processRowUpdate={processRowUpdate}
+          columns={columns}
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          slots={{
+            // @ts-ignore
+            toolbar: EditToolbar,
+          }}
+          slotProps={{
+            toolbar: { setRows, setRowModesModel },
+          }}
+          pinnedColumns={pinnedColumns}
+          initialState={{
+            columns: {
+              columnVisibilityModel:
+                visibleColumns
+            }
+          }}
+        />
+      )}
+    </Box>
   );
 }

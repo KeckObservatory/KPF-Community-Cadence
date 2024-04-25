@@ -119,9 +119,18 @@ const init_snackbar_context: SnackbarContextProps = {
   setSnackbarMessage: () => { },
 }
 
+export interface RefreshTableContext {
+  refreshTable: number
+  setRefreshTable: Function
+}
 const SnackbarContext = createContext<SnackbarContextProps>(init_snackbar_context);
 export const useSnackbarContext = () => useContext(SnackbarContext);
 
+const refreshTableContext = createContext<RefreshTableContext>({
+  refreshTable: 0,
+  setRefreshTable: () => { }
+})
+export const useRefreshTableContext = () => useContext(refreshTableContext)
 
 function App() {
   const [darkState, setDarkState] = useQueryParam('darkState', withDefault(BooleanParam, true));
@@ -132,6 +141,7 @@ function App() {
   const theme = handleTheme(darkState)
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>({})
+  const [refreshTable, setRefreshTable] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -198,87 +208,89 @@ function App() {
   return (
     <ThemeProvider theme={theme} >
       <CssBaseline />
-      <CommCadContext.Provider value={
-        {
-          username: state.username ?? "Dr. Observer Observerson",
-          obsid: state.userinfo?.Id ?? "XXXX",
-          semids: state.semids ?? [],
-          semid: semid ?? "XXXX_XXXX",
-          total_hours: state.total_hours,
-          total_observations: state.total_observations,
-          targets: state.targets,
-          setTargets: (targets: Target[]) => {
-            setState((st) => {
-              return { ...st, targets: targets }
-            })
-          },
-          setSemid,
-          setSemids: (semids: string[]) => {
-            setState((st) => {
-              return { ...st, semids }
-            })
-          },
-          setObserverId: (oid: string) => {
-            setState((st) => {
-              return { ...st, observer_id: oid }
-            })
-          },
-          setTotalHours: (total_hours: number) => {
-            setState((st) => {
-              return { ...st, total_hours }
-            })
-          },
-          setTotalObservations: (total_observations: number) => {
-            setState((st) => {
-              return { ...st, total_observations }
-            })
-          }
-        } as CCContext
-      }>
+      <refreshTableContext.Provider value={{ refreshTable, setRefreshTable }}>
+        <CommCadContext.Provider value={
+          {
+            username: state.username ?? "Dr. Observer Observerson",
+            obsid: state.userinfo?.Id ?? "XXXX",
+            semids: state.semids ?? [],
+            semid: semid ?? "XXXX_XXXX",
+            total_hours: state.total_hours,
+            total_observations: state.total_observations,
+            targets: state.targets,
+            setTargets: (targets: Target[]) => {
+              setState((st) => {
+                return { ...st, targets: targets }
+              })
+            },
+            setSemid,
+            setSemids: (semids: string[]) => {
+              setState((st) => {
+                return { ...st, semids }
+              })
+            },
+            setObserverId: (oid: string) => {
+              setState((st) => {
+                return { ...st, observer_id: oid }
+              })
+            },
+            setTotalHours: (total_hours: number) => {
+              setState((st) => {
+                return { ...st, total_hours }
+              })
+            },
+            setTotalObservations: (total_observations: number) => {
+              setState((st) => {
+                return { ...st, total_observations }
+              })
+            }
+          } as CCContext
+        }>
 
-        <TopBar 
-        darkState={darkState} 
-        handleThemeChange={handleThemeChange} 
-        username={state.username} />
-        <SnackbarContext.Provider value={{
-          snackbarOpen: openSnackbar,
-          setSnackbarOpen: setOpenSnackbar,
-          snackbarMessage: snackbarMessage,
-          setSnackbarMessage: setSnackbarMessage
-        }}>
-          <Snackbar
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            autoHideDuration={3000}
-            open={openSnackbar}
-            onClose={() => setOpenSnackbar(false)}
-          >
-            <Alert
+          <TopBar
+            darkState={darkState}
+            handleThemeChange={handleThemeChange}
+            username={state.username} />
+          <SnackbarContext.Provider value={{
+            snackbarOpen: openSnackbar,
+            setSnackbarOpen: setOpenSnackbar,
+            snackbarMessage: snackbarMessage,
+            setSnackbarMessage: setSnackbarMessage
+          }}>
+            <Snackbar
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+              autoHideDuration={3000}
+              open={openSnackbar}
               onClose={() => setOpenSnackbar(false)}
-              severity={snackbarMessage.severity}
-              variant="filled"
-              sx={{ width: '100%' }}
             >
-              {snackbarMessage.message}
-            </Alert>
-          </Snackbar>
-          <Stack sx={{ marginBottom: '4px', marginTop: '12px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-            <Paper
-              sx={{
-                marginTop: '12px',
-                padding: '6px',
-                maxWidth: '2000px',
-                minWidth: '1500px',
-                flexDirection: 'column',
-              }}
-            >
-              <Control isAdmin={isAdmin} />
-              {init ? (
-                <TargetTable />
-              ) : <Skeleton variant="rectangular" width="100%" height={500} />}
-            </Paper>
-          </Stack>
-        </SnackbarContext.Provider>
-      </CommCadContext.Provider>
+              <Alert
+                onClose={() => setOpenSnackbar(false)}
+                severity={snackbarMessage.severity}
+                variant="filled"
+                sx={{ width: '100%' }}
+              >
+                {snackbarMessage.message}
+              </Alert>
+            </Snackbar>
+            <Stack sx={{ marginBottom: '4px', marginTop: '12px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+              <Paper
+                sx={{
+                  marginTop: '12px',
+                  padding: '6px',
+                  maxWidth: '2000px',
+                  minWidth: '1500px',
+                  flexDirection: 'column',
+                }}
+              >
+                <Control isAdmin={isAdmin} />
+                {init ? (
+                  <TargetTable />
+                ) : <Skeleton variant="rectangular" width="100%" height={500} />}
+              </Paper>
+            </Stack>
+          </SnackbarContext.Provider>
+        </CommCadContext.Provider>
+      </refreshTableContext.Provider>
     </ThemeProvider >
   )
 }
