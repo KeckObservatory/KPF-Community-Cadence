@@ -128,6 +128,7 @@ function App() {
   const [semid, setSemid] = useQueryParam<string>('semid');
   const [state, setState] = useState<State>({} as State);
   const [init, setInit] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const theme = handleTheme(darkState)
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>({})
@@ -153,10 +154,9 @@ function App() {
         setSemid(semids[0])
       }
       if (semidResp.isAdmin === 'true') {
-        semids = ['ALL', ...semids]
+        setIsAdmin(true)
       }
-      const resp = semid === 'ALL' ? await get_all_semester_targets(semids[1].split('_')[0]) 
-                                   : await get_all_targets(semid);
+      const resp = await get_all_targets(semid);
 
       let targets: Target[] = []
       let total_hours = 0
@@ -271,7 +271,7 @@ function App() {
                 flexDirection: 'column',
               }}
             >
-              <Control />
+              <Control isAdmin={isAdmin} />
               {init ? (
                 <TargetTable />
               ) : <Skeleton variant="rectangular" width="100%" height={500} />}

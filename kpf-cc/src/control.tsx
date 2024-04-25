@@ -1,9 +1,9 @@
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import { useEffect } from 'react'
-import { Autocomplete, Tooltip, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { Autocomplete, Button, Tooltip, Typography } from '@mui/material'
 import { useCommCadContext, useSnackbarContext } from './App'
-import { get_all_semester_targets, get_all_targets } from './api/api_root';
+import { SubmitResp, get_all_semester_targets, get_all_targets } from './api/api_root';
 
 export interface SPP {
     semid: string
@@ -11,20 +11,34 @@ export interface SPP {
     pi: string
 }
 
-export const Control = () => {
+interface Props {
+    isAdmin: boolean
+
+}
+
+const cartesian = (sets: unknown[][]) => {
+    return sets.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+}
+
+export const Control = (props: Props) => {
 
     const context = useCommCadContext()
     const snackbarContext = useSnackbarContext()
 
+    const date = new Date()
+    let initSemester = date.getFullYear() + date.getMonth() < 8 || date.getMonth() > 2 ? 'B' : 'A'
+    const [semester, setSemester] = useState<string| undefined>(initSemester)
+    const semesters = cartesian([[date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1], ['A', 'B']]).map((s) => s.join(''),)
+
+    const onSemesterChange = (value: string | undefined | null) => {
+        if (!value) return
+        setSemester(value)
+    }
+
     useEffect(() => {
     }, [])
 
-    const onChange = async (value: string | undefined | null) => {
-        if (!value) return
-
-        if( value === context.semid ) return
-        const resp = value=== 'ALL' ? await get_all_semester_targets(context.semid.split('_')[0]) 
-                                    : await get_all_targets(value);
+    const handleResponse = (resp: SubmitResp, value: string | undefined | null) => {
         if (resp.success === 'SUCCESS') {
             console.log('setting targets', resp)
             context.setTotalHours(resp.total_hours ?? 0)
@@ -54,8 +68,40 @@ export const Control = () => {
         context.setSemid(value)
     }
 
+    const onSemesterClick = async () => {
+        if (!semester) return
+        const resp = await get_all_semester_targets(semester)
+        handleResponse(resp, semester)
+    }
+
+
+    const onChange = async (value: string | undefined | null) => {
+        if (!value) return
+        const resp = await get_all_targets(value)
+        setSemester(undefined)
+        handleResponse(resp, value)
+    }
+
+
+
     return (
         <Stack sx={{ marginBottom: '4px', marginTop: '8px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+            {props.isAdmin && (
+                <>
+                    <Tooltip placement="top" title="Select Semester (admin only)">
+                        <Autocomplete
+                            disablePortal
+                            id="semid-selection"
+                            value={{ label: semester }}
+                            onChange={(_, value) => onSemesterChange(value?.label)}
+                            options={semesters}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Semester ID" />}
+                        />
+                    </Tooltip>
+                    <Button onClick={onSemesterClick}>Get all semids for Semester</Button>
+                </>
+            )}
             <Tooltip placement="top" title="Select Semester Id.">
                 <Autocomplete
                     disablePortal
