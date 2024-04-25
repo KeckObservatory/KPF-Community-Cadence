@@ -12,7 +12,7 @@ export interface SPP {
 }
 
 interface Props {
-    isAdmin: boolean
+    isAdmin?: boolean
 }
 
 const cartesian = (sets: string[][]) => {
