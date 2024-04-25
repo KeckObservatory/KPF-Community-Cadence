@@ -25,13 +25,11 @@ export const Control = (props: Props) => {
     const snackbarContext = useSnackbarContext()
 
     const date = new Date()
-    let initSemester = date.getFullYear() + date.getMonth() < 8 || date.getMonth() > 2 ? 'B' : 'A'
+    let initSemester = String(date.getFullYear()) + (date.getMonth() < 8 || date.getMonth() > 2 ? 'B' : 'A')
     const [semester, setSemester] = useState<string | undefined>(initSemester)
     const semestersArr = cartesian([[date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1].map(s => String(s)),
     ['A', 'B']])
-
-    const semesters = semestersArr.map((s: any) => s.join(''))
-    console.log('semesters', semesters)
+    const semesters = semestersArr.join('').split(/(?=\d{4}[AB])/)
 
     const onSemesterChange = (value: string | undefined | null) => {
         if (!value) return
@@ -95,9 +93,9 @@ export const Control = (props: Props) => {
                         <Autocomplete
                             disablePortal
                             id="semid-selection"
-                            value={{ label: semester }}
+                            value={{ label: semester ?? 'Semester'}}
                             onChange={(_, value) => onSemesterChange(value?.label)}
-                            options={semesters}
+                            options={semesters.map((s) => { return { label: s } })}
                             sx={{ width: 300 }}
                             renderInput={(params) => <TextField {...params} label="Semester ID" />}
                         />
