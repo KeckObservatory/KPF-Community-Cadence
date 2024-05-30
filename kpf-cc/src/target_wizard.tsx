@@ -19,6 +19,8 @@ import Stack from '@mui/material/Stack';
 import { save_target } from './api/api_root';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { create_new_target } from './target_table';
+// import Autocomplete from '@mui/material/Autocomplete';
+// import TextField from '@mui/material/TextField';
 
 
 interface Props {
@@ -26,12 +28,15 @@ interface Props {
     open: boolean
 }
 
+// const CATALOGS = ['SIMBAD', 'NONE']
+
 
 function LinearProgressWithLabel(props: LinearProgressProps &
 {
-    targetNames: string[]
+    targets: Target[]
     setTargets: Function,
     open: boolean
+    catalog: string
 }
 ) {
 
@@ -39,24 +44,31 @@ function LinearProgressWithLabel(props: LinearProgressProps &
     const [targetName, setTargetName] = React.useState('')
     const [label, setLabel] = React.useState('Create Targets')
 
-    const { targetNames, setTargets, open } = props
+    const { targets, setTargets, open, catalog } = props
     const [progress, setProgress] = React.useState(0)
     const generate_targets_from_list = async () => {
         setLabel('Loading Targets')
         const tgts: Target[] = []
-        for (let idx = 0; idx < targetNames.length; idx++) {
-            const tgtName = targetNames[idx]
-            setTargetName(tgtName)
+        for (let idx = 0; idx < targets.length; idx++) {
+            const csvTarget = targets[idx]
+            const tgtName = csvTarget.target_name ?? false
             console.log(tgtName)
             if (!tgtName) continue
+            setTargetName(tgtName)
             if (!open) break
-            const target = create_new_target(
+
+            const baseTarget = create_new_target(
                 context.semid ?? "",
                 undefined,
                 tgtName)
-            const simbadData = await get_simbad_data(tgtName)
-            tgts.push({ ...target, ...simbadData } as Target)
-            setProgress(((idx + 1) / targetNames.length) * 100)
+            let newTarget = { ...baseTarget, ...csvTarget }
+            if (catalog !== 'NONE' || !csvTarget.tic_id || !csvTarget.gaia_id) { // if no tic or gaia id, get catalog data
+                const simbadData = await get_simbad_data(tgtName)
+                // fill with base, then catalog data, then target uploaded from csv
+                newTarget = { ...baseTarget, ...simbadData, ...csvTarget } as Target
+            }
+            tgts.push(newTarget)
+            setProgress(((idx + 1) / targets.length) * 100)
         }
 
         setProgress(100)
@@ -94,7 +106,7 @@ const TargetStepper = (props: Props) => {
 
     const [activeStep, setActiveStep] = React.useState(0);
     const [label, setLabel] = React.useState("Load Target Names");
-    const [targetNames, setTargetNames] = React.useState([] as string[])
+    const [catalog, _] = React.useState("SIMBAD");
     const [targets, setTargets] = React.useState([] as Target[])
     const context = useCommCadContext()
     const refreshTableContext = useRefreshTableContext()
@@ -106,13 +118,18 @@ const TargetStepper = (props: Props) => {
     React.useEffect(() => {
         let cont = false
         if (activeStep === 0) { cont = (context.semid) ? true : false }
-        if (activeStep === 1) { cont = targetNames.length > 0 }
-        if (activeStep === 2) {
+        if (activeStep === 1) { cont = targets.length > 0 }
+        // if (activeStep === 2) { cont = targets.length > 0 } //Uncomment for catalog step
+        // if (activeStep === 3) {
+        //     cont = targets.length > 0
+        //     setSaveMessage('All steps completed - Targets are ready to be saved')
+        // }
+        if (activeStep === 2) { //Comment if catalog step is uncommented
             cont = targets.length > 0
             setSaveMessage('All steps completed - Targets are ready to be saved')
         }
         setCanContinue(cont)
-    }, [context, targetNames, targets, activeStep])
+    }, [context, targets, activeStep])
 
     const save_targets = async () => {
         const resp = await save_target(targets, context.semid ?? '')
@@ -120,7 +137,7 @@ const TargetStepper = (props: Props) => {
             props.setOpen(false)
             context.setTargets([...context.targets, ...resp.targets])
             context.setTotalHours(resp.total_hours)
-            refreshTableContext.setRefreshTable((prev: number) => {return prev+1})
+            refreshTableContext.setRefreshTable((prev: number) => { return prev + 1 })
             context.setTotalObservations(resp.total_observations)
             snackbarContext.setSnackbarMessage(
                 { severity: 'success', message: `Targets saved!` }
@@ -140,11 +157,6 @@ const TargetStepper = (props: Props) => {
         setCanContinue(true)
     }
 
-    const setTargetNamesAndContinue = (names: string[]) => {
-        setTargetNames(names)
-        setCanContinue(true)
-    }
-
 
     const stepComponents = [
         {
@@ -156,13 +168,30 @@ const TargetStepper = (props: Props) => {
             component: <UploadComponent
                 setLabel={setLabel}
                 label={label}
-                setTargetNames={setTargetNamesAndContinue} />
+                setTargets={setTargetsAndContinue}
+            />
         },
+        // {
+        //     label: 'Select Catalog',
+        //     component:
+        //         <Tooltip placement="top" title="Select Catalog to autofill missing target information">
+        //             <Autocomplete
+        //                 disablePortal
+        //                 id="catalog-selection"
+        //                 value={{ label: catalog ?? 'SIMBAD' }}
+        //                 onChange={(_, value) => setCatalog(value?.label ?? 'SIMBAD')} //TODO: should default be 'NONE'?
+        //                 options={CATALOGS.map((s) => { return { label: s } })}
+        //                 sx={{ width: 300 }}
+        //                 renderInput={(params) => <TextField {...params} label="Catalog" />}
+        //             />
+        //         </Tooltip>
+        // },
         {
             label: 'Create Targets',
             component: <LinearProgressWithLabel
-                targetNames={targetNames}
+                targets={targets}
                 setTargets={setTargetsAndContinue}
+                catalog={catalog}
                 open={props.open} />
         },
     ]
@@ -183,7 +212,7 @@ const TargetStepper = (props: Props) => {
                     <Step key={step.label}>
                         <StepLabel
                             optional={
-                                index === 2 ? (
+                                index === stepComponents.length - 1 ? (
                                     <Typography variant="caption">Last step</Typography>
                                 ) : null
                             }

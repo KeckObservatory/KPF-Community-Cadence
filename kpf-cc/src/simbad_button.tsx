@@ -54,7 +54,7 @@ export interface SimbadTargetData {
     tic?: string,
     j_mag?: number,
     g_mag?: number,
-    sys_rv?: number
+    systemic_velocity?: number
     gaia_id?: string,
     tic_id?: string,
     comment?: string
@@ -83,7 +83,7 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
         }
         else if (line.startsWith('Radial Velocity')) {
             const sysRv = Number(line.split(' ')[2].replace(' ', ''))
-            sysRv && (simbadData['sys_rv'] = sysRv)
+            sysRv && (simbadData['systemic_velocity'] = sysRv)
         }
         else if (line.startsWith('Flux J')) {
             const fluxJ = Number(line.split(': ')[1].split(' ')[0])

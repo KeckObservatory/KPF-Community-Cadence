@@ -15,11 +15,11 @@
             "description": "Target Name"
         },
         "j_mag": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "J Magnitude"
         },
         "g_mag": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "G Magnitude"
         },
         "t_eff": {
@@ -85,11 +85,11 @@
             "description": "Epoch"
         },
         "pm_dec": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Proper Motion in Dec [miliarcseconds/year]"
         },
         "pm_ra": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Proper Motion in RA [miliarcseconds/year]"
         },
         "ra": {
@@ -120,11 +120,13 @@
         },
         "tic_id": {
             "type": "string",
-            "description": "TIC Identifier"
+            "description": "TIC Identifier (optional)",
+            "short_description": "TIC Identifier"
         },
         "gaia_id": {
             "type": "string",
-            "description": "GAIA Identifier"
+            "description": "GAIA Identifier: DR3 preferred (optional)",
+            "short_description": "GAIA Identifier"
         },
         "rise_semester_day": {
             "type": "integer",

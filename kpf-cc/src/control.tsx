@@ -100,7 +100,7 @@ export const Control = (props: Props) => {
                             onChange={(_, value) => onSemesterChange(value?.label)}
                             options={semesters.map((s) => { return { label: s } })}
                             sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="Semester ID" />}
+                            renderInput={(params) => <TextField {...params} label="Semester" />}
                         />
                     </Tooltip>
                     <Button onClick={onSemesterClick}>Get all semids for Semester</Button>

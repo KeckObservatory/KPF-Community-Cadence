@@ -8,10 +8,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Tooltip } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import { Target } from './App';
+import { JSONSchema7 } from 'json-schema';
 import target_schema from './target_schema.json'
 
 interface Props {
-    setTargetNames: Function
+    setTargets: Function
 }
 
 interface UploadProps extends Props {
@@ -20,11 +21,19 @@ interface UploadProps extends Props {
     setOpen?: Function
 }
 
+interface TargetPropertySchema extends JSONSchema7 {
+    description: string
+    short_description: string
+}
 
-let hdrToKeyMapping = Object.fromEntries(Object.entries(target_schema.properties).map(([key, value]: [string, any]) => {
-    return [value.description as string, key as keyof Target]
-}))
+let tgt_schama = target_schema as unknown as TargetPropertySchema
 
+const properties = tgt_schama.properties as { [key: string]: TargetPropertySchema }
+
+const hdrToKeyMapping =
+    Object.fromEntries(Object.entries(properties).map(([key, value]) => {
+        return [value.short_description ?? value.description, key as keyof Target]
+    }))
 
 export function UploadComponent(props: UploadProps) {
 
@@ -42,32 +51,6 @@ export function UploadComponent(props: UploadProps) {
         return tgts
     }
 
-    const parse_txt = (contents: string) => {
-        const tgts = contents.split('\n').map((row) => {
-            //const [target_name, rah, ram, ras, dech, decm, decs, epoch, ...opts] = row.replace(/\s\s+/g, ' ').split(' ')
-            const target_name = row
-            const tgt = {
-                target_name,
-            } as Partial<Target>;
-            return tgt;
-        });
-        return tgts
-    }
-
-    // const parse_txt = (contents: string) => {
-    //     const [header, ...lines] = contents.split('\n')
-    //         .map(s => s.replace('\r', '').split(','))
-    //     const tgts = lines.map((item) => {
-    //         const tgt = {} as Target;
-    //         header.forEach((desc, index) => {
-    //             const key = hdrToKeyMapping[desc] as keyof Target
-    //             tgt[key] = item.at(index) as keyof Target[keyof Target]
-    //         });
-    //         return tgt;
-    //     });
-    //     return tgts
-    // }
-
     const fileLoad = (evt: React.ChangeEvent<HTMLInputElement>) => {
         let file: File = new File([], 'empty')
         evt.target?.files && (file = evt.target?.files[0])
@@ -78,17 +61,17 @@ export function UploadComponent(props: UploadProps) {
         fileReader.readAsText(file, "UTF-8");
         fileReader.onload = e => {
             const contents = e.target?.result as string
-            const tgts = ext?.includes('csv') ? parse_csv(contents) : parse_txt(contents)
+            const tgts = ext?.includes('csv') ? parse_csv(contents) : []
             props.setOpen && props.setOpen(false)
             console.log('tgts', tgts)
-            props.setTargetNames(tgts.map(tgt => tgt.target_name))
+            props.setTargets(tgts)
         };
     };
 
     return (
         <>
             <input
-                accept="*.csv,*.txt,*.json"
+                accept="*.csv"
                 style={{ display: 'none' }}
                 id="raised-button-file"
                 type="file"
@@ -143,7 +126,8 @@ export default function UploadDialog(props: Props) {
                         label={label}
                         setLabel={setLabel}
                         setOpen={setOpen}
-                        setTargetNames={props.setTargetNames} />
+                        setTargets={props.setTargets}
+                        />
                 </DialogActions>
             </Dialog>
         </div>

@@ -49,13 +49,17 @@ export const raDecFormat = (input: string) => {
 
     // Based upon the length of the string, we add formatting as necessary
     var size = input.length;
-    if (size < 3) {
+    if (size < 2) {
         input = input;
     }
-    else if (size < 5) {
-        input = input.substring(0, 2) + ':' + input.substring(2, 4);
-    } else if (size < 7) {
+    else if (size < 3) {
+        input = input + ':';
+    } else if (size < 5) {
+        input = input.substring(0, 2) + ':' + input.substring(2, 4) + ':';
+    } else if (size < 6) {
         input = input.substring(0, 2) + ':' + input.substring(2, 4) + ':' + input.substring(4, 6);
+    } else if (size < 7) {
+        input = input.substring(0, 2) + ':' + input.substring(2, 4) + ':' + input.substring(4, 6) + '.';
     } else {
         input = input.substring(0, 2) + ':' + input.substring(2, 4) + ':' + input.substring(4, 6) + '.' + input.substring(6);
     }
@@ -94,7 +98,9 @@ export const TargetEditDialog = (props: TargetEditProps) => {
 
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         //add trailing zero if string ends in a decimal 
+        console.log('key', key, 'value', value, 'isNumber', isNumber)
         value = isNumber ? String(value).replace(/(\d+)\.$/, "$1.0") : value
+        console.log('formattedValue', value)
         if (value && (key === 'ra' || key === 'dec')) {
             key === 'ra' && String(value).replace(/[^+-]/, "")
             value = raDecFormat(value as string)
@@ -246,7 +252,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         InputLabelProps={{ shrink: hasSimbad || 'j_mag' in target }}
                                         id="j-magnitude"
                                         value={target.j_mag}
-                                        onChange={(event) => handleTextChange('j_mag', event.target.value, true)}
+                                        onChange={(event) => handleTextChange('j_mag', event.target.value)}
                                     />
                                 </Tooltip>
                                 <Tooltip title={input_label('g_mag', true)}>
@@ -256,7 +262,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         InputLabelProps={{ shrink: hasSimbad || 'g_mag' in target }}
                                         id="g-magnitude"
                                         value={target.g_mag}
-                                        onChange={(event) => handleTextChange('g_mag', event.target.value, true)}
+                                        onChange={(event) => handleTextChange('g_mag', event.target.value)}
                                     />
                                 </Tooltip>
                             </Stack>
@@ -290,7 +296,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         InputLabelProps={{ shrink: hasSimbad || 'pm_ra' in target }}
                                         id="pm-ra"
                                         value={target.pm_ra}
-                                        onChange={(event) => handleTextChange('pm_ra', event.target.value, true)}
+                                        onChange={(event) => handleTextChange('pm_ra', event.target.value)}
                                     />
                                 </Tooltip>
                                 <Tooltip title={input_label('pm_dec', true)}>
@@ -300,7 +306,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         InputLabelProps={{ shrink: hasSimbad || 'pm_dec' in target }}
                                         id="pm-dec"
                                         value={target.pm_dec}
-                                        onChange={(event) => handleTextChange('pm_dec', event.target.value, true)}
+                                        onChange={(event) => handleTextChange('pm_dec', event.target.value)}
                                     />
                                 </Tooltip>
                                 <Tooltip title={input_label('epoch', true)}>
@@ -317,10 +323,10 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('systemic_velocity')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'sys_rv' in target }}
+                                        InputLabelProps={{ shrink: hasSimbad || 'systemic_velocity' in target }}
                                         id="rot-vel"
-                                        value={target.sys_rv}
-                                        onChange={(event) => handleTextChange('sys_rv', event.target.value, true)}
+                                        value={target.systemic_velocity}
+                                        onChange={(event) => handleTextChange('systemic_velocity', event.target.value)}
                                     />
                                 </Tooltip>
                             </Stack>

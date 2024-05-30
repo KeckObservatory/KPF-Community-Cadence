@@ -56,6 +56,8 @@ export function TopBar(props: Props) {
     window.open('https://forms.gle/MjgHD2Tode7Dvv6g8', '_blank')
   }
 
+  const color = props.darkState ? 'primary' : 'secondary'
+
 
   return (
     <AppBar
@@ -101,18 +103,18 @@ export function TopBar(props: Props) {
 
         <Tooltip title="Select to logout via observer portal">
           <IconButton onClick={handleLogout}
-            aria-label="logout" color="primary">
+            aria-label="logout" color={color}>
             <LogoutIcon />
           </IconButton>
         </Tooltip>
         <MarkdownDialogButton
-          icon={<HelpIcon />}
+          icon={<HelpIcon color={color} />}
           msg={motivationMsg}
           tooltipMsg='Select to view Motivation message'
           header='Motivation'
         />
         <MarkdownDialogButton
-          icon={<InfoIcon />}
+          icon={<InfoIcon color={color} />}
           msg={welcomeMsg}
           tooltipMsg='Select to view Welcome message'
           header='Welcome'
