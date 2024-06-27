@@ -123,6 +123,7 @@ function convert_schema_to_columns(semids: string[]) {
       field: key,
       valueParser: valueParser,
       valueSetter: valueSetter,
+      disableExport: valueProps.not_editable_by_user,
       type: valueProps.type,
       resizable: true,
       headerName: valueProps.short_description ?? valueProps.description,

@@ -98,9 +98,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
 
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
         //add trailing zero if string ends in a decimal 
-        console.log('key', key, 'value', value, 'isNumber', isNumber)
         value = isNumber ? String(value).replace(/(\d+)\.$/, "$1.0") : value
-        console.log('formattedValue', value)
         if (value && (key === 'ra' || key === 'dec')) {
             key === 'ra' && String(value).replace(/[^+-]/, "")
             value = raDecFormat(value as string)

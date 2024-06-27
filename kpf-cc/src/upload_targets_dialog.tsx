@@ -24,6 +24,7 @@ interface UploadProps extends Props {
 interface TargetPropertySchema extends JSONSchema7 {
     description: string
     short_description: string
+    not_editable_by_user?: boolean
 }
 
 let tgt_schama = target_schema as unknown as TargetPropertySchema
@@ -35,6 +36,18 @@ const hdrToKeyMapping =
         return [value.short_description ?? value.description, key as keyof Target]
     }))
 
+const convertValue = (value: string, key: keyof Target) => {
+    const type = properties[key].type 
+    const isNumber = type?.includes('number') || type?.includes('integer')
+    const isBoolean = type?.includes('boolean')
+    if (isBoolean) {
+        return value.toLowerCase() === 'true'
+    }
+    else {
+        return isNumber ? parseFloat(value) : value
+    }
+}
+
 export function UploadComponent(props: UploadProps) {
 
     const parse_csv = (contents: string) => {
@@ -44,7 +57,10 @@ export function UploadComponent(props: UploadProps) {
             const tgt = {} as Target;
             header.forEach((desc, index) => {
                 const key = hdrToKeyMapping[desc] as keyof Target
-                tgt[key] = item.at(index) as keyof Target[keyof Target]
+                let value = item.at(index)
+                if (!value && properties[key].not_editable_by_user) return
+                value = convertValue(value as string, key) as keyof Target[keyof Target] 
+                tgt[key] = value 
             });
             return tgt;
         });
@@ -55,7 +71,7 @@ export function UploadComponent(props: UploadProps) {
         let file: File = new File([], 'empty')
         evt.target?.files && (file = evt.target?.files[0])
         props.setLabel && props.setLabel(`${file.name} Uploaded`)
-        const ext = file.name.split('.').pop()
+        const ext = file.name.split('.').pop()?.toLowerCase()
         console.log('file', file, ext)
         const fileReader = new FileReader()
         fileReader.readAsText(file, "UTF-8");
