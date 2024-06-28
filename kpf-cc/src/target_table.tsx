@@ -25,7 +25,8 @@ import {
   GridValueParser,
   GridEventListener,
   useGridApiContext,
-  useGridApiEventHandler
+  useGridApiEventHandler,
+  GridCsvExportOptions
 } from '@mui/x-data-grid-pro';
 import {
   randomId,
@@ -42,8 +43,6 @@ import { useCommCadContext, Target, useSnackbarContext, get_config, useRefreshTa
 import PublishIcon from '@mui/icons-material/Publish';
 import { Chip, Tooltip } from '@mui/material';
 
-
-
 interface TargetRow extends Target {
   isNew?: boolean;
   id: string;
@@ -51,10 +50,9 @@ interface TargetRow extends Target {
 
 
 interface EditToolbarProps {
+  processRowUpdate: (newRow: GridRowModel) => TargetRow;
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-  setRowModesModel: (
-    newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
-  ) => void;
+  csvOptions: GridCsvExportOptions;
 }
 
 const target_feisable_chip = (params: GridRenderCellParams) => {
@@ -167,7 +165,7 @@ export const create_new_target = (semid: string, id?: string, target_name?: stri
 
 
 function EditToolbar(props: EditToolbarProps) {
-  const { setRows, setRowModesModel } = props;
+  const { setRows, processRowUpdate, csvOptions } = props;
   const context = useCommCadContext()
   const snackbarContext = useSnackbarContext()
 
@@ -191,11 +189,8 @@ function EditToolbar(props: EditToolbarProps) {
       let tgt = resp.targets[0]
       tgt.need_resubmit = false
       context.setTargets([tgt, ...context.targets])
+      processRowUpdate(tgt)
       setRows((oldRows) => [tgt, ...oldRows]);
-      setRowModesModel((oldModel) => ({
-        ...oldModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'target_name' },
-      }));
     }
     else {
       console.error('save failed', resp)
@@ -212,7 +207,7 @@ function EditToolbar(props: EditToolbarProps) {
         Add Target
       </Button>
       <GridToolbar
-        csvOptions={{ allColumns: true, fileName: `${context.semid}_KPFCC` }}
+        csvOptions={csvOptions}
       />
       <TargetWizardButton />
     </GridToolbarContainer>
@@ -228,14 +223,14 @@ export default function TargetTable() {
     }
   }) as TargetRow[] : [] as TargetRow[];
 
-  console.log('init targets')
   const [rows, setRows] = React.useState(initTargets);
   const [visibleColumns, setVisibleColumns] = React.useState<{ [key: string]: boolean }>({});
+  const [csvExportColumns, setCSVExportColumns] = React.useState<string[]>([]);
   const [pinnedColumns, setPinnedColumns] = React.useState<GridPinnedColumnFields>({
     left: [],
     right: [],
   });
-  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
   const snackbarContext = useSnackbarContext()
   const refreshContext = useRefreshTableContext()
 
@@ -248,6 +243,7 @@ export default function TargetTable() {
         return [col.field, visible]
       }));
       setVisibleColumns(vc)
+      setCSVExportColumns(cfg.csv_order)
     }
     set_visible_columns()
   }, [])
@@ -371,8 +367,11 @@ export default function TargetTable() {
         const handleEvent: GridEventListener<'cellEditStop'> = (params) => {
           setTimeout(() => { //wait for cell to update before setting editTarget
             const value = apiRef.current.getCellValue(id, params.field);
+            //Following line is a hack to prevent cellEditStop from firing from non-selected shell.
+            //@ts-ignore
+            if (editTarget[params.field] === value) return //no change detected. not going to set target as edited.
             setEditTarget({ ...editTarget, 'state': 'TARGET_EDITED', [params.field]: value })
-          }, 100)
+          }, 300)
         }
 
         useGridApiEventHandler(apiRef, 'cellEditStop', handleEvent)
@@ -469,7 +468,6 @@ export default function TargetTable() {
 
   columns = [...addColumns, ...columns];
 
-
   return (
     <Box
       sx={{
@@ -495,7 +493,14 @@ export default function TargetTable() {
             toolbar: EditToolbar,
           }}
           slotProps={{
-            toolbar: { setRows, setRowModesModel },
+            toolbar: {
+              setRows,
+              processRowUpdate,
+              csvOptions: { fields: csvExportColumns, allColumns: true, fileName: `${context.semid}_KPFCC` }
+              // csvOptions: { fields: csvExportColumns },
+              // csvOptions: { fields: ['Target Name', 'Semester ID'] },
+              // csvOptions: { fields: CSV_ORDER }
+            },
           }}
           pinnedColumns={pinnedColumns}
           initialState={{

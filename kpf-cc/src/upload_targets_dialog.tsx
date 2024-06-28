@@ -41,7 +41,15 @@ const convertValue = (value: string, key: keyof Target) => {
     const isNumber = type?.includes('number') || type?.includes('integer')
     const isBoolean = type?.includes('boolean')
     if (isBoolean) {
-        return value.toLowerCase() === 'true'
+        if (['true', 'yes', '1'].includes(value.toLowerCase())) {
+            return true
+        }
+        else if ( ['false', 'no', '0'].includes(value.toLowerCase()) ) {
+            return false
+        }
+        else {
+            return null
+        }
     }
     else {
         return isNumber ? parseFloat(value) : value
@@ -58,7 +66,7 @@ export function UploadComponent(props: UploadProps) {
             header.forEach((desc, index) => {
                 const key = hdrToKeyMapping[desc] as keyof Target
                 let value = item.at(index)
-                if (!value && properties[key].not_editable_by_user) return
+                if (!value || properties[key].not_editable_by_user) return
                 value = convertValue(value as string, key) as keyof Target[keyof Target] 
                 tgt[key] = value 
             });

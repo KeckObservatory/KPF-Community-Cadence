@@ -10,9 +10,38 @@
         "num_intranight_cadence",
         "require_resubmit"
     ],
+
+    "csv_order": [
+        "target_name",
+        "ra",
+        "dec",
+        "pm_ra",
+        "pm_dec",
+        "epoch",
+        "effective_temperature",
+        "j_magnitude",
+        "g_magnitude",
+        "systemic_velocity",
+        "nominal_exposure_time",
+        "maximum_exposure_time",
+        "simulcal_on",
+        "gaia_id",
+        "tic_id",
+        "num_exposures_per_visit",
+        "num_visits_per_night",
+        "num_intranight_cadence",
+        "num_nights_per_semester",
+        "num_internight_cadence",
+        "observing_notes"
+    ],
     "pinned_table_columns": {
-        "left": ["actions", "target_name"],
-        "right": [ "target_feasible"]
+        "left": [
+            "actions",
+            "target_name"
+        ],
+        "right": [
+            "target_feasible"
+        ]
     },
     "motivation_path": "motivationMsg.md",
     "welcome_path": "welcomeMsg.md"

@@ -344,8 +344,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <FormGroup>
                                         <FormControlLabel
                                             onChange={(event) => handleSwitchChange('simulcal_on', event)}
-                                            value={target.simulcal_on}
-                                            control={<Switch defaultChecked />}
+                                            control={<Switch checked={target.simulcal_on}/>}
                                             label={input_label('simulcal_on')} />
                                     </FormGroup>
                                 </Tooltip>
