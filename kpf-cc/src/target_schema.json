@@ -98,7 +98,7 @@
         },
         "dec": {
             "type": "string",
-            "description": "Declination [dd:mm:ss]"
+            "description": "Declination [degrees]"
         },
         "ra_deg": {
             "type": "number",
