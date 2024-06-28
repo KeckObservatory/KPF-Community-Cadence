@@ -32,7 +32,7 @@
         "num_intranight_cadence",
         "num_internight_cadence",
         "num_unique_nights_per_semester",
-        "observing_notes"
+        "comment"
     ],
     "pinned_table_columns": {
         "left": [

@@ -94,11 +94,11 @@
         },
         "ra": {
             "type": "string",
-            "description": "Right Ascension [hourangle]"
+            "description": "Right Ascension [hh:mm:ss]"
         },
         "dec": {
             "type": "string",
-            "description": "Declination [degrees]"
+            "description": "Declination [dd:mm:ss]"
         },
         "ra_deg": {
             "type": "number",
