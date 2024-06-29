@@ -80,7 +80,12 @@ export const rowSetter = (tgt: Target, key: string, value?: string | number | bo
             ...tgt,
             'num_intranight_cadence': 0,
         }
-
+    }
+    if (key.includes('num_intranight_cadence') && tgt.num_visits_per_night === 1) { // do not allow intranight cadence edit if num_visits_per_night is 1
+        tgt = {
+            ...tgt,
+            'num_intranight_cadence': 0,
+        }
     }
     return tgt
 }
@@ -426,6 +431,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     >
                                     <TextField
                                         // focused
+                                        disabled={target.num_visits_per_night === 1}
                                         label={input_label('num_intranight_cadence')}
                                         InputLabelProps={{ shrink: hasSimbad || 'num_intranight_cadence' in target }}
                                         id="num-intra-night-cadence"
