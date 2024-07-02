@@ -52,7 +52,7 @@ const convertValue = (value: string, key: keyof Target) => {
         }
     }
     else {
-        return isNumber ? parseFloat(value) : value
+        return isNumber ? parseFloat(value.replace("'", "")) : value
     }
 }
 
