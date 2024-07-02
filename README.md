@@ -31,7 +31,41 @@ export default {
 
 ## Release
 For releases, do the steps for www3 release:
-npm run build (webbld@www3build)
-make install
-test on www3build
-kdeploy -a www/observers/kpf-cc
+
+navigate to 
+
+```wwwbuild/observers/kpf-cc/```
+
+clone repo and name it with the following line
+
+```git clone https://git@github.com/KeckObservatory/Kpf-Community-Cadence.git X.X.X && cd X.X.X```
+
+where X.X.X is the version you wish to release. 
+
+Copy license.json from previous versions with
+
+```cp ../X.X.X-1/src/license.json ./src/license.json```
+
+where ```X.X.X-1``` is the previous version released. 
+
+Install dependencies and build with the followoing line
+
+```npm install && npm run build```
+
+To make to run the following
+
+```make install```
+
+Verify/test the version deployed at 
+
+[https://www3build.keck.hawaii.edu/observers/kpf-cc/rel/index.html](https://www3build.keck.hawaii.edu/observers/kpf-cc/rel/index.html).
+
+If ready to deploy run
+
+```kdeploy -a www/observers/kpf-cc```
+
+Check that the ref is set to the correct version before deploying.
+
+Navigate to 
+
+[https://www3.keck.hawaii.edu/observers/kpf-cc/rel/index.html](https://www3.keck.hawaii.edu/observers/kpf-cc/rel/index.html).
