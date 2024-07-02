@@ -52,7 +52,8 @@ const convertValue = (value: string, key: keyof Target) => {
         }
     }
     else {
-        return isNumber ? parseFloat(value.replace("'", "")) : value
+        const formattedValue = key==='dec' || isNumber ? value.replace("'", "") : value //remove leading apostrophe for negative numbers
+        return isNumber ? parseFloat(formattedValue) : formattedValue 
     }
 }
 
