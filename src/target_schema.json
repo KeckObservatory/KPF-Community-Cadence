@@ -27,7 +27,7 @@
             "description": "Effective Temperature [Kelvin]"
         },
         "systemic_velocity": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Systemic Velocity [km/s]"
         },
         "simulcal_on": {
