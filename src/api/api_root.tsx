@@ -120,7 +120,7 @@ export const get_target = (oid: string): Promise<string> => {
 
 export const get_all_semester_targets = (semester: string, notApproved?: Boolean): Promise<SubmitResp> => {
     let queryParams = `semester=${semester}`
-    queryParams += notApproved!=undefined ? `&notapproved=${notApproved}`: ''
+    queryParams += notApproved ? `&notapproved=${notApproved}`: ''
     const url = API_ADDR + `/getAllSemesterTargets?${queryParams}`
     return axiosInstance.get(url)
         .then(handleResponse)
