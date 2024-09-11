@@ -118,8 +118,8 @@ export const get_target = (oid: string): Promise<string> => {
         .catch(handleError)
 }
 
-export const get_all_semester_targets = (semester?: string): Promise<SubmitResp> => {
-    const queryParams = `semester=${semester}`
+export const get_all_semester_targets = (semester: string, notApproved: Boolean): Promise<SubmitResp> => {
+    let queryParams = `semester=${semester}&notapproved=${notApproved}`
     const url = API_ADDR + `/getAllSemesterTargets?${queryParams}`
     return axiosInstance.get(url)
         .then(handleResponse)

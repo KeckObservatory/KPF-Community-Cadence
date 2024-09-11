@@ -13,6 +13,7 @@ export interface SPP {
 
 interface Props {
     isAdmin?: boolean
+    notApproved?: boolean
 }
 
 const cartesian = (sets: string[][]) => {
@@ -35,7 +36,6 @@ export const Control = (props: Props) => {
     const onSemesterChange = (value: string | undefined | null) => {
         if (!value) return
         setSemester(value)
-
     }
 
     useEffect(() => {
@@ -72,7 +72,7 @@ export const Control = (props: Props) => {
 
     const onSemesterClick = async () => {
         if (!semester) return
-        const resp = await get_all_semester_targets(semester)
+        const resp = await get_all_semester_targets(semester, props.notApproved)
         handleResponse(resp, semester)
         refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     }

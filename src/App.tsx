@@ -134,6 +134,7 @@ export const useRefreshTableContext = () => useContext(refreshTableContext)
 
 function App() {
   const [darkState, setDarkState] = useQueryParam('darkState', withDefault(BooleanParam, true));
+  const [notApproved, _] = useQueryParam('notApproved', withDefault(BooleanParam, true));
   const [semid, setSemid] = useQueryParam<string>('semid');
   const [state, setState] = useState<State>({} as State);
   const [init, setInit] = useState<boolean>(false);
@@ -282,7 +283,7 @@ function App() {
                   flexDirection: 'column',
                 }}
               >
-                <Control isAdmin={isAdmin} />
+                <Control notApproved={notApproved} isAdmin={isAdmin} />
                 {init ? (
                   <TargetTable />
                 ) : <Skeleton variant="rectangular" width="100%" height={500} />}
