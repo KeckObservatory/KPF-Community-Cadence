@@ -243,7 +243,8 @@ export default function TargetTable() {
         return [col.field, visible]
       }));
       setVisibleColumns(vc)
-      setCSVExportColumns(cfg.csv_order)
+      const csv_order = context.isAdmin? ['semid', ...cfg.csv_order] : cfg.csv_order
+      setCSVExportColumns(csv_order)
     }
     set_visible_columns()
   }, [])

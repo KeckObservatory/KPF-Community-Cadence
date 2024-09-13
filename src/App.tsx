@@ -73,6 +73,7 @@ interface State {
 
 export interface CCContext extends State {
   semid: string,
+  isAdmin: boolean,
   setTargets: Function,
   setObserverId: Function
   setSemid: Function
@@ -82,6 +83,7 @@ export interface CCContext extends State {
 
 const init_cc_context: CCContext = {
   username: "Dr. Observer Observerson",
+  isAdmin: false,
   userinfo: undefined,
   obsid: 1234,
   semid: 'XXXX_XXXX',
@@ -213,6 +215,7 @@ function App() {
         <CommCadContext.Provider value={
           {
             username: state.username ?? "Dr. Observer Observerson",
+            isAdmin: isAdmin,
             obsid: state.userinfo?.Id ?? "XXXX",
             semids: state.semids ?? [],
             semid: semid ?? "XXXX_XXXX",
