@@ -9,7 +9,7 @@ import { Tooltip } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import { Target } from './App';
 import { JSONSchema7 } from 'json-schema';
-import target_schema from './target_schema.json'
+import target_schema from './cc_target_schema.json'
 
 interface Props {
     setTargets: Function

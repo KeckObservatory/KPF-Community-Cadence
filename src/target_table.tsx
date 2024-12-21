@@ -32,7 +32,7 @@ import {
   randomId,
 } from '@mui/x-data-grid-generator';
 
-import target_schema from './target_schema.json'
+import target_schema from './cc_target_schema.json'
 import ValidationDialogButton, { validate } from './validation_check_dialog';
 import TargetEditDialogButton, { raDecFormat } from './target_edit_dialog';
 import SimbadButton from './simbad_button';

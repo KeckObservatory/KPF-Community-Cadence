@@ -1,0 +1,9 @@
+{
+    "title": "KPF Observing Block",
+    "description": "This document defines the schema for the KPF Observing Block",
+    "type": "object",
+    "properties": {
+    },
+    "required": [ ],
+    "additionalProperties": true
+}

@@ -1,0 +1,103 @@
+{
+    "title": "KPF Target Params",
+    "description": "This document defines the schema for the KPF Target Params",
+    "type": "object",
+    "properties": {
+        "target_name": {
+            "type": "string",
+            "pattern": "^[\\-a-zA-Z0-9\\s]+$",
+            "description": "Target Name",
+            "translator_mapping": "TargetName"
+        },
+        "gaia_id": {
+            "type": "string",
+            "description": "GAIA Identifier: DR3 preferred (optional)",
+            "short_description": "GAIA Identifier",
+            "translator_mapping": "GaiaID"
+        },
+        "two_mass_id": {
+            "type": "string",
+            "description": "Two Mass Identifier",
+            "short_description": "GAIA Identifier",
+            "translator_mapping": "twoMASSID"
+        },
+        "parallax": {
+            "type": "string",
+            "description": "Parallax of the target [arcseconds]",
+            "short_description": "Parallax",
+            "translator_mapping": "Parallax"
+        },
+        "systemic_velocity": {
+            "type": ["number", "string"],
+            "description": "Systemic Velocity [km/s]",
+            "short_description": "Systemic Velocity",
+            "translator_mapping": "RadialVelocity"
+        },
+        "g_mag": {
+            "type": ["number", "string"],
+            "description": "G Magnitude",
+            "translator_mapping": "Gmag"
+        },
+        "j_mag": {
+            "type": ["number", "string"],
+            "description": "J Magnitude",
+            "translator_mapping": "Jmag"
+        },
+        "t_eff": {
+            "type": "number",
+            "description": "Effective Temperature [Kelvin]",
+            "short_description": "Teff",
+            "translator_mapping": "Teff"
+        },
+        "ra": {
+            "type": "string",
+            "description": "Right Ascension [hh:mm:ss]",
+            "translator_mapping": "RA"
+        },
+        "dec": {
+            "type": "string",
+            "description": "Declination [dd:mm:ss]",
+            "translator_mapping": "DEC"
+        },
+        "equinox": {
+            "type": "string",
+            "description": "Equinox of the coordinate system (typically 2000)",
+            "short_description": "Equinox",
+            "translator_mapping": "Equinox"
+        },
+        "pm_ra": {
+            "type": ["number", "string"],
+            "description": "Proper Motion in RA [miliarcseconds/year]",
+            "short_description": "Proper Motion in RA",
+            "translator_mapping": "PMRA"
+        },
+        "pm_dec": {
+            "type": ["number", "string"],
+            "description": "Proper Motion in Dec [miliarcseconds/year]",
+            "short_description": "Proper Motion in Dec",
+            "translator_mapping": "PMDEC"
+        },
+        "epoch": {
+            "type": "number",
+            "description": "Epoch of the coordinate measurements [decimal year]",   
+            "short_description": "Epoch",
+            "default": 2000,
+            "translator_mapping": "Epoch",
+            "multipleOf": 0.01
+        },
+        "d_ra": {
+            "type": "number",
+            "description": "Non siderial tracking rate in RA [arcseconds / hr divided by 15]",
+            "short_description": "RA Offset",
+            "translator_mapping": "DRA"
+        },
+        "d_dec": {
+            "type": "number",
+            "description": "Non siderial tracking rate in Dec [arcseconds / hr]",
+            "short_description": "Dec Offset",
+            "translator_mapping": "DDEC"
+        }
+    },
+    "required": [ ],
+    "additionalProperties": true
+}
