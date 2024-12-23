@@ -10,7 +10,8 @@
         "num_intranight_cadence",
         "require_resubmit"
     ],
-
+    "motivation_path": "motivationMsg.md",
+    "welcome_path": "welcomeMsg.md",
     "csv_order": [
         "target_name",
         "ra",
@@ -42,7 +43,5 @@
         "right": [
             "target_feasible"
         ]
-    },
-    "motivation_path": "motivationMsg.md",
-    "welcome_path": "welcomeMsg.md"
+    }
 }
