@@ -16,6 +16,8 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { LicenseInfo } from '@mui/x-license';
 import licenseKey from './license.json'
+import { Module } from 'module';
+import { ModuleSelector } from './module_selector';
 
 
 
@@ -66,6 +68,7 @@ interface State {
   obsid: number,
   userinfo?: UserInfo,
   semids: string[],
+  semester: string,
   targets: Target[],
   total_hours: number,
   total_observations: number
@@ -73,6 +76,8 @@ interface State {
 
 export interface CCContext extends State {
   semid: string,
+  semester: string,
+  setSemester: Function,
   isAdmin: boolean,
   setTargets: Function,
   setObserverId: Function
@@ -85,6 +90,8 @@ const init_cc_context: CCContext = {
   username: "Dr. Observer Observerson",
   isAdmin: false,
   userinfo: undefined,
+  semester: 'XXXX_XXXX', 
+  setSemester: () => { },
   obsid: 1234,
   semid: 'XXXX_XXXX',
   semids: [],
@@ -134,6 +141,7 @@ const refreshTableContext = createContext<RefreshTableContext>({
 })
 export const useRefreshTableContext = () => useContext(refreshTableContext)
 
+
 function App() {
   const [darkState, setDarkState] = useQueryParam('darkState', withDefault(BooleanParam, true));
   const [notApproved, _] = useQueryParam('notApproved', withDefault(BooleanParam, true));
@@ -146,13 +154,17 @@ function App() {
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>({})
   const [refreshTable, setRefreshTable] = useState(0)
 
+  const date = new Date()
+  let initSemester = String(date.getFullYear()) + (date.getMonth() < 8 || date.getMonth() > 2 ? 'B' : 'A')
+
   useEffect(() => {
     const fetchData = async () => {
-      const userinfo = await get_userinfo();
+      let userinfo = await get_userinfo();
       const title = userinfo.Title ? userinfo.Title + ' ' : ''
       const username = `${title}${userinfo.FirstName} ${userinfo.LastName}`;
       const obsid = userinfo.Id;
-      const semidResp = await get_semids(obsid);
+      let semidResp = await get_semids(obsid);
+
       if (semidResp.success !== 'SUCCESS') {
         setSnackbarMessage({
           severity: 'error',
@@ -162,7 +174,6 @@ function App() {
       }
 
       let semids = semidResp.programs.map((p: any) => p.semid)
-      // const semid = semids[0]
       if (semid === undefined) {
         setSemid(semids[0])
       }
@@ -193,6 +204,7 @@ function App() {
         semids: semids,
         total_hours,
         total_observations,
+        semester: initSemester,
         targets
       });
       setInit(true)
@@ -219,6 +231,12 @@ function App() {
             obsid: state.userinfo?.Id ?? "XXXX",
             semids: state.semids ?? [],
             semid: semid ?? "XXXX_XXXX",
+            semester: state.semester,
+            setSemester: (semester: string) => {
+              setState((st) => {
+                return { ...st, semester }
+              })
+            },
             total_hours: state.total_hours,
             total_observations: state.total_observations,
             targets: state.targets,
@@ -287,9 +305,11 @@ function App() {
                 }}
               >
                 <Control notApproved={notApproved} isAdmin={isAdmin} />
-                {init ? (
-                  <TargetTable />
-                ) : <Skeleton variant="rectangular" width="100%" height={500} />}
+                {init ? 
+                ( isAdmin ?  <ModuleSelector /> : <TargetTable />) 
+                : 
+                <Skeleton variant="rectangular" width="100%" height={500} />
+                }
               </Paper>
             </Stack>
           </SnackbarContext.Provider>

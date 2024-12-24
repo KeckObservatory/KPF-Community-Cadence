@@ -13,14 +13,14 @@
         "num_exposures": {
             "type": "integer",
             "description": "Number of Exposures",
-            "short_description": "# Exposures",
+            "short_description": "# Exp",
             "default": 1,
             "translator_mapping": "nExp"
         },
         "exposure_time": {
             "type": "number",
             "description": "Exposure Time [seconds]",
-            "short_description": "Exposure Time",
+            "short_description": "Exp Time",
             "default": 1,
             "multipleOf": 1,
             "translator_mapping": "ExpTime"
@@ -28,21 +28,21 @@
         "trigger_ca_h_k": {
             "type": "boolean",
             "description": "Trigger Ca, H, and K detector for this observation?",
-            "short_description": "Trigger Ca,H,&K",
+            "short_description": "Ca,H,&K",
             "default": true,
             "translator_mapping": "TriggerCaHK"
         },
         "trigger_green": {
             "type": "boolean",
             "description": "Trigger green detector for this observation?",
-            "short_description": "Trigger Green",
+            "short_description": "Green",
             "default": true,
             "translator_mapping": "TriggerGreen"
         },
         "trigger_red": {
             "type": "boolean",
             "description": "Trigger red detector for this observation?",
-            "short_description": "Trigger red",
+            "short_description": "Red",
             "default": true,
             "translator_mapping": "TriggerRed"
         },
@@ -56,7 +56,7 @@
         "exp_meter_mode": {
             "type": "string",
             "description": "Exposure Meter Mode?",
-            "short_description": "Exposure Meter Mode?",
+            "short_description": "Exp Meter Mode?",
             "enum": ["monitor", "control", "off"],
             "default": "monitor",
             "translator_mapping": "ExpMeterMode"
@@ -71,7 +71,7 @@
         "exp_meter_exp_time": {
             "type": "number",
             "description": "Exposure Time for the exposure meter [seconds] ",
-            "short_description": "Exposure Meter Exposure Time",
+            "short_description": "Exp Meter Time",
             "default": 1,
             "multipleOf": 0.1,
             "translator_mapping": "ExpMeterExpTime"
@@ -79,14 +79,14 @@
         "exp_meter_bin": {
             "type": "integer",
             "description": "Which wavelength bin to use for exposure meter termination?  (1=498nm, 2=604nm, 3=711nm, 4=817nm)",
-            "short_description": "Exposure Meter Bin",
+            "short_description": "Exp Meter Bin",
             "default": 1,
             "translator_mapping": "ExpMeterBin"
         },
         "exp_meter_threshold": {
             "type": "number",
             "description": "Threshold flux at the science detector at which to terminate the exposure [e-/nm",
-            "short_description": "Exposure Meter Threshold",
+            "short_description": "Exp Meter Th",
             "default": 50000,
             "multipleOf": 1,
             "translator_mapping": "ExpMeterThreshold"
@@ -94,14 +94,14 @@
         "take_simulcal": {
             "type": "boolean",
             "description": "Inject simultaneous calibration light on to the detector during exposure?",
-            "short_description": "Take Simulcal?",
+            "short_description": "Simulcal",
             "default": true,
             "translator_mapping": "TakeSimulCal"
         },
         "auto_nd_filters": {
             "type": "boolean",
             "description": "Automatically set ND filters for the simultaneous calibration light?",
-            "short_description": "Auto ND Filters?",
+            "short_description": "Auto Filters",
             "default": true,
             "translator_mapping": "AutoNDFilters"
         },
@@ -122,7 +122,7 @@
             "translator_mapping": "CalND2"
         },
         "nod_n": {
-            "type": "float",
+            "type": "number",
             "description": "Distance to nod the telescope North before starting exposture [arcseconds]",
             "short_description": "Nod N",
             "default": 0.0,
@@ -130,7 +130,7 @@
             "translator_mapping": "NodN"
         },
         "nod_e": {
-            "type": "float",
+            "type": "number",
             "description": "Distance to nod the telescope East before starting exposture [arcseconds]",
             "short_description": "Nod N",
             "default": 0.0,

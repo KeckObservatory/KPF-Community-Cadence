@@ -1,0 +1,192 @@
+import * as React from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import TargetTable, { NewOB } from './target_table';
+import { useCommCadContext } from './App';
+import { get_obs } from './api/api_root';
+import OBComponentTable from './ob_component_table';
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+//TODO: is using Opaque type more elegant than using union type?
+// export type Opaque<T, K> = T & { __opaque__: K };
+// export type Integer = Opaque<number, 'Integer'>;
+export type Integer = number | string;
+
+export interface OBTarget {
+  target_name?: string,
+  gaia_id?: string,
+  two_mass_id?: string,
+  parallax?: string,
+  systemic_velocity?: Integer,
+  g_mag?: Integer,
+  j_mag?: Integer,
+  t_eff?: number,
+  ra?: string,
+  dec?: string,
+  equinox?: string,
+  pm_ra?: Integer,
+  pm_dec?: Integer,
+  epoch?: number,
+  d_ra?: number,
+  d_dec?: number,
+}
+
+export interface ScheduleData {
+  scheduling_mode?: string,
+  num_visits_per_night?: Integer,
+  num_nights_per_semester?: Integer,
+  num_internight_cadence?: Integer,
+  num_intranight_cadence?: Integer,
+  fast_read_mode_requested?: boolean,
+  fixed_time_start?: string,
+  fixed_time_end?: string,
+  weather_band?: Integer,
+  accessibility_map?: Integer,
+  minimum_elevation?: number,
+  minimum_moon_separation?: number,
+}
+
+export interface Calibration {
+  cal_source?: string,
+  object?: string,
+  num_exposures?: Integer,
+  exposure_time?: number,
+  trigger_ca_h_k?: boolean,
+  trigger_green?: boolean,
+  trigger_red?: boolean,
+  intensity_monitor?: boolean,
+  cal_n_d_1?: string,
+  cal_n_d_2?: string,
+  open_science_shutter?: boolean,
+  open_sky_shutter?: boolean,
+  take_simulcal?: boolean,
+  wide_flat_pos?: string,
+  exp_meter_mode?: string,
+  exp_meter_exp_time?: number,
+  exp_meter_bin?: number,
+  exp_meter_threshold?: number,
+}
+
+export interface Observation {
+  object?: string,
+  num_exposures?: Integer,
+  exposure_time?: number,
+  trigger_ca_h_k?: boolean,
+  trigger_green?: boolean,
+  trigger_red?: boolean,
+  block_sky?: boolean,
+  exp_meter_mode?: string,
+  auto_exp_meter?: boolean,
+  exp_meter_exp_time?: number,
+  exp_meter_bin?: number,
+  exp_meter_threshold?: Integer,
+  take_simulcal?: boolean,
+  auto_nd_filters?: boolean,
+  cal_n_d_1?: string,
+  cal_n_d_2?: string,
+  nod_n?: number,
+  nod_e?: number,
+  guide_here?: boolean,
+}
+
+
+export interface OB { //TODO: define component interfaces
+  _id: string,
+  observation: Observation,
+  calibration: Calibration,
+  target: OBTarget,
+  schedule: ScheduleData
+}
+
+function CustomTabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+
+export const ModuleSelector = () => {
+  const [value, setValue] = React.useState(0);
+  const context = useCommCadContext()
+  const [obs, setObs] = React.useState<OB[] | NewOB[]>([])
+
+
+  //@ts-ignore
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  React.useEffect(() => {
+    const async_func = async () => {
+      const resp = await get_obs(context.semester, context.semid)
+      const newObs = resp.obs ?? []
+      setObs(newObs)
+    }
+    async_func()
+  }, [context.semid, context.semester]);
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        aria-label="cc-module-tabs"
+      >
+        <Tab value={0} label="CC Targets" {...a11yProps(0)} />
+        <Tab value={1} label="OB Targets" {...a11yProps(1)} />
+        <Tab value={2} label="Calibrations" {...a11yProps(2)} />
+        <Tab value={3} label="Observations" {...a11yProps(3)} />
+        <Tab value={4} label="Schedule Data" {...a11yProps(4)} />
+      </Tabs>
+      <CustomTabPanel value={value} index={0}>
+        {/* <h1>CCTargets</h1> */}
+        <TargetTable 
+          setObs={setObs}
+        />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <OBComponentTable
+          componentName='target'
+          obs={obs} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <OBComponentTable
+          componentName='calibration'
+          obs={obs} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        <OBComponentTable
+          componentName='observation'
+          obs={obs} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={4}>
+        <OBComponentTable
+          componentName='schedule'
+          obs={obs} />
+      </CustomTabPanel>
+    </Box>
+  );
+}

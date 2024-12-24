@@ -2,8 +2,9 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { useEffect, useState } from 'react'
 import { Autocomplete, Button, Tooltip, Typography } from '@mui/material'
-import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App'
+import { Target, useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App'
 import { SubmitResp, get_all_semester_targets, get_all_targets } from './api/api_root';
+import { OB, Observation, OBTarget, ScheduleData } from './module_selector'
 
 export interface SPP {
     semid: string
@@ -16,26 +17,25 @@ interface Props {
     notApproved?: boolean
 }
 
-const cartesian = (sets: string[][]) => {
+const cartesian_product = (sets: string[][]) => {
     return sets.reduce((a, b) => a.flatMap(d => b.map(e => [d, e]).flat()));
 }
+
 
 export const Control = (props: Props) => {
 
     const context = useCommCadContext()
     const snackbarContext = useSnackbarContext()
 
+    const refreshContext = useRefreshTableContext()
     const date = new Date()
-    let initSemester = String(date.getFullYear()) + (date.getMonth() < 8 || date.getMonth() > 2 ? 'B' : 'A')
-    const [semester, setSemester] = useState<string | undefined>(initSemester)
-    const semestersArr = cartesian([[date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1].map(s => String(s)),
+    const semestersArr = cartesian_product([[date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1].map(s => String(s)),
     ['A', 'B']])
     const semesters = semestersArr.join('').split(/(?=\d{4}[AB])/)
-    const refreshContext = useRefreshTableContext()
 
     const onSemesterChange = (value: string | undefined | null) => {
         if (!value) return
-        setSemester(value)
+        context.setSemester(value)
     }
 
     useEffect(() => {
@@ -71,9 +71,9 @@ export const Control = (props: Props) => {
     }
 
     const onSemesterClick = async () => {
-        if (!semester) return
-        const resp = await get_all_semester_targets(semester, props.notApproved)
-        handleResponse(resp, semester)
+        if (!context.semester) return
+        const resp = await get_all_semester_targets(context.semester, props.notApproved)
+        handleResponse(resp, context.semester)
         refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     }
 
@@ -81,7 +81,7 @@ export const Control = (props: Props) => {
     const onChange = async (value: string | undefined | null) => {
         if (!value) return
         const resp = await get_all_targets(value)
-        setSemester(undefined)
+        context.setSemester(undefined)
         handleResponse(resp, value)
         context.setSemid(value)
     }
@@ -96,7 +96,7 @@ export const Control = (props: Props) => {
                         <Autocomplete
                             disablePortal
                             id="semid-selection"
-                            value={{ label: semester ?? 'Semester'}}
+                            value={{ label: context.semester ?? 'Semester' }}
                             onChange={(_, value) => onSemesterChange(value?.label)}
                             options={semesters.map((s) => { return { label: s } })}
                             sx={{ width: 300 }}

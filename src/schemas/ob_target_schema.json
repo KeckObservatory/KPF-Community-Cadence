@@ -7,18 +7,19 @@
             "type": "string",
             "pattern": "^[\\-a-zA-Z0-9\\s]+$",
             "description": "Target Name",
+            "short_description": "Target Name",
             "translator_mapping": "TargetName"
         },
         "gaia_id": {
             "type": "string",
             "description": "GAIA Identifier: DR3 preferred (optional)",
-            "short_description": "GAIA Identifier",
+            "short_description": "GAIA ID",
             "translator_mapping": "GaiaID"
         },
         "two_mass_id": {
             "type": "string",
             "description": "Two Mass Identifier",
-            "short_description": "GAIA Identifier",
+            "short_description": "2Mass ID",
             "translator_mapping": "twoMASSID"
         },
         "parallax": {
@@ -30,17 +31,19 @@
         "systemic_velocity": {
             "type": ["number", "string"],
             "description": "Systemic Velocity [km/s]",
-            "short_description": "Systemic Velocity",
+            "short_description": "Sys Vel",
             "translator_mapping": "RadialVelocity"
         },
         "g_mag": {
             "type": ["number", "string"],
             "description": "G Magnitude",
+            "short_description": "Gmag",
             "translator_mapping": "Gmag"
         },
         "j_mag": {
             "type": ["number", "string"],
             "description": "J Magnitude",
+            "short_description": "Jmag",
             "translator_mapping": "Jmag"
         },
         "t_eff": {
@@ -52,11 +55,13 @@
         "ra": {
             "type": "string",
             "description": "Right Ascension [hh:mm:ss]",
+            "short_description": "RA",
             "translator_mapping": "RA"
         },
         "dec": {
             "type": "string",
             "description": "Declination [dd:mm:ss]",
+            "short_description": "Dec",
             "translator_mapping": "DEC"
         },
         "equinox": {
@@ -68,13 +73,13 @@
         "pm_ra": {
             "type": ["number", "string"],
             "description": "Proper Motion in RA [miliarcseconds/year]",
-            "short_description": "Proper Motion in RA",
+            "short_description": "PM RA",
             "translator_mapping": "PMRA"
         },
         "pm_dec": {
             "type": ["number", "string"],
             "description": "Proper Motion in Dec [miliarcseconds/year]",
-            "short_description": "Proper Motion in Dec",
+            "short_description": "PM Dec",
             "translator_mapping": "PMDEC"
         },
         "epoch": {

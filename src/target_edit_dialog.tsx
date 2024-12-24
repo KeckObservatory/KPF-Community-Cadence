@@ -18,7 +18,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import SimbadButton from './simbad_button';
 import { useCommCadContext, Target } from './App';
-import target_schema from './cc_target_schema.json'
+import target_schema from './schemas/cc_target_schema.json'
 
 interface Props {
     target: Target

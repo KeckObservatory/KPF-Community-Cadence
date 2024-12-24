@@ -4,7 +4,9 @@ import { handleResponse, handleError, intResponse, intError } from './response';
 import { Target } from '../App';
 const SIMBAD_ADDR = "https://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=submit+id&output.format=ASCII&obj.bibsel=off&Ident="
 const API_ADDR = "/api/proposals"
-
+import * as mocks from './mocks'
+import { OB } from '../module_selector';
+import { NewOB } from '../target_table';
 
 export interface UserInfo {
     status: string;
@@ -34,12 +36,12 @@ export interface UserInfo {
     Category: string;
 }
 
-interface NameSemid {
+export interface NameSemid {
     name: string,
     semid: string
 }
 
-interface SemidResp {
+export interface SemidResp {
     message: string,
     obsid: number,
     isAdmin: string,
@@ -48,15 +50,12 @@ interface SemidResp {
     success: string
 }
 
-const axiosInstance = axios.create({
-    withCredentials: false,
-    // timeout: 2000,
-    headers: {
-        'Content-Type': 'application/json',
-        'withCredentials': false,
-    }
-})
-axiosInstance.interceptors.response.use(intResponse, intError);
+export interface SubmitResp {
+    details: string,
+    message: string,
+    success: string,
+    [key: string]: any,
+}
 
 export interface GetLogsArgs {
     n_logs: number,
@@ -69,37 +68,39 @@ export interface GetLogsArgs {
     dateformat?: string
 }
 
+const axiosInstance = axios.create({
+    withCredentials: false,
+    // timeout: 2000,
+    headers: {
+        'Content-Type': 'application/json',
+        'withCredentials': false,
+    }
+})
+axiosInstance.interceptors.response.use(intResponse, intError);
 
-export const get_simbad = (obj: string): Promise<string> => {
+
+const get_simbad_call = (obj: string): Promise<string> => {
     const url = SIMBAD_ADDR + obj
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
 }
 
-
-export interface SubmitResp {
-    details: string,
-    message: string,
-    success: string,
-    [key: string]: any,
-}
-
-export const observer_logout = (): Promise<SubmitResp> => {
+const observer_logout_call = (): Promise<SubmitResp> => {
     const url = API_ADDR + '/logout'
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
 }
 
-export const delete_target = (tgt: Target): Promise<SubmitResp> => {
+const delete_target_call = (tgt: Target): Promise<SubmitResp> => {
     const url = API_ADDR + `/deleteTarget?id=${tgt._id}`
     return axiosInstance.delete(url)
         .then(handleResponse)
         .catch(handleError)
 }
 
-export const save_target = (targets: Target[],
+const save_target_call = (targets: Target[],
     semid: string,
     action = 'save',
     edit = false): Promise<SubmitResp> => {
@@ -111,14 +112,14 @@ export const save_target = (targets: Target[],
         .catch(handleError)
 }
 
-export const get_target = (oid: string): Promise<string> => {
+const get_target_call = (oid: string): Promise<string> => {
     const url = API_ADDR + `/getTarget?id=${oid}`
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
 }
 
-export const get_all_semester_targets = (semester: string, notApproved?: Boolean): Promise<SubmitResp> => {
+const get_all_semester_targets_call = (semester: string, notApproved?: Boolean): Promise<SubmitResp> => {
     let queryParams = `semester=${semester}`
     queryParams += notApproved ? `&notapproved=${notApproved}`: ''
     const url = API_ADDR + `/getAllSemesterTargets?${queryParams}`
@@ -127,7 +128,7 @@ export const get_all_semester_targets = (semester: string, notApproved?: Boolean
         .catch(handleError)
 }
 
-export const get_all_targets = (semid: string): Promise<SubmitResp> => {
+const get_all_targets_call = (semid: string): Promise<SubmitResp> => {
     const queryParams = `semid=${semid}`
     const url = API_ADDR + `/getAllTargets?${queryParams}`
     return axiosInstance.get(url)
@@ -135,17 +136,76 @@ export const get_all_targets = (semid: string): Promise<SubmitResp> => {
         .catch(handleError)
 }
 
-export const get_semids = (oid?: number): Promise<SemidResp> => {
+const get_semids_call = (oid?: number): Promise<SemidResp> => {
     const url = API_ADDR + '/getProgramIDs?' + (oid ? `obsid=${oid}` : '')
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
 }
 
-export const get_userinfo = (): Promise<UserInfo> => {
+const get_userinfo_call = (): Promise<UserInfo> => {
     const url = "/userinfo"
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
 }
 
+const get_obs_call = (semester?: string, semid?: string, id?: string): Promise<any> => {
+    let url = "/getObservingBlock"
+    if (semester) {
+        url = `/getObservingBlock?semester=${semester}`
+    }
+    else if (semid) {
+        url = `/getAllObservingBlocks?semid=${semid}`
+    }
+    else if (id) {
+        url = `/getObservingBlock?id=${id}`
+    }
+    else {
+        return Promise.reject("No arguments provided")
+    }
+    return axiosInstance.get(url)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+export type Actions = 'save' | 'submit'
+
+const edit_ob_call = (obs: OB[] | NewOB[]): Promise<SubmitResp> => {
+    const actions='edit'
+    const url = `/submitObservingBlock?action=${actions}&observing_blocks?${obs}`
+    return axiosInstance.put(url, obs)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+const submit_ob_call = (obs: OB[]): Promise<SubmitResp> => {
+    const actions='submit'
+    const url = `/submitObservingBlock?action=${actions}&observing_blocks?${obs}`
+    return axiosInstance.put(url, obs)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+const delete_ob_call = (_id: string): Promise<SubmitResp> => {
+    const url = `/deleteObservingBlock?_id=${_id}`
+    return axiosInstance.delete(url)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
+
+const IS_DEVELOPMENT: boolean = import.meta.env.DEV
+export const get_simbad  = IS_DEVELOPMENT ? get_simbad_call : mocks.mock_get_simbad
+export const observer_logout = IS_DEVELOPMENT ? observer_logout_call : mocks.mock_observer_logout
+export const delete_target = IS_DEVELOPMENT ? delete_target_call : mocks.mock_delete_target
+export const save_target = IS_DEVELOPMENT ? save_target_call : mocks.mock_save_target
+export const get_target = IS_DEVELOPMENT ? get_target_call : mocks.mock_get_target
+export const get_all_semester_targets = IS_DEVELOPMENT ? get_all_semester_targets_call : mocks.mock_get_all_semester_targets
+export const get_all_targets = IS_DEVELOPMENT ? get_all_targets_call : mocks.mock_get_all_targets
+export const get_semids = IS_DEVELOPMENT ? get_semids_call : mocks.mock_get_semids
+export const get_userinfo = IS_DEVELOPMENT ? get_userinfo_call : mocks.mock_get_userinfo
+export const get_obs = IS_DEVELOPMENT ? get_obs_call: mocks.mock_get_obs
+export const save_obs = IS_DEVELOPMENT ? edit_ob_call: mocks.mock_edit_obs
+export const delete_obs = IS_DEVELOPMENT ? delete_ob_call: mocks.mock_delete_ob
+export const submit_obs = IS_DEVELOPMENT ? submit_ob_call: mocks.mock_submit_obs

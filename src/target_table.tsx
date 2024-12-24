@@ -32,16 +32,17 @@ import {
   randomId,
 } from '@mui/x-data-grid-generator';
 
-import target_schema from './cc_target_schema.json'
-import ValidationDialogButton, { validate } from './validation_check_dialog';
+import target_schema from './schemas/cc_target_schema.json'
+import ValidationDialogButton, { validateCCTarget } from './validation_check_dialog';
 import TargetEditDialogButton, { raDecFormat } from './target_edit_dialog';
 import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
-import { delete_target, save_target } from './api/api_root';
+import { delete_target, save_obs, save_target } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext, Target, useSnackbarContext, get_config, useRefreshTableContext } from './App';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Chip, Tooltip } from '@mui/material';
+import { OB, Observation, OBTarget, ScheduleData } from './module_selector';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -52,6 +53,7 @@ interface TargetRow extends Target {
 interface EditToolbarProps {
   processRowUpdate: (newRow: GridRowModel) => TargetRow;
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
+  setOBs: (oldOBs: OB[] | NewOB[]) => void;
   csvOptions: GridCsvExportOptions;
 }
 
@@ -80,6 +82,54 @@ const target_feisable_chip = (params: GridRenderCellParams) => {
     </Tooltip>
   )
 }
+
+
+//OB has not been saved to the database yet, so it doesn't have an _id
+export type NewOB = Partial<OB> & {
+    _id?: string
+}
+
+const cc_targets_2_ob = (cc_targets: Target[]): NewOB[] => {
+
+    const targets = cc_targets.map((cc_target) => {
+        const target: OBTarget = {
+            target_name: (cc_target.target_name ?? 'undefined') as string,
+            gaia_id: cc_target.gaia_id,
+            systemic_velocity: cc_target.systemic_velocity,
+            g_mag: cc_target.g_mag,
+            j_mag: cc_target.j_mag,
+            t_eff: cc_target.t_eff,
+            ra: cc_target.ra,
+            dec: cc_target.dec,
+            pm_ra: cc_target.pm_ra,
+            pm_dec: cc_target.pm_dec,
+            epoch: Number(cc_target.epoch),
+        }
+
+        const observation: Partial<Observation> = {
+            exposure_time: cc_target.nominal_exposure_time,
+            num_exposures: cc_target.num_exposures_per_visit,
+        }
+
+        const schedule: Partial<ScheduleData> = {
+            scheduling_mode: 'CADENCE',
+            num_visits_per_night: cc_target.num_visits_per_night,
+            num_nights_per_semester: cc_target.num_unique_nights_per_semester,
+            num_internight_cadence: cc_target.num_internight_cadence,
+            num_intranight_cadence: cc_target.num_intranight_cadence,
+        }
+
+        const ob: NewOB = {
+            target,
+            observation,
+            schedule,
+            calibration: {}
+        }
+        return ob
+    })
+    return targets
+}
+
 
 function convert_schema_to_columns(semids: string[]) {
   const columns: GridColDef[] = []
@@ -164,8 +214,8 @@ export const create_new_target = (semid: string, id?: string, target_name?: stri
 }
 
 
-function EditToolbar(props: EditToolbarProps) {
-  const { setRows, processRowUpdate, csvOptions } = props;
+function EditCCTargetToolbar(props: EditToolbarProps) {
+  const { setRows, processRowUpdate, csvOptions, setOBs } = props;
   const context = useCommCadContext()
   const snackbarContext = useSnackbarContext()
 
@@ -201,8 +251,23 @@ function EditToolbar(props: EditToolbarProps) {
 
   const debouncedAddTarget = useDebounceCallback(handleAddTarget, 500)
 
+  const convert_and_submit_targets_as_obs = async (targets: Target[]) => {
+    const obs = cc_targets_2_ob(targets)
+    const resp = await save_obs(obs)
+    if (resp.success === 'SUCCESS') {
+      setOBs(resp.obs)
+    }
+    else {
+      console.error('save failed', resp)
+      snackbarContext.setSnackbarMessage(
+        { severity: 'error', message: `Target not saved. Details: ${resp.details}` })
+    }
+
+  }
+
   return (
     <GridToolbarContainer sx={{ justifyContent: 'center' }}>
+      {context.isAdmin && <Button onClick={() => convert_and_submit_targets_as_obs(context.targets)}>Create OBs from targets</Button>}
       <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddTarget}>
         Add Target
       </Button>
@@ -214,7 +279,11 @@ function EditToolbar(props: EditToolbarProps) {
   );
 }
 
-export default function TargetTable() {
+interface Props {
+  setOBs?: Function
+}
+
+export default function TargetTable(props: Props) {
   const context = useCommCadContext()
   const initTargets = context.targets ? context.targets.map((target: Target) => {
     return {
@@ -358,13 +427,11 @@ export default function TargetTable() {
         const [iconSpin, setIconSpin] = React.useState<boolean>(false);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const [hasSimbad, setHasSimbad] = React.useState(row.tic_id || row.gaia_id ? true : false);
-        validate(row)
-        const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validate.errors ?? []);
+        validateCCTarget(row)
+        const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validateCCTarget.errors ?? []);
         const [resubmit, setResubmit] = React.useState<boolean>(errors.length === 0 && row.submitted && !row.state?.includes('TARGET_SUBMITTED'));
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
-
-
         const handleEvent: GridEventListener<'cellEditStop'> = (params) => {
           setTimeout(() => { //wait for cell to update before setting editTarget
             const value = apiRef.current.getCellValue(id, params.field);
@@ -381,8 +448,8 @@ export default function TargetTable() {
           if (count > 0) {
             processRowUpdate(editTarget)
             editTarget.state?.includes('TARGET_EDITED') && debounced_save(editTarget)
-            validate(editTarget)
-            const newErrors = validate.errors ? validate.errors : []
+            validateCCTarget(editTarget)
+            const newErrors = validateCCTarget.errors ? validateCCTarget.errors : []
             const newResubmit = editTarget.submitted && editTarget.state?.includes('TARGET_EDITED')
             setResubmit(newResubmit ?? false)
             setErrors(newErrors)
@@ -402,7 +469,7 @@ export default function TargetTable() {
         //   // setEditTarget(row)
         // }, [row])
 
-        let publishText = errors.length > 0 ? 'Validate target before submitting' : 'Submit target for review'
+        let publishText = errors.length > 0 ? 'validateCCTarget target before submitting' : 'Submit target for review'
         if (resubmit && errors.length == 0) {
           publishText = 'Resubmit edited target for review'
         }
@@ -441,7 +508,7 @@ export default function TargetTable() {
               onClick={() => handlePublishClick(id, setResubmit, setIconSpin, setEditTarget)}
               color="inherit"
             /></Tooltip> :
-          < ValidationDialogButton errors={errors} target={editTarget} />
+          < ValidationDialogButton errors={errors} json={editTarget} />
 
         return [
           firstButton,
@@ -491,11 +558,12 @@ export default function TargetTable() {
           onRowModesModelChange={handleRowModesModelChange}
           slots={{
             // @ts-ignore
-            toolbar: EditToolbar,
+            toolbar: EditCCTargetToolbar,
           }}
           slotProps={{
             toolbar: {
               setRows,
+              setOBs: props.setOBs,
               processRowUpdate,
               csvOptions: { fields: csvExportColumns, allColumns: true, fileName: `${context.semid}_KPFCC` }
               // csvOptions: { fields: csvExportColumns },

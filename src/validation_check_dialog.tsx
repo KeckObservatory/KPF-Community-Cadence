@@ -7,10 +7,16 @@ import Tooltip from '@mui/material/Tooltip';
 import ApprovalIcon from '@mui/icons-material/Approval';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import target_schema from './cc_target_schema.json'
-import AJV2019, { ErrorObject } from 'ajv/dist/2019'
+import target_schema from './schemas/cc_target_schema.json'
+import AJV2019, { ErrorObject, ValidateFunction } from 'ajv/dist/2019'
 import { Target } from './App';
 import { IconButton } from '@mui/material';
+import * as ob_schema from './schemas/observing_block_schema.json'
+import * as calibration_schema from './schemas/calibration_schema.json'
+import * as schedule_schema from './schemas/schedule_data_schema.json'
+import * as ob_target from './schemas/ob_target_schema.json'
+import * as observation_schema from './schemas/observation_schema.json'
+import { OBComponents } from './ob_component_table';
 
 
 export interface SimpleDialogProps {
@@ -21,15 +27,39 @@ export interface SimpleDialogProps {
 
 export interface Props {
   errors: ErrorObject<string, Record<string, any>, unknown>[];
-  target: Target
+  json: Target | Object
 }
 
-const ajv = new AJV2019({ allErrors: true })
-let ts = target_schema as any
-delete ts["$schema"]
-ajv.addKeyword("short_description")
-ajv.addKeyword("not_editable_by_user")
-export const validate = ajv.compile(ts)
+const create_validator = (schema: any) => {
+  const ajv = new AJV2019({ allErrors: true })
+  let ts = schema as any
+  delete ts["$schema"]
+  ajv.addKeyword("short_description")
+  ajv.addKeyword("not_editable_by_user")
+  ajv.addKeyword("translator_mapping")
+  return ajv.compile(ts)
+}
+
+export type Validators = "cc_target" | "ob" | OBComponents
+
+export const validateCCTarget = create_validator(target_schema)
+
+export const ob_schemas = {
+  "ob": ob_schema,
+  "calibration": calibration_schema,
+  "schedule": schedule_schema,
+  "target": ob_target,
+  "observation": observation_schema
+}
+
+export const validators: Record<Validators, ValidateFunction> = {
+  "cc_target": validateCCTarget,
+  "ob": create_validator(ob_schema),
+  "calibration": create_validator(calibration_schema),
+  "schedule": create_validator(schedule_schema),
+  "target": create_validator(ob_target),
+  "observation": create_validator(observation_schema)
+}
 
 function ValidationDialog(props: SimpleDialogProps) {
   const { open, handleClose } = props;
@@ -69,7 +99,7 @@ export default function ValidationDialogButton(props: Props) {
     else {
       setIcon(<VerifiedIcon color="success" />)
     }
-  }, [props.target, props.errors])
+  }, [props.json, props.errors])
 
 
   const handleClickOpen = () => {
