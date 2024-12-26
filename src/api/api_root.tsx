@@ -174,7 +174,7 @@ export type Actions = 'save' | 'submit'
 const edit_ob_call = (obs: OB[] | NewOB[]): Promise<SubmitResp> => {
     const actions='save'
     const url = API_ADDR + `/submitObservingBlock?action=${actions}`
-    return axiosInstance.put(url, obs)
+    return axiosInstance.put(url, {observing_blocks: obs})
         .then(handleResponse)
         .catch(handleError)
 }
@@ -182,7 +182,7 @@ const edit_ob_call = (obs: OB[] | NewOB[]): Promise<SubmitResp> => {
 const submit_ob_call = (obs: OB[]): Promise<SubmitResp> => {
     const actions='submit'
     const url = API_ADDR + `/submitObservingBlock?action=${actions}&observing_blocks?${JSON.stringify(obs)}`
-    return axiosInstance.put(url, obs)
+    return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
 }
