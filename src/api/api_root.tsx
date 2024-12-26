@@ -151,7 +151,7 @@ const get_userinfo_call = (): Promise<UserInfo> => {
 }
 
 const get_obs_call = (semester?: string, semid?: string, id?: string): Promise<any> => {
-    let url = "/getObservingBlock"
+    let url = API_ADDR + "/getObservingBlock"
     if (semester) {
         url = `/getObservingBlock?semester=${semester}`
     }
@@ -173,7 +173,7 @@ export type Actions = 'save' | 'submit'
 
 const edit_ob_call = (obs: OB[] | NewOB[]): Promise<SubmitResp> => {
     const actions='edit'
-    const url = `/submitObservingBlock?action=${actions}&observing_blocks?${obs}`
+    const url = API_ADDR + `/submitObservingBlock?action=${actions}&observing_blocks?${obs}`
     return axiosInstance.put(url, obs)
         .then(handleResponse)
         .catch(handleError)
@@ -181,14 +181,14 @@ const edit_ob_call = (obs: OB[] | NewOB[]): Promise<SubmitResp> => {
 
 const submit_ob_call = (obs: OB[]): Promise<SubmitResp> => {
     const actions='submit'
-    const url = `/submitObservingBlock?action=${actions}&observing_blocks?${obs}`
+    const url = API_ADDR + `/submitObservingBlock?action=${actions}&observing_blocks?${obs}`
     return axiosInstance.put(url, obs)
         .then(handleResponse)
         .catch(handleError)
 }
 
 const delete_ob_call = (_id: string): Promise<SubmitResp> => {
-    const url = `/deleteObservingBlock?_id=${_id}`
+    const url = API_ADDR + `/deleteObservingBlock?_id=${_id}`
     return axiosInstance.delete(url)
         .then(handleResponse)
         .catch(handleError)
