@@ -5,7 +5,7 @@ import { SubmitResp, UserInfo } from "./api_root"
 
 
 export const mock_get_simbad = async (target: string): Promise<string> => {
-    return Promise.resolve('mocked') 
+    return Promise.resolve(`mocked ${target}`) 
 }
 
 export const mock_observer_logout = async (): Promise<SubmitResp> => {
@@ -30,7 +30,7 @@ export const mock_save_target = async (targets: Target[],
 }
 
 export const mock_get_target = async (oid: string): Promise<Target> => {
-    const target: Target = {} as Target
+    const target: Target = {_id: oid} as Target
     return target 
 }
 
