@@ -151,15 +151,15 @@ const get_userinfo_call = (): Promise<UserInfo> => {
 }
 
 const get_obs_call = (semester?: string, semid?: string, id?: string): Promise<any> => {
-    let url = API_ADDR + "/getObservingBlock"
+    let url = API_ADDR 
     if (semester) {
-        url = `/getObservingBlock?semester=${semester}`
+        url += `/getObservingBlock?semester=${semester}`
     }
     else if (semid) {
-        url = `/getAllObservingBlocks?semid=${semid}`
+        url += `/getAllObservingBlocks?semid=${semid}`
     }
     else if (id) {
-        url = `/getObservingBlock?id=${id}`
+        url += `/getObservingBlock?id=${id}`
     }
     else {
         return Promise.reject("No arguments provided")
