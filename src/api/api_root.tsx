@@ -195,17 +195,17 @@ const delete_ob_call = (_id: string): Promise<SubmitResp> => {
 }
 
 
-const IS_DEVELOPMENT: boolean = import.meta.env.DEV
-export const get_simbad  = IS_DEVELOPMENT ? get_simbad_call : mocks.mock_get_simbad
-export const observer_logout = IS_DEVELOPMENT ? observer_logout_call : mocks.mock_observer_logout
-export const delete_target = IS_DEVELOPMENT ? delete_target_call : mocks.mock_delete_target
-export const save_target = IS_DEVELOPMENT ? save_target_call : mocks.mock_save_target
-export const get_target = IS_DEVELOPMENT ? get_target_call : mocks.mock_get_target
-export const get_all_semester_targets = IS_DEVELOPMENT ? get_all_semester_targets_call : mocks.mock_get_all_semester_targets
-export const get_all_targets = IS_DEVELOPMENT ? get_all_targets_call : mocks.mock_get_all_targets
-export const get_semids = IS_DEVELOPMENT ? get_semids_call : mocks.mock_get_semids
-export const get_userinfo = IS_DEVELOPMENT ? get_userinfo_call : mocks.mock_get_userinfo
-export const get_obs = IS_DEVELOPMENT ? get_obs_call: mocks.mock_get_obs
-export const save_obs = IS_DEVELOPMENT ? edit_ob_call: mocks.mock_edit_obs
-export const delete_obs = IS_DEVELOPMENT ? delete_ob_call: mocks.mock_delete_ob
-export const submit_obs = IS_DEVELOPMENT ? submit_ob_call: mocks.mock_submit_obs
+const IS_PRODUCTION: boolean = import.meta.env.PROD
+export const get_simbad  = IS_PRODUCTION ? get_simbad_call : mocks.mock_get_simbad
+export const observer_logout = IS_PRODUCTION ? observer_logout_call : mocks.mock_observer_logout
+export const delete_target = IS_PRODUCTION ? delete_target_call : mocks.mock_delete_target
+export const save_target = IS_PRODUCTION ? save_target_call : mocks.mock_save_target
+export const get_target = IS_PRODUCTION ? get_target_call : mocks.mock_get_target
+export const get_all_semester_targets = IS_PRODUCTION ? get_all_semester_targets_call : mocks.mock_get_all_semester_targets
+export const get_all_targets = IS_PRODUCTION ? get_all_targets_call : mocks.mock_get_all_targets
+export const get_semids = IS_PRODUCTION ? get_semids_call : mocks.mock_get_semids
+export const get_userinfo = IS_PRODUCTION ? get_userinfo_call : mocks.mock_get_userinfo
+export const get_obs = IS_PRODUCTION ? get_obs_call: mocks.mock_get_obs
+export const save_obs = IS_PRODUCTION ? edit_ob_call: mocks.mock_edit_obs
+export const delete_obs = IS_PRODUCTION ? delete_ob_call: mocks.mock_delete_ob
+export const submit_obs = IS_PRODUCTION ? submit_ob_call: mocks.mock_submit_obs
