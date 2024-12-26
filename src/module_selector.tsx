@@ -19,6 +19,7 @@ interface TabPanelProps {
 export type Integer = number | string;
 
 export interface OBTarget {
+  _id?: string,
   target_name?: string,
   gaia_id?: string,
   two_mass_id?: string,
@@ -95,9 +96,30 @@ export interface Observation {
   guide_here?: boolean,
 }
 
+export type Action = 'save' | 'submit' | 'delete' | 'executed' | 'edit'
+
+export interface History {
+  action: Action,
+  date: string,
+  user: string,
+  result?: string[], // list of koaids
+  comment: string,
+}
+
+export interface MetaData {
+  observer_id?: string,
+  observer_name?: string,
+  semid?: string,
+  semester?: string,
+  progid?: string,
+  tags?: string[],
+  history?: History[]
+}
+
 
 export interface OB { //TODO: define component interfaces
   _id: string,
+  metadata: MetaData,
   observation: Observation,
   calibration: Calibration,
   target: OBTarget,
@@ -160,11 +182,11 @@ export const ModuleSelector = () => {
         <Tab value={2} label="Calibrations" {...a11yProps(2)} />
         <Tab value={3} label="Observations" {...a11yProps(3)} />
         <Tab value={4} label="Schedule Data" {...a11yProps(4)} />
+        <Tab value={5} label="Meta Data" {...a11yProps(5)} />
       </Tabs>
       <CustomTabPanel value={value} index={0}>
-        {/* <h1>CCTargets</h1> */}
         <TargetTable 
-          setObs={setObs}
+          setOBs={setObs}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -185,6 +207,11 @@ export const ModuleSelector = () => {
       <CustomTabPanel value={value} index={4}>
         <OBComponentTable
           componentName='schedule'
+          obs={obs} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={5}>
+        <OBComponentTable
+          componentName='metadata'
           obs={obs} />
       </CustomTabPanel>
     </Box>

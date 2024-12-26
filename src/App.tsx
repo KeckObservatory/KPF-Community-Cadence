@@ -16,7 +16,6 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { LicenseInfo } from '@mui/x-license';
 import licenseKey from './license.json'
-import { Module } from 'module';
 import { ModuleSelector } from './module_selector';
 
 

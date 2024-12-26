@@ -1,0 +1,44 @@
+{
+    "title": "KPF Metadata Params",
+    "description": "This document defines the schema for the KPF Metadata Params",
+    "type": "object",
+    "properties": {
+        "observer_id": {
+            "type": "string",
+            "description": "Observer ID",
+            "translator_mapping": "ObserverID"
+        },
+        "observer_name": {
+            "type": "string",
+            "description": "Name of the observer",
+            "short_description": "Observer",
+            "default": "",
+            "translator_mapping": "ObserverName"
+        },
+        "semid": {
+            "type": "string",
+            "description": "Semid",
+            "translator_mapping": "Semid"
+        },
+        "semester": {
+            "type": "string",
+            "description": "Semester",
+            "translator_mapping": "Semester"
+        },
+        "progid": {
+            "type": "string",
+            "description": "Program ID",
+            "translator_mapping": "Progid"
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Tags",
+            "translator_mapping": "Tags"
+        }
+    },
+    "required": [ ],
+    "additionalProperties": true
+}

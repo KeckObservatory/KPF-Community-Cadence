@@ -1,40 +1,34 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { ErrorObject } from 'ajv/dist/2019'
 import {
     GridRowsProp,
     GridRowModesModel,
-    GridRowModes,
     DataGridPro,
     GridColDef,
     GridToolbarContainer,
     GridPinnedColumnFields,
-    GridRowId,
     GridRowModel,
     GridToolbar,
     GridValueSetter,
     GridValueParser,
-    GridEventListener,
-    useGridApiContext,
-    useGridApiEventHandler,
     GridCsvExportOptions
 } from '@mui/x-data-grid-pro';
 
-import target_schema from './schemas/cc_target_schema.json'
-import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import { useDebounceCallback } from './use_debounce_callback';
 import { save_obs } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
-import { useCommCadContext, useSnackbarContext, get_config, useRefreshTableContext, Target } from './App';
-import { OB, Observation, OBTarget, ScheduleData } from './module_selector';
+import { useCommCadContext, useSnackbarContext, get_config, useRefreshTableContext } from './App';
+import { OB } from './module_selector';
 import { raDecFormat } from './target_edit_dialog';
-import Button from '@mui/material/Button';
+import { NewOB } from './target_table';
+import { ob_schemas } from './validation_check_dialog';
 
-export type OBComponents = "calibration" | "schedule" | "target" | "observation"
+export type OBComponents = "calibration" | "schedule" | "target" | "observation" | "metadata"
 
 interface ComponentRow extends Object {
     isNew?: boolean;
     _id: string;
+    target_name?: string,
     state: string;
 }
 
@@ -62,7 +56,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
         const valueSetter: GridValueSetter<ComponentRow> = (value: any, cmp: ComponentRow) => {
             cmp = { ...cmp, [key]: value, "state": 'ROW_EDITED' }
             //TODO: add any custom logic here
-            return cmp 
+            return cmp
         }
 
         let col = {
@@ -92,7 +86,6 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
 
 function EditComponentToolbar(props: EditToolbarProps) {
     const { csvOptions } = props;
-    const context = useCommCadContext()
     return (
         <GridToolbarContainer sx={{ justifyContent: 'center' }}>
             <GridToolbar
@@ -106,54 +99,39 @@ function EditComponentToolbar(props: EditToolbarProps) {
 
 interface Props {
     componentName: OBComponents,
-    obs: OB[]
+    obs: OB[] | NewOB[]
 }
 
 export default function OBComponentTable(props: Props) {
     const { componentName, obs } = props
     const context = useCommCadContext()
-    const initRows = obs.map((ob: OB) => {
-        const _id = ob._id
+    const initRows = obs.map((ob) => {
+        const _id = ob._id ?? Math.random().toString(36).substring(7)
+        const target_name = ob.target?.target_name ?? "TBD"
         const cmp = ob[componentName] as Object
         return {
             _id,
+            target_name,
             ...cmp,
         }
     }) as ComponentRow[];
 
     const [rows, setRows] = React.useState(initRows);
-    const [visibleColumns, setVisibleColumns] = React.useState<{ [key: string]: boolean }>({});
-    const [csvExportColumns, setCSVExportColumns] = React.useState<string[]>([]);
-    const [pinnedColumns, setPinnedColumns] = React.useState<GridPinnedColumnFields>({
-        left: [],
-        right: [],
-    });
+    const pinnedColumns = { left: ['target_name', '_id'], right: [] }
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
     const snackbarContext = useSnackbarContext()
     const refreshContext = useRefreshTableContext()
 
     React.useEffect(() => {
-        const set_visible_columns = async () => {
-            const cfg = await get_config()
-            setPinnedColumns(cfg.pinned_table_columns)
-            const vc = Object.fromEntries(columns.map((col) => {
-                const visible = cfg.default_table_columns.includes(col.field)
-                return [col.field, visible]
-            }));
-            setVisibleColumns(vc)
-            const csv_order = context.isAdmin ? ['semid', 'submitter', ...cfg.csv_order] : cfg.csv_order
-            setCSVExportColumns(csv_order)
-        }
-        set_visible_columns()
     }, [])
 
     React.useEffect(() => {
         setTimeout(() => {
-            const newRows = obs.map((ob: OB) => {
+            const newRows = obs.map((ob) => {
                 const cmp = ob[componentName] as Object
                 return {
                     ...cmp,
-                    _id: ob._id,
+                    _id: ob._id ?? Math.random().toString(36).substring(7),
                 }
             }) as ComponentRow[];
             setRows(newRows)
@@ -175,14 +153,15 @@ export default function OBComponentTable(props: Props) {
 
     const debounced_save = useDebounceCallback(edit_row, 2000)
 
-    const handleEditClick = (_id: GridRowId) => () => {
-        setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
-    };
+    // const handleEditClick = (_id: GridRowId) => () => {
+    //     setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
+    // };
 
     const processRowUpdate = (newRow: GridRowModel) => {
         //sends to server
         const updatedRow = { ...newRow, isNew: false } as ComponentRow;
         setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
+        debounced_save(updatedRow)
         return updatedRow;
     };
 
@@ -191,6 +170,24 @@ export default function OBComponentTable(props: Props) {
     };
 
     let columns = convert_schema_to_columns(context.semids, componentName);
+
+    const target_name_col= {
+        field: 'target_name',
+        type: 'string',
+        resizable: true,
+        headerName: 'Target Name',
+        width: 100,
+    } as GridColDef
+    const _id_col = {
+        field: '_id',
+        type: 'string',
+        resizable: true,
+        headerName: '_id',
+        width: 100,
+        editable: false,
+    } as GridColDef
+
+    columns = [...columns, target_name_col, _id_col]
 
     // const addColumns: GridColDef[] = [
     //     {
@@ -263,33 +260,31 @@ export default function OBComponentTable(props: Props) {
                 },
             }}
         >
-            {Object.keys(visibleColumns).length > 0 && (
-                <DataGridPro
-                    rows={rows ?? []}
-                    editMode={'row'} //TODO: verify this saves obs correctly
-                    processRowUpdate={processRowUpdate}
-                    columns={columns}
-                    rowModesModel={rowModesModel}
-                    onRowModesModelChange={handleRowModesModelChange}
-                    slots={{
-                        // @ts-ignore
-                        toolbar: EditComponentToolbar,
-                    }}
-                    slotProps={{
-                        toolbar: {
-                            setRows,
-                            processRowUpdate
-                        },
-                    }}
-                    pinnedColumns={pinnedColumns}
-                    // initialState={{ //TODO: configure column order and visibility
-                    //     columns: {
-                    //         columnVisibilityModel:
-                    //             visibleColumns
-                    //     }
-                    // }}
-                />
-            )}
+            <DataGridPro
+                rows={rows ?? []}
+                editMode={'row'} //TODO: verify this saves obs correctly
+                processRowUpdate={processRowUpdate}
+                columns={columns}
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                slots={{
+                    // @ts-ignore
+                    toolbar: EditComponentToolbar,
+                }}
+                slotProps={{
+                    toolbar: {
+                        setRows,
+                        processRowUpdate
+                    },
+                }}
+                pinnedColumns={pinnedColumns}
+            // initialState={{ //TODO: configure column order and visibility
+            //     columns: {
+            //         columnVisibilityModel:
+            //             visibleColumns
+            //     }
+            // }}
+            />
         </Box>
     );
 }

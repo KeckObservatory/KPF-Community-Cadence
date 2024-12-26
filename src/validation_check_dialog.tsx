@@ -16,6 +16,7 @@ import * as calibration_schema from './schemas/calibration_schema.json'
 import * as schedule_schema from './schemas/schedule_data_schema.json'
 import * as ob_target from './schemas/ob_target_schema.json'
 import * as observation_schema from './schemas/observation_schema.json'
+import * as metadata_schema from './schemas/metadata_schema.json'
 import { OBComponents } from './ob_component_table';
 
 
@@ -49,7 +50,8 @@ export const ob_schemas = {
   "calibration": calibration_schema,
   "schedule": schedule_schema,
   "target": ob_target,
-  "observation": observation_schema
+  "observation": observation_schema,
+  "metadata": metadata_schema
 }
 
 export const validators: Record<Validators, ValidateFunction> = {
@@ -58,7 +60,8 @@ export const validators: Record<Validators, ValidateFunction> = {
   "calibration": create_validator(calibration_schema),
   "schedule": create_validator(schedule_schema),
   "target": create_validator(ob_target),
-  "observation": create_validator(observation_schema)
+  "observation": create_validator(observation_schema),
+  "metadata": create_validator(metadata_schema)
 }
 
 function ValidationDialog(props: SimpleDialogProps) {

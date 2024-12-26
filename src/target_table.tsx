@@ -42,7 +42,7 @@ import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext, Target, useSnackbarContext, get_config, useRefreshTableContext } from './App';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Chip, Tooltip } from '@mui/material';
-import { OB, Observation, OBTarget, ScheduleData } from './module_selector';
+import { MetaData, OB, Observation, OBTarget, ScheduleData } from './module_selector';
 
 interface TargetRow extends Target {
   isNew?: boolean;
@@ -119,11 +119,22 @@ const cc_targets_2_ob = (cc_targets: Target[]): NewOB[] => {
             num_intranight_cadence: cc_target.num_intranight_cadence,
         }
 
+        const metadata: Partial<MetaData> = {
+            observer_id: cc_target.submitter,
+            observer_name: cc_target.submitter,
+            semester: cc_target.semid.split('_')[0],
+            progid: cc_target.semid.split('_')[1],
+            semid: cc_target.semid,
+            history: [],
+            tags: [],
+        }
+
         const ob: NewOB = {
             target,
             observation,
             schedule,
-            calibration: {}
+            calibration: {},
+            metadata
         }
         return ob
     })
