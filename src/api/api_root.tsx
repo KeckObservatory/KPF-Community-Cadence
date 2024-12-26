@@ -172,8 +172,8 @@ const get_obs_call = (semester?: string, semid?: string, id?: string): Promise<a
 export type Actions = 'save' | 'submit'
 
 const edit_ob_call = (obs: OB[] | NewOB[]): Promise<SubmitResp> => {
-    const actions='edit'
-    const url = API_ADDR + `/submitObservingBlock?action=${actions}&observing_blocks?${obs}`
+    const actions='save'
+    const url = API_ADDR + `/submitObservingBlock?action=${actions}`
     return axiosInstance.put(url, obs)
         .then(handleResponse)
         .catch(handleError)
@@ -181,7 +181,7 @@ const edit_ob_call = (obs: OB[] | NewOB[]): Promise<SubmitResp> => {
 
 const submit_ob_call = (obs: OB[]): Promise<SubmitResp> => {
     const actions='submit'
-    const url = API_ADDR + `/submitObservingBlock?action=${actions}&observing_blocks?${obs}`
+    const url = API_ADDR + `/submitObservingBlock?action=${actions}&observing_blocks?${JSON.stringify(obs)}`
     return axiosInstance.put(url, obs)
         .then(handleResponse)
         .catch(handleError)
