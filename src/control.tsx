@@ -1,10 +1,9 @@
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Autocomplete, Button, Tooltip, Typography } from '@mui/material'
-import { Target, useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App'
+import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App'
 import { SubmitResp, get_all_semester_targets, get_all_targets } from './api/api_root';
-import { OB, Observation, OBTarget, ScheduleData } from './module_selector'
 
 export interface SPP {
     semid: string

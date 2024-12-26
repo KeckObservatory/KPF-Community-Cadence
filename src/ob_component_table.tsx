@@ -6,7 +6,6 @@ import {
     DataGridPro,
     GridColDef,
     GridToolbarContainer,
-    GridPinnedColumnFields,
     GridRowModel,
     GridToolbar,
     GridValueSetter,
@@ -17,7 +16,7 @@ import {
 import { useDebounceCallback } from './use_debounce_callback';
 import { save_obs } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
-import { useCommCadContext, useSnackbarContext, get_config, useRefreshTableContext } from './App';
+import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
 import { OB } from './module_selector';
 import { raDecFormat } from './target_edit_dialog';
 import { NewOB } from './target_table';
