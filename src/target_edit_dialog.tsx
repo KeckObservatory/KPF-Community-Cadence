@@ -290,7 +290,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('ra')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'ra' in target }}
                                         id="ra"
                                         value={target.ra}
                                         onChange={(event) => handleTextChange('ra', event.target.value)}
@@ -300,7 +299,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('dec')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'dec' in target }}
                                         id="dec"
                                         value={target.dec}
                                         onChange={(event) => handleTextChange('dec', event.target.value)}
@@ -310,7 +308,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('j_mag')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'j_mag' in target }}
                                         id="j-magnitude"
                                         value={target.j_mag}
                                         onChange={(event) => handleTextChange('j_mag', event.target.value)}
@@ -320,7 +317,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('g_mag')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'g_mag' in target }}
                                         id="g-magnitude"
                                         value={target.g_mag}
                                         onChange={(event) => handleTextChange('g_mag', event.target.value)}
@@ -332,7 +328,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('gaia_id')}
-                                        InputLabelProps={{ shrink: hasSimbad || target.gaia_id !== undefined }}
                                         id="gaia-id"
                                         value={target.gaia_id}
                                         onChange={(event) => handleTextChange('gaia_id', event.target.value)}
@@ -342,7 +337,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('tic_id')}
-                                        InputLabelProps={{ shrink: hasSimbad || target.tic_id !== undefined }}
                                         id="tic"
                                         value={target.tic_id}
                                         onChange={(event) => handleTextChange('tic_id', event.target.value)}
@@ -354,7 +348,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('pm_ra')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'pm_ra' in target }}
                                         id="pm-ra"
                                         value={target.pm_ra}
                                         onChange={(event) => handleTextChange('pm_ra', event.target.value)}
@@ -364,7 +357,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('pm_dec')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'pm_dec' in target }}
                                         id="pm-dec"
                                         value={target.pm_dec}
                                         onChange={(event) => handleTextChange('pm_dec', event.target.value)}
@@ -374,7 +366,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('epoch')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'epoch' in target }}
                                         id="epoch"
                                         value={target.epoch}
                                         onChange={(event) => handleTextChange('epoch', event.target.value)}
@@ -384,7 +375,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('systemic_velocity')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'systemic_velocity' in target }}
                                         id="rot-vel"
                                         value={target.systemic_velocity}
                                         onChange={(event) => handleTextChange('systemic_velocity', event.target.value)}
@@ -491,7 +481,6 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                             // focused
                                             disabled={target.num_visits_per_night === 1}
                                             label={input_label('num_intranight_cadence')}
-                                            InputLabelProps={{ shrink: hasSimbad || 'num_intranight_cadence' in target }}
                                             id="num-intra-night-cadence"
                                             value={target.num_intranight_cadence}
                                             onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, false)}
@@ -505,7 +494,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                 <Tooltip title={input_label('tags', true)}>
                                     <MuiChipsInput
                                         value={target.tags}
-                                        onChange={(value) => handleArrayChange('tags', value)}
+                                        onChange={(value: string[]) => handleArrayChange('tags', value)}
                                         label={input_label('tags')}
                                         id="tags"
                                     />
