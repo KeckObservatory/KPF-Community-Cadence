@@ -127,10 +127,13 @@ export default function OBComponentTable(props: Props) {
     React.useEffect(() => {
         setTimeout(() => {
             const newRows = obs.map((ob) => {
+                const _id = ob._id ?? Math.random().toString(36).substring(7)
+                const target_name = ob.target?.target_name ?? "TBD"
                 const cmp = ob[componentName] as Object
                 return {
                     ...cmp,
-                    _id: ob._id ?? Math.random().toString(36).substring(7),
+                    _id,
+                    target_name,
                 }
             }) as ComponentRow[];
             setRows(newRows)
