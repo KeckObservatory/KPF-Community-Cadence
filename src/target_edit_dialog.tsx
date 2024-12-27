@@ -63,6 +63,41 @@ export const format_tags = (tags: string[]) => {
     return tags
 }
 
+const sanitize_number = (value: string) => {
+    const pattern = /[^\d.-]/g
+    value = value.replace(pattern, '')
+    const split = value.split('.')
+    if (split.length > 2) {
+        value = value.split('.').reduce((acc, val, idx) => {
+            console.log('acc', acc, 'val', val, 'idx', idx)
+            if (idx === 0) {
+                return val + acc
+            }
+            return acc + val //concatenate strings after first decimal
+        }, '.')
+    }
+    return value
+}
+
+export const format_edit_entry = (key: string, value?: string | number, isNumber = false) => {
+    //add trailing zero if string ends in a decimal 
+    if (isNumber) {
+        value = sanitize_number(String(value))
+        console.log('value', value)
+    }
+    if (value && (key === 'ra' || key === 'dec')) {
+        key === 'ra' && String(value).replace(/[^+-]/, "")
+        value = raDecFormat(value as string)
+    }
+    if (value && key === 'target_name') {
+        value = String(value).replace(/[^\w^\-^\s]+/g, '') //remove non alphanumeric characters
+        value = value.slice(0, 15) //truncate to 15 characters
+    }
+
+    value = String(value).replace(/\t/, '') //remove tabs
+    return value
+}
+
 export const raDecFormat = (input: string) => {
     // Strip all characters from the input digits and keep pos/neg sign
     const sign = input.length > 0 ? input[0].replace(/[^+-]/, "") : ""
@@ -123,12 +158,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
     }, [target.tic_id, target.gaia_id])
 
     const handleTextChange = (key: string, value?: string | number, isNumber = false) => {
-        //add trailing zero if string ends in a decimal 
-        value = isNumber ? String(value).replace(/(\d+)\.$/, "$1.0") : value
-        if (value && (key === 'ra' || key === 'dec')) {
-            key === 'ra' && String(value).replace(/[^+-]/, "")
-            value = raDecFormat(value as string)
-        }
+        value = format_edit_entry(key, value, isNumber)
         setTarget((prev: Target) => {
             return rowSetter(prev, key, isNumber ? Number(value) : value)
         })

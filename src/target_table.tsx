@@ -603,6 +603,6 @@ export default function TargetTable(props: Props) {
   );
 }
 
-function format_edit_entry(field: string, value: any, isNumber: any): any {
+function format_edit_entry(field: string, value: any, isNumber: boolean): any {
   throw new Error('Function not implemented.');
 }
