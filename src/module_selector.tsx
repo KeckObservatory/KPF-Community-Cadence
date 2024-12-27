@@ -107,7 +107,7 @@ export interface History {
 }
 
 export interface MetaData {
-  observer_id?: string,
+  obsid?: string,
   observer_name?: string,
   semid?: string,
   semester?: string,

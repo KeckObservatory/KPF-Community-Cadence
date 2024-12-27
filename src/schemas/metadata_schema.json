@@ -3,7 +3,7 @@
     "description": "This document defines the schema for the KPF Metadata Params",
     "type": "object",
     "properties": {
-        "observer_id": {
+        "obsid": {
             "type": "string",
             "description": "Observer ID",
             "translator_mapping": "ObserverID"
@@ -37,6 +37,32 @@
             },
             "description": "Tags",
             "translator_mapping": "Tags"
+        },
+        "submitter": {
+            "type": "string",
+            "description": "Submitter",
+            "translator_mapping": "Submitter"
+        },
+        "details": {
+            "type": "string",
+            "description": "Submittal Details",
+            "not_editable_by_user": true
+        },
+        "status": {
+            "type": "string",
+            "description": "Target Status",
+            "not_editable_by_user": true
+        },
+        "state": {
+            "type": "string",
+            "description": "Tells the state of the target (editied, saved, or submitted)",
+            "short_description": "Target State",
+            "not_editable_by_user": true
+        },
+        "last_modifification": {
+            "type": "string",
+            "description": "Last Modified",
+            "translator_mapping": "LastModified"
         }
     },
     "required": [ ],

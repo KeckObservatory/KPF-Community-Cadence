@@ -120,7 +120,7 @@ const cc_targets_2_ob = (cc_targets: Target[]): NewOB[] => {
         }
 
         const metadata: Partial<MetaData> = {
-            observer_id: cc_target.submitter,
+            obsid: cc_target.submitter,
             observer_name: cc_target.submitter,
             semester: cc_target.semid.split('_')[0],
             progid: cc_target.semid.split('_')[1],

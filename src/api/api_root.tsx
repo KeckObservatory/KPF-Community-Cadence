@@ -153,7 +153,7 @@ const get_userinfo_call = (): Promise<UserInfo> => {
 const get_obs_call = (semester?: string, semid?: string, id?: string): Promise<any> => {
     let url = API_ADDR 
     if (semester) {
-        url += `/getObservingBlock?semester=${semester}`
+        url += `/getAllSemesterObservingBlock?semester=${semester}`
     }
     else if (semid) {
         url += `/getAllObservingBlocks?semid=${semid}`

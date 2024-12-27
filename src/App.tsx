@@ -250,9 +250,9 @@ function App() {
                 return { ...st, semids }
               })
             },
-            setObserverId: (oid: string) => {
+            setObserverId: (oid: number) => {
               setState((st) => {
-                return { ...st, observer_id: oid }
+                return { ...st, obsid: oid }
               })
             },
             setTotalHours: (total_hours: number) => {
