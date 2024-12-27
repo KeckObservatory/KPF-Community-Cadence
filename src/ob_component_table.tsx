@@ -118,6 +118,7 @@ const exportBlob = (blob: Blob, filename: string) => {
 };
 
 const getJson = (obs: OB[]) => {
+    console.log('obs', obs)
     return obs.map((ob) => {
         let translator_ob: { [key: string]: unknown} = {}
         Object.keys(ob_schemas).map((ckey) => {
@@ -130,6 +131,7 @@ const getJson = (obs: OB[]) => {
                 ob[ckey][key] && (translator_ob[tkey] = ob[ckey][key])
             })
         })
+        return translator_ob
     });
 };
 
@@ -148,7 +150,7 @@ function JsonExportMenuItem(props: JsonExportMenuItemProps) {
                 const blob = new Blob([JSON.stringify(json, null, 2)], {
                     type: 'text/json',
                 });
-                exportBlob(blob, 'targets.json');
+                exportBlob(blob, 'obs.json');
 
                 // Hide the export menu after the export
                 hideMenu?.();
