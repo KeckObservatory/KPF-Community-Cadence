@@ -11,7 +11,6 @@ import {
     GridValueSetter,
     GridValueParser,
     GridCsvExportOptions,
-    useGridApiContext
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
