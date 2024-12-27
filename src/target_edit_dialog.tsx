@@ -31,17 +31,29 @@ interface TargetEditProps extends Props {
     open: boolean
 }
 
-export interface TargetProps {
-    [key: string]: {
-        description: string,
-        type: string | string[],
-        short_description?: string,
-        default?: unknown,
-        not_editable_by_user?: boolean,
-    }
+interface Items extends PropertyProps {
+    properties?: { [key: string]: PropertyProps }
 }
 
-const targetProps = target_schema.properties as TargetProps
+export interface PropertyProps {
+    description: string,
+    type: string | string[],
+    short_description?: string,
+    default?: unknown,
+    pattern?: string,
+    minLength?: number,
+    maxLength?: number,
+    not_editable_by_user?: boolean,
+    enum?: string[],
+    items?: Items
+    translator_mapping?: string
+}
+
+export interface SchemaProps {
+    [key: string]: PropertyProps
+}
+
+const SchemaProps = target_schema.properties as SchemaProps
 
 export const format_tags = (tags: string[]) => {
     const pattern = /[,]/g
@@ -131,9 +143,9 @@ export const TargetEditDialog = (props: TargetEditProps) => {
 
     const input_label = (param: keyof Target, tooltip = false): string => {
         return tooltip ?
-            targetProps[param].description
+            SchemaProps[param].description
             :
-            targetProps[param].short_description ?? targetProps[param].description
+            SchemaProps[param].short_description ?? SchemaProps[param].description
     }
 
 
@@ -459,7 +471,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                             </Stack>
                         </Box>
                         <Box>
-                            {/* <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 <Tooltip title={input_label('tags', true)}>
                                     <MuiChipsInput
                                         value={target.tags}
@@ -468,7 +480,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         id="tags"
                                     />
                                 </Tooltip>
-                            </Stack> */}
+                            </Stack>
                             <Stack sx={{
                                 marginBottom: '4px',
                             }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>

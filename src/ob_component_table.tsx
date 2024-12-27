@@ -10,7 +10,8 @@ import {
     GridToolbar,
     GridValueSetter,
     GridValueParser,
-    GridCsvExportOptions
+    GridCsvExportOptions,
+    useGridApiContext
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
@@ -276,6 +277,7 @@ export default function OBComponentTable(props: Props) {
                 }}
                 slotProps={{
                     toolbar: {
+                        // @ts-ignore
                         setRows,
                         processRowUpdate
                     },

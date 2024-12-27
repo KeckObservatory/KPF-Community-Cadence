@@ -28,13 +28,10 @@ import {
   useGridApiEventHandler,
   GridCsvExportOptions
 } from '@mui/x-data-grid-pro';
-import {
-  randomId,
-} from '@mui/x-data-grid-generator';
 
 import target_schema from './schemas/cc_target_schema.json'
 import ValidationDialogButton, { validateCCTarget } from './validation_check_dialog';
-import TargetEditDialogButton, { raDecFormat } from './target_edit_dialog';
+import TargetEditDialogButton, { format_tags, PropertyProps, raDecFormat, SchemaProps } from './target_edit_dialog';
 import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
 import { delete_target, save_obs, save_target } from './api/api_root';
@@ -224,6 +221,7 @@ export const create_new_target = (semid: string, id?: string, target_name?: stri
   return newTarget
 }
 
+const randomId = () => Math.random().toString(36).substr(2, 9);
 
 function EditCCTargetToolbar(props: EditToolbarProps) {
   const { setRows, processRowUpdate, csvOptions, setOBs } = props;
@@ -238,6 +236,7 @@ function EditCCTargetToolbar(props: EditToolbarProps) {
         { severity: 'error', message: `semid is undefined` })
       return
     }
+
 
     const id = randomId();
     const newTarget = create_new_target(context.semid, id)
@@ -444,11 +443,19 @@ export default function TargetTable(props: Props) {
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
         const handleEvent: GridEventListener<'cellEditStop'> = (params) => {
+          const type = (target_schema.properties as SchemaProps)[params.field as keyof PropertyProps].type
           setTimeout(() => { //wait for cell to update before setting editTarget
-            const value = apiRef.current.getCellValue(id, params.field);
+            let value = apiRef.current.getCellValue(id, params.field);
             //Following line is a hack to prevent cellEditStop from firing from non-selected shell.
             //@ts-ignore
             if (editTarget[params.field] === value) return //no change detected. not going to set target as edited.
+            const isNumber = type.includes('number') || type.includes('integer')
+            if (type === 'array') {
+              value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
+            }
+            else {
+              value = format_edit_entry(params.field, value, isNumber)
+            }
             setEditTarget({ ...editTarget, 'state': 'TARGET_EDITED', [params.field]: value })
           }, 300)
         }
@@ -573,6 +580,7 @@ export default function TargetTable(props: Props) {
           }}
           slotProps={{
             toolbar: {
+              // @ts-ignore
               setRows,
               setOBs: props.setOBs,
               processRowUpdate,
@@ -593,4 +601,8 @@ export default function TargetTable(props: Props) {
       )}
     </Box>
   );
+}
+
+function format_edit_entry(field: string, value: any, isNumber: any): any {
+  throw new Error('Function not implemented.');
 }
