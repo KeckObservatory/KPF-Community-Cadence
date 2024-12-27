@@ -11,6 +11,9 @@ import {
     GridValueSetter,
     GridValueParser,
     GridCsvExportOptions,
+    GridExportMenuItemProps,
+    GridToolbarExportContainer,
+    GridCsvExportMenuItem,
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
@@ -21,6 +24,8 @@ import { OB } from './module_selector';
 import { raDecFormat } from './target_edit_dialog';
 import { NewOB } from './target_table';
 import { ob_schemas } from './validation_check_dialog';
+import MenuItem from '@mui/material/MenuItem';
+import { ButtonProps } from '@mui/material/Button';
 
 export type OBComponents = "calibration" | "schedule" | "target" | "observation" | "metadata"
 
@@ -35,6 +40,7 @@ interface EditToolbarProps {
     processRowUpdate: (newRow: GridRowModel) => ComponentRow;
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
     csvOptions: GridCsvExportOptions;
+    obs: OB[];
 }
 
 function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
@@ -84,14 +90,87 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
 
 
 function EditComponentToolbar(props: EditToolbarProps) {
-    const { csvOptions } = props;
+    const { csvOptions, obs } = props;
     return (
         <GridToolbarContainer sx={{ justifyContent: 'center' }}>
             <GridToolbar
-                csvOptions={csvOptions}
+                printOptions={{disableToolbarButton: true }}
+                csvOptions={{...csvOptions, disableToolbarButton: true }}
             />
+            <CustomExportButton csvOptions={csvOptions} obs={obs} />
             <TargetWizardButton />
         </GridToolbarContainer>
+    );
+}
+
+const exportBlob = (blob: Blob, filename: string) => {
+    // Save the blob in a json file
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+    });
+};
+
+const getJson = (obs: OB[]) => {
+    return obs.map((ob) => {
+        let translator_ob: { [key: string]: unknown} = {}
+        Object.keys(ob_schemas).map((ckey) => {
+            // @ts-ignore
+            const schema = ob_schemas[ckey]
+            Object.keys(schema.properties).map(key => {
+                const props = schema.properties[key]
+                const tkey = props.translator_mapping ?? key
+                // @ts-ignore
+                ob[ckey][key] && (translator_ob[tkey] = ob[ckey][key])
+            })
+        })
+    });
+};
+
+
+interface JsonExportMenuItemProps extends GridExportMenuItemProps<{}>{
+    obs: OB[];
+}
+
+function JsonExportMenuItem(props: JsonExportMenuItemProps) {
+    const { hideMenu, obs } = props;
+
+    return (
+        <MenuItem
+            onClick={() => {
+                const json = getJson(obs);
+                const blob = new Blob([JSON.stringify(json, null, 2)], {
+                    type: 'text/json',
+                });
+                exportBlob(blob, 'targets.json');
+
+                // Hide the export menu after the export
+                hideMenu?.();
+            }}
+        >
+            Export OB to JSON
+        </MenuItem>
+    );
+}
+
+
+interface ExportButtonProps extends ButtonProps {
+    csvOptions: GridCsvExportOptions;
+    obs: OB[];
+}
+
+function CustomExportButton(props: ExportButtonProps) {
+    return (
+        <GridToolbarExportContainer {...props}>
+            <GridCsvExportMenuItem options={props.csvOptions} />
+            <JsonExportMenuItem obs={props.obs} />
+        </GridToolbarExportContainer>
     );
 }
 
@@ -173,7 +252,7 @@ export default function OBComponentTable(props: Props) {
 
     let columns = convert_schema_to_columns(context.semids, componentName);
 
-    const target_name_col= {
+    const target_name_col = {
         field: 'target_name',
         type: 'string',
         resizable: true,
@@ -278,7 +357,8 @@ export default function OBComponentTable(props: Props) {
                     toolbar: {
                         // @ts-ignore
                         setRows,
-                        processRowUpdate
+                        processRowUpdate,
+                        obs
                     },
                 }}
                 pinnedColumns={pinnedColumns}

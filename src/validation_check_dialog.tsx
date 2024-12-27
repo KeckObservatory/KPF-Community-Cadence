@@ -8,10 +8,10 @@ import ApprovalIcon from '@mui/icons-material/Approval';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import target_schema from './schemas/cc_target_schema.json'
-import AJV2019, { ErrorObject, ValidateFunction } from 'ajv/dist/2019'
+import AJV2019, { ErrorObject, JSONSchemaType, ValidateFunction } from 'ajv/dist/2019'
 import { Target } from './App';
 import { IconButton } from '@mui/material';
-import * as ob_schema from './schemas/observing_block_schema.json'
+// import * as ob_schema from './schemas/observing_block_schema.json'
 import * as calibration_schema from './schemas/calibration_schema.json'
 import * as schedule_schema from './schemas/schedule_data_schema.json'
 import * as ob_target from './schemas/ob_target_schema.json'
@@ -41,12 +41,11 @@ const create_validator = (schema: any) => {
   return ajv.compile(ts)
 }
 
-export type Validators = "cc_target" | "ob" | OBComponents
+export type Validators = "cc_target" | OBComponents
 
 export const validateCCTarget = create_validator(target_schema)
 
 export const ob_schemas = {
-  "ob": ob_schema,
   "calibration": calibration_schema,
   "schedule": schedule_schema,
   "target": ob_target,
@@ -56,7 +55,6 @@ export const ob_schemas = {
 
 export const validators: Record<Validators, ValidateFunction> = {
   "cc_target": validateCCTarget,
-  "ob": create_validator(ob_schema),
   "calibration": create_validator(calibration_schema),
   "schedule": create_validator(schedule_schema),
   "target": create_validator(ob_target),

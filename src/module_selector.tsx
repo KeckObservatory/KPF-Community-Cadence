@@ -185,7 +185,7 @@ export const ModuleSelector = () => {
         <Tab value={5} label="Meta Data" {...a11yProps(5)} />
       </Tabs>
       <CustomTabPanel value={value} index={0}>
-        <TargetTable 
+        <TargetTable
           setOBs={setObs}
         />
       </CustomTabPanel>
