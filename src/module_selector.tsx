@@ -164,7 +164,7 @@ export const ModuleSelector = () => {
   React.useEffect(() => {
     const async_func = async () => {
       const resp = await get_obs(context.semester, context.semid)
-      const newObs = resp.obs ?? []
+      const newObs = resp.observing_blocks ?? []
       setObs(newObs)
     }
     async_func()
