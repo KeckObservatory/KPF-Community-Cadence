@@ -31,7 +31,7 @@ import {
 
 import target_schema from './schemas/cc_target_schema.json'
 import ValidationDialogButton, { validateCCTarget } from './validation_check_dialog';
-import TargetEditDialogButton, { format_tags, PropertyProps, raDecFormat, SchemaProps } from './target_edit_dialog';
+import TargetEditDialogButton, { format_edit_entry, format_tags, PropertyProps, raDecFormat, SchemaProps } from './target_edit_dialog';
 import SimbadButton from './simbad_button';
 import { useDebounceCallback } from './use_debounce_callback';
 import { delete_target, save_obs, save_target } from './api/api_root';
@@ -601,8 +601,4 @@ export default function TargetTable(props: Props) {
       )}
     </Box>
   );
-}
-
-function format_edit_entry(field: string, value: any, isNumber: boolean): any {
-  throw new Error('Function not implemented.');
 }
