@@ -261,6 +261,7 @@ export default function OBComponentTable(props: Props) {
         >
             <DataGridPro
                 rows={rows ?? []}
+                getRowId={(row) => row._id}
                 editMode={'row'} //TODO: verify this saves obs correctly
                 processRowUpdate={processRowUpdate}
                 columns={columns}
