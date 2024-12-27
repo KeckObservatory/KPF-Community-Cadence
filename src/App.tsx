@@ -60,6 +60,7 @@ export interface Target extends SimbadTargetData {
   total_observations_requested?: number,
   total_time_for_target?: number,
   total_time_for_target_hours?: number,
+  tags?: string[],
 }
 
 interface State {

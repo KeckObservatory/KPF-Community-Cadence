@@ -154,6 +154,16 @@
             "description": "Submitter",
             "not_editable_by_user": true
         },
+        "tags": {
+            "type": "array",
+            "short_description": "Tags",
+            "description": "Tags, comma separated",
+            "items": {
+                "description": "Tag comprised of characters other than comma",
+                "type": "string",
+                "pattern": "^[^,]+$"
+            }
+        },
         "total_observations_requested": {
             "type": "integer",
             "description": "Total Observations Requested"

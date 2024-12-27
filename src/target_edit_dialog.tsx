@@ -17,6 +17,7 @@ import {
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
 import SimbadButton from './simbad_button';
+import { MuiChipsInput } from 'mui-chips-input';
 import { useCommCadContext, Target } from './App';
 import target_schema from './schemas/cc_target_schema.json'
 
@@ -42,6 +43,14 @@ export interface TargetProps {
 
 const targetProps = target_schema.properties as TargetProps
 
+export const format_tags = (tags: string[]) => {
+    const pattern = /[,]/g
+    tags = tags ?? [] //if tags is undefined, set to empty array
+    tags = tags.map((tag) => tag.trim().replace(pattern, '')).filter((tag) => tag.length > 0) //no empty strings or whitespace
+    tags = [...new Set(tags)]
+    return tags
+}
+
 export const raDecFormat = (input: string) => {
     // Strip all characters from the input digits and keep pos/neg sign
     const sign = input.length > 0 ? input[0].replace(/[^+-]/, "") : ""
@@ -66,7 +75,7 @@ export const raDecFormat = (input: string) => {
     return sign + input;
 }
 
-export const rowSetter = (tgt: Target, key: string, value?: string | number | boolean) => {
+export const rowSetter = (tgt: Target, key: string, value?: string | number | boolean | string[]) => {
     tgt = { ...tgt, [key]: value, "state": 'TARGET_EDITED' }
     if (key.includes('exposure_time')) { //nominal equivalent to maximum
         tgt = {
@@ -110,6 +119,13 @@ export const TargetEditDialog = (props: TargetEditProps) => {
         }
         setTarget((prev: Target) => {
             return rowSetter(prev, key, isNumber ? Number(value) : value)
+        })
+    }
+
+    const handleArrayChange = (key: string, value: string[]) => {
+        value = format_tags(value)
+        setTarget((prev: Target) => {
+            return rowSetter(prev, key, value)
         })
     }
 
@@ -284,7 +300,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <TextField
                                         // focused
                                         label={input_label('tic_id')}
-                                        InputLabelProps={{ shrink: hasSimbad || target.tic_id!== undefined }}
+                                        InputLabelProps={{ shrink: hasSimbad || target.tic_id !== undefined }}
                                         id="tic"
                                         value={target.tic_id}
                                         onChange={(event) => handleTextChange('tic_id', event.target.value)}
@@ -349,7 +365,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                     <FormGroup>
                                         <FormControlLabel
                                             onChange={(event) => handleSwitchChange('simulcal_on', event)}
-                                            control={<Switch checked={target.simulcal_on}/>}
+                                            control={<Switch checked={target.simulcal_on} />}
                                             label={input_label('simulcal_on')} />
                                     </FormGroup>
                                 </Tooltip>
@@ -429,20 +445,30 @@ export const TargetEditDialog = (props: TargetEditProps) => {
                                         title={`${input_label('num_intranight_cadence', true)}.${target.num_visits_per_night === 1 ? ' Disabled because num_visits_per_night is 1' : ''}`}
                                         placement='left'
                                     >
-                                    <TextField
-                                        // focused
-                                        disabled={target.num_visits_per_night === 1}
-                                        label={input_label('num_intranight_cadence')}
-                                        InputLabelProps={{ shrink: hasSimbad || 'num_intranight_cadence' in target }}
-                                        id="num-intra-night-cadence"
-                                        value={target.num_intranight_cadence}
-                                        onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, false)}
-                                    />
+                                        <TextField
+                                            // focused
+                                            disabled={target.num_visits_per_night === 1}
+                                            label={input_label('num_intranight_cadence')}
+                                            InputLabelProps={{ shrink: hasSimbad || 'num_intranight_cadence' in target }}
+                                            id="num-intra-night-cadence"
+                                            value={target.num_intranight_cadence}
+                                            onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, false)}
+                                        />
                                     </Tooltip>
                                 </Stack>
                             </Stack>
                         </Box>
                         <Box>
+                            {/* <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                                <Tooltip title={input_label('tags', true)}>
+                                    <MuiChipsInput
+                                        value={target.tags}
+                                        onChange={(value) => handleArrayChange('tags', value)}
+                                        label={input_label('tags')}
+                                        id="tags"
+                                    />
+                                </Tooltip>
+                            </Stack> */}
                             <Stack sx={{
                                 marginBottom: '4px',
                             }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>

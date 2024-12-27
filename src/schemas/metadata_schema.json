@@ -32,10 +32,13 @@
         },
         "tags": {
             "type": "array",
+            "short_description": "Tags",
+            "description": "Tags, comma separated",
             "items": {
-                "type": "string"
+                "description": "Tag comprised of characters other than comma",
+                "type": "string",
+                "pattern": "^[^,]+$"
             },
-            "description": "Tags",
             "translator_mapping": "Tags"
         },
         "submitter": {
