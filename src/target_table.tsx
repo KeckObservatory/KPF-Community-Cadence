@@ -264,8 +264,8 @@ function EditCCTargetToolbar(props: EditToolbarProps) {
   const convert_and_submit_targets_as_obs = async (targets: Target[]) => {
     const obs = cc_targets_2_ob(targets)
     const resp = await save_obs(obs)
-    if (resp.success === 'SUCCESS') {
-      setOBs(resp.obs)
+    if (resp.observing_blocks==='SUCCESS') {
+      setOBs(resp.observing_blocks)
     }
     else {
       console.error('save failed', resp)
