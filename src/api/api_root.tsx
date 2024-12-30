@@ -188,7 +188,7 @@ const submit_ob_call = (obs: OB[]): Promise<SubmitResp> => {
 }
 
 const delete_ob_call = (_id: string): Promise<SubmitResp> => {
-    const url = API_ADDR + `/deleteObservingBlock?_id=${_id}`
+    const url = API_ADDR + `/deleteObservingBlock?id=${_id}`
     return axiosInstance.delete(url)
         .then(handleResponse)
         .catch(handleError)
