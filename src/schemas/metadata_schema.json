@@ -30,6 +30,10 @@
             "description": "Program ID",
             "translator_mapping": "Progid"
         },
+        "comment": {
+            "type": "string",
+            "description": "Observing Notes"
+        },
         "tags": {
             "type": "array",
             "short_description": "Tags",
