@@ -109,7 +109,7 @@ const cc_targets_2_ob = (cc_targets: Target[]): NewOB[] => {
         }
 
         const schedule: Partial<ScheduleData> = {
-            scheduling_mode: 'CADENCE',
+            scheduling_mode: 'Cadence',
             num_visits_per_night: cc_target.num_visits_per_night,
             num_nights_per_semester: cc_target.num_unique_nights_per_semester,
             num_internight_cadence: cc_target.num_internight_cadence,
