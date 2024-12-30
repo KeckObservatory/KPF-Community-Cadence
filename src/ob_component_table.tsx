@@ -301,6 +301,7 @@ export default function OBComponentTable(props: Props) {
                 const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
                 const apiRef = useGridApiContext();
                 const handleEvent: GridEventListener<'cellEditStop'> = (params) => {
+                    console.log('cellEditStop', params)
                     setTimeout(() => { //wait for cell to update before setting editTarget
                         let value = apiRef.current.getCellValue(id, params.field);
                         //Following line is a hack to prevent cellEditStop from firing from non-selected shell.
