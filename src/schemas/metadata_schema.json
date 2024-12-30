@@ -4,7 +4,7 @@
     "type": "object",
     "properties": {
         "obsid": {
-            "type": "string",
+            "type": ["string", "number"],
             "description": "Observer ID",
             "translator_mapping": "ObserverID"
         },

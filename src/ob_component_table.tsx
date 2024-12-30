@@ -27,7 +27,7 @@ import { delete_obs, save_obs } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
 import { OB } from './module_selector';
-import { raDecFormat } from './target_edit_dialog';
+import { format_edit_entry, format_tags, PropertyProps, raDecFormat, SchemaProps } from './target_edit_dialog';
 import { NewOB } from './target_table';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import MenuItem from '@mui/material/MenuItem';
@@ -302,10 +302,19 @@ export default function OBComponentTable(props: Props) {
                 const apiRef = useGridApiContext();
                 const handleEvent: GridEventListener<'cellEditStop'> = (params) => {
                     setTimeout(() => { //wait for cell to update before setting editTarget
-                        const value = apiRef.current.getCellValue(id, params.field);
+                        let value = apiRef.current.getCellValue(id, params.field);
                         //Following line is a hack to prevent cellEditStop from firing from non-selected shell.
                         //@ts-ignore
-                        if (editTarget[params.field] === value) return //no change detected. not going to set target as edited.
+                        const schema = ob_schemas[componentName]
+                        const type = (schema.properties as SchemaProps)[params.field as keyof PropertyProps].type
+                        if (editRow[params.field as keyof ComponentRow] === value) return //no change detected. not going to set target as edited.
+                        const isNumber = type.includes('number') || type.includes('integer')
+                        if (type === 'array') {
+                            value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
+                        }
+                        else {
+                            value = format_edit_entry(params.field, value, isNumber)
+                        }
                         setEditRow({ ...editRow, 'state': 'ROW_EDITED', [params.field]: value })
                     }, 300)
                 }
