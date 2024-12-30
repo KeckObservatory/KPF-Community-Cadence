@@ -282,6 +282,7 @@ export default function OBComponentTable(props: Props) {
 
     columns = [...columns, target_name_col, _id_col]
 
+    const schema = ob_schemas[componentName]
     const addColumns: GridColDef[] = [
         {
             field: 'actions',
@@ -300,27 +301,32 @@ export default function OBComponentTable(props: Props) {
                 const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
                 const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
                 const apiRef = useGridApiContext();
-                const handleEvent: GridEventListener<'cellEditStop'> = (params) => {
-                    console.log('cellEditStop', params)
+
+                const format_cell_value = (field: string, value: any) => {
+                    const type = (schema.properties as SchemaProps)[field as keyof PropertyProps].type
+                    if (editRow[field as keyof ComponentRow] === value) return //no change detected. not going to set target as edited.
+                    const isNumber = type.includes('number') || type.includes('integer')
+                    if (type === 'array') {
+                        value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
+                    }
+                    else {
+                        value = format_edit_entry(field, value, isNumber)
+                    }
+                    return value
+                }
+
+                const handleRowEvent: GridEventListener<'rowEditStop'> = (params) => {
+                    console.log('rowEditStop', params)
                     setTimeout(() => { //wait for cell to update before setting editTarget
-                        let value = apiRef.current.getCellValue(id, params.field);
-                        //Following line is a hack to prevent cellEditStop from firing from non-selected shell.
-                        //@ts-ignore
-                        const schema = ob_schemas[componentName]
-                        const type = (schema.properties as SchemaProps)[params.field as keyof PropertyProps].type
-                        if (editRow[params.field as keyof ComponentRow] === value) return //no change detected. not going to set target as edited.
-                        const isNumber = type.includes('number') || type.includes('integer')
-                        if (type === 'array') {
-                            value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
-                        }
-                        else {
-                            value = format_edit_entry(params.field, value, isNumber)
-                        }
-                        setEditRow({ ...editRow, 'state': 'ROW_EDITED', [params.field]: value })
+                        row = Object.fromEntries(Object.keys(params.row).map((key) => {
+                            let value = apiRef.current.getCellValue(id, key);
+                            return [key, format_cell_value(key, value)]
+                        }))
+                        setEditRow({ ...row, 'state': 'ROW_EDITED' })
                     }, 300)
                 }
 
-                useGridApiEventHandler(apiRef, 'cellEditStop', handleEvent)
+                useGridApiEventHandler(apiRef, 'rowEditStop', handleRowEvent)
 
                 const handleRowChange = () => {
                     if (count > 0) {
