@@ -14,18 +14,27 @@ import {
     GridExportMenuItemProps,
     GridToolbarExportContainer,
     GridCsvExportMenuItem,
+    GridRowId,
+    GridRowModes,
+    GridActionsCellItem,
+    useGridApiContext,
+    GridEventListener,
+    useGridApiEventHandler,
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
-import { save_obs } from './api/api_root';
+import { delete_obs, save_obs } from './api/api_root';
 import { TargetWizardButton } from './target_wizard';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
 import { OB } from './module_selector';
 import { raDecFormat } from './target_edit_dialog';
 import { NewOB } from './target_table';
-import { ob_schemas } from './validation_check_dialog';
+import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import MenuItem from '@mui/material/MenuItem';
 import { ButtonProps } from '@mui/material/Button';
+import { ErrorObject } from 'ajv/dist/2019';
+import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export type OBComponents = "calibration" | "schedule" | "target" | "observation" | "metadata"
 
@@ -94,8 +103,8 @@ function EditComponentToolbar(props: EditToolbarProps) {
     return (
         <GridToolbarContainer sx={{ justifyContent: 'center' }}>
             <GridToolbar
-                printOptions={{disableToolbarButton: true }}
-                csvOptions={{...csvOptions, disableToolbarButton: true }}
+                printOptions={{ disableToolbarButton: true }}
+                csvOptions={{ ...csvOptions, disableToolbarButton: true }}
             />
             <CustomExportButton csvOptions={csvOptions} obs={obs} />
             <TargetWizardButton />
@@ -120,7 +129,7 @@ const exportBlob = (blob: Blob, filename: string) => {
 const getJson = (obs: OB[]) => {
     console.log('obs', obs)
     return obs.map((ob) => {
-        let translator_ob: { [key: string]: unknown} = {}
+        let translator_ob: { [key: string]: unknown } = {}
         Object.keys(ob_schemas).map((ckey) => {
             // @ts-ignore
             const schema = ob_schemas[ckey]
@@ -136,7 +145,7 @@ const getJson = (obs: OB[]) => {
 };
 
 
-interface JsonExportMenuItemProps extends GridExportMenuItemProps<{}>{
+interface JsonExportMenuItemProps extends GridExportMenuItemProps<{}> {
     obs: OB[];
 }
 
@@ -180,6 +189,7 @@ function CustomExportButton(props: ExportButtonProps) {
 interface Props {
     componentName: OBComponents,
     obs: OB[] | NewOB[]
+    setObs: (obs: OB[] | NewOB[]) => void
 }
 
 export default function OBComponentTable(props: Props) {
@@ -197,7 +207,7 @@ export default function OBComponentTable(props: Props) {
     }) as ComponentRow[];
 
     const [rows, setRows] = React.useState(initRows);
-    const pinnedColumns = { left: ['target_name', '_id'], right: [] }
+    const pinnedColumns = { left: ['actions', 'target_name', '_id'], right: [] }
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
     const snackbarContext = useSnackbarContext()
     const refreshContext = useRefreshTableContext()
@@ -236,9 +246,9 @@ export default function OBComponentTable(props: Props) {
 
     const debounced_save = useDebounceCallback(edit_row, 2000)
 
-    // const handleEditClick = (_id: GridRowId) => () => {
-    //     setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
-    // };
+    const handleEditClick = (_id: GridRowId) => () => {
+        setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
+    };
 
     const processRowUpdate = (newRow: GridRowModel) => {
         //sends to server
@@ -272,63 +282,92 @@ export default function OBComponentTable(props: Props) {
 
     columns = [...columns, target_name_col, _id_col]
 
-    // const addColumns: GridColDef[] = [
-    //     {
-    //         field: 'actions',
-    //         type: 'actions',
-    //         editable: false,
-    //         headerName: 'Actions',
-    //         width: 50,
-    //         disableExport: true,
-    //         cellClassName: 'actions',
-    //         getActions: ({ id, row }) => {
-    //             const [editRow, setEditRow] = React.useState<ComponentRow>(row);
-    //             const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
-    //             validators[componentName](row)
-    //             const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validators[componentName].errors ?? []);
-    //             const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
-    //             const apiRef = useGridApiContext();
-    //             const handleEvent: GridEventListener<'cellEditStop'> = (params) => {
-    //                 setTimeout(() => { //wait for cell to update before setting editTarget
-    //                     const value = apiRef.current.getCellValue(id, params.field);
-    //                     //Following line is a hack to prevent cellEditStop from firing from non-selected shell.
-    //                     //@ts-ignore
-    //                     if (editTarget[params.field] === value) return //no change detected. not going to set target as edited.
-    //                     setEditRow({ ...editRow, 'state': 'ROW_EDITED', [params.field]: value })
-    //                 }, 300)
-    //             }
+    const addColumns: GridColDef[] = [
+        {
+            field: 'actions',
+            type: 'actions',
+            editable: false,
+            headerName: 'Actions',
+            width: 100,
+            resizable: true,
+            disableExport: true,
+            cellClassName: 'actions',
+            getActions: ({ id, row }) => {
+                const [editRow, setEditRow] = React.useState<ComponentRow>(row);
+                // const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
+                validators[componentName](row)
+                const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validators[componentName].errors ?? []);
+                const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
+                const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
+                const apiRef = useGridApiContext();
+                const handleEvent: GridEventListener<'cellEditStop'> = (params) => {
+                    setTimeout(() => { //wait for cell to update before setting editTarget
+                        const value = apiRef.current.getCellValue(id, params.field);
+                        //Following line is a hack to prevent cellEditStop from firing from non-selected shell.
+                        //@ts-ignore
+                        if (editTarget[params.field] === value) return //no change detected. not going to set target as edited.
+                        setEditRow({ ...editRow, 'state': 'ROW_EDITED', [params.field]: value })
+                    }, 300)
+                }
 
-    //             useGridApiEventHandler(apiRef, 'cellEditStop', handleEvent)
+                useGridApiEventHandler(apiRef, 'cellEditStop', handleEvent)
 
-    //             const handleRowChange = () => {
-    //                 if (count > 0) {
-    //                     processRowUpdate(editRow)
-    //                     editRow.state?.includes('ROW_EDITED') && debounced_save(editRow)
-    //                     validators[componentName](editRow)
-    //                     const newErrors = validators[componentName].errors ?? []
-    //                     setErrors(newErrors)
-    //                     debounced_edit_click(id)
-    //                 }
-    //             }
+                const handleRowChange = () => {
+                    if (count > 0) {
+                        processRowUpdate(editRow)
+                        editRow.state?.includes('ROW_EDITED') && debounced_save(editRow)
+                        validators[componentName](editRow)
+                        const newErrors = validators[componentName].errors ?? []
+                        setErrors(newErrors)
+                        debounced_edit_click(id)
+                    }
+                }
 
-    //             React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-    //                 handleRowChange()
-    //                 setCount((prev: number) => prev + 1)
-    //             }, [editRow])
+                React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+                    handleRowChange()
+                    setCount((prev: number) => prev + 1)
+                }, [editRow])
 
-    //             return [
-    //                 <ValidationDialogButton errors={errors} json={editRow} />,
-    //                 // <RowEditDialogButton //TODO: make this component
-    //                 //     componentName={componentName}
-    //                 //     row={editRow}
-    //                 //     setRow={setEditRow}
-    //                 // />,
-    //             ];
-    //         }
-    //     }
-    // ];
+                return [
+                    <ValidationDialogButton errors={errors} json={editRow} />,
+                    <Tooltip
+                        title={"Delete this request"}
+                        placement="top"
+                        arrow key="Delete This Target" >
+                        <GridActionsCellItem
+                            icon={<DeleteIcon />}
+                            label="Delete"
+                            onClick={() => handleDeleteClick(id)}
+                            color="inherit"
+                        />
+                    </Tooltip>,
+                ];
+            }
+        }
+    ];
 
-    //columns = [...addColumns, ...columns];
+    const handleDeleteClick = async (id: GridRowId) => {
+        const delRow = rows.find((row) => row._id === id);
+        if (!delRow) {
+            console.error('delete failed', delRow)
+            snackbarContext.setSnackbarMessage(
+                { severity: 'error', message: `Target not found for deletion. Details: ${delRow}` })
+            return
+        }
+        const resp = await delete_obs(String(id))
+        if (resp.success === 'SUCCESS') {
+            setRows(rows.filter((row) => row._id !== id));
+            props.setObs(props.obs.filter((ob) => ob._id !== delRow?._id))
+        }
+        else {
+            console.error('delete failed', resp)
+            snackbarContext.setSnackbarMessage(
+                { severity: 'error', message: `Target not deleted. Details: ${resp.details}` })
+        }
+
+    }
+
+    columns = [...addColumns, ...columns];
 
     return (
         <Box

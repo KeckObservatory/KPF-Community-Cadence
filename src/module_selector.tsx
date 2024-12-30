@@ -192,26 +192,31 @@ export const ModuleSelector = () => {
       <CustomTabPanel value={value} index={1}>
         <OBComponentTable
           componentName='target'
+          setObs={setObs}
           obs={obs} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <OBComponentTable
           componentName='calibration'
+          setObs={setObs}
           obs={obs} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         <OBComponentTable
           componentName='observation'
+          setObs={setObs}
           obs={obs} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
         <OBComponentTable
           componentName='schedule'
+          setObs={setObs}
           obs={obs} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={5}>
         <OBComponentTable
           componentName='metadata'
+          setObs={setObs}
           obs={obs} />
       </CustomTabPanel>
     </Box>
