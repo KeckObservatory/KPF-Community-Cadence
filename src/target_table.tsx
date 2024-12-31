@@ -246,7 +246,13 @@ function EditCCTargetToolbar(props: EditToolbarProps) {
       'save', false
     )
     if (resp.success === 'SUCCESS') {
-      let tgt = resp.targets[0]
+      if (resp.targets.length === 0) {
+        console.error('save failed', resp)
+        snackbarContext.setSnackbarMessage(
+          { severity: 'error', message: `Target not saved. Details: ${resp}` })
+        return
+      }
+      let tgt = resp.targets.at(0)
       tgt.need_resubmit = false
       context.setTargets([tgt, ...context.targets])
       processRowUpdate(tgt)
@@ -346,8 +352,9 @@ export default function TargetTable(props: Props) {
       console.error('save failed', resp)
       snackbarContext.setSnackbarMessage(
         { severity: 'error', message: `Target not saved. Details: ${resp.details}` })
+      return false
     }
-    return resp
+    return true 
   }
 
   const debounced_save = useDebounceCallback(edit_target, 2000)

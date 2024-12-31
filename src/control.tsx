@@ -45,7 +45,7 @@ export const Control = (props: Props) => {
             console.log('setting targets', resp)
             context.setTotalHours(resp.total_hours ?? 0)
             context.setTotalObservations(resp.total_observations ?? 0)
-            context.setTargets(resp.targets)
+            context.setTargets(resp.targets ?? [])
         }
         else {
             snackbarContext.setSnackbarMessage(
@@ -65,7 +65,7 @@ export const Control = (props: Props) => {
                 })
             context.setTotalHours(0)
             context.setTotalObservations(0)
-            context.setTargets(resp.targets)
+            context.setTargets(resp.targets ?? [])
         }
     }
 
