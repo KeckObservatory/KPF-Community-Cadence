@@ -247,7 +247,7 @@ function EditCCTargetToolbar(props: EditToolbarProps) {
     )
     if (resp.success === 'SUCCESS') {
       if (resp.targets.length === 0) {
-        console.error('save failed', resp)
+        console.error('add target save failed', resp)
         snackbarContext.setSnackbarMessage(
           { severity: 'error', message: `Target not saved. Details: ${resp}` })
         return
@@ -259,7 +259,7 @@ function EditCCTargetToolbar(props: EditToolbarProps) {
       setRows((oldRows) => [tgt, ...oldRows]);
     }
     else {
-      console.error('save failed', resp)
+      console.error('add target save failed', resp)
       snackbarContext.setSnackbarMessage(
         { severity: 'error', message: `Target not saved. Details: ${resp.details}` })
     }
@@ -270,13 +270,13 @@ function EditCCTargetToolbar(props: EditToolbarProps) {
   const convert_and_submit_targets_as_obs = async (targets: Target[]) => {
     const obs = cc_targets_2_ob(targets)
     const resp = await save_obs(obs)
-    if (resp.observing_blocks==='SUCCESS') {
+    if (resp.observing_blocks) {
       setOBs(resp.observing_blocks)
     }
     else {
-      console.error('save failed', resp)
+      console.error('submit targets as obs save failed', resp)
       snackbarContext.setSnackbarMessage(
-        { severity: 'error', message: `Target not saved. Details: ${resp.details}` })
+        { severity: 'error', message: `OBs not saved. Details: ${resp.details}` })
     }
 
   }
@@ -349,7 +349,7 @@ export default function TargetTable(props: Props) {
   const edit_target = async (target: Target) => {
     const resp = await save_target([target], target.semid, 'save', false)
     if (resp.success !== 'SUCCESS') {
-      console.error('save failed', resp)
+      console.error('edit target save failed', resp)
       snackbarContext.setSnackbarMessage(
         { severity: 'error', message: `Target not saved. Details: ${resp.details}` })
       return false
