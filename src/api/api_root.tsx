@@ -3,7 +3,9 @@ import axios from 'axios';
 import { handleResponse, handleError, intResponse, intError } from './response';
 import { Target } from '../App';
 const SIMBAD_ADDR = "https://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=submit+id&output.format=ASCII&obj.bibsel=off&Ident="
-const API_ADDR = "/api/proposals"
+//const API_ADDR = "/api/proposals"
+//TODO: Change this to the correct API address when ready to update proposals api 
+const API_ADDR = "/api/pToolTesting"
 import * as mocks from './mocks'
 import { OB } from '../module_selector';
 import { NewOB } from '../target_table';
