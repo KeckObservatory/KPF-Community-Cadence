@@ -236,6 +236,7 @@ export default function OBComponentTable(props: Props) {
         if (!newOb) return
         newOb = { ...newOb, [componentName]: row }
         const resp = await save_obs([newOb])
+        console.log('obsering block saved response', resp)
         if (!resp.observing_blocks) {
             console.error('save failed', resp)
             snackbarContext.setSnackbarMessage(
