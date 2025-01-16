@@ -7,9 +7,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Tooltip } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
-import { JSONSchema7 } from 'json-schema';
-import target_schema from './schemas/cc_target_schema.json'
-import ob_target_schema from './schemas/ob_target_schema.json'
 import { OBTarget } from './module_selector';
 
 interface Props {
@@ -20,42 +17,6 @@ interface UploadProps extends Props {
     label: string
     setLabel?: Function,
     setOpen?: Function
-}
-
-interface OBPropertySchema extends JSONSchema7 {
-    description: string
-    short_description: string
-    not_editable_by_user?: boolean
-}
-
-let ob_target_schama = ob_target_schema as unknown as OBPropertySchema
-
-const properties = ob_target_schama.properties as { [key: string]: OBPropertySchema }
-
-const hdrToKeyMapping =
-    Object.fromEntries(Object.entries(properties).map(([key, value]) => {
-        return [value.short_description ?? value.description, key as keyof OBTarget]
-    }))
-
-const convertValue = (value: string, key: keyof OBTarget) => {
-    const type = properties[key].type 
-    const isNumber = type?.includes('number') || type?.includes('integer')
-    const isBoolean = type?.includes('boolean')
-    if (isBoolean) {
-        if (['true', 'yes', '1'].includes(value.toLowerCase())) {
-            return true
-        }
-        else if ( ['false', 'no', '0'].includes(value.toLowerCase()) ) {
-            return false
-        }
-        else {
-            return null
-        }
-    }
-    else {
-        const formattedValue = key==='dec' || isNumber ? value.replace("'", "") : value //remove leading apostrophe for negative numbers
-        return isNumber ? parseFloat(formattedValue) : formattedValue 
-    }
 }
 
 export function UploadComponent(props: UploadProps) {

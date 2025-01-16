@@ -422,10 +422,11 @@ export default function OBComponentTable(props: Props) {
             setCount((prev: number) => prev + 1)
         }, [editRow])
 
-        return [
-            <ValidationDialogButton errors={errors} json={editRow} />,
-            // <EditComponentDialogButton /> TODO: implement form
-            componentName.includes('target') && <SimbadButton hasSimbad={hasGaia} target={editRow} setTarget={setEditRow}/>,
+        let cell = [<ValidationDialogButton errors={errors} json={editRow} />]
+        if (componentName.includes('target')) {
+            cell.push(<SimbadButton hasSimbad={hasGaia} target={editRow} setTarget={setEditRow} />)
+        }
+        cell.push(
             <Tooltip
                 title={"Delete this request"}
                 placement="top"
@@ -437,7 +438,9 @@ export default function OBComponentTable(props: Props) {
                     color="inherit"
                 />
             </Tooltip>
-        ];
+        )
+
+        return cell;
     }
 
     const addColumns: GridColDef[] = [
