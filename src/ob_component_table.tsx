@@ -391,16 +391,17 @@ export default function OBComponentTable(props: Props) {
 
         const handleRowEvent: GridEventListener<'rowEditStop'> = (params) => {
             setTimeout(() => { //wait for cell to update before setting editTarget
-                let newRow = {} as Partial<ComponentRow>
+                let sanitizedRow = {} as Partial<ComponentRow>
+                //params row is stale, get updated values from apiRef
+                const currRow = apiRef.current.getRow(id)
                 Object.keys(params.row).forEach((key) => {
-                    let value = apiRef.current.getCellValue(id, key);
-                    if (value === undefined) return 
+                    let value = currRow[key as keyof ComponentRow];
                     value = format_cell_value(key, value)
-                    newRow[key as keyof ComponentRow] = value
+                    sanitizedRow[key as keyof ComponentRow] = value
                 }) 
                 setEditRow((oldRow: ComponentRow) => {
-                    console.log('handleRowEvent', params, newRow)
-                    return { ...oldRow, ...newRow, 'state': 'ROW_EDITED' }
+                    console.log('handleRowEvent', params, sanitizedRow, 'currRow', currRow)
+                    return { ...oldRow, ...sanitizedRow, 'state': 'ROW_EDITED' }
                 })
             }, 300)
         }
