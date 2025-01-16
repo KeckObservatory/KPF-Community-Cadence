@@ -376,14 +376,14 @@ export default function OBComponentTable(props: Props) {
         const apiRef = useGridApiContext();
 
         const format_cell_value = (field: string, value: any) => {
-            //default type to string (virtual items _id, target_name, status are all strings)
-            const type = (schema.properties as SchemaProps)[field as keyof PropertyProps]?.type ?? 'string'
+            //type could be undefined. if so just pass the value through.
+            const type = (schema.properties as SchemaProps)[field as keyof PropertyProps]?.type
             const isNumber = type.includes('number') || type.includes('integer')
             if (type === 'array') {
                 value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
             }
-            else {
-                console.log('formatting', field, value, isNumber)
+            if (type.includes('string')) {
+                console.log('formatting string', field, value, isNumber)
                 value = format_edit_entry(field, value, isNumber)
             }
             return value
