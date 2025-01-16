@@ -337,7 +337,6 @@ export default function OBComponentTable(props: Props) {
         //sends to server
         const updatedRow = { ...newRow, isNew: false } as ComponentRow;
         setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
-        debounced_save(updatedRow)
         return updatedRow;
     };
 
@@ -392,7 +391,6 @@ export default function OBComponentTable(props: Props) {
         }
 
         const handleRowEvent: GridEventListener<'rowEditStop'> = (params) => {
-            console.log('rowEditStop', params)
             setTimeout(() => { //wait for cell to update before setting editTarget
                 const newRow = Object.fromEntries(Object.keys(params.row).map((key) => {
                     let value = apiRef.current.getCellValue(id, key);
@@ -400,6 +398,7 @@ export default function OBComponentTable(props: Props) {
                     value = format_cell_value(key, value)
                     return [key, value]
                 })) as ComponentRow
+                console.log('handleRowEvent', newRow, params)
                 setEditRow({ ...newRow, 'state': 'ROW_EDITED' })
             }, 300)
         }
