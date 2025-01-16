@@ -126,7 +126,7 @@ export default function SimbadButton(props: Props) {
     const handleClick = async () => {
         if (targetName) {
             const simbadData = await get_simbad_data(targetName)
-            setTarget({ ...target, ...simbadData, "state": 'TARGET_EDITED'})
+            setTarget({ ...target, ...simbadData, "state": 'ROW_EDITED'})
         }
     }
 
