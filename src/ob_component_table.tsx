@@ -406,9 +406,6 @@ export default function OBComponentTable(props: Props) {
             if (count > 0) {
                 processRowUpdate(editRow)
                 editRow.state?.includes('ROW_EDITED') && debounced_save(editRow)
-                validators[componentName](editRow)
-                const newErrors = validators[componentName].errors ?? []
-                setErrors(newErrors)
                 debounced_edit_click(id)
                 if (componentName.includes('target')) {
                     const tgt = editRow as OBTarget
@@ -420,6 +417,7 @@ export default function OBComponentTable(props: Props) {
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
             handleRowChange()
+            validators[componentName](editRow)
             setErrors(validators[componentName].errors ?? [])
             setCount((prev: number) => prev + 1)
         }, [editRow])
