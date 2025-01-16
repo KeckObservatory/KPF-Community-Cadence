@@ -124,6 +124,10 @@
             "type": "integer",
             "description": "Set Day of Semester",
             "not_editable_by_user": true
+        },
+        "comment": {
+            "type": "string",
+            "description": "Comment on target. May contain information from SIMBAD or other sources."
         }
     },
     "required": [ ],
