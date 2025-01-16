@@ -377,7 +377,8 @@ export default function OBComponentTable(props: Props) {
         const apiRef = useGridApiContext();
 
         const format_cell_value = (field: string, value: any) => {
-            const type = (schema.properties as SchemaProps)[field as keyof PropertyProps].type
+            //default type to string (virtual items _id, target_name, status are all strings)
+            const type = (schema.properties as SchemaProps)[field as keyof PropertyProps]?.type ?? 'string'
             if (editRow[field as keyof ComponentRow] === value) return //no change detected. not going to set target as edited.
             const isNumber = type.includes('number') || type.includes('integer')
             if (type === 'array') {
@@ -394,6 +395,7 @@ export default function OBComponentTable(props: Props) {
             setTimeout(() => { //wait for cell to update before setting editTarget
                 const newRow = Object.fromEntries(Object.keys(params.row).map((key) => {
                     let value = apiRef.current.getCellValue(id, key);
+                    value = format_cell_value(key, value)
                     return [key, format_cell_value(key, value)]
                 })) as ComponentRow
                 setEditRow({ ...newRow, 'state': 'ROW_EDITED' })
