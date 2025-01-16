@@ -385,6 +385,7 @@ export default function OBComponentTable(props: Props) {
                 value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
             }
             else {
+                console.log('formatting', field, value, isNumber)
                 value = format_edit_entry(field, value, isNumber)
             }
             return value
