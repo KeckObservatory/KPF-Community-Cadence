@@ -451,7 +451,7 @@ export default function OBComponentTable(props: Props) {
             type: 'actions',
             editable: false,
             headerName: 'Actions',
-            width: 100,
+            width: 150,
             resizable: true,
             disableExport: true,
             cellClassName: 'actions',
