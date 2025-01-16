@@ -3,11 +3,11 @@ import Tooltip from '@mui/material/Tooltip';
 import { IconButton } from '@mui/material';
 import { get_simbad } from './api/api_root';
 import ModeStandbyIcon from '@mui/icons-material/ModeStandby';
-import { Target } from './App';
+import { OBTarget } from './module_selector';
 
 
 export interface Props {
-    target: Target
+    target: OBTarget 
     setTarget: Function
     hasSimbad: boolean
 }

@@ -25,6 +25,14 @@
             "short_description": "# Nights",
             "default": 1
         },
+        "nominal_exposure_time": {
+            "type": "integer",
+            "description": "Nominal Exposure Time [s]"
+        },
+        "maximum_exposure_time": {
+            "type": "integer",
+            "description": "Maximum Exposure Time [s]"
+        },
         "num_internight_cadence": {
             "type": ["number", "string"],
             "translator_mapping": "interNightCadenceMin",

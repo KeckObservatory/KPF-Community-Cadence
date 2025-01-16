@@ -100,7 +100,7 @@ const cc_targets_2_ob = (cc_targets: Target[]): NewOB[] => {
             dec: cc_target.dec,
             pm_ra: cc_target.pm_ra,
             pm_dec: cc_target.pm_dec,
-            epoch: Number(cc_target.epoch),
+            epoch: String(cc_target.epoch),
         }
 
         const observation: Partial<Observation> = {
@@ -221,7 +221,7 @@ export const create_new_target = (semid: string, id?: string, target_name?: stri
   return newTarget
 }
 
-const randomId = () => Math.random().toString(36).substr(2, 9);
+export const randomId = () => Math.random().toString(36).substr(2, 9);
 
 function EditCCTargetToolbar(props: EditToolbarProps) {
   const { setRows, processRowUpdate, csvOptions, setOBs } = props;

@@ -50,6 +50,18 @@
             "description": "Submitter",
             "translator_mapping": "Submitter"
         },
+        "need_resubmit": {
+            "type": ["boolean", "null"],
+            "short_description": "Resubmit Needed?",
+            "description": "Has this OB changed?",
+            "not_editable_by_user": true
+        },
+        "submitted": {
+            "type": ["boolean", "null"],
+            "short_description": "Submitted?",
+            "description": "Has OB Been Submitted Yet?",
+            "not_editable_by_user": true
+        },
         "details": {
             "type": "string",
             "description": "Submittal Details",
@@ -70,8 +82,20 @@
             "type": "string",
             "description": "Last Modified",
             "translator_mapping": "LastModified"
+        },
+        "total_observations_requested": {
+            "type": "integer",
+            "description": "Total Observations Requested"
+        },
+        "total_time_for_target": {
+            "type": "number",
+            "description": "Total Time for Target [hours]"
+        },
+        "total_time_for_target_hours": {
+            "type": "number",
+            "description": "Total Time for Target [hours]"
         }
     },
-    "required": [ ],
+    "required": [ "semid", "semester", "progid", "obsid" ],
     "additionalProperties": true
 }

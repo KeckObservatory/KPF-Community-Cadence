@@ -22,6 +22,11 @@
             "short_description": "2Mass ID",
             "translator_mapping": "twoMASSID"
         },
+        "tic_id": {
+            "type": "string",
+            "description": "TIC Identifier (optional)",
+            "short_description": "TIC Identifier"
+        },
         "parallax": {
             "type": "string",
             "description": "Parallax of the target [arcseconds]",
@@ -64,6 +69,14 @@
             "short_description": "Dec",
             "translator_mapping": "DEC"
         },
+        "ra_deg": {
+            "type": "number",
+            "description": "Right Ascension [degrees]"
+        },
+        "dec_deg": {
+            "type": "number",
+            "description": "Declination [degrees]"
+        },
         "equinox": {
             "type": "string",
             "description": "Equinox of the coordinate system (typically 2000)",
@@ -83,7 +96,7 @@
             "translator_mapping": "PMDEC"
         },
         "epoch": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Epoch of the coordinate measurements [decimal year]",   
             "short_description": "Epoch",
             "default": 2000,
@@ -101,6 +114,16 @@
             "description": "Non siderial tracking rate in Dec [arcseconds / hr]",
             "short_description": "Dec Offset",
             "translator_mapping": "DDEC"
+        },
+        "rise_semester_day": {
+            "type": "integer",
+            "description": "Rise Day of Semester",
+            "not_editable_by_user": true
+        },
+        "sets_semester_day": {
+            "type": "integer",
+            "description": "Set Day of Semester",
+            "not_editable_by_user": true
         }
     },
     "required": [ ],

@@ -2,10 +2,11 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import TargetTable, { NewOB } from './target_table';
+import { NewOB } from './target_table';
 import { useCommCadContext } from './App';
 import { get_obs } from './api/api_root';
 import OBComponentTable from './ob_component_table';
+import { SimbadTargetData } from './simbad_button';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -18,22 +19,13 @@ interface TabPanelProps {
 // export type Integer = Opaque<number, 'Integer'>;
 export type Integer = number | string;
 
-export interface OBTarget {
+export interface OBTarget extends SimbadTargetData {
   _id?: string,
   target_name?: string,
-  gaia_id?: string,
   two_mass_id?: string,
   parallax?: string,
-  systemic_velocity?: Integer,
-  g_mag?: Integer,
-  j_mag?: Integer,
   t_eff?: number,
-  ra?: string,
-  dec?: string,
   equinox?: string,
-  pm_ra?: Integer,
-  pm_dec?: Integer,
-  epoch?: number,
   d_ra?: number,
   d_dec?: number,
 }
@@ -112,6 +104,9 @@ export interface MetaData {
   semid?: string,
   semester?: string,
   progid?: string,
+  submitter?: string,
+  needs_resubmit?: boolean,
+  status?: string,
   tags?: string[],
   history?: History[]
 }
@@ -177,43 +172,43 @@ export const ModuleSelector = () => {
         onChange={handleChange}
         aria-label="cc-module-tabs"
       >
-        <Tab value={0} label="CC Targets" {...a11yProps(0)} />
-        <Tab value={1} label="OB Targets" {...a11yProps(1)} />
-        <Tab value={2} label="Calibrations" {...a11yProps(2)} />
-        <Tab value={3} label="Observations" {...a11yProps(3)} />
-        <Tab value={4} label="Schedule Data" {...a11yProps(4)} />
-        <Tab value={5} label="Meta Data" {...a11yProps(5)} />
+        {/* <Tab value={0} label="CC Targets" {...a11yProps(0)} /> */}
+        <Tab value={0} label="OB Targets" {...a11yProps(0)} />
+        {/* <Tab value={1} label="Calibrations" {...a11yProps(2)} /> */}
+        <Tab value={1} label="Observations" {...a11yProps(1)} />
+        <Tab value={2} label="Schedule Data" {...a11yProps(2)} />
+        <Tab value={3} label="Meta Data" {...a11yProps(3)} />
       </Tabs>
-      <CustomTabPanel value={value} index={0}>
+      {/* <CustomTabPanel value={value} index={0}>
         <TargetTable
           setOBs={setObs}
         />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      </CustomTabPanel> */}
+      <CustomTabPanel value={value} index={0}>
         <OBComponentTable
           componentName='target'
           setObs={setObs}
           obs={obs} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
+      {/* <CustomTabPanel value={value} index={1}>
         <OBComponentTable
           componentName='calibration'
           setObs={setObs}
           obs={obs} />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      </CustomTabPanel> */}
+      <CustomTabPanel value={value} index={1}>
         <OBComponentTable
           componentName='observation'
           setObs={setObs}
           obs={obs} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
+      <CustomTabPanel value={value} index={2}>
         <OBComponentTable
           componentName='schedule'
           setObs={setObs}
           obs={obs} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={5}>
+      <CustomTabPanel value={value} index={3}>
         <OBComponentTable
           componentName='metadata'
           setObs={setObs}

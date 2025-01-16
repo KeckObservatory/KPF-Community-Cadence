@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField'
 import { useEffect } from 'react'
 import { Autocomplete, Button, Tooltip, Typography } from '@mui/material'
 import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App'
-import { SubmitResp, get_all_semester_targets, get_all_targets } from './api/api_root';
+import { SubmitResp, get_obs } from './api/api_root';
 
 export interface SPP {
     semid: string
@@ -42,47 +42,51 @@ export const Control = (props: Props) => {
 
     const handleResponse = (resp: SubmitResp, value: string | undefined | null) => {
         if (resp.success === 'SUCCESS') {
-            console.log('setting targets', resp)
+            console.log('setting observing blocks', resp)
             context.setTotalHours(resp.total_hours ?? 0)
             context.setTotalObservations(resp.total_observations ?? 0)
-            context.setTargets(resp.targets ?? [])
+            // context.setTargets(resp.targets ?? [])
+            context.setOBs(resp.observing_blocks ?? [])
         }
         else {
             snackbarContext.setSnackbarMessage(
                 {
                     severity: 'error',
-                    message: `Error fetching targets for semid ${value}. Details: ${resp.details}`
+                    message: `Error fetching observing blocks for semid ${value}. Details: ${resp.details}`
                 })
             context.setTotalHours(0)
             context.setTotalObservations(0)
-            context.setTargets([])
+            //context.setTargets([])
+            context.setOBs(resp.observing_blocks ?? [])
         }
-        if (resp.message.includes('NO_TARGETS_FOUND')) {
+        if (resp.message.includes('NO_OBS_FOUND')) {
             snackbarContext.setSnackbarMessage(
                 {
                     severity: 'error',
-                    message: `No targets found for semid ${value}. Details: ${resp.details ?? resp.message}`
+                    message: `No observing blocks found for semid ${value}. Details: ${resp.details ?? resp.message}`
                 })
             context.setTotalHours(0)
             context.setTotalObservations(0)
-            context.setTargets(resp.targets ?? [])
+            // context.setTargets(resp.targets ?? [])
+            context.setOBs(resp.observing_blocks ?? [])
         }
     }
 
     const onSemesterClick = async () => {
         if (!context.semester) return
-        const resp = await get_all_semester_targets(context.semester, props.notApproved)
+        //const resp = await get_all_semester_targets(context.semester, props.notApproved)
+        const resp = await get_obs(context.semester)
         handleResponse(resp, context.semester)
         refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     }
 
 
-    const onChange = async (value: string | undefined | null) => {
-        if (!value) return
-        const resp = await get_all_targets(value)
+    const onSemidChange = async (semid: string | undefined | null) => {
+        if (!semid) return
+        const resp = await get_obs(undefined, semid)
         context.setSemester(undefined)
-        handleResponse(resp, value)
-        context.setSemid(value)
+        handleResponse(resp, semid)
+        context.setSemid(semid)
     }
 
 
@@ -110,7 +114,7 @@ export const Control = (props: Props) => {
                     disablePortal
                     id="semid-selection"
                     value={context.semid ? { label: context.semid } : { label: 'semid' }}
-                    onChange={(_, value) => onChange(value?.label)}
+                    onChange={(_, value) => onSemidChange(value?.label)}
                     options={context.semids.map((s) => { return { label: s } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Semester ID" />}

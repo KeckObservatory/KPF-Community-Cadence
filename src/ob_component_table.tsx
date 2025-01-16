@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import AddIcon from '@mui/icons-material/Add';
 import {
     GridRowsProp,
     GridRowModesModel,
@@ -10,31 +11,32 @@ import {
     GridToolbar,
     GridValueSetter,
     GridValueParser,
-    GridCsvExportOptions,
     GridExportMenuItemProps,
     GridToolbarExportContainer,
-    GridCsvExportMenuItem,
     GridRowId,
     GridRowModes,
     GridActionsCellItem,
     useGridApiContext,
     GridEventListener,
     useGridApiEventHandler,
+    GridRowParams,
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
 import { delete_obs, save_obs } from './api/api_root';
-import { TargetWizardButton } from './target_wizard';
+import { OBWizardButton } from './ob_wizard';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
-import { OB } from './module_selector';
+import { MetaData, OB, Observation, OBTarget, ScheduleData } from './module_selector';
 import { format_edit_entry, format_tags, PropertyProps, raDecFormat, SchemaProps } from './target_edit_dialog';
 import { NewOB } from './target_table';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import MenuItem from '@mui/material/MenuItem';
-import { ButtonProps } from '@mui/material/Button';
+import Button, { ButtonProps } from '@mui/material/Button';
 import { ErrorObject } from 'ajv/dist/2019';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Typography from '@mui/material/Typography';
+import SimbadButton from './simbad_button';
 
 export type OBComponents = "calibration" | "schedule" | "target" | "observation" | "metadata"
 
@@ -46,9 +48,9 @@ interface ComponentRow extends Object {
 }
 
 interface EditToolbarProps {
+    componentName: OBComponents;
     processRowUpdate: (newRow: GridRowModel) => ComponentRow;
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-    csvOptions: GridCsvExportOptions;
     obs: OB[];
 }
 
@@ -97,17 +99,95 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
     return columns;
 }
 
+export const create_new_ob = (semid: string, obsid: number, username: string, target_name?: string) => {
+    const target: Partial<OBTarget> = {
+        target_name: target_name ?? 'TBD',
+    }
+
+    const observation: Partial<Observation> = {
+    }
+
+    const schedule: Partial<ScheduleData> = {
+        scheduling_mode: 'Cadence',
+    }
+
+    const metadata: Partial<MetaData> = {
+        obsid: String(obsid),
+        observer_name: username,
+        submitter: username,
+        semester: semid.split('_')[0],
+        progid: semid.split('_')[1],
+        semid: semid,
+        needs_resubmit: false,
+        status: 'PENDING',
+        history: [],
+        tags: [],
+    }
+
+    const ob: NewOB = {
+        target,
+        observation,
+        schedule,
+        calibration: {},
+        metadata
+    }
+    return ob
+}
+
+
 
 function EditComponentToolbar(props: EditToolbarProps) {
-    const { csvOptions, obs } = props;
+    const { obs, componentName, processRowUpdate, setRows } = props;
+    const context = useCommCadContext()
+    const snackbarContext = useSnackbarContext()
+    const handleAddOB = async () => {
+        if (context.semid === undefined) {
+            console.error('semid is undefined')
+            snackbarContext.setSnackbarMessage(
+                { severity: 'error', message: `semid is undefined` })
+            return
+        }
+
+        let newOB = create_new_ob(context.semid, context.obsid, context.username) as OB
+
+        const resp = await save_obs([newOB])
+        if (resp.success === 'SUCCESS') {
+            if (resp.observing_blocks.length === 0) {
+                console.error('add OB save failed', resp)
+                snackbarContext.setSnackbarMessage(
+                    { severity: 'error', message: `OB not saved. Details: ${resp}` })
+                return
+            }
+            newOB = resp.observing_blocks.at(0)
+            newOB.metadata.needs_resubmit = false
+            context.setOBs((obs: OB[]) => { return [newOB, ...obs] })
+            processRowUpdate(newOB[componentName])
+            setRows((oldRows) => [newOB[componentName], ...oldRows]);
+        }
+        else {
+            console.error('add OB save failed', resp)
+            snackbarContext.setSnackbarMessage(
+                { severity: 'error', message: `OB not saved. Details: ${resp.details}` })
+        }
+    };
+    const debouncedAddOB = useDebounceCallback(handleAddOB, 500)
+
     return (
         <GridToolbarContainer sx={{ justifyContent: 'center' }}>
-            <GridToolbar
-                printOptions={{ disableToolbarButton: true }}
-                csvOptions={{ ...csvOptions, disableToolbarButton: true }}
-            />
-            <CustomExportButton csvOptions={csvOptions} obs={obs} />
-            <TargetWizardButton />
+            <Box style={{ width: "100%", display: "flex", justifyContent: "space-around", alignItems: "center", marginLeft: "10px" }}>
+                <Typography variant="h5">{componentName?.toUpperCase()}</Typography>
+                <Box style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddOB}>
+                        Create New OB
+                    </Button>
+                    <GridToolbar
+                        printOptions={{ disableToolbarButton: true }}
+                        csvOptions={{ disableToolbarButton: true }}
+                    />
+                    <CustomExportButton obs={obs} />
+                    <OBWizardButton />
+                </Box>
+            </Box>
         </GridToolbarContainer>
     );
 }
@@ -151,7 +231,6 @@ interface JsonExportMenuItemProps extends GridExportMenuItemProps<{}> {
 
 function JsonExportMenuItem(props: JsonExportMenuItemProps) {
     const { hideMenu, obs } = props;
-
     return (
         <MenuItem
             onClick={() => {
@@ -160,7 +239,6 @@ function JsonExportMenuItem(props: JsonExportMenuItemProps) {
                     type: 'text/json',
                 });
                 exportBlob(blob, 'obs.json');
-
                 // Hide the export menu after the export
                 hideMenu?.();
             }}
@@ -172,14 +250,12 @@ function JsonExportMenuItem(props: JsonExportMenuItemProps) {
 
 
 interface ExportButtonProps extends ButtonProps {
-    csvOptions: GridCsvExportOptions;
     obs: OB[];
 }
 
 function CustomExportButton(props: ExportButtonProps) {
     return (
         <GridToolbarExportContainer {...props}>
-            <GridCsvExportMenuItem options={props.csvOptions} />
             <JsonExportMenuItem obs={props.obs} />
         </GridToolbarExportContainer>
     );
@@ -192,9 +268,13 @@ interface Props {
     setObs: (obs: OB[] | NewOB[]) => void
 }
 
+
+
 export default function OBComponentTable(props: Props) {
     const { componentName, obs } = props
     const context = useCommCadContext()
+
+
     const initRows = obs.map((ob) => {
         const _id = ob._id ?? Math.random().toString(36).substring(7)
         const target_name = ob.target?.target_name ?? "TBD"
@@ -282,8 +362,84 @@ export default function OBComponentTable(props: Props) {
     } as GridColDef
 
     columns = [...columns, target_name_col, _id_col]
-
     const schema = ob_schemas[componentName]
+
+    const ActionsCell = (props: GridRowParams<ComponentRow>) => {
+        const { id, row } = props
+        const [editRow, setEditRow] = React.useState<ComponentRow>(row);
+        validators[componentName](row)
+        const [ hasGaia, setHasGaia ] = React.useState<boolean>(false)
+        const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validators[componentName].errors ?? []);
+        const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
+        const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
+        const apiRef = useGridApiContext();
+
+        const format_cell_value = (field: string, value: any) => {
+            const type = (schema.properties as SchemaProps)[field as keyof PropertyProps].type
+            if (editRow[field as keyof ComponentRow] === value) return //no change detected. not going to set target as edited.
+            const isNumber = type.includes('number') || type.includes('integer')
+            if (type === 'array') {
+                value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
+            }
+            else {
+                value = format_edit_entry(field, value, isNumber)
+            }
+            return value
+        }
+
+        const handleRowEvent: GridEventListener<'rowEditStop'> = (params) => {
+            console.log('rowEditStop', params)
+            setTimeout(() => { //wait for cell to update before setting editTarget
+                const newRow = Object.fromEntries(Object.keys(params.row).map((key) => {
+                    let value = apiRef.current.getCellValue(id, key);
+                    return [key, format_cell_value(key, value)]
+                })) as ComponentRow
+                setEditRow({ ...newRow, 'state': 'ROW_EDITED' })
+            }, 300)
+        }
+
+        useGridApiEventHandler(apiRef, 'rowEditStop', handleRowEvent)
+
+        const handleRowChange = () => {
+            if (count > 0) {
+                processRowUpdate(editRow)
+                editRow.state?.includes('ROW_EDITED') && debounced_save(editRow)
+                validators[componentName](editRow)
+                const newErrors = validators[componentName].errors ?? []
+                setErrors(newErrors)
+                debounced_edit_click(id)
+                if (componentName.includes('target')) {
+                    const tgt = editRow as OBTarget
+                    const hasGaia = tgt.gaia_id || tgt.tic_id ? true : false
+                    setHasGaia(hasGaia)
+                }
+            }
+        }
+
+        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+            handleRowChange()
+            setErrors(validators[componentName].errors ?? [])
+            setCount((prev: number) => prev + 1)
+        }, [editRow])
+
+        return [
+            <ValidationDialogButton errors={errors} json={editRow} />,
+            // <EditComponentDialogButton /> TODO: implement form
+            componentName.includes('target') && <SimbadButton hasSimbad={hasGaia} target={editRow} setTarget={setEditRow}/>,
+            <Tooltip
+                title={"Delete this request"}
+                placement="top"
+                arrow key="Delete This Target" >
+                <GridActionsCellItem
+                    icon={<DeleteIcon />}
+                    label="Delete"
+                    onClick={() => handleDeleteClick(id)}
+                    color="inherit"
+                />
+            </Tooltip>
+        ];
+    }
+
     const addColumns: GridColDef[] = [
         {
             field: 'actions',
@@ -294,72 +450,7 @@ export default function OBComponentTable(props: Props) {
             resizable: true,
             disableExport: true,
             cellClassName: 'actions',
-            getActions: ({ id, row }) => {
-                const [editRow, setEditRow] = React.useState<ComponentRow>(row);
-                // const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
-                validators[componentName](row)
-                const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validators[componentName].errors ?? []);
-                const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
-                const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
-                const apiRef = useGridApiContext();
-
-                const format_cell_value = (field: string, value: any) => {
-                    const type = (schema.properties as SchemaProps)[field as keyof PropertyProps].type
-                    if (editRow[field as keyof ComponentRow] === value) return //no change detected. not going to set target as edited.
-                    const isNumber = type.includes('number') || type.includes('integer')
-                    if (type === 'array') {
-                        value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
-                    }
-                    else {
-                        value = format_edit_entry(field, value, isNumber)
-                    }
-                    return value
-                }
-
-                const handleRowEvent: GridEventListener<'rowEditStop'> = (params) => {
-                    console.log('rowEditStop', params)
-                    setTimeout(() => { //wait for cell to update before setting editTarget
-                        row = Object.fromEntries(Object.keys(params.row).map((key) => {
-                            let value = apiRef.current.getCellValue(id, key);
-                            return [key, format_cell_value(key, value)]
-                        }))
-                        setEditRow({ ...row, 'state': 'ROW_EDITED' })
-                    }, 300)
-                }
-
-                useGridApiEventHandler(apiRef, 'rowEditStop', handleRowEvent)
-
-                const handleRowChange = () => {
-                    if (count > 0) {
-                        processRowUpdate(editRow)
-                        editRow.state?.includes('ROW_EDITED') && debounced_save(editRow)
-                        validators[componentName](editRow)
-                        const newErrors = validators[componentName].errors ?? []
-                        setErrors(newErrors)
-                        debounced_edit_click(id)
-                    }
-                }
-
-                React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-                    handleRowChange()
-                    setCount((prev: number) => prev + 1)
-                }, [editRow])
-
-                return [
-                    <ValidationDialogButton errors={errors} json={editRow} />,
-                    <Tooltip
-                        title={"Delete this request"}
-                        placement="top"
-                        arrow key="Delete This Target" >
-                        <GridActionsCellItem
-                            icon={<DeleteIcon />}
-                            label="Delete"
-                            onClick={() => handleDeleteClick(id)}
-                            color="inherit"
-                        />
-                    </Tooltip>,
-                ];
-            }
+            getActions: ActionsCell
         }
     ];
 
@@ -416,6 +507,7 @@ export default function OBComponentTable(props: Props) {
                         // @ts-ignore
                         setRows,
                         processRowUpdate,
+                        componentName,
                         obs
                     },
                 }}

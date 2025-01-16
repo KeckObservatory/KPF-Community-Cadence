@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TargetTable from './target_table';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { UserInfo, get_all_targets, get_semids, get_userinfo } from './api/api_root';
+import { UserInfo, get_obs, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
@@ -16,7 +16,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { LicenseInfo } from '@mui/x-license';
 import licenseKey from './license.json'
-import { ModuleSelector } from './module_selector';
+import { ModuleSelector, OB } from './module_selector';
 
 
 
@@ -70,6 +70,7 @@ interface State {
   semids: string[],
   semester: string,
   targets: Target[],
+  obs: OB[],
   total_hours: number,
   total_observations: number
 }
@@ -77,9 +78,11 @@ interface State {
 export interface CCContext extends State {
   semid: string,
   semester: string,
+  obs: OB[],
   setSemester: Function,
   isAdmin: boolean,
   setTargets: Function,
+  setOBs: Function,
   setObserverId: Function
   setSemid: Function
   setTotalHours: Function
@@ -96,10 +99,12 @@ const init_cc_context: CCContext = {
   semid: 'XXXX_XXXX',
   semids: [],
   targets: [],
+  obs: [],
   total_hours: 0,
   total_observations: 0,
   setSemid: () => { },
   setTargets: () => { },
+  setOBs: () => { },
   setObserverId: () => { },
   setTotalHours: () => { },
   setTotalObservations: () => { },
@@ -178,22 +183,23 @@ function App() {
         setSemid(semids[0])
       }
       if (semidResp.isAdmin === 'true') {
-        setIsAdmin(true)
+        setIsAdmin(true) //TODO: Do we want to show all obs for semester for Admins be default?
       }
-      const resp = await get_all_targets(semid);
+      const resp = await get_obs(undefined, semid);
 
-      let targets: Target[] = []
+      let obs: OB[] = []
+      let targets: Target[] = [] //TODO: Remove me when ready to use OBs exclusively
       let total_hours = 0
       let total_observations = 0
       if (resp.success === 'SUCCESS') {
-        targets = resp.targets
+        obs = resp.observing_blocks
         total_hours = resp.total_hours
         total_observations = resp.total_observations
       }
       else {
         setSnackbarMessage({
           severity: 'error',
-          message: `Failed to get Targets. Details: ${resp.message}`
+          message: `Failed to get OBs. Details: ${resp.message}`
         })
       }
 
@@ -201,6 +207,7 @@ function App() {
         obsid: obsid,
         username,
         userinfo,
+        obs,
         semids: semids,
         total_hours,
         total_observations,
@@ -239,6 +246,12 @@ function App() {
             },
             total_hours: state.total_hours,
             total_observations: state.total_observations,
+            obs: state.obs,
+            setOBs: (obs: OB[]) => {
+              setState((st) => {
+                return { ...st, obs }
+              })
+            },
             targets: state.targets,
             setTargets: (targets: Target[]) => {
               setState((st) => {
