@@ -132,7 +132,7 @@ const OBStepper = (props: Props) => {
 
     const handle_save_obs = async () => {
         const resp = await save_obs(obs)
-        if (resp.success === 'SUCCESS') {
+        if (resp.observing_blocks.length === obs.length) {
             props.setOpen(false)
             context.setOBs([...context.obs, ...resp.observing_blocks])
             context.setTotalHours(resp.total_hours)
@@ -143,10 +143,10 @@ const OBStepper = (props: Props) => {
             )
         }
         else {
-            console.error('Failed to save OBs', resp)
-            setSaveMessage(`Failed to save OBs: ${resp.details}`)
+            console.error('Failed to save any/all OBs', resp)
+            setSaveMessage(`Failed to save ${obs.length} OBs: ${resp.details}`)
             snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `OB not submitted. Details: ${resp.details}` }
+                { severity: 'error', message: `OBs not submitted. Details: ${resp.details}` }
             )
         }
     }

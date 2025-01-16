@@ -151,24 +151,17 @@ function EditComponentToolbar(props: EditToolbarProps) {
         let newOB = create_new_ob(context.semid, context.obsid, context.username) as OB
 
         const resp = await save_obs([newOB])
-        if (resp.success === 'SUCCESS') {
-            if (resp.observing_blocks.length === 0) {
-                console.error('add OB save failed', resp)
-                snackbarContext.setSnackbarMessage(
-                    { severity: 'error', message: `OB not saved. Details: ${resp}` })
-                return
-            }
-            newOB = resp.observing_blocks.at(0)
-            newOB.metadata.needs_resubmit = false
-            context.setOBs((obs: OB[]) => { return [newOB, ...obs] })
-            processRowUpdate(newOB[componentName])
-            setRows((oldRows) => [newOB[componentName], ...oldRows]);
-        }
-        else {
+        if (resp.observing_blocks.length === 0) {
             console.error('add OB save failed', resp)
             snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `OB not saved. Details: ${resp.details}` })
+                { severity: 'error', message: `OB not saved. Details: ${resp}` })
+            return
         }
+        newOB = resp.observing_blocks.at(0)
+        newOB.metadata.needs_resubmit = false
+        context.setOBs((obs: OB[]) => { return [newOB, ...obs] })
+        processRowUpdate(newOB[componentName])
+        setRows((oldRows) => [newOB[componentName], ...oldRows]);
     };
     const debouncedAddOB = useDebounceCallback(handleAddOB, 500)
 
