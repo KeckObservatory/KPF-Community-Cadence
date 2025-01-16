@@ -161,7 +161,16 @@ function EditComponentToolbar(props: EditToolbarProps) {
         newOB.metadata.needs_resubmit = false
         context.setOBs((obs: OB[]) => { return [newOB, ...obs] })
         processRowUpdate(newOB[componentName])
-        setRows((oldRows) => [newOB[componentName], ...oldRows]);
+
+        const newRow = {
+            ...newOB[componentName],
+            _id: newOB['_id'],
+            isNew: true,
+            state: newOB.metadata?.status && 'CREATED'
+        } as ComponentRow
+        setRows((oldRows) => {
+            return [newRow, ...oldRows]
+        });
     };
     const debouncedAddOB = useDebounceCallback(handleAddOB, 500)
 
@@ -361,7 +370,7 @@ export default function OBComponentTable(props: Props) {
         const { id, row } = props
         const [editRow, setEditRow] = React.useState<ComponentRow>(row);
         validators[componentName](row)
-        const [ hasGaia, setHasGaia ] = React.useState<boolean>(false)
+        const [hasGaia, setHasGaia] = React.useState<boolean>(false)
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validators[componentName].errors ?? []);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
