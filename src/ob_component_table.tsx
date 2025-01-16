@@ -396,8 +396,9 @@ export default function OBComponentTable(props: Props) {
             setTimeout(() => { //wait for cell to update before setting editTarget
                 const newRow = Object.fromEntries(Object.keys(params.row).map((key) => {
                     let value = apiRef.current.getCellValue(id, key);
+                    if (value===undefined) console.log('undefined value', key, value, id, params.row) 
                     value = format_cell_value(key, value)
-                    return [key, format_cell_value(key, value)]
+                    return [key, value]
                 })) as ComponentRow
                 setEditRow({ ...newRow, 'state': 'ROW_EDITED' })
             }, 300)
