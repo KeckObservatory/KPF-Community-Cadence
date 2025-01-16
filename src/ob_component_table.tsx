@@ -378,7 +378,6 @@ export default function OBComponentTable(props: Props) {
         const format_cell_value = (field: string, value: any) => {
             //default type to string (virtual items _id, target_name, status are all strings)
             const type = (schema.properties as SchemaProps)[field as keyof PropertyProps]?.type ?? 'string'
-            if (editRow[field as keyof ComponentRow] === value) return //no change detected. not going to set target as edited.
             const isNumber = type.includes('number') || type.includes('integer')
             if (type === 'array') {
                 value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
@@ -394,12 +393,14 @@ export default function OBComponentTable(props: Props) {
             setTimeout(() => { //wait for cell to update before setting editTarget
                 const newRow = Object.fromEntries(Object.keys(params.row).map((key) => {
                     let value = apiRef.current.getCellValue(id, key);
-                    if (value===undefined) console.log('undefined value', key, value, id, params.row) 
+                    if (value === undefined) console.log('undefined value', key, value, id, params.row)
                     value = format_cell_value(key, value)
                     return [key, value]
                 })) as ComponentRow
-                console.log('handleRowEvent', newRow, params)
-                setEditRow({ ...newRow, 'state': 'ROW_EDITED' })
+                setEditRow((oldRow: ComponentRow) => {
+                    console.log('handleRowEvent', params, newRow)
+                    return { ...oldRow, ...newRow, 'state': 'ROW_EDITED' }
+                })
             }, 300)
         }
 
