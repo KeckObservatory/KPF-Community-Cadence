@@ -310,7 +310,8 @@ export default function OBComponentTable(props: Props) {
     }, [refreshContext.refreshTable, context.obs])
 
     const edit_row = async (row: ComponentRow) => {
-        let newOb = context.obs.find((ob) => ob._id === row._id)
+        const idx = context.obs.findIndex((ob) => ob._id === row._id)
+        let newOb = context.obs.at(idx)
         console.log('edit row. newOb', row, newOb, context.obs)
         if (!newOb) return
         newOb = { ...newOb, [componentName]: row }
@@ -319,12 +320,24 @@ export default function OBComponentTable(props: Props) {
         if (!resp.observing_blocks) {
             console.error('edit ob save failed', resp)
             snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `Component ${componentName} not saved. Details: ${resp.details}` })
+                { severity: 'error', message: `OB not saved. Details: ${resp.details}` })
+        }
+        else if (resp.observing_blocks.length === 0) {
+            console.error('edit ob save failed', resp)
+            snackbarContext.setSnackbarMessage(
+                { severity: 'error', message: `OB not saved. Details: ${resp.details}` })
+        }
+        else {
+            newOb = resp.observing_blocks.at(0)
+            snackbarContext.setSnackbarMessage(
+                { severity: 'success', message: `OB saved` })
+            //replace old ob with saved ob
+            context.setOBs(context.obs.map((ob) => ob._id === newOb?._id ? newOb : ob))
         }
         return resp
     }
 
-    const debounced_save = useDebounceCallback(edit_row, 2000)
+    const debounced_save = useDebounceCallback(edit_row, 1000)
 
     const handleEditClick = (_id: GridRowId) => () => {
         setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
@@ -395,9 +408,9 @@ export default function OBComponentTable(props: Props) {
                     let value = currRow[key as keyof ComponentRow];
                     if (value === undefined) return //skip undefined values
                     const type = (schema.properties as SchemaProps)[key as keyof PropertyProps]?.type
-                    value = type ? format_cell_value(key, value, type): value
+                    value = type ? format_cell_value(key, value, type) : value
                     sanitizedRow[key as keyof ComponentRow] = value
-                }) 
+                })
                 setEditRow({ ...sanitizedRow, 'state': 'ROW_EDITED' } as ComponentRow)
             }, 300)
         }
