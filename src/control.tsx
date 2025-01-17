@@ -37,9 +37,6 @@ export const Control = (props: Props) => {
         context.setSemester(value)
     }
 
-    useEffect(() => {
-    }, [])
-
     const handleResponse = (resp: SubmitResp, value: string | undefined | null) => {
         if (resp.success === 'SUCCESS') {
             console.log('setting observing blocks', resp)

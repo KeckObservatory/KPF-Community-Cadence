@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TargetTable from './target_table';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { GetOBResponse, UserInfo, get_obs, get_semids, get_userinfo } from './api/api_root';
+import { UserInfo, get_obs, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
