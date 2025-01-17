@@ -388,7 +388,7 @@ export default function OBComponentTable(props: Props) {
             return value
         }
 
-        const handleRowEvent: GridEventListener<'rowEditStop'> = (params) => {
+        const handleRowEvent: GridEventListener<'rowEditStop'> = () => {
             setTimeout(() => { //wait for cell to update before setting editTarget
                 let sanitizedRow = {} as Partial<ComponentRow>
                 //params row is stale, get updated values from apiRef
@@ -396,14 +396,12 @@ export default function OBComponentTable(props: Props) {
                 console.log('currRow', currRow, id)
                 Object.keys(currRow).forEach((key) => {
                     let value = currRow[key as keyof ComponentRow];
+                    if (value === undefined) return //skip undefined values
                     const type = (schema.properties as SchemaProps)[key as keyof PropertyProps]?.type
                     value = type ? format_cell_value(key, value, type): value
                     sanitizedRow[key as keyof ComponentRow] = value
                 }) 
-                setEditRow((oldRow: ComponentRow) => {
-                    console.log('handleRowEvent', params, sanitizedRow, 'currRow', currRow)
-                    return { ...oldRow, ...sanitizedRow, 'state': 'ROW_EDITED' }
-                })
+                setEditRow({ ...sanitizedRow, 'state': 'ROW_EDITED' } as ComponentRow)
             }, 300)
         }
 
