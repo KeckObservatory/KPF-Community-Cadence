@@ -20,6 +20,7 @@ import { save_obs } from './api/api_root';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { create_new_ob } from './ob_component_table'
 import { OB } from './module_selector';
+import { NewOB } from './target_table';
 
 
 interface Props {
@@ -59,12 +60,16 @@ function LinearProgressWithLabel(props: LinearProgressProps &
                 context.semid ?? "",
                 context.obsid,
                 tgtName)
-            let newOB = { ...baseOB, ...ob}
+            let newOB: OB
             if (catalog !== 'NONE' || !ob.target?.tic_id || !ob.target?.gaia_id) { // if no tic or gaia id, get catalog data
                 const simbadData = await get_simbad_data(tgtName)
                 //TODO: use GAIA vizier to get gaia data
                 // fill with base, then catalog data, then OB uploaded from json 
-                newOB = { ...baseOB, ...simbadData, ...ob} as OB 
+                const simbadTarget = { ...ob.target, ...simbadData }
+                newOB = { ...baseOB, ...ob, target: simbadTarget} as OB 
+            }
+            else {
+                newOB = { ...baseOB, ...ob} as OB
             }
             obs.push(newOB)
             setProgress(((idx + 1) / obs.length) * 100)
