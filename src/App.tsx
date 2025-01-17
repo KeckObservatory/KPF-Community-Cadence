@@ -180,7 +180,7 @@ function App() {
 
       let semids = semidResp.programs.map((p: any) => p.semid)
       const initSemid = semids.at(0)
-      const initSemester = initSemid.split('_')[0]
+      initSemester = initSemid.split('_')[0]
       if (semid === undefined) {
         setSemid(initSemid)
       }
