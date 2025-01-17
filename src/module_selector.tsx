@@ -2,8 +2,6 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { useCommCadContext } from './App';
-import { get_obs } from './api/api_root';
 import OBComponentTable from './ob_component_table';
 import { SimbadTargetData } from './simbad_button';
 
@@ -146,22 +144,12 @@ function a11yProps(index: number) {
 
 export const ModuleSelector = () => {
   const [value, setValue] = React.useState(0);
-  const context = useCommCadContext()
 
 
   //@ts-ignore
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
-  React.useEffect(() => {
-    const async_func = async () => {
-      const resp = await get_obs(context.semester, context.semid)
-      const newObs = resp.observing_blocks ?? []
-      context.setOBs(newObs)
-    }
-    async_func()
-  }, [context.semid, context.semester]);
 
   return (
     <Box sx={{ width: '100%' }}>

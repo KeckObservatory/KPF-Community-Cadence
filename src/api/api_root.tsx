@@ -59,6 +59,10 @@ export interface SubmitResp {
     [key: string]: any,
 }
 
+export interface GetOBResponse extends SubmitResp {
+    observing_blocks: OB[],
+}
+
 export interface GetLogsArgs {
     n_logs: number,
     loggername: string,
@@ -152,7 +156,7 @@ const get_userinfo_call = (): Promise<UserInfo> => {
         .catch(handleError)
 }
 
-const get_obs_call = (semester?: string, semid?: string, id?: string): Promise<any> => {
+const get_obs_call = (semester?: string, semid?: string, id?: string): Promise<GetOBResponse> => {
     let url = API_ADDR 
     if (semester) {
         url += `/getAllSemesterObservingBlocks?semester=${semester}`

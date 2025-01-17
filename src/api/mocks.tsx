@@ -1,7 +1,7 @@
 import { Target } from "../App"
 import { OB } from "../module_selector"
 import { NewOB } from "../target_table"
-import { SubmitResp, UserInfo } from "./api_root"
+import { GetOBResponse, SubmitResp, UserInfo } from "./api_root"
 
 
 export const mock_get_simbad = async (target: string): Promise<string> => {
@@ -56,7 +56,7 @@ export const mock_get_userinfo = async (): Promise<UserInfo> => {
     return {"status": "GOOD", "Id": 1234, "Title": "Mr.", "FirstName": "Observer", "MiddleName": "", "LastName": "Observerson", "Email": "oobserverson@keck.hawaii.edu", "Affiliation": "W. M. Keck Observatory", "WorkArea": "", "Interests": "", "Street": "", "City": "", "State": "", "Country": "", "Zip": "", "Phone": "", "Fax": "", "URL": "", "ModDate": "2021-01-26", "Exposed": "yes", "username": "ttucker", "resetcode": 0, "AllocInst": "KECK", "BadEmail": "N", "Category": "Faculty/Professional Staff"}
 }
 
-export const mock_get_obs = async (semester?: string, semid?: string, id?: string): Promise<SubmitResp> => {
+export const mock_get_obs = async (semester?: string, semid?: string, id?: string): Promise<GetOBResponse> => {
     return { details: 'mocked', message: `${id} ${semester} ${semid} mocked`, success: 'mocked', observing_blocks: [] }
 }
 

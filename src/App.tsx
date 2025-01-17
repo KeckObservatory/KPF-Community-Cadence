@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TargetTable from './target_table';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { UserInfo, get_obs, get_semids, get_userinfo } from './api/api_root';
+import { GetOBResponse, UserInfo, get_obs, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
@@ -93,7 +93,7 @@ const init_cc_context: CCContext = {
   username: "Dr. Observer Observerson",
   isAdmin: false,
   userinfo: undefined,
-  semester: 'XXXX_XXXX', 
+  semester: 'XXXX_XXXX',
   setSemester: () => { },
   obsid: 1234,
   semid: 'XXXX_XXXX',
@@ -180,44 +180,55 @@ function App() {
 
       let semids = semidResp.programs.map((p: any) => p.semid)
       if (semid === undefined) {
-        setSemid(semids[0])
+        const initSemid = semids.at(0)
+        setSemid(initSemid)
+        const initSemester = initSemid.split('_')[0]
+        setState(st => { return { ...st, semester: initSemester } })
       }
-      if (semidResp.isAdmin === 'true') {
-        setIsAdmin(true) //TODO: Do we want to show all obs for semester for Admins be default?
-      }
-      const resp = await get_obs(undefined, semid);
+      // if admin, get all OBs for the semester, otherwise initialize with semid
+      semidResp.isAdmin ? (
+        handleGetOBs(initSemester, undefined)
+      ) : (
+        handleGetOBs(undefined, semid)
+      )
 
-      let obs: OB[] = []
-      let targets: Target[] = [] //TODO: Remove me when ready to use OBs exclusively
-      let total_hours = 0
-      let total_observations = 0
-      if (resp.success === 'SUCCESS') {
-        obs = resp.observing_blocks
-        total_hours = resp.total_hours
-        total_observations = resp.total_observations
-      }
-      else {
-        setSnackbarMessage({
-          severity: 'error',
-          message: `Failed to get OBs. Details: ${resp.message}`
-        })
-      }
-
-      setState({
-        obsid: obsid,
-        username,
-        userinfo,
-        obs,
-        semids: semids,
-        total_hours,
-        total_observations,
-        semester: initSemester,
-        targets
+      setState((st) => {
+        return {
+          ...st,
+          obsid: obsid,
+          username,
+          userinfo,
+          semids: semids,
+        }
       });
       setInit(true)
     };
     fetchData();
   }, []);
+
+  const handleGetOBs = async (semester?: string, semid?: string) => {
+
+    const resp = await get_obs(semester, semid);
+
+    if (resp.success !== 'SUCCESS') {
+      setSnackbarMessage({
+        severity: 'error',
+        message: `Failed to get OBs. Details: ${resp.message}`
+      })
+      return
+    }
+
+    setState((st) => {
+      return {
+        ...st,
+        obs: resp.observing_blocks ?? [],
+        total_hours: resp.total_hours ?? 0,
+        total_observations: resp.total_observations ?? 0,
+        semester: semester ?? st.semester
+      }
+    })
+  }
+
 
   useEffect(() => {
     snackbarMessage.message && setOpenSnackbar(true)
@@ -318,10 +329,10 @@ function App() {
                 }}
               >
                 <Control notApproved={notApproved} isAdmin={isAdmin} />
-                {init ? 
-                ( isAdmin ?  <ModuleSelector /> : <TargetTable />) 
-                : 
-                <Skeleton variant="rectangular" width="100%" height={500} />
+                {init ?
+                  (isAdmin ? <ModuleSelector /> : <TargetTable />)
+                  :
+                  <Skeleton variant="rectangular" width="100%" height={500} />
                 }
               </Paper>
             </Stack>
