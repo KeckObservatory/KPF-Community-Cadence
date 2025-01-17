@@ -9,6 +9,7 @@ import { Tooltip } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import { ob_schemas } from './validation_check_dialog';
 import { JSONSchema7 } from 'json-schema';
+import { OBComponents } from './ob_component_table';
 
 interface Props {
     setOBs: Function
@@ -20,20 +21,30 @@ interface UploadProps extends Props {
     setOpen?: Function
 }
 
-const invert_ob= (OB: {[key: string]: unknown} ) => {
-    //converts inported OB to swap translator_mapping and component keys
-    return Object.keys(ob_schemas).map(key => {
-        //@ts-ignore
-        const schema = ob_schemas[key] as unknown as JSONSchema7
-        const properties = schema.properties as { [key: string]: { translator_mapping: string } }
-        const KeyToKeyMapping = Object.fromEntries(Object.entries(properties).map(([key, value]) => {
-            return [value.translator_mapping, key]
-        }))
-        const convertedComponent = Object.fromEntries(Object.entries(OB).map(([key, value]) => {
-            return [KeyToKeyMapping[key], value]
-        }))
-        return convertedComponent
+const mapEntries = Object.entries(ob_schemas).map(([ckey, schema]) => {
+    const properties = schema.properties as { [key: string]: { translator_mapping: string } }
+    const k2kComponentEntries = Object.entries(properties).map(([key, value]) => {
+        return [value.translator_mapping, key] as [string, string]
     })
+    const KeyToKeyMapping = Object.fromEntries(k2kComponentEntries)
+    return [ckey, KeyToKeyMapping]
+})
+
+
+const map = Object.fromEntries(mapEntries)
+console.log('map', map)
+
+const invert_ob = (OB: { [key: string]: { [key: string]: object } }) => {
+    //converts inported OB to swap translator_mapping and component keys
+    const obEntries = Object.entries(OB).map(([ckey, Component]) => {
+        const componentEntries = Object.entries(Component).map(([Key, value]) => {
+            return [map[ckey][Key], value]
+        })
+        const component = Object.fromEntries(componentEntries)
+        return [ckey, component]
+    })
+    const ob = Object.fromEntries(obEntries)
+    return ob
 }
 
 export function UploadComponent(props: UploadProps) {
@@ -43,7 +54,7 @@ export function UploadComponent(props: UploadProps) {
         //@ts-ignore
         const obs = OBS.map(OB => invert_ob(OB)) as OB[]
         console.log('translator obs', OBS)
-        return obs 
+        return obs
     }
 
     const fileLoad = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +133,7 @@ export default function UploadDialog(props: Props) {
                         setLabel={setLabel}
                         setOpen={setOpen}
                         setOBs={props.setOBs}
-                        />
+                    />
                 </DialogActions>
             </Dialog>
         </div>
