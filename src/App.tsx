@@ -185,6 +185,7 @@ function App() {
         const initSemester = initSemid.split('_')[0]
         setState(st => { return { ...st, semester: initSemester } })
       }
+      semidResp.isAdmin === 'true' && setIsAdmin(true)
       // if admin, get all OBs for the semester, otherwise initialize with semid
       semidResp.isAdmin ? (
         handleGetOBs(initSemester, undefined)
