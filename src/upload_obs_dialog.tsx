@@ -8,6 +8,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Tooltip } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import { OBTarget } from './module_selector';
+import { ob_schemas } from './validation_check_dialog';
+import { JSONSchema7 } from 'json-schema';
 
 interface Props {
     setOBs: Function
@@ -19,10 +21,29 @@ interface UploadProps extends Props {
     setOpen?: Function
 }
 
+const invert_ob= (OB: {[key: string]: unknown} ) => {
+    //converts inported OB to swap translator_mapping and component keys
+    Object.keys(ob_schemas).map(key => {
+        //@ts-ignore
+        const schema = ob_schemas[key] as unknown as JSONSchema7
+        const properties = schema.properties as { [key: string]: { translator_mapping: string } }
+        const KeyToKeyMapping = Object.fromEntries(Object.entries(properties).map(([key, value]) => {
+            return [value.translator_mapping, key]
+        }))
+        const convertedComponent = Object.fromEntries(Object.entries(OB).map(([key, value]) => {
+            return [KeyToKeyMapping[key], value]
+        }))
+        return convertedComponent
+    })
+}
+
 export function UploadComponent(props: UploadProps) {
 
     const parse_json = (contents: string) => {
-        const obs = JSON.parse(contents) as OBTarget[]
+        const OBS = JSON.parse(contents)
+        //@ts-ignore
+        const obs = OBS.map(OB => invert_ob(OB)) 
+        console.log('obs', obs, 'OBS', OBS)
         return obs 
     }
 
