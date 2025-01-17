@@ -408,6 +408,7 @@ export default function OBComponentTable(props: Props) {
         useGridApiEventHandler(apiRef, 'rowEditStop', handleRowEvent)
 
         const handleRowChange = () => {
+            console.log('row changed', editRow, count)
             if (count > 0) {
                 processRowUpdate(editRow)
                 editRow.state?.includes('ROW_EDITED') && debounced_save(editRow)
