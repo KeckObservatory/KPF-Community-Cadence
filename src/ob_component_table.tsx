@@ -394,6 +394,7 @@ export default function OBComponentTable(props: Props) {
                 let sanitizedRow = {} as Partial<ComponentRow>
                 //params row is stale, get updated values from apiRef
                 const currRow = apiRef.current.getRow(id)
+                console.log('currRow', currRow, id)
                 Object.keys(params.row).forEach((key) => {
                     let value = currRow[key as keyof ComponentRow];
                     value = format_cell_value(key, value)
