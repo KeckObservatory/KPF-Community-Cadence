@@ -56,7 +56,7 @@ export function UploadComponent(props: UploadProps) {
         fileReader.readAsText(file, "UTF-8");
         fileReader.onload = e => {
             const contents = e.target?.result as string
-            const obs = ext?.includes('.json') ? parse_json(contents) : []
+            const obs = ext?.includes('json') ? parse_json(contents) : []
             props.setOpen && props.setOpen(false)
             console.log('obs from file:', obs)
             props.setOBs(obs)
