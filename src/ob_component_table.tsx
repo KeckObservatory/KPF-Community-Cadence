@@ -275,8 +275,6 @@ interface Props {
 export default function OBComponentTable(props: Props) {
     const { componentName, obs } = props
     const context = useCommCadContext()
-
-
     const initRows = obs.map((ob) => {
         const _id = ob._id ?? Math.random().toString(36).substring(7)
         const target_name = ob.target?.target_name ?? "TBD"
@@ -315,6 +313,7 @@ export default function OBComponentTable(props: Props) {
 
     const edit_row = async (row: ComponentRow) => {
         let newOb = obs.find((ob) => ob._id === row._id)
+        console.log('edit row. newOb', row, newOb, obs)
         if (!newOb) return
         newOb = { ...newOb, [componentName]: row }
         const resp = await save_obs([newOb])
