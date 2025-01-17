@@ -22,7 +22,7 @@ interface UploadProps extends Props {
 const mapEntries = Object.entries(ob_schemas).map(([ckey, schema]) => {
     const properties = schema.properties as { [key: string]: { translator_mapping: string } }
     const k2kComponentEntries = Object.entries(properties).map(([key, value]) => {
-        return [value.translator_mapping, key] as [string, string]
+        return [value.translator_mapping ?? key, key] as [string, string]
     })
     const KeyToKeyMapping = Object.fromEntries(k2kComponentEntries)
     return [ckey, KeyToKeyMapping]
