@@ -212,8 +212,8 @@ const exportBlob = (blob: Blob, filename: string) => {
 const getJson = (obs: OB[]) => {
     console.log('obs', obs)
     const json = obs.map((ob) => {
-        let translatedComponent: { [key: string]: unknown } = {}
         const keyValueArray = Object.keys(ob_schemas).map((ckey) => {
+            let translatedComponent: { [key: string]: unknown } = {}
             // @ts-ignore
             const schema = ob_schemas[ckey]
             Object.keys(schema.properties).forEach(key => {
