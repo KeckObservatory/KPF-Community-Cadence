@@ -313,11 +313,9 @@ export default function OBComponentTable(props: Props) {
     const edit_row = async (row: ComponentRow) => {
         const idx = context.obs.findIndex((ob) => ob._id === row._id)
         let newOb = context.obs.at(idx)
-        console.log('edit row. newOb', row, newOb, context.obs)
         if (!newOb) return
         newOb = { ...newOb, [componentName]: row }
         const resp = await save_obs([newOb])
-        console.log('obsering block saved response', resp)
         if (!resp.observing_blocks) {
             console.error('edit ob save failed', resp)
             snackbarContext.setSnackbarMessage(
@@ -344,9 +342,8 @@ export default function OBComponentTable(props: Props) {
         setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
     };
 
-    const processRowUpdate = (newRow: GridRowModel, originalRow?: GridRowModel) => {
-        //server-side persistance is handled elsewhere
-        console.log('processRowUpdate', newRow, originalRow)
+    const processRowUpdate = (newRow: GridRowModel) => {
+        //server-side persistance is handled elsewhere. This allows row editing on a form
         const updatedRow = { ...newRow, isNew: false } as ComponentRow;
         setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
         return updatedRow;
@@ -405,6 +402,7 @@ export default function OBComponentTable(props: Props) {
                 let sanitizedRow = {} as Partial<ComponentRow>
                 //params row is stale, get updated values from apiRef
                 const currRow = apiRef.current.getRow(id)
+                if (currRow._id !== params.row._id) return //id mismatch
                 console.log('currRow', currRow, id)
                 let changed = false
                 Object.keys(currRow).forEach((key) => {
@@ -426,7 +424,6 @@ export default function OBComponentTable(props: Props) {
         useGridApiEventHandler(apiRef, 'rowEditStop', handleRowEvent)
 
         const handleRowChange = () => {
-            console.log('row changed', editRow, count)
             if (count > 0) {
                 processRowUpdate(editRow)
                 editRow.state?.includes('ROW_EDITED') && debounced_save(editRow)
