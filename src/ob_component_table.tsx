@@ -375,14 +375,13 @@ export default function OBComponentTable(props: Props) {
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
 
-        const format_cell_value = (field: string, value: any) => {
-            //type could be undefined. if so just pass the value through.
-            const type = (schema.properties as SchemaProps)[field as keyof PropertyProps]?.type
+        const format_cell_value = (field: string, value: any, type: string | string[]) => {
             const isNumber = type.includes('number') || type.includes('integer')
+            console.log('formatting cell', field, value, type, isNumber)
             if (type === 'array') {
                 value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
             }
-            if (type?.includes('string')) {
+            if (type.includes('string')) {
                 console.log('formatting string', field, value, isNumber)
                 value = format_edit_entry(field, value, isNumber)
             }
@@ -397,7 +396,8 @@ export default function OBComponentTable(props: Props) {
                 console.log('currRow', currRow, id)
                 Object.keys(params.row).forEach((key) => {
                     let value = currRow[key as keyof ComponentRow];
-                    value = format_cell_value(key, value)
+                    const type = (schema.properties as SchemaProps)[key as keyof PropertyProps]?.type
+                    value = type ? format_cell_value(key, value, type): value
                     sanitizedRow[key as keyof ComponentRow] = value
                 }) 
                 setEditRow((oldRow: ComponentRow) => {
