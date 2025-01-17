@@ -49,7 +49,7 @@ interface ComponentRow extends Object {
 
 interface EditToolbarProps {
     componentName: OBComponents;
-    processRowUpdate: (newRow: GridRowModel) => ComponentRow;
+    processRowUpdate: (newRow: GridRowModel, originalRow?: GridRowModel) => ComponentRow;
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
 }
 
@@ -158,6 +158,7 @@ function EditComponentToolbar(props: EditToolbarProps) {
         }
         newOB = resp.observing_blocks.at(0)
         newOB.metadata.needs_resubmit = false
+        newOB.metadata.status = 'SAVED'  //TODO: have backend set this field
         console.log('setting new Obs and rows', newOB, context.obs)
         context.setOBs([newOB, ...context.obs])
         processRowUpdate(newOB[componentName])
@@ -343,8 +344,9 @@ export default function OBComponentTable(props: Props) {
         setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
     };
 
-    const processRowUpdate = (newRow: GridRowModel) => {
-        //sends to server
+    const processRowUpdate = (newRow: GridRowModel, originalRow?: GridRowModel) => {
+        //server-side persistance is handled elsewhere
+        console.log('processRowUpdate', newRow, originalRow)
         const updatedRow = { ...newRow, isNew: false } as ComponentRow;
         setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
         return updatedRow;
@@ -387,12 +389,10 @@ export default function OBComponentTable(props: Props) {
 
         const format_cell_value = (field: string, value: any, type: string | string[]) => {
             const isNumber = type.includes('number') || type.includes('integer')
-            console.log('formatting cell', field, value, type, isNumber)
             if (type === 'array') {
                 value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
             }
             if (type.includes('string')) {
-                console.log('formatting string', field, value, isNumber)
                 value = format_edit_entry(field, value, isNumber)
             }
             return value
