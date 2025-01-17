@@ -22,7 +22,7 @@ interface UploadProps extends Props {
 
 const invert_ob= (OB: {[key: string]: unknown} ) => {
     //converts inported OB to swap translator_mapping and component keys
-    Object.keys(ob_schemas).map(key => {
+    return Object.keys(ob_schemas).map(key => {
         //@ts-ignore
         const schema = ob_schemas[key] as unknown as JSONSchema7
         const properties = schema.properties as { [key: string]: { translator_mapping: string } }
