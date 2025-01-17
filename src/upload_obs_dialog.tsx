@@ -42,8 +42,8 @@ export function UploadComponent(props: UploadProps) {
     const parse_json = (contents: string) => {
         const OBS = JSON.parse(contents)
         //@ts-ignore
-        const obs = OBS.map(OB => invert_ob(OB)) 
-        console.log('obs', obs, 'OBS', OBS)
+        const obs = OBS.map(OB => invert_ob(OB)) as OB[]
+        console.log('translator obs', OBS)
         return obs 
     }
 
