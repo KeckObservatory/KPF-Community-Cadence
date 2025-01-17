@@ -2,7 +2,6 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { NewOB } from './target_table';
 import { useCommCadContext } from './App';
 import { get_obs } from './api/api_root';
 import OBComponentTable from './ob_component_table';
@@ -148,7 +147,6 @@ function a11yProps(index: number) {
 export const ModuleSelector = () => {
   const [value, setValue] = React.useState(0);
   const context = useCommCadContext()
-  const [obs, setObs] = React.useState<OB[] | NewOB[]>([])
 
 
   //@ts-ignore
@@ -160,7 +158,7 @@ export const ModuleSelector = () => {
     const async_func = async () => {
       const resp = await get_obs(context.semester, context.semid)
       const newObs = resp.observing_blocks ?? []
-      setObs(newObs)
+      context.setOBs(newObs)
     }
     async_func()
   }, [context.semid, context.semester]);
