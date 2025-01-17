@@ -34,7 +34,7 @@ const mapEntries = Object.entries(ob_schemas).map(([ckey, schema]) => {
 const map = Object.fromEntries(mapEntries)
 console.log('map', map)
 
-const invert_ob = (OB: { [key: string]: { [key: string]: object } }) => {
+const swap_translator_ob_to_ob_keys = (OB: { [key: string]: { [key: string]: object } }) => {
     //converts inported OB to swap translator_mapping and component keys
     const obEntries = Object.entries(OB).map(([ckey, Component]) => {
         const componentEntries = Object.entries(Component).map(([Key, value]) => {
@@ -52,7 +52,7 @@ export function UploadComponent(props: UploadProps) {
     const parse_json = (contents: string) => {
         const OBS = JSON.parse(contents)
         //@ts-ignore
-        const obs = OBS.map(OB => invert_ob(OB)) as OB[]
+        const obs = OBS.map(OB => swap_translator_ob_to_ob_keys(OB)) as OB[]
         console.log('translator obs', OBS)
         return obs
     }
