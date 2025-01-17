@@ -51,7 +51,6 @@ interface EditToolbarProps {
     componentName: OBComponents;
     processRowUpdate: (newRow: GridRowModel) => ComponentRow;
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-    obs: OB[];
 }
 
 function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
@@ -137,7 +136,7 @@ export const create_new_ob = (semid: string, obsid: number, username: string, ta
 
 
 function EditComponentToolbar(props: EditToolbarProps) {
-    const { obs, componentName, processRowUpdate, setRows } = props;
+    const { componentName, processRowUpdate, setRows } = props;
     const context = useCommCadContext()
     const snackbarContext = useSnackbarContext()
     const handleAddOB = async () => {
@@ -159,8 +158,8 @@ function EditComponentToolbar(props: EditToolbarProps) {
         }
         newOB = resp.observing_blocks.at(0)
         newOB.metadata.needs_resubmit = false
-        console.log('setting new Obs and rows', newOB, obs)
-        context.setOBs((obs: OB[]) => { return [newOB, ...obs] })
+        console.log('setting new Obs and rows', newOB, context.obs)
+        context.setOBs([newOB, ...context.obs])
         processRowUpdate(newOB[componentName])
 
         const newRow = {
@@ -187,7 +186,7 @@ function EditComponentToolbar(props: EditToolbarProps) {
                         printOptions={{ disableToolbarButton: true }}
                         csvOptions={{ disableToolbarButton: true }}
                     />
-                    <CustomExportButton obs={obs} />
+                    <CustomExportButton obs={context.obs} />
                     <OBWizardButton />
                 </Box>
             </Box>
@@ -267,16 +266,14 @@ function CustomExportButton(props: ExportButtonProps) {
 
 interface Props {
     componentName: OBComponents,
-    obs: OB[] | NewOB[]
-    setObs: (obs: OB[] | NewOB[]) => void
 }
 
 
 
 export default function OBComponentTable(props: Props) {
-    const { componentName, obs } = props
+    const { componentName } = props
     const context = useCommCadContext()
-    const initRows = obs.map((ob) => {
+    const initRows = context.obs.map((ob) => {
         const _id = ob._id ?? Math.random().toString(36).substring(7)
         const target_name = ob.target?.target_name ?? "TBD"
         const cmp = ob[componentName] as Object
@@ -298,7 +295,7 @@ export default function OBComponentTable(props: Props) {
 
     React.useEffect(() => {
         setTimeout(() => {
-            const newRows = obs.map((ob) => {
+            const newRows = context.obs.map((ob) => {
                 const _id = ob._id ?? Math.random().toString(36).substring(7)
                 const target_name = ob.target?.target_name ?? "TBD"
                 const cmp = ob[componentName] as Object
@@ -310,11 +307,11 @@ export default function OBComponentTable(props: Props) {
             }) as ComponentRow[];
             setRows(newRows)
         }, 300)
-    }, [refreshContext.refreshTable, obs])
+    }, [refreshContext.refreshTable, context.obs])
 
     const edit_row = async (row: ComponentRow) => {
-        let newOb = obs.find((ob) => ob._id === row._id)
-        console.log('edit row. newOb', row, newOb, obs, context.obs)
+        let newOb = context.obs.find((ob) => ob._id === row._id)
+        console.log('edit row. newOb', row, newOb, context.obs)
         if (!newOb) return
         newOb = { ...newOb, [componentName]: row }
         const resp = await save_obs([newOb])
@@ -474,7 +471,7 @@ export default function OBComponentTable(props: Props) {
         const resp = await delete_obs(String(id))
         if (resp.success === 'SUCCESS') {
             setRows(rows.filter((row) => row._id !== id));
-            props.setObs(props.obs.filter((ob) => ob._id !== delRow?._id))
+            context.setOBs(context.obs.filter((ob) => ob._id !== delRow?._id))
         }
         else {
             console.error('delete failed', resp)
@@ -517,7 +514,6 @@ export default function OBComponentTable(props: Props) {
                         setRows,
                         processRowUpdate,
                         componentName,
-                        obs
                     },
                 }}
                 pinnedColumns={pinnedColumns}
