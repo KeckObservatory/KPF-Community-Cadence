@@ -211,20 +211,22 @@ const exportBlob = (blob: Blob, filename: string) => {
 
 const getJson = (obs: OB[]) => {
     console.log('obs', obs)
-    return obs.map((ob) => {
-        let translator_ob: { [key: string]: unknown } = {}
-        Object.keys(ob_schemas).map((ckey) => {
+    const json = obs.map((ob) => {
+        let translatedComponent: { [key: string]: unknown } = {}
+        const keyValueArray = Object.keys(ob_schemas).map((ckey) => {
             // @ts-ignore
             const schema = ob_schemas[ckey]
-            Object.keys(schema.properties).map(key => {
+            Object.keys(schema.properties).forEach(key => {
                 const props = schema.properties[key]
                 const tkey = props.translator_mapping ?? key
                 // @ts-ignore
-                ob[ckey][key] && (translator_ob[tkey] = ob[ckey][key])
+                ob[ckey][key] && (translatedComponent[tkey] = ob[ckey][key])
             })
+        return [ckey, translatedComponent]
         })
-        return translator_ob
+        return Object.fromEntries(keyValueArray)
     });
+    return json 
 };
 
 
