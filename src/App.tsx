@@ -179,11 +179,10 @@ function App() {
       }
 
       let semids = semidResp.programs.map((p: any) => p.semid)
+      const initSemid = semids.at(0)
+      const initSemester = initSemid.split('_')[0]
       if (semid === undefined) {
-        const initSemid = semids.at(0)
         setSemid(initSemid)
-        const initSemester = initSemid.split('_')[0]
-        setState(st => { return { ...st, semester: initSemester } })
       }
       semidResp.isAdmin === 'true' && setIsAdmin(true)
       // if admin, get all OBs for the semester, otherwise initialize with semid
@@ -200,6 +199,7 @@ function App() {
           username,
           userinfo,
           semids: semids,
+          semester: initSemester
         }
       });
       setInit(true)
