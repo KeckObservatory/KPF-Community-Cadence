@@ -258,7 +258,7 @@ function App() {
             },
             total_hours: state.total_hours,
             total_observations: state.total_observations,
-            obs: state.obs,
+            obs: state.obs ?? [],
             setOBs: (obs: OB[]) => {
               setState((st) => {
                 return { ...st, obs }
