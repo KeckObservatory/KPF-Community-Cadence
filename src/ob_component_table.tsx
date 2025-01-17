@@ -314,7 +314,7 @@ export default function OBComponentTable(props: Props) {
 
     const edit_row = async (row: ComponentRow) => {
         let newOb = obs.find((ob) => ob._id === row._id)
-        console.log('edit row. newOb', row, newOb, obs)
+        console.log('edit row. newOb', row, newOb, obs, context.obs)
         if (!newOb) return
         newOb = { ...newOb, [componentName]: row }
         const resp = await save_obs([newOb])
