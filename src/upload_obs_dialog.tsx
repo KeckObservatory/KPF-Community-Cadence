@@ -7,7 +7,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Tooltip } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
-import { OBTarget } from './module_selector';
 import { ob_schemas } from './validation_check_dialog';
 import { JSONSchema7 } from 'json-schema';
 
