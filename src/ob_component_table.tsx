@@ -159,6 +159,7 @@ function EditComponentToolbar(props: EditToolbarProps) {
         }
         newOB = resp.observing_blocks.at(0)
         newOB.metadata.needs_resubmit = false
+        console.log('setting new Obs and rows', newOB, obs)
         context.setOBs((obs: OB[]) => { return [newOB, ...obs] })
         processRowUpdate(newOB[componentName])
 
