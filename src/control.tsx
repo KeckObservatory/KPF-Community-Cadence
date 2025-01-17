@@ -1,6 +1,5 @@
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import { useEffect } from 'react'
 import { Autocomplete, Button, Tooltip, Typography } from '@mui/material'
 import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App'
 import { SubmitResp, get_obs } from './api/api_root';
