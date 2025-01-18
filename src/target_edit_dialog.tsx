@@ -16,7 +16,7 @@ import {
     Typography
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
-import SimbadButton from './simbad_button';
+import CatalogButton from './catalog_button';
 import { MuiChipsInput } from 'mui-chips-input';
 import { useCommCadContext, Target } from './App';
 import target_schema from './schemas/cc_target_schema.json'
@@ -207,7 +207,7 @@ export const TargetEditDialog = (props: TargetEditProps) => {
             <DialogTitle>
                 <>
                     <span>TargetEdit</span>
-                    <SimbadButton target={target} setTarget={handleSimbadChange} hasSimbad={hasSimbad} />
+                    <CatalogButton target={target} setTarget={handleSimbadChange} hasSimbad={hasSimbad} />
                 </>
             </DialogTitle>
             <DialogContent >

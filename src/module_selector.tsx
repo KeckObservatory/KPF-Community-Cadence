@@ -3,7 +3,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import OBComponentTable from './ob_component_table';
-import { SimbadTargetData } from './simbad_button';
+import { SimbadTargetData } from './catalog_button';
 
 interface TabPanelProps {
   children?: React.ReactNode;

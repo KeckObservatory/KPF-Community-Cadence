@@ -11,7 +11,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { UploadComponent } from './upload_obs_dialog';
-import { get_simbad_and_gaia_target_info} from './simbad_button';
+import { get_simbad_and_gaia_target_info} from './catalog_button';
 import { Control } from './control';
 import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App';
 import Tooltip from '@mui/material/Tooltip';

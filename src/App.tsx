@@ -11,7 +11,7 @@ import { UserInfo, get_obs, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
-import { SimbadTargetData } from './simbad_button';
+import { SimbadTargetData } from './catalog_button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { LicenseInfo } from '@mui/x-license';

@@ -129,7 +129,7 @@ export const get_simbad_and_gaia_target_info = async (targetName: string): Promi
 }
 
 
-export default function SimbadButton(props: Props) {
+export default function CatalogButton(props: Props) {
     const { target, setTarget } = props
     const targetName = target.target_name
 
@@ -141,7 +141,7 @@ export default function SimbadButton(props: Props) {
     }
 
     return (
-        <Tooltip title={`Click to add Simbad info to target ${targetName}`}>
+        <Tooltip title={`Click to add Simbad and Gaia info to target ${targetName}`}>
             <IconButton onClick={handleClick}>
                 <ModeStandbyIcon color={props.hasSimbad ? 'success' : 'inherit'} />
             </IconButton>

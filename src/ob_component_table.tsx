@@ -36,7 +36,7 @@ import { ErrorObject } from 'ajv/dist/2019';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
-import SimbadButton from './simbad_button';
+import CatalogButton from './catalog_button';
 
 export type OBComponents = "calibration" | "schedule" | "target" | "observation" | "metadata"
 
@@ -447,7 +447,7 @@ export default function OBComponentTable(props: Props) {
 
         let cell = [<ValidationDialogButton errors={errors} json={editRow} />]
         if (componentName.includes('target')) {
-            cell.push(<SimbadButton hasSimbad={hasGaia} target={editRow} setTarget={setEditRow} />)
+            cell.push(<CatalogButton hasSimbad={hasGaia} target={editRow} setTarget={setEditRow} />)
         }
         cell.push(
             <Tooltip
