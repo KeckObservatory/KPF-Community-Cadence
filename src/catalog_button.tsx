@@ -118,11 +118,12 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
     return simbadData
 }
 
-export const get_simbad_and_gaia_target_info = async (targetName: string): Promise<SimbadTargetData & GaiaParams> => {
+export const get_simbad_and_gaia_target_info = async (targetName: string, gaia_id?: string): Promise<SimbadTargetData & GaiaParams> => {
     const simbadData = await get_simbad_data(targetName)
     let gaiaParams: GaiaParams = {}
-    if (simbadData.gaia_id) {
-        const gaiaResp = await get_gaia(simbadData.gaia_id)
+    gaia_id = gaia_id ?? simbadData.gaia_id
+    if (gaia_id) {
+        const gaiaResp = await get_gaia(gaia_id)
         gaiaParams = gaiaResp.gaia_params ?? {}
     }
     return { ...simbadData, ...gaiaParams }
@@ -132,10 +133,11 @@ export const get_simbad_and_gaia_target_info = async (targetName: string): Promi
 export default function CatalogButton(props: Props) {
     const { target, setTarget } = props
     const targetName = target.target_name
+    const gaia_id = target.gaia_id
 
     const handleClick = async () => {
         if (targetName) {
-            const catalogTargetInfo = await get_simbad_and_gaia_target_info(targetName)
+            const catalogTargetInfo = await get_simbad_and_gaia_target_info(targetName, gaia_id)
             setTarget({ ...target, ...catalogTargetInfo, "state": 'ROW_EDITED'})
         }
     }
