@@ -92,6 +92,30 @@ const get_simbad_call = (obj: string): Promise<string> => {
         .catch(handleError)
 }
 
+export interface GaiaParams {
+    ra_deg?: number,
+    dec_deg?: number,
+    parallax?: number,
+    systemic_velocity?: number,
+    g_mag?: number,
+    t_eff?: number,
+}
+
+export interface GaiaResp {
+    success: string,
+    message: string,
+    gaia_id: string,
+    details?: string,
+    gaia_params?: GaiaParams
+}
+
+const get_gaia_call = (gaia_id: string): Promise<GaiaResp> => {
+    const url = API_ADDR + `/getGaiaParameters?gaia_id=${gaia_id}`
+    return axiosInstance.get(url)
+        .then(handleResponse)
+        .catch(handleError)
+}
+
 const observer_logout_call = (): Promise<SubmitResp> => {
     const url = API_ADDR + '/logout'
     return axiosInstance.get(url)
@@ -201,8 +225,11 @@ const delete_ob_call = (_id: string): Promise<SubmitResp> => {
 }
 
 
+
+
 const IS_PRODUCTION: boolean = import.meta.env.PROD
 export const get_simbad  = IS_PRODUCTION ? get_simbad_call : mocks.mock_get_simbad
+export const get_gaia = IS_PRODUCTION ? get_gaia_call: mocks.mock_get_gaia
 export const observer_logout = IS_PRODUCTION ? observer_logout_call : mocks.mock_observer_logout
 export const delete_target = IS_PRODUCTION ? delete_target_call : mocks.mock_delete_target
 export const save_target = IS_PRODUCTION ? save_target_call : mocks.mock_save_target

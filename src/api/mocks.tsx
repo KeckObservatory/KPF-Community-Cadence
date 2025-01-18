@@ -1,11 +1,29 @@
 import { Target } from "../App"
 import { OB } from "../module_selector"
 import { NewOB } from "../target_table"
-import { GetOBResponse, SubmitResp, UserInfo } from "./api_root"
+import { GaiaResp, GetOBResponse, SubmitResp, UserInfo } from "./api_root"
 
 
 export const mock_get_simbad = async (target: string): Promise<string> => {
     return Promise.resolve(`mocked ${target}`) 
+}
+
+export const mock_get_gaia = async (gaia_id: string): Promise<GaiaResp> => {
+    const resp = {
+        "success": "SUCCESS",
+        "message": "mocked",
+        "details": "mocked", 
+        "gaia_id": gaia_id,
+        "gaia_params": {
+            "ra": 0,
+            "dec": 0,
+            "parallax": 0,
+            "systemic_velocity": 0,
+            "g_mag": 0,
+            "t_eff": 0
+        }
+    }
+    return Promise.resolve(resp) 
 }
 
 export const mock_observer_logout = async (): Promise<SubmitResp> => {

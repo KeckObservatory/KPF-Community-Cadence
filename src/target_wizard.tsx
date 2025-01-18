@@ -11,7 +11,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { UploadComponent } from './upload_targets_dialog';
-import { get_simbad_data } from './simbad_button';
+import { get_simbad_and_gaia_target_info } from './simbad_button';
 import { Control } from './control';
 import { useCommCadContext, useRefreshTableContext, useSnackbarContext, Target } from './App';
 import Tooltip from '@mui/material/Tooltip';
@@ -62,10 +62,10 @@ function LinearProgressWithLabel(props: LinearProgressProps &
                 undefined,
                 tgtName)
             let newTarget = { ...baseTarget, ...csvTarget }
-            if (catalog !== 'NONE' || !csvTarget.tic_id || !csvTarget.gaia_id) { // if no tic or gaia id, get catalog data
-                const simbadData = await get_simbad_data(tgtName)
+            if (catalog !== 'NONE' || !csvTarget.tic_id ) { // if no tic or gaia id, get catalog data
+                const catalogTargetInfo = await get_simbad_and_gaia_target_info
                 // fill with base, then catalog data, then target uploaded from csv
-                newTarget = { ...baseTarget, ...simbadData, ...csvTarget } as Target
+                newTarget = { ...baseTarget, ...catalogTargetInfo, ...csvTarget } as Target
             }
             tgts.push(newTarget)
             setProgress(((idx + 1) / targets.length) * 100)

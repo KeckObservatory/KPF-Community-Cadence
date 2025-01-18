@@ -1,7 +1,7 @@
 
 import Tooltip from '@mui/material/Tooltip';
 import { IconButton } from '@mui/material';
-import { get_simbad } from './api/api_root';
+import { GaiaParams, GaiaResp, get_gaia, get_simbad } from './api/api_root';
 import ModeStandbyIcon from '@mui/icons-material/ModeStandby';
 import { OBTarget } from './module_selector';
 
@@ -118,6 +118,16 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
     return simbadData
 }
 
+export const get_simbad_and_gaia_target_info = async (targetName: string): Promise<SimbadTargetData & GaiaParams> => {
+    const simbadData = await get_simbad_data(targetName)
+    let gaiaParams: GaiaParams = {}
+    if (simbadData.gaia_id) {
+        const gaiaResp = await get_gaia(simbadData.gaia_id)
+        gaiaParams = gaiaResp.gaia_params ?? {}
+    }
+    return { ...simbadData, ...gaiaParams }
+}
+
 
 export default function SimbadButton(props: Props) {
     const { target, setTarget } = props
@@ -125,8 +135,8 @@ export default function SimbadButton(props: Props) {
 
     const handleClick = async () => {
         if (targetName) {
-            const simbadData = await get_simbad_data(targetName)
-            setTarget({ ...target, ...simbadData, "state": 'ROW_EDITED'})
+            const catalogTargetInfo = await get_simbad_and_gaia_target_info(targetName)
+            setTarget({ ...target, ...catalogTargetInfo, "state": 'ROW_EDITED'})
         }
     }
 

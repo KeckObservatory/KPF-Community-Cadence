@@ -11,7 +11,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { UploadComponent } from './upload_obs_dialog';
-import { get_simbad_data } from './simbad_button';
+import { get_simbad_and_gaia_target_info} from './simbad_button';
 import { Control } from './control';
 import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App';
 import Tooltip from '@mui/material/Tooltip';
@@ -62,11 +62,10 @@ function LinearProgressWithLabel(props: LinearProgressProps &
                 tgtName)
             let newOB: OB
             if (catalog !== 'NONE' || !ob.target?.tic_id || !ob.target?.gaia_id) { // if no tic or gaia id, get catalog data
-                const simbadData = await get_simbad_data(tgtName)
-                //TODO: use GAIA vizier to get gaia data
+                const catalogTargetInfo = await get_simbad_and_gaia_target_info(tgtName)
                 // fill with base, then catalog data, then OB uploaded from json 
-                const simbadTarget = { ...ob.target, ...simbadData }
-                newOB = { ...baseOB, ...ob, target: simbadTarget} as OB 
+                const catalogTarget = { ...ob.target, ...catalogTargetInfo}
+                newOB = { ...baseOB, ...ob, target: catalogTarget} as OB 
             }
             else {
                 newOB = { ...baseOB, ...ob} as OB
