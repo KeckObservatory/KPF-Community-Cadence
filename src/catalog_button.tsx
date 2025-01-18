@@ -1,7 +1,7 @@
 
 import Tooltip from '@mui/material/Tooltip';
 import { IconButton } from '@mui/material';
-import { GaiaParams, GaiaResp, get_gaia, get_simbad } from './api/api_root';
+import { GaiaParams, get_gaia, get_simbad } from './api/api_root';
 import ModeStandbyIcon from '@mui/icons-material/ModeStandby';
 import { OBTarget } from './module_selector';
 
