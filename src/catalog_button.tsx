@@ -123,7 +123,8 @@ export const get_simbad_and_gaia_target_info = async (targetName: string, gaia_i
     let gaiaParams: GaiaParams = {}
     gaia_id = gaia_id ?? simbadData.gaia_id
     if (gaia_id) {
-        const gaiaResp = await get_gaia(gaia_id)
+        const gaiaNumber = gaia_id.replace(/[\w_]/, "")
+        const gaiaResp = await get_gaia(gaiaNumber)
         gaiaParams = gaiaResp.gaia_params ?? {}
     }
     return { ...simbadData, ...gaiaParams }
