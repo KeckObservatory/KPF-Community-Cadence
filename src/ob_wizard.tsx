@@ -45,6 +45,7 @@ function LinearProgressWithLabel(props: LinearProgressProps &
 
     const { obs, setOBs, open, catalog } = props
     const [progress, setProgress] = React.useState(0)
+    const newOBs = [] as OB[]
     const generate_obs_from_list = async () => {
         setLabel('Loading OBs')
         for (let idx = 0; idx < obs.length; idx++) {
@@ -70,12 +71,12 @@ function LinearProgressWithLabel(props: LinearProgressProps &
             else {
                 newOB = { ...baseOB, ...ob} as OB
             }
-            obs.push(newOB)
+            newOBs.push(newOB)
             setProgress(((idx + 1) / obs.length) * 100)
         }
 
         setProgress(100)
-        setOBs(obs)
+        setOBs(newOBs)
         setLabel('OBs Created')
     }
     return (
