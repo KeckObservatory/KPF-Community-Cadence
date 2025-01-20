@@ -28,7 +28,7 @@
             "short_description": "TIC Identifier"
         },
         "parallax": {
-            "type": "string",
+            "type": ["string", "number"],
             "description": "Parallax of the target [arcseconds]",
             "short_description": "Parallax",
             "translator_mapping": "Parallax"
