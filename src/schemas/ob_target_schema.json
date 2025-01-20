@@ -11,8 +11,8 @@
             "translator_mapping": "TargetName"
         },
         "gaia_id": {
-            "type": ["string", "number"],
-            "description": "GAIA Identifier: DR3 preferred (optional)",
+            "type": "string",
+            "description": "GAIA Identifier: DR3 preferred (optional). May be prefixed with DR2/3 followed by a _",
             "short_description": "GAIA ID",
             "translator_mapping": "GaiaID"
         },
