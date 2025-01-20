@@ -295,7 +295,7 @@ export default function OBComponentTable(props: Props) {
     }) as ComponentRow[];
 
     const [rows, setRows] = React.useState(initRows);
-    const pinnedColumns = { left: ['actions', 'target_name', '_id'], right: [] }
+    const pinnedColumns = { left: ['actions', 'target_name', 'target_name_semid'], right: [] }
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
     const snackbarContext = useSnackbarContext()
     const refreshContext = useRefreshTableContext()
