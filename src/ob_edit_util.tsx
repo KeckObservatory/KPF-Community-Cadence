@@ -1,5 +1,5 @@
 import { OB } from './module_selector';
-import target_schema from './schemas/cc_target_schema.json'
+import target_schema from './schemas/ob_target_schema.json'
 
 
 interface Items extends PropertyProps {
