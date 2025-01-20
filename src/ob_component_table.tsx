@@ -284,12 +284,12 @@ export default function OBComponentTable(props: Props) {
     const initRows = context.obs.map((ob) => {
         const _id = ob._id ?? Math.random().toString(36).substring(7)
         const target_name = ob.target?.target_name ?? "TBD"
-        const tn_semid = target_name + '_' + ob.metadata.semid
+        const target_name_semid = target_name + '_' + ob.metadata.semid
         const cmp = ob[componentName] as Object
         return {
             _id,
             target_name,
-            target_name_semid: tn_semid,
+            target_name_semid,
             ...cmp,
         }
     }) as ComponentRow[];
@@ -308,6 +308,7 @@ export default function OBComponentTable(props: Props) {
             const newRows = context.obs.map((ob) => {
                 const _id = ob._id ?? Math.random().toString(36).substring(7)
                 const target_name = ob.target?.target_name ?? "TBD"
+                const target_name_semid = target_name + '_' + ob.metadata.semid
                 const cmp = ob[componentName] as Object
                 return {
                     ...cmp,
