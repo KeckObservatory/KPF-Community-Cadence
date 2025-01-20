@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 import { handleResponse, handleError, intResponse, intError } from './response';
-import { Target } from '../App';
 const SIMBAD_ADDR = "https://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=submit+id&output.format=ASCII&obj.bibsel=off&Ident="
 //const API_ADDR = "/api/proposals"
 //TODO: Change this to the correct API address when ready to update proposals api 
@@ -123,49 +122,6 @@ const observer_logout_call = (): Promise<SubmitResp> => {
         .catch(handleError)
 }
 
-const delete_target_call = (tgt: Target): Promise<SubmitResp> => {
-    const url = API_ADDR + `/deleteTarget?id=${tgt._id}`
-    return axiosInstance.delete(url)
-        .then(handleResponse)
-        .catch(handleError)
-}
-
-const save_target_call = (targets: Target[],
-    semid: string,
-    action = 'save',
-    edit = false): Promise<SubmitResp> => {
-    let url = API_ADDR
-    url += edit ? '/editTarget' : '/submitTarget'
-    url += `?action=${action}&semid=${semid}`
-    return axiosInstance.put(url, { targets })
-        .then(handleResponse)
-        .catch(handleError)
-}
-
-const get_target_call = (oid: string): Promise<string> => {
-    const url = API_ADDR + `/getTarget?id=${oid}`
-    return axiosInstance.get(url)
-        .then(handleResponse)
-        .catch(handleError)
-}
-
-const get_all_semester_targets_call = (semester: string, notApproved?: Boolean): Promise<SubmitResp> => {
-    let queryParams = `semester=${semester}`
-    queryParams += notApproved ? `&notapproved=${notApproved}`: ''
-    const url = API_ADDR + `/getAllSemesterTargets?${queryParams}`
-    return axiosInstance.get(url)
-        .then(handleResponse)
-        .catch(handleError)
-}
-
-const get_all_targets_call = (semid: string): Promise<SubmitResp> => {
-    const queryParams = `semid=${semid}`
-    const url = API_ADDR + `/getAllTargets?${queryParams}`
-    return axiosInstance.get(url)
-        .then(handleResponse)
-        .catch(handleError)
-}
-
 const get_semids_call = (oid?: number): Promise<SemidResp> => {
     const url = API_ADDR + '/getProgramIDs?' + (oid ? `obsid=${oid}` : '')
     return axiosInstance.get(url)
@@ -231,11 +187,6 @@ const IS_PRODUCTION: boolean = import.meta.env.PROD
 export const get_simbad  = IS_PRODUCTION ? get_simbad_call : mocks.mock_get_simbad
 export const get_gaia = IS_PRODUCTION ? get_gaia_call: mocks.mock_get_gaia
 export const observer_logout = IS_PRODUCTION ? observer_logout_call : mocks.mock_observer_logout
-export const delete_target = IS_PRODUCTION ? delete_target_call : mocks.mock_delete_target
-export const save_target = IS_PRODUCTION ? save_target_call : mocks.mock_save_target
-export const get_target = IS_PRODUCTION ? get_target_call : mocks.mock_get_target
-export const get_all_semester_targets = IS_PRODUCTION ? get_all_semester_targets_call : mocks.mock_get_all_semester_targets
-export const get_all_targets = IS_PRODUCTION ? get_all_targets_call : mocks.mock_get_all_targets
 export const get_semids = IS_PRODUCTION ? get_semids_call : mocks.mock_get_semids
 export const get_userinfo = IS_PRODUCTION ? get_userinfo_call : mocks.mock_get_userinfo
 export const get_obs = IS_PRODUCTION ? get_obs_call: mocks.mock_get_obs

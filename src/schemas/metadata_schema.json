@@ -85,15 +85,18 @@
         },
         "total_observations_requested": {
             "type": "integer",
-            "description": "Total Observations Requested"
+            "description": "Total Observations Requested",
+            "not_editable_by_user": true
         },
         "total_time_for_target": {
             "type": "number",
-            "description": "Total Time for Target [hours]"
+            "description": "Total Time for Target [hours]",
+            "not_editable_by_user": true
         },
         "total_time_for_target_hours": {
             "type": "number",
-            "description": "Total Time for Target [hours]"
+            "description": "Total Time for Target [hours]",
+            "not_editable_by_user": true
         }
     },
     "required": [ "semid", "semester", "progid", "obsid" ],

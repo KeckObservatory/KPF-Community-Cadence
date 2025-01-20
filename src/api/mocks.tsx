@@ -1,4 +1,3 @@
-import { Target } from "../App"
 import { OB } from "../module_selector"
 import { NewOB } from "../ob_component_table"
 import { GaiaResp, GetOBResponse, SubmitResp, UserInfo } from "./api_root"
@@ -28,40 +27,6 @@ export const mock_get_gaia = async (gaia_id: string): Promise<GaiaResp> => {
 
 export const mock_observer_logout = async (): Promise<SubmitResp> => {
     return { details: 'mocked', message: 'mocked', success: 'mocked' }
-}
-
-export const mock_delete_target = async (tgt: Target): Promise<SubmitResp> => {
-
-    return { details: 'mocked', message: `${tgt.target_name} mocked`, success: 'mocked' }
-}
-
-export const mock_save_target = async (targets: Target[],
-    semid: string,
-    action = 'save',
-    edit = false): Promise<SubmitResp> => {
-
-    let msg = edit ? 'edited' : 'submitted'
-    msg += action 
-    msg += ` for ${semid}`
-    msg += ` ${targets.length} targets`
-    return { details: 'mocked', message: `${msg} mocked`, success: 'mocked' }
-}
-
-export const mock_get_target = async (oid: string): Promise<Target> => {
-    const target: Target = {_id: oid} as Target
-    return target 
-}
-
-export const mock_get_all_semester_targets = async (semester: string, notApproved?: Boolean): Promise<SubmitResp> => {
-    let msg = `fetched for ${semester}`
-    if (notApproved) {
-        msg += ' not approved'
-    }
-    return { details: 'mocked', message: `${msg} mocked`, success: 'mocked' }
-}
-
-export const mock_get_all_targets = async (semester: string): Promise<SubmitResp> => {
-    return { details: 'mocked', message: `${semester} mocked`, success: 'mocked' }
 }
 
 export const mock_get_semids = async (): Promise<SubmitResp> => {

@@ -10,7 +10,6 @@ import { UserInfo, get_obs, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
-import { SimbadTargetData } from './catalog_button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { LicenseInfo } from '@mui/x-license';
@@ -33,42 +32,12 @@ LicenseInfo.setLicenseKey(
   licenseKey.license_key
 )
 
-export interface Target extends SimbadTargetData {
-  _id?: string,
-  semid: string,
-  target_name?: string,
-  j_mag?: number,
-  t_eff?: number,
-  systemic_velocity?: number,
-  submitted?: boolean,
-  state?: string,
-  simulcal_on?: boolean,
-  nominal_exposure_time?: number
-  maximum_exposure_time?: number,
-  num_internight_cadence?: number,
-  num_intranight_cadence: number,
-  num_exposures_per_visit?: number,
-  num_visits_per_night?: number,
-  num_unique_nights_per_semester?: number,
-  target_feasible?: boolean,
-  rise_semester_day?: number,
-  sets_semester_day?: number,
-  details?: string,
-  status?: string,
-  submitter?: string,
-  total_observations_requested?: number,
-  total_time_for_target?: number,
-  total_time_for_target_hours?: number,
-  tags?: string[],
-}
-
 interface State {
   username: string,
   obsid: number,
   userinfo?: UserInfo,
   semids: string[],
   semester: string,
-  targets: Target[],
   obs: OB[],
   total_hours: number,
   total_observations: number
@@ -80,7 +49,6 @@ export interface CCContext extends State {
   obs: OB[],
   setSemester: Function,
   isAdmin: boolean,
-  setTargets: Function,
   setOBs: Function,
   setObserverId: Function
   setSemid: Function
@@ -97,12 +65,10 @@ const init_cc_context: CCContext = {
   obsid: 1234,
   semid: 'XXXX_XXXX',
   semids: [],
-  targets: [],
   obs: [],
   total_hours: 0,
   total_observations: 0,
   setSemid: () => { },
-  setTargets: () => { },
   setOBs: () => { },
   setObserverId: () => { },
   setTotalHours: () => { },
@@ -261,12 +227,6 @@ function App() {
             setOBs: (obs: OB[]) => {
               setState((st) => {
                 return { ...st, obs }
-              })
-            },
-            targets: state.targets,
-            setTargets: (targets: Target[]) => {
-              setState((st) => {
-                return { ...st, targets: targets }
               })
             },
             setSemid,

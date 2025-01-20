@@ -38,6 +38,7 @@ const create_validator = (schema: any) => {
   ajv.addKeyword("short_description")
   ajv.addKeyword("not_editable_by_user")
   ajv.addKeyword("translator_mapping")
+  ajv.addKeyword("hide_column")
   return ajv.compile(ts)
 }
 

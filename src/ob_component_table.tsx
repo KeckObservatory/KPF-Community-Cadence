@@ -27,7 +27,7 @@ import { delete_obs, save_obs } from './api/api_root';
 import { OBWizardButton } from './ob_wizard';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
 import { MetaData, OB, Observation, OBTarget, ScheduleData } from './module_selector';
-import { format_edit_entry, format_tags, PropertyProps, raDecFormat, SchemaProps } from './ob_edit_util';
+import { format_edit_entry, format_tags, PropertyProps, raDecFormat, SchemaProps, rowSetter } from './ob_edit_util';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import MenuItem from '@mui/material/MenuItem';
 import Button, { ButtonProps } from '@mui/material/Button';
@@ -86,7 +86,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
             headerName: valueProps.short_description ?? valueProps.description,
             width: 100,
             editable: valueProps.not_editable_by_user ? false : true,
-            visible: valueProps.not_editable_by_user ? false : true,
+            visible: valueProps.hide_column ? true : false,
         } as GridColDef
         if (key === 'semids') {
             col = {
@@ -113,7 +113,7 @@ export const create_new_ob = (semid: string, obsid: number, username: string, ta
         scheduling_mode: 'Cadence',
     }
 
-    const metadata: Partial<MetaData> = {
+    const metadata: MetaData = {
         obsid: String(obsid),
         observer_name: username,
         submitter: username,
@@ -121,6 +121,7 @@ export const create_new_ob = (semid: string, obsid: number, username: string, ta
         progid: semid.split('_')[1],
         semid: semid,
         needs_resubmit: false,
+        state: "CREATED",
         status: 'PENDING',
         history: [],
         tags: [],
@@ -225,11 +226,11 @@ const getJson = (obs: OB[]) => {
                 // @ts-ignore
                 ob[ckey][key] && (translatedComponent[tkey] = ob[ckey][key])
             })
-        return [ckey, translatedComponent]
+            return [ckey, translatedComponent]
         })
         return Object.fromEntries(keyValueArray)
     });
-    return json 
+    return json
 };
 
 
@@ -317,10 +318,11 @@ export default function OBComponentTable(props: Props) {
 
     const edit_row = async (row: ComponentRow) => {
         const idx = context.obs.findIndex((ob) => ob._id === row._id)
-        let newOb = context.obs.at(idx)
-        if (!newOb) return
-        newOb = { ...newOb, [componentName]: row }
-        const resp = await save_obs([newOb])
+        let newOB = context.obs.at(idx)
+        if (!newOB) return
+        newOB = { ...newOB, [componentName]: row }
+        newOB = rowSetter(newOB, componentName)
+        const resp = await save_obs([newOB])
         if (!resp.observing_blocks) {
             console.error('edit ob save failed', resp)
             snackbarContext.setSnackbarMessage(
@@ -332,11 +334,11 @@ export default function OBComponentTable(props: Props) {
                 { severity: 'error', message: `OB not saved. Details: ${resp.details}` })
         }
         else {
-            newOb = resp.observing_blocks.at(0)
+            const respOB = resp.observing_blocks.at(0)
             snackbarContext.setSnackbarMessage(
                 { severity: 'success', message: `OB saved` })
             //replace old ob with saved ob
-            context.setOBs(context.obs.map((ob) => ob._id === newOb?._id ? newOb : ob))
+            context.setOBs(context.obs.map((ob) => ob._id === respOB?._id ? respOB: ob))
         }
         return resp
     }
@@ -522,7 +524,7 @@ export default function OBComponentTable(props: Props) {
             <DataGridPro
                 rows={rows ?? []}
                 getRowId={(row) => row._id}
-                editMode={'row'} //TODO: verify this saves obs correctly
+                editMode={'row'}
                 processRowUpdate={processRowUpdate}
                 columns={columns}
                 rowModesModel={rowModesModel}
@@ -539,14 +541,7 @@ export default function OBComponentTable(props: Props) {
                         componentName,
                     },
                 }}
-                pinnedColumns={pinnedColumns}
-            // initialState={{ //TODO: configure column order and visibility
-            //     columns: {
-            //         columnVisibilityModel:
-            //             visibleColumns
-            //     }
-            // }}
-            />
+                pinnedColumns={pinnedColumns} />
         </Box>
     );
 }

@@ -41,7 +41,6 @@ export const Control = (props: Props) => {
             console.log('setting observing blocks', resp)
             context.setTotalHours(resp.total_hours ?? 0)
             context.setTotalObservations(resp.total_observations ?? 0)
-            // context.setTargets(resp.targets ?? [])
             context.setOBs(resp.observing_blocks ?? [])
         }
         else {
@@ -52,7 +51,6 @@ export const Control = (props: Props) => {
                 })
             context.setTotalHours(0)
             context.setTotalObservations(0)
-            //context.setTargets([])
             context.setOBs(resp.observing_blocks ?? [])
         }
         if (resp.message.includes('NO_OBS_FOUND')) {
@@ -63,7 +61,6 @@ export const Control = (props: Props) => {
                 })
             context.setTotalHours(0)
             context.setTotalObservations(0)
-            // context.setTargets(resp.targets ?? [])
             context.setOBs(resp.observing_blocks ?? [])
         }
     }

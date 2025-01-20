@@ -101,6 +101,7 @@ export interface MetaData {
   semid?: string,
   semester?: string,
   progid?: string,
+  state: string,
   submitter?: string,
   needs_resubmit?: boolean,
   status?: string,
@@ -158,7 +159,6 @@ export const ModuleSelector = () => {
         onChange={handleChange}
         aria-label="cc-module-tabs"
       >
-        {/* <Tab value={0} label="CC Targets" {...a11yProps(0)} /> */}
         <Tab value={0} label="OB Targets" {...a11yProps(0)} />
         {/* <Tab value={1} label="Calibrations" {...a11yProps(2)} /> */}
         <Tab value={1} label="Observations" {...a11yProps(1)} />

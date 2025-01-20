@@ -9,7 +9,8 @@
             "description": "Scheduling Mode: FixedTime, Cadence, or Single",
             "short_description": "Scheduling Mode",
             "enum": ["FixedTime", "Cadence", "Single"],
-            "default": "Single"
+            "default": "Single",
+            "not_editable_by_user": true
         },
         "num_visits_per_night": {
             "type": ["number", "string"],
@@ -81,6 +82,7 @@
             "translator_mapping": "AccessibilityMap",
             "description": "[bitmap] If custom map is input, this is the AND with the default map based on inputs below",
             "short_description": "Access Map",
+            "hide_column": true,
             "not_editable_by_user": true,
             "default": 0
         },

@@ -1,35 +1,6 @@
-import * as React from 'react';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import IconButton from '@mui/material/IconButton';
-import DialogContent from '@mui/material/DialogContent';
-import Stack from '@mui/material/Stack'
-import Paper from '@mui/material/Paper'
-import Tooltip from '@mui/material/Tooltip'
-import TextField from '@mui/material/TextField'
-import {
-    Autocomplete,
-    Box,
-    FormControlLabel,
-    FormGroup,
-    Switch,
-    Typography
-} from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit';
-import CatalogButton from './catalog_button';
-import { MuiChipsInput } from 'mui-chips-input';
-import { useCommCadContext, Target } from './App';
+import { OB } from './module_selector';
 import target_schema from './schemas/cc_target_schema.json'
 
-interface Props {
-    target: Target
-    setTarget: Function
-}
-
-interface TargetEditProps extends Props {
-    handleClose: Function
-    open: boolean
-}
 
 interface Items extends PropertyProps {
     properties?: { [key: string]: PropertyProps }
@@ -44,6 +15,7 @@ export interface PropertyProps {
     minLength?: number,
     maxLength?: number,
     not_editable_by_user?: boolean,
+    hide_column?: boolean,
     enum?: string[],
     items?: Items
     translator_mapping?: string
@@ -121,26 +93,14 @@ export const raDecFormat = (input: string) => {
     return sign + input;
 }
 
-export const rowSetter = (tgt: Target, key: string, value?: string | number | boolean | string[]) => {
-    tgt = { ...tgt, [key]: value, "state": 'TARGET_EDITED' }
-    if (key.includes('exposure_time')) { //nominal equivalent to maximum
-        tgt = {
-            ...tgt,
-            'nominal_exposure_time': Number(value),
-            'maximum_exposure_time': Number(value)
-        }
-    }
-    if (key.includes('num_visits_per_night') && value === 1) { //num_visits_per_night equivalent to num_exposures_per_visit
-        tgt = {
-            ...tgt,
+export const rowSetter = (ob: OB, componentName: keyof OB) => {
+    // if num_vists_per_night is 1, set num_intranight_cadences to 0
+    if (componentName === 'schedule' && ob.schedule.num_visits_per_night === 1) {
+        ob.schedule = {
+            ...ob.schedule,
             'num_intranight_cadence': 0,
+            'num_internight_cadence': 0,
         }
     }
-    if (key.includes('num_intranight_cadence') && tgt.num_visits_per_night === 1) { // do not allow intranight cadence edit if num_visits_per_night is 1
-        tgt = {
-            ...tgt,
-            'num_intranight_cadence': 0,
-        }
-    }
-    return tgt
+    return ob 
 }
