@@ -86,6 +86,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
             headerName: valueProps.short_description ?? valueProps.description,
             width: 100,
             editable: valueProps.not_editable_by_user ? false : true,
+            visible: valueProps.not_editable_by_user ? false : true,
         } as GridColDef
         if (key === 'semids') {
             col = {
