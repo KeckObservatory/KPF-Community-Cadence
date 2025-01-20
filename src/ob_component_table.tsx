@@ -314,6 +314,7 @@ export default function OBComponentTable(props: Props) {
                     ...cmp,
                     _id,
                     target_name,
+                    target_name_semid
                 }
             }) as ComponentRow[];
             setRows(newRows)
