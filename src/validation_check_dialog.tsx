@@ -9,7 +9,6 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import target_schema from './schemas/cc_target_schema.json'
 import AJV2019, { ErrorObject, ValidateFunction } from 'ajv/dist/2019'
-import { Target } from './App';
 import { IconButton } from '@mui/material';
 // import * as ob_schema from './schemas/observing_block_schema.json'
 import * as calibration_schema from './schemas/calibration_schema.json'
@@ -18,6 +17,7 @@ import * as ob_target from './schemas/ob_target_schema.json'
 import * as observation_schema from './schemas/observation_schema.json'
 import * as metadata_schema from './schemas/metadata_schema.json'
 import { OBComponents } from './ob_component_table';
+import { OB } from './module_selector';
 
 
 export interface SimpleDialogProps {
@@ -28,7 +28,7 @@ export interface SimpleDialogProps {
 
 export interface Props {
   errors: ErrorObject<string, Record<string, any>, unknown>[];
-  json: Target | Object
+  json: OB | Object
 }
 
 const create_validator = (schema: any) => {
