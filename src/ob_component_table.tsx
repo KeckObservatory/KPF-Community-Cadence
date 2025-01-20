@@ -379,7 +379,7 @@ export default function OBComponentTable(props: Props) {
         type: 'string',
         resizable: true,
         headerName: 'Target-Semid',
-        width: 100,
+        width: 200,
         editable: false,
     } as GridColDef
 
