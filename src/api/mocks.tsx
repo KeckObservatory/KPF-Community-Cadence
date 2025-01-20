@@ -1,6 +1,6 @@
 import { Target } from "../App"
 import { OB } from "../module_selector"
-import { NewOB } from "../target_table"
+import { NewOB } from "../ob_component_table"
 import { GaiaResp, GetOBResponse, SubmitResp, UserInfo } from "./api_root"
 
 

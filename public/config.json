@@ -1,47 +1,4 @@
 {
-    "default_table_columns": [
-        "actions",
-        "target_name",
-        "target_feasible",
-        "nominal_exposure_time",
-        "num_exposures_per_visit",
-        "num_unique_nights_per_semester",
-        "num_internight_cadence",
-        "num_intranight_cadence",
-        "require_resubmit"
-    ],
     "motivation_path": "motivationMsg.md",
-    "welcome_path": "welcomeMsg.md",
-    "csv_order": [
-        "target_name",
-        "ra",
-        "dec",
-        "pm_ra",
-        "pm_dec",
-        "epoch",
-        "t_eff",
-        "j_mag",
-        "g_mag",
-        "systemic_velocity",
-        "nominal_exposure_time",
-        "maximum_exposure_time",
-        "simulcal_on",
-        "gaia_id",
-        "tic_id",
-        "num_exposures_per_visit",
-        "num_visits_per_night",
-        "num_intranight_cadence",
-        "num_internight_cadence",
-        "num_unique_nights_per_semester",
-        "comment"
-    ],
-    "pinned_table_columns": {
-        "left": [
-            "actions",
-            "target_name"
-        ],
-        "right": [
-            "target_feasible"
-        ]
-    }
+    "welcome_path": "welcomeMsg.md"
 }

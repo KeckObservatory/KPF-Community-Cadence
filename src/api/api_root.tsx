@@ -8,7 +8,7 @@ const SIMBAD_ADDR = "https://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=
 const API_ADDR = "/api/pToolTesting"
 import * as mocks from './mocks'
 import { OB } from '../module_selector';
-import { NewOB } from '../target_table';
+import { NewOB } from '../ob_component_table';
 
 export interface UserInfo {
     status: string;

@@ -27,8 +27,7 @@ import { delete_obs, save_obs } from './api/api_root';
 import { OBWizardButton } from './ob_wizard';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
 import { MetaData, OB, Observation, OBTarget, ScheduleData } from './module_selector';
-import { format_edit_entry, format_tags, PropertyProps, raDecFormat, SchemaProps } from './target_edit_dialog';
-import { NewOB } from './target_table';
+import { format_edit_entry, format_tags, PropertyProps, raDecFormat, SchemaProps } from './ob_edit_util';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import MenuItem from '@mui/material/MenuItem';
 import Button, { ButtonProps } from '@mui/material/Button';
@@ -38,6 +37,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import CatalogButton from './catalog_button';
 
+export type NewOB = Partial<OB> & {
+    _id?: string
+}
 export type OBComponents = "calibration" | "schedule" | "target" | "observation" | "metadata"
 
 interface ComponentRow extends Object {
