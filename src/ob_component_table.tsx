@@ -45,6 +45,7 @@ export type OBComponents = "calibration" | "schedule" | "target" | "observation"
 interface ComponentRow extends Object {
     isNew?: boolean;
     _id: string;
+    target_name_semid: string,
     target_name?: string,
     state: string;
 }
@@ -283,10 +284,12 @@ export default function OBComponentTable(props: Props) {
     const initRows = context.obs.map((ob) => {
         const _id = ob._id ?? Math.random().toString(36).substring(7)
         const target_name = ob.target?.target_name ?? "TBD"
+        const tn_semid = target_name + '_' + ob.metadata.semid
         const cmp = ob[componentName] as Object
         return {
             _id,
             target_name,
+            target_name_semid: tn_semid,
             ...cmp,
         }
     }) as ComponentRow[];
@@ -369,16 +372,16 @@ export default function OBComponentTable(props: Props) {
         headerName: 'Target Name',
         width: 100,
     } as GridColDef
-    const _id_col = {
-        field: '_id',
+    const target_name_semid_col = {
+        field: 'target_name_semid',
         type: 'string',
         resizable: true,
-        headerName: '_id',
+        headerName: 'Target-Semid',
         width: 100,
         editable: false,
     } as GridColDef
 
-    columns = [...columns, target_name_col, _id_col]
+    columns = [...columns, target_name_col, target_name_semid_col]
     const schema = ob_schemas[componentName]
 
     const ActionsCell = (props: GridRowParams<ComponentRow>) => {
