@@ -70,7 +70,6 @@ const ob_feisible_chip = (params: GridRenderCellParams) => {
     let text = params.value == undefined ? 'Unknown'
         : params.value ? 'Feasible'
             : 'Infeasible'
-    console.log('params', params)
     params.row.details && (text += ": " + params.row.details)
     return (
         <Tooltip
@@ -201,7 +200,6 @@ function EditComponentToolbar(props: EditToolbarProps) {
         newOB = resp.observing_blocks.at(0)
         newOB.metadata.needs_resubmit = false
         newOB.metadata.status = 'SAVED'  //TODO: have backend set this field
-        console.log('setting new Obs and rows', newOB, context.obs)
         context.setOBs([newOB, ...context.obs])
         processRowUpdate(newOB[componentName])
         const newRow = ob_to_component_row(newOB, componentName)
@@ -473,7 +471,6 @@ export default function OBComponentTable(props: Props) {
                 context.setTotalObservations(resp.total_observations)
                 const submittedOB = resp.observing_blocks.at(0)
                 const newRow = ob_to_component_row(submittedOB, componentName)
-                console.log('setting submitted row', newRow, submittedOB)
                 processRowUpdate(newRow)
                 setEditRow(newRow)
                 snackbarContext.setSnackbarMessage(
@@ -553,7 +550,6 @@ export default function OBComponentTable(props: Props) {
         }
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
             handleRowChange()
-            console.log('editRow changed', editRow)
             validators[componentName](editRow)
             setErrors(validators[componentName].errors ?? [])
             setSubmitted(editRow.state?.includes('SUBMITTED'))
