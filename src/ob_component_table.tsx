@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add';
+import PublishIcon from '@mui/icons-material/Publish';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import {
     GridRowsProp,
     GridRowModesModel,
@@ -23,7 +25,7 @@ import {
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
-import { delete_obs, save_obs } from './api/api_root';
+import { delete_obs, save_obs, submit_obs } from './api/api_root';
 import { OBWizardButton } from './ob_wizard';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
 import { MetaData, OB, Observation, OBTarget, ScheduleData } from './module_selector';
@@ -48,6 +50,7 @@ interface ComponentRow extends Object {
     target_name_semid: string,
     target_name?: string,
     state: string;
+    submitted: boolean;
 }
 
 interface EditToolbarProps {
@@ -172,7 +175,8 @@ function EditComponentToolbar(props: EditToolbarProps) {
             ...newOB[componentName],
             _id: newOB['_id'],
             isNew: true,
-            state: newOB.metadata?.status && 'CREATED'
+            state: newOB.metadata?.status && 'CREATED',
+            submitted: false,
         } as ComponentRow
         setRows((oldRows) => {
             return [newRow, ...oldRows]
@@ -314,7 +318,8 @@ export default function OBComponentTable(props: Props) {
                     ...cmp,
                     _id,
                     target_name,
-                    target_name_semid
+                    target_name_semid,
+                    submitted: ob.metadata.submitted ?? false,
                 }
             }) as ComponentRow[];
             setRows(newRows)
@@ -343,7 +348,7 @@ export default function OBComponentTable(props: Props) {
             snackbarContext.setSnackbarMessage(
                 { severity: 'success', message: `OB saved` })
             //replace old ob with saved ob
-            context.setOBs(context.obs.map((ob) => ob._id === respOB?._id ? respOB: ob))
+            context.setOBs(context.obs.map((ob) => ob._id === respOB?._id ? respOB : ob))
         }
         return resp
     }
@@ -386,11 +391,48 @@ export default function OBComponentTable(props: Props) {
     columns = [...columns, target_name_col, target_name_semid_col]
     const schema = ob_schemas[componentName]
 
+    const needs_resubmit = (row: ComponentRow, nErrors: number) => {
+        return nErrors > 0 && row.state?.includes('SUBMITTED') && !row.submitted
+    }
+
+    const handlePublishClick = async (_id: GridRowId, setIconSpin: Function, setEditRow: Function) => {
+        setIconSpin(true)
+        const ob = context.obs.find((ob) => ob._id === _id)
+        if (!ob) {
+            console.error('publish failed', ob)
+            snackbarContext.setSnackbarMessage(
+                { severity: 'error', message: `Target not found for submission.` })
+            return
+        }
+        try {
+            const resp = await submit_obs([ob])
+            if (resp.success === 'SUCCESS') {
+                context.setTotalHours(resp.total_hours)
+                context.setTotalObservations(resp.total_observations)
+                const submittedOB = resp.observing_blocks.at(0)
+                const newRow = submittedOB[componentName] 
+                processRowUpdate(newRow)
+                setEditRow(newRow)
+            }
+            else {
+                console.error('publish failed', resp)
+                snackbarContext.setSnackbarMessage(
+                    { severity: 'error', message: `OB not submitted. Details: ${resp.details}` })
+            }
+        }
+        catch (err) {
+            console.error('save_target error', err)
+        }
+        finally {
+            setIconSpin(false)
+        }
+    };
     const ActionsCell = (props: GridRowParams<ComponentRow>) => {
         const { id, row } = props
         const [editRow, setEditRow] = React.useState<ComponentRow>(row);
         validators[componentName](row)
         const [hasGaia, setHasGaia] = React.useState<boolean>(false)
+        const [iconSpin, setIconSpin] = React.useState<boolean>(false)
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validators[componentName].errors ?? []);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
@@ -455,7 +497,48 @@ export default function OBComponentTable(props: Props) {
             setCount((prev: number) => prev + 1)
         }, [editRow])
 
-        let cell = [<ValidationDialogButton errors={errors} json={editRow} />]
+        const refreshStyle = iconSpin ? {
+            animation: "spin 2s linear infinite",
+            "@keyframes spin": {
+                "0%": {
+                    transform: "rotate(-360deg)",
+                },
+                "100%": {
+                    transform: "rotate(0deg)",
+                }
+            }
+        } : {}
+
+        let publishText = errors.length > 0 ? 'validateCCTarget target before submitting' : 'Submit target for review'
+        const resubmit = needs_resubmit(row, errors.length)
+        if (resubmit) {
+            publishText = 'Resubmit edited target for review'
+        }
+        const valid = errors.length === 0
+
+        const firstButton = valid ?
+            <Tooltip
+                title={publishText}
+                placement="top"
+                arrow key="publish" >
+                <GridActionsCellItem
+                    disabled={!valid}
+                    icon={resubmit ?
+                        <RefreshIcon
+                            sx={refreshStyle}
+                            color='warning' /> :
+                        <PublishIcon
+                            sx={refreshStyle}
+                            color={row.state?.includes('TARGET_SUBMITTED') ? 'success' : 'inherit'}
+                        />
+                    }
+                    label="Publish"
+                    onClick={() => handlePublishClick(id, setIconSpin, setEditRow)}
+                    color="inherit"
+                /></Tooltip> :
+            < ValidationDialogButton errors={errors} json={editRow} />
+
+        let cell = [firstButton]
         if (componentName.includes('target')) {
             cell.push(<CatalogButton hasSimbad={hasGaia} target={editRow} setTarget={setEditRow} />)
         }

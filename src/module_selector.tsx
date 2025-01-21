@@ -103,6 +103,7 @@ export interface MetaData {
   progid?: string,
   state: string,
   submitter?: string,
+  submitted?: boolean,
   needs_resubmit?: boolean,
   status?: string,
   tags?: string[],
