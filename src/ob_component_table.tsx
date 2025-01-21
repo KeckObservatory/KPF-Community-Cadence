@@ -530,7 +530,7 @@ export default function OBComponentTable(props: Props) {
                             color='warning' /> :
                         <PublishIcon
                             sx={refreshStyle}
-                            color={row.state?.includes('TARGET_SUBMITTED') ? 'success' : 'inherit'}
+                            color={row.state?.includes('SUBMITTED') ? 'success' : 'inherit'}
                         />
                     }
                     label="Publish"
