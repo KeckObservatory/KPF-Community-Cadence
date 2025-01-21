@@ -518,7 +518,7 @@ export default function OBComponentTable(props: Props) {
         const valid = errors.length === 0
 
         const ob = context.obs.find((ob) => ob._id === id)
-        console.log('ob action metadata', ob.metadata)
+        console.log('ob action metadata', ob?.metadata)
 
         const firstButton = valid ?
             <Tooltip
