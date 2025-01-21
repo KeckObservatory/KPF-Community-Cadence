@@ -312,7 +312,6 @@ export default function OBComponentTable(props: Props) {
         return ob_to_component_row(ob, componentName)
     }) as ComponentRow[];
 
-    console.log('initRows', initRows)
     const [rows, setRows] = React.useState(initRows);
     const pinnedColumns = { left: ['actions', 'target_name', 'target_name_semid'], right: [] }
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
@@ -325,17 +324,8 @@ export default function OBComponentTable(props: Props) {
     React.useEffect(() => {
         setTimeout(() => {
             const newRows = context.obs.map((ob) => {
-                const _id = ob._id ?? Math.random().toString(36).substring(7)
-                const target_name = ob.target?.target_name ?? "TBD"
-                const target_name_semid = target_name + '_' + ob.metadata.semid
-                const cmp = ob[componentName] as Object
-                return {
-                    ...cmp,
-                    _id,
-                    target_name,
-                    target_name_semid,
-                    submitted: ob.metadata.submitted ?? false,
-                }
+                const cmp = ob_to_component_row(ob, componentName) 
+                return cmp 
             }) as ComponentRow[];
             setRows(newRows)
         }, 300)
@@ -460,7 +450,6 @@ export default function OBComponentTable(props: Props) {
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
-        console.log('row state', row.state)
         const [submitted, setSubmitted] = React.useState<boolean>(row.state?.includes('SUBMITTED') ?? false)
 
         const format_cell_value = (field: string, value: any, type: string | string[]) => {
