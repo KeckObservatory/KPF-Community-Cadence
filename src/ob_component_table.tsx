@@ -479,6 +479,7 @@ export default function OBComponentTable(props: Props) {
                     const type = (schema.properties as SchemaProps)[key as keyof PropertyProps]?.type
                     value = type ? format_cell_value(key, value, type) : value
                     changed = value !== params.row[key as keyof ComponentRow]
+                    if (!changed) console.log('haaaaaay', changed, key, value, params.row[key as keyof ComponentRow] ) 
                     sanitizedRow[key as keyof ComponentRow] = value
                 })
 
