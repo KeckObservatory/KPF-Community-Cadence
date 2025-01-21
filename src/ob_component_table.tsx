@@ -68,29 +68,29 @@ interface EditToolbarProps {
 
 const ob_feisible_chip = (params: GridRenderCellParams) => {
     let text = params.value == null ? 'Unknown'
-      : params.value ? 'Feasible'
-        : 'Infeasible'
+        : params.value ? 'Feasible'
+            : 'Infeasible'
     params.row.details && (text += ": " + params.row.details)
     return (
-      <Tooltip
-        placement='left'
-        title={text}>
-        <Chip
-          variant="outlined"
-          color={
-            params.value == null ? 'warning'
-              : params.value ? 'success'
-                : 'error'
-          }
-          icon={
-            params.value == null ? <SentimentNeutralIcon />
-              : params.value ? <InsertEmoticonIcon />
-                : <MoodBadIcon />
-          }
-        />
-      </Tooltip>
+        <Tooltip
+            placement='left'
+            title={text}>
+            <Chip
+                variant="outlined"
+                color={
+                    params.value == null ? 'warning'
+                        : params.value ? 'success'
+                            : 'error'
+                }
+                icon={
+                    params.value == null ? <SentimentNeutralIcon />
+                        : params.value ? <InsertEmoticonIcon />
+                            : <MoodBadIcon />
+                }
+            />
+        </Tooltip>
     )
-  }
+}
 
 function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
     const columns: GridColDef[] = []
@@ -130,12 +130,6 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
                 ...col,
                 type: 'singleSelect',
                 valueOptions: semids,
-            }
-        }
-        if (key === 'ob_feasible') {
-            col = {
-                ...col,
-                renderCell: ob_feisible_chip 
             }
         }
         columns.push(col)
@@ -442,8 +436,17 @@ export default function OBComponentTable(props: Props) {
         width: 200,
         editable: false,
     } as GridColDef
+    const ob_feasible_col = {
+        field: 'ob_feasible',
+        type: 'boolean',
+        resizable: true,
+        headerName: 'Feasible',
+        width: 100,
+        editable: false,
+        renderCell: ob_feisible_chip
+    } as GridColDef
 
-    columns = [...columns, target_name_col, target_name_semid_col]
+    columns = [...columns, target_name_col, target_name_semid_col, ob_feasible_col]
     const schema = ob_schemas[componentName]
 
     const needs_resubmit = (row: ComponentRow, nErrors: number) => {
