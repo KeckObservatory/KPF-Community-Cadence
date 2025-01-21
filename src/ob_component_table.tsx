@@ -289,6 +289,17 @@ const ob_to_component_row = (ob: OB, componentName: OBComponents): ComponentRow 
     }
 }
 
+const row_to_ob_component = (row: ComponentRow, componentName: OBComponents) => {
+    //removes row metadata.
+    let cmp: Partial<ComponentRow> = { ...row }
+    delete cmp._id
+    !componentName.includes('target') && delete cmp.target_name
+    delete cmp.target_name_semid
+    !componentName.includes('metadata') && delete cmp.state
+    !componentName.includes('metadata') && delete cmp.submitted
+    return cmp
+}
+
 
 
 export default function OBComponentTable(props: Props) {
@@ -328,9 +339,10 @@ export default function OBComponentTable(props: Props) {
 
     const edit_row = async (row: ComponentRow) => {
         const idx = context.obs.findIndex((ob) => ob._id === row._id)
+        const obComponent = row_to_ob_component(row, componentName)
         let newOB = context.obs.at(idx)
         if (!newOB) return
-        newOB = { ...newOB, [componentName]: row }
+        newOB = { ...newOB, [componentName]: obComponent}
         newOB = rowSetter(newOB, componentName)
         const resp = await save_obs([newOB])
         if (!resp.observing_blocks) {
