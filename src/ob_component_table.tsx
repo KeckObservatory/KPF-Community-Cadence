@@ -278,14 +278,14 @@ const ob_to_component_row = (ob: OB, componentName: OBComponents): ComponentRow 
     const target_name = ob.target?.target_name ?? "TBD"
     const target_name_semid = target_name + '_' + ob.metadata.semid
     const cmp = ob[componentName] as Object
-    const state = ob.metadata?.state ?? 'CREATED'
+    const state = ob.metadata?.state ?? 'CREATED' //overwrite state with metadata state
     return {
+        ...cmp,
         _id,
         target_name,
         target_name_semid,
         state,
         submitted: ob.metadata.submitted ?? false,
-        ...cmp,
     }
 }
 
