@@ -460,6 +460,7 @@ export default function OBComponentTable(props: Props) {
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
+        console.log('row state', row.state)
         const [submitted, setSubmitted] = React.useState<boolean>(row.state?.includes('SUBMITTED') ?? false)
 
         const format_cell_value = (field: string, value: any, type: string | string[]) => {
@@ -508,7 +509,6 @@ export default function OBComponentTable(props: Props) {
                 }
             }
         }
-        const publishColor = submitted ? 'success' : 'inherit'
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
             handleRowChange()
             validators[componentName](editRow)
@@ -535,6 +535,7 @@ export default function OBComponentTable(props: Props) {
             publishText = 'Resubmit edited target for review'
         }
         const valid = errors.length === 0
+        const publishColor = submitted ? 'success' : 'inherit'
 
 
         const firstButton = valid ?
