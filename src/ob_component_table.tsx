@@ -133,6 +133,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
                 valueOptions: semids,
             }
         }
+        columns.push(col)
     });
 
     return columns;
