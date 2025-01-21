@@ -663,9 +663,8 @@ export default function OBComponentTable(props: Props) {
         //disable editing of certain fields in observation auto_nd_filters is set
         if (componentName !== 'observation') return true
         const audoNdFilterSet = (params.row as Observation).auto_nd_filters ?? false
-        const excludeCals = ["cal_n_d_1", "cal_n_d_2"].includes(params.field)
-        console.log('params', params, 'observation', 'audoNdFilterSet', audoNdFilterSet, 'excludeCals', excludeCals)
-        return audoNdFilterSet && excludeCals 
+        const fieldIsCals = ["cal_n_d_1", "cal_n_d_2"].includes(params.field)
+        return !audoNdFilterSet || !fieldIsCals
     }
 
     return (
