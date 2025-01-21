@@ -70,6 +70,7 @@ const ob_feisible_chip = (params: GridRenderCellParams) => {
     let text = params.value == null ? 'Unknown'
         : params.value ? 'Feasible'
             : 'Infeasible'
+    console.log('params', params)
     params.row.details && (text += ": " + params.row.details)
     return (
         <Tooltip
