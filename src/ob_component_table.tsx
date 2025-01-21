@@ -118,12 +118,12 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
             valueParser: valueParser,
             valueSetter: valueSetter,
             disableExport: valueProps.not_editable_by_user,
-            type: valueProps.type,
             resizable: true,
             headerName: valueProps.short_description ?? valueProps.description,
             width: 100,
             editable: valueProps.not_editable_by_user ? false : true,
             visible: valueProps.hide_column ? true : false,
+            type: valueProps.enum ? 'singleSelect' : valueProps.type,
             valueOptions: valueProps.enum ?? undefined,
         } as GridColDef
         if (key === 'semids') {
