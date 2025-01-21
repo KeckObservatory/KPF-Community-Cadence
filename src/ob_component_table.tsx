@@ -662,6 +662,7 @@ export default function OBComponentTable(props: Props) {
     const isCellEditable = (params: GridCellParams<ComponentRow>) => {
         //disable editing of certain fields in observation auto_nd_filters is set
         if (componentName !== 'observation') return true
+        console.log('params', params, 'observation')
         const audoNdFilterSet = (params.row as Observation).auto_nd_filters ?? false
         const excludeIfAudoNd = ["cal_n_d_1", "cal_n_d_2"]
         return audoNdFilterSet && excludeIfAudoNd.includes(params.field)
