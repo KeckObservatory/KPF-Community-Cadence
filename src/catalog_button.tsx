@@ -121,13 +121,14 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
 export const get_simbad_and_gaia_target_info = async (targetName: string, gaia_id?: string): Promise<SimbadTargetData & GaiaParams> => {
     const simbadData = await get_simbad_data(targetName)
     let gaiaParams: GaiaParams = {}
-    gaia_id = gaia_id ?? simbadData.gaia_id
+    const simbadGaia = simbadData.gaia_id
+    gaia_id = gaia_id ?? simbadGaia 
     if (gaia_id) {
         const gaiaNumber = String(gaia_id).replace(/DR\d_/, "")
         const gaiaResp = await get_gaia(gaiaNumber)
         gaiaParams = gaiaResp.gaia_params ?? {}
     }
-    return { ...simbadData, ...gaiaParams } //gaia_id the last since it is set as a string.
+    return { ...simbadData, ...gaiaParams, gaia_id: simbadGaia } //simbad gaia includes version.
 }
 
 
