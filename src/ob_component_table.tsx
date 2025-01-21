@@ -427,6 +427,7 @@ export default function OBComponentTable(props: Props) {
             setIconSpin(false)
         }
     };
+
     const ActionsCell = (props: GridRowParams<ComponentRow>) => {
         const { id, row } = props
         const [editRow, setEditRow] = React.useState<ComponentRow>(row);
