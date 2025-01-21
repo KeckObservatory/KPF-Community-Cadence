@@ -75,8 +75,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
         }
 
         const valueSetter: GridValueSetter<ComponentRow> = (value: any, cmp: ComponentRow) => {
-            //cmp = { ...cmp, [key]: value, "state": 'ROW_EDITED' }
-            cmp = { ...cmp, [key]: value }
+            cmp = { ...cmp, [key]: value, "state": 'ROW_EDITED' }
             //TODO: add any custom logic here
             return cmp
         }
@@ -171,14 +170,7 @@ function EditComponentToolbar(props: EditToolbarProps) {
         console.log('setting new Obs and rows', newOB, context.obs)
         context.setOBs([newOB, ...context.obs])
         processRowUpdate(newOB[componentName])
-
-        const newRow = {
-            ...newOB[componentName],
-            _id: newOB['_id'],
-            isNew: true,
-            state: newOB.metadata?.status && 'CREATED',
-            submitted: false,
-        } as ComponentRow
+        const newRow = ob_to_component_row(newOB, componentName)
         setRows((oldRows) => {
             return [newRow, ...oldRows]
         });
@@ -281,22 +273,29 @@ interface Props {
     componentName: OBComponents,
 }
 
+const ob_to_component_row = (ob: OB, componentName: OBComponents): ComponentRow => {
+    const _id = ob._id ?? Math.random().toString(36).substring(7)
+    const target_name = ob.target?.target_name ?? "TBD"
+    const target_name_semid = target_name + '_' + ob.metadata.semid
+    const cmp = ob[componentName] as Object
+    const state = ob.metadata?.status ?? 'CREATED'
+    return {
+        _id,
+        target_name,
+        target_name_semid,
+        state,
+        submitted: ob.metadata.submitted ?? false,
+        ...cmp,
+    }
+}
+
 
 
 export default function OBComponentTable(props: Props) {
     const { componentName } = props
     const context = useCommCadContext()
     const initRows = context.obs.map((ob) => {
-        const _id = ob._id ?? Math.random().toString(36).substring(7)
-        const target_name = ob.target?.target_name ?? "TBD"
-        const target_name_semid = target_name + '_' + ob.metadata.semid
-        const cmp = ob[componentName] as Object
-        return {
-            _id,
-            target_name,
-            target_name_semid,
-            ...cmp,
-        }
+        return ob_to_component_row(ob, componentName)
     }) as ComponentRow[];
 
     const [rows, setRows] = React.useState(initRows);
@@ -411,9 +410,12 @@ export default function OBComponentTable(props: Props) {
                 context.setTotalHours(resp.total_hours)
                 context.setTotalObservations(resp.total_observations)
                 const submittedOB = resp.observing_blocks.at(0)
-                const newRow = submittedOB[componentName] 
+                const newRow = ob_to_component_row(submittedOB, componentName)
+                console.log('setting submitted row', newRow)
                 processRowUpdate(newRow)
                 setEditRow(newRow)
+                snackbarContext.setSnackbarMessage(
+                    { severity: 'success', message: `Target submitted.` })
             }
             else {
                 console.error('publish failed', resp)
