@@ -127,7 +127,7 @@ export const get_simbad_and_gaia_target_info = async (targetName: string, gaia_i
         const gaiaResp = await get_gaia(gaiaNumber)
         gaiaParams = gaiaResp.gaia_params ?? {}
     }
-    return { ...simbadData, ...gaiaParams, gaia_id } //gaia_id the last since it is set as a string.
+    return { ...simbadData, ...gaiaParams } //gaia_id the last since it is set as a string.
 }
 
 
