@@ -278,7 +278,7 @@ const ob_to_component_row = (ob: OB, componentName: OBComponents): ComponentRow 
     const target_name = ob.target?.target_name ?? "TBD"
     const target_name_semid = target_name + '_' + ob.metadata.semid
     const cmp = ob[componentName] as Object
-    const state = ob.metadata?.status ?? 'CREATED'
+    const state = ob.metadata?.state ?? 'CREATED'
     return {
         _id,
         target_name,
@@ -411,7 +411,7 @@ export default function OBComponentTable(props: Props) {
                 context.setTotalObservations(resp.total_observations)
                 const submittedOB = resp.observing_blocks.at(0)
                 const newRow = ob_to_component_row(submittedOB, componentName)
-                console.log('setting submitted row', newRow)
+                console.log('setting submitted row', newRow, submittedOB)
                 processRowUpdate(newRow)
                 setEditRow(newRow)
                 snackbarContext.setSnackbarMessage(
