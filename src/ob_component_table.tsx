@@ -407,7 +407,10 @@ export default function OBComponentTable(props: Props) {
         return nErrors > 0 && row.state?.includes('SUBMITTED') && !row.submitted
     }
 
-    const handlePublishClick = async (_id: GridRowId, setIconSpin: Function, setEditRow: Function) => {
+    const handlePublishClick = async (
+        _id: GridRowId, 
+        setIconSpin: Function,
+        setEditRow: Function) => {
         setIconSpin(true)
         const ob = context.obs.find((ob) => ob._id === _id)
         if (!ob) {
@@ -453,6 +456,7 @@ export default function OBComponentTable(props: Props) {
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
+        const [submitted, setSubmitted] = React.useState<boolean>(row.state?.includes('SUBMITTED') ?? false)
 
         const format_cell_value = (field: string, value: any, type: string | string[]) => {
             const isNumber = type.includes('number') || type.includes('integer')
@@ -505,11 +509,12 @@ export default function OBComponentTable(props: Props) {
                 }
             }
         }
-
+        const publishColor = submitted ? 'success' : 'inherit'
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
             handleRowChange()
             validators[componentName](editRow)
             setErrors(validators[componentName].errors ?? [])
+            setSubmitted(editRow.state?.includes('SUBMITTED'))
             setCount((prev: number) => prev + 1)
         }, [editRow])
 
@@ -532,8 +537,6 @@ export default function OBComponentTable(props: Props) {
         }
         const valid = errors.length === 0
 
-        const ob = context.obs.find((ob) => ob._id === id)
-        const publishColor = ob?.metadata.state?.includes('SUBMITTED') ? 'success' : 'inherit'
 
         const firstButton = valid ?
             <Tooltip
