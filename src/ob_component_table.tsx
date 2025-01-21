@@ -212,7 +212,6 @@ const exportBlob = (blob: Blob, filename: string) => {
 };
 
 const getJson = (obs: OB[]) => {
-    console.log('obs', obs)
     const json = obs.map((ob) => {
         const keyValueArray = Object.keys(ob_schemas).map((ckey) => {
             let translatedComponent: { [key: string]: unknown } = {}
@@ -271,6 +270,10 @@ function CustomExportButton(props: ExportButtonProps) {
 
 interface Props {
     componentName: OBComponents,
+}
+
+const check_if_catalog = (row: ComponentRow) => {
+    return (row as OBTarget).gaia_id || (row as OBTarget).tic_id ? true : false
 }
 
 const ob_to_component_row = (ob: OB, componentName: OBComponents): ComponentRow => {
@@ -451,13 +454,12 @@ export default function OBComponentTable(props: Props) {
         const { id, row } = props
         const [editRow, setEditRow] = React.useState<ComponentRow>(row);
         validators[componentName](row)
-        const [hasGaia, setHasGaia] = React.useState<boolean>(false)
+        const [hasCatalog, setHasCatalog] = React.useState<boolean>(check_if_catalog(row))
         const [iconSpin, setIconSpin] = React.useState<boolean>(false)
         const [errors, setErrors] = React.useState<ErrorObject<string, Record<string, any>, unknown>[]>(validators[componentName].errors ?? []);
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
-        console.log('row', row)
         const [submitted, setSubmitted] = React.useState<boolean>(row.state?.includes('SUBMITTED') ?? false)
 
         const format_cell_value = (field: string, value: any, type: string | string[]) => {
@@ -479,7 +481,6 @@ export default function OBComponentTable(props: Props) {
                 //params row is stale, get updated values from apiRef
                 const currRow = apiRef.current.getRow(id)
                 if (currRow._id !== params.row._id) return //id mismatch
-                console.log('currRow', currRow, id)
                 let changed = false
                 Object.keys(currRow).forEach((key) => {
                     let value = currRow[key as keyof ComponentRow];
@@ -490,8 +491,6 @@ export default function OBComponentTable(props: Props) {
                     sanitizedRow[key as keyof ComponentRow] = value
                 })
 
-                //check if changed
-                console.log('has anything changed?', changed, params.row, sanitizedRow)
                 if (!changed) return
                 setEditRow({ ...sanitizedRow, 'state': 'ROW_EDITED' } as ComponentRow)
             }, 300)
@@ -505,9 +504,7 @@ export default function OBComponentTable(props: Props) {
                 editRow.state?.includes('ROW_EDITED') && debounced_save(editRow)
                 debounced_edit_click(id)
                 if (componentName.includes('target')) {
-                    const tgt = editRow as OBTarget
-                    const hasGaia = tgt.gaia_id || tgt.tic_id ? true : false
-                    setHasGaia(hasGaia)
+                    setHasCatalog(check_if_catalog(editRow))
                 }
             }
         }
@@ -564,7 +561,7 @@ export default function OBComponentTable(props: Props) {
 
         let cell = [firstButton]
         if (componentName.includes('target')) {
-            cell.push(<CatalogButton hasSimbad={hasGaia} target={editRow} setTarget={setEditRow} />)
+            cell.push(<CatalogButton hasCatalog={hasCatalog} target={editRow} setTarget={setEditRow} />)
         }
         cell.push(
             <Tooltip

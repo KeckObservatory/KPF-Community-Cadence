@@ -9,7 +9,7 @@ import { OBTarget } from './module_selector';
 export interface Props {
     target: OBTarget 
     setTarget: Function
-    hasSimbad: boolean
+    hasCatalog: boolean
 }
 
 export const ra_dec_to_deg = (time: string | number, dec = false): number => {
@@ -152,7 +152,7 @@ export default function CatalogButton(props: Props) {
     return (
         <Tooltip title={`Click to add Simbad and Gaia info to target ${targetName}`}>
             <IconButton onClick={handleClick}>
-                <ModeStandbyIcon color={props.hasSimbad ? 'success' : 'inherit'} />
+                <ModeStandbyIcon color={props.hasCatalog ? 'success' : 'inherit'} />
             </IconButton>
         </Tooltip>
     );
