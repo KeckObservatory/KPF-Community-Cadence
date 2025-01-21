@@ -45,6 +45,11 @@
             },
             "translator_mapping": "Tags"
         },
+        "ob_feasible": {
+            "type": ["boolean", "null"],
+            "description": "Request Feasibility",
+            "not_editable_by_user": true
+        },
         "submitter": {
             "type": "string",
             "description": "Submitter",
