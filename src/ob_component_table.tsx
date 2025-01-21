@@ -517,6 +517,8 @@ export default function OBComponentTable(props: Props) {
         }
         const valid = errors.length === 0
 
+        const ob = context.obs.find((ob) => ob._id === id)
+
         const firstButton = valid ?
             <Tooltip
                 title={publishText}
@@ -530,7 +532,7 @@ export default function OBComponentTable(props: Props) {
                             color='warning' /> :
                         <PublishIcon
                             sx={refreshStyle}
-                            color={row.state?.includes('SUBMITTED') ? 'success' : 'inherit'}
+                            color={ob?.metadata.state?.includes('SUBMITTED') ? 'success' : 'inherit'}
                         />
                     }
                     label="Publish"
