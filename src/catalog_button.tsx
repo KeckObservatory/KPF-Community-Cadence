@@ -123,10 +123,15 @@ export const get_simbad_and_gaia_target_info = async (targetName: string, gaia_i
     let gaiaParams: GaiaParams = {}
     const simbadGaia = simbadData.gaia_id
     gaia_id = gaia_id ?? simbadGaia 
+    let catTarget = {...simbadData}
     if (gaia_id) {
         const gaiaNumber = String(gaia_id).replace(/DR\d_/, "")
         const gaiaResp = await get_gaia(gaiaNumber)
         gaiaParams = gaiaResp.gaia_params ?? {}
+        if( Object.keys(gaiaParams).length === 0 ) {
+            let comment = catTarget.comment + 'GAIA RESP: ' + gaiaResp.message
+            catTarget['comment'] = comment 
+        }
     }
     return { ...simbadData, ...gaiaParams, gaia_id: simbadGaia } //simbad gaia includes version.
 }

@@ -125,9 +125,11 @@
             "description": "Set Day of Semester",
             "not_editable_by_user": true
         },
-        "comment": {
+        "catalog_comment": {
             "type": "string",
-            "description": "Comment on target. May contain information from SIMBAD or other sources."
+            "description": "Contain information from GAIA/SIMBAD or other sources.",
+            "short_description": "Cat. Comment",
+            "not_editable_by_user": true
         }
     },
     "required": [ ],

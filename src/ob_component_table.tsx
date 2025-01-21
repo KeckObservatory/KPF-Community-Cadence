@@ -293,8 +293,8 @@ const row_to_ob_component = (row: ComponentRow, componentName: OBComponents) => 
     //removes row metadata.
     let cmp: Partial<ComponentRow> = { ...row }
     delete cmp._id
-    !componentName.includes('target') && delete cmp.target_name
     delete cmp.target_name_semid
+    !componentName.includes('target') && delete cmp.target_name
     !componentName.includes('metadata') && delete cmp.state
     !componentName.includes('metadata') && delete cmp.submitted
     return cmp
