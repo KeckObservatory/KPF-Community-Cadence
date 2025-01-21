@@ -3,6 +3,9 @@ import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add';
 import PublishIcon from '@mui/icons-material/Publish';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import MoodBadIcon from '@mui/icons-material/MoodBad';
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 import {
     GridRowsProp,
     GridRowModesModel,
@@ -22,6 +25,7 @@ import {
     GridEventListener,
     useGridApiEventHandler,
     GridRowParams,
+    GridRenderCellParams,
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
@@ -38,6 +42,7 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import CatalogButton from './catalog_button';
+import Chip from '@mui/material/Chip';
 
 export type NewOB = Partial<OB> & {
     _id?: string
@@ -51,6 +56,8 @@ interface ComponentRow extends Object {
     target_name?: string,
     state: string;
     submitted: boolean;
+    ob_feasible: boolean;
+    details: string;
 }
 
 interface EditToolbarProps {
@@ -58,6 +65,32 @@ interface EditToolbarProps {
     processRowUpdate: (newRow: GridRowModel, originalRow?: GridRowModel) => ComponentRow;
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
 }
+
+const ob_feisible_chip = (params: GridRenderCellParams) => {
+    let text = params.value == null ? 'Unknown'
+      : params.value ? 'Feasible'
+        : 'Infeasible'
+    params.row.details && (text += ": " + params.row.details)
+    return (
+      <Tooltip
+        placement='left'
+        title={text}>
+        <Chip
+          variant="outlined"
+          color={
+            params.value == null ? 'warning'
+              : params.value ? 'success'
+                : 'error'
+          }
+          icon={
+            params.value == null ? <SentimentNeutralIcon />
+              : params.value ? <InsertEmoticonIcon />
+                : <MoodBadIcon />
+          }
+        />
+      </Tooltip>
+    )
+  }
 
 function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
     const columns: GridColDef[] = []
@@ -97,6 +130,12 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
                 ...col,
                 type: 'singleSelect',
                 valueOptions: semids,
+            }
+        }
+        if (key === 'ob_feasible') {
+            col = {
+                ...col,
+                renderCell: ob_feisible_chip 
             }
         }
         columns.push(col)
@@ -282,12 +321,16 @@ const ob_to_component_row = (ob: OB, componentName: OBComponents): ComponentRow 
     const target_name_semid = target_name + '_' + ob.metadata.semid
     const cmp = ob[componentName] as Object
     const state = ob.metadata?.state ?? 'CREATED' //overwrite state with metadata state
+    const ob_feasible = ob.metadata.ob_feasible ?? false
+    const details = ob.metadata.details ?? ''
     return {
         ...cmp,
         _id,
         target_name,
         target_name_semid,
         state,
+        ob_feasible,
+        details,
         submitted: ob.metadata.submitted ?? false,
     }
 }
@@ -297,9 +340,15 @@ const row_to_ob_component = (row: ComponentRow, componentName: OBComponents) => 
     let cmp: Partial<ComponentRow> = { ...row }
     delete cmp._id
     delete cmp.target_name_semid
-    !componentName.includes('target') && delete cmp.target_name
-    !componentName.includes('metadata') && delete cmp.state
-    !componentName.includes('metadata') && delete cmp.submitted
+    if (!componentName.includes('target')) {
+        delete cmp.target_name
+    }
+    if (!componentName.includes('metadata')) {
+        delete cmp.state
+        delete cmp.submitted
+        delete cmp.ob_feasible
+        delete cmp.details
+    }
     return cmp
 }
 
@@ -313,7 +362,7 @@ export default function OBComponentTable(props: Props) {
     }) as ComponentRow[];
 
     const [rows, setRows] = React.useState(initRows);
-    const pinnedColumns = { left: ['actions', 'target_name', 'target_name_semid'], right: [] }
+    const pinnedColumns = { left: ['actions', 'target_name', 'target_name_semid'], right: ['ob_feasible'] }
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
     const snackbarContext = useSnackbarContext()
     const refreshContext = useRefreshTableContext()
@@ -324,8 +373,8 @@ export default function OBComponentTable(props: Props) {
     React.useEffect(() => {
         setTimeout(() => {
             const newRows = context.obs.map((ob) => {
-                const cmp = ob_to_component_row(ob, componentName) 
-                return cmp 
+                const cmp = ob_to_component_row(ob, componentName)
+                return cmp
             }) as ComponentRow[];
             setRows(newRows)
         }, 300)
@@ -336,7 +385,7 @@ export default function OBComponentTable(props: Props) {
         const obComponent = row_to_ob_component(row, componentName)
         let newOB = context.obs.at(idx)
         if (!newOB) return
-        newOB = { ...newOB, [componentName]: obComponent}
+        newOB = { ...newOB, [componentName]: obComponent }
         newOB = rowSetter(newOB, componentName)
         const resp = await save_obs([newOB])
         if (!resp.observing_blocks) {
@@ -389,7 +438,7 @@ export default function OBComponentTable(props: Props) {
         field: 'target_name_semid',
         type: 'string',
         resizable: true,
-        headerName: 'Target-Semid',
+        headerName: 'Target_Semid',
         width: 200,
         editable: false,
     } as GridColDef
@@ -402,7 +451,7 @@ export default function OBComponentTable(props: Props) {
     }
 
     const handlePublishClick = async (
-        _id: GridRowId, 
+        _id: GridRowId,
         setIconSpin: Function,
         setEditRow: Function) => {
         setIconSpin(true)

@@ -107,6 +107,8 @@ export interface MetaData {
   submitter?: string,
   submitted?: boolean,
   needs_resubmit?: boolean,
+  ob_feasible?: boolean,
+  details?: string,
   status?: string,
   tags?: string[],
   history?: History[]
