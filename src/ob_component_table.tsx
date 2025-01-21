@@ -470,7 +470,6 @@ export default function OBComponentTable(props: Props) {
                 let sanitizedRow = {} as Partial<ComponentRow>
                 //params row is stale, get updated values from apiRef
                 const currRow = apiRef.current.getRow(id)
-                console.log('rowEditStop', currRow, params)
                 if (currRow._id !== params.row._id) return //id mismatch
                 let changed = false
                 Object.keys(currRow).forEach((key) => {
@@ -478,8 +477,7 @@ export default function OBComponentTable(props: Props) {
                     if (value === undefined) return //skip undefined values
                     const type = (schema.properties as SchemaProps)[key as keyof PropertyProps]?.type
                     value = type ? format_cell_value(key, value, type) : value
-                    changed = value !== params.row[key as keyof ComponentRow]
-                    if (!changed) console.log('haaaaaay', changed, key, value, params.row[key as keyof ComponentRow] ) 
+                    value !== params.row[key as keyof ComponentRow] && (changed = true)
                     sanitizedRow[key as keyof ComponentRow] = value
                 })
 
