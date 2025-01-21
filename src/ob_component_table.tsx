@@ -56,7 +56,7 @@ interface ComponentRow extends Object {
     target_name?: string,
     state: string;
     submitted: boolean;
-    ob_feasible: boolean;
+    ob_feasible?: boolean;
     details: string;
 }
 
@@ -67,7 +67,7 @@ interface EditToolbarProps {
 }
 
 const ob_feisible_chip = (params: GridRenderCellParams) => {
-    let text = params.value == null ? 'Unknown'
+    let text = params.value == undefined ? 'Unknown'
         : params.value ? 'Feasible'
             : 'Infeasible'
     console.log('params', params)
@@ -316,7 +316,7 @@ const ob_to_component_row = (ob: OB, componentName: OBComponents): ComponentRow 
     const target_name_semid = target_name + '_' + ob.metadata.semid
     const cmp = ob[componentName] as Object
     const state = ob.metadata?.state ?? 'CREATED' //overwrite state with metadata state
-    const ob_feasible = ob.metadata.ob_feasible ?? false
+    const ob_feasible = ob.metadata.ob_feasible
     const details = ob.metadata.details ?? ''
     return {
         ...cmp,
