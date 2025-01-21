@@ -124,7 +124,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
             width: 100,
             editable: valueProps.not_editable_by_user ? false : true,
             visible: valueProps.hide_column ? true : false,
-            tooltip: valueProps.description,
+            description: valueProps.description,
             type: valueProps.enum ? 'singleSelect' : valueProps.type,
             valueOptions: valueProps.enum ?? undefined,
         } as GridColDef
