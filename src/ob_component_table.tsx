@@ -470,6 +470,7 @@ export default function OBComponentTable(props: Props) {
                 let sanitizedRow = {} as Partial<ComponentRow>
                 //params row is stale, get updated values from apiRef
                 const currRow = apiRef.current.getRow(id)
+                console.log('rowEditStop', currRow, params)
                 if (currRow._id !== params.row._id) return //id mismatch
                 let changed = false
                 Object.keys(currRow).forEach((key) => {
