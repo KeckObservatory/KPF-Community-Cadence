@@ -55,7 +55,6 @@ export const format_edit_entry = (key: string, value?: string | number, isNumber
     //add trailing zero if string ends in a decimal 
     if (isNumber) {
         value = sanitize_number(String(value))
-        console.log('value', value)
     }
     if (value && (key === 'ra' || key === 'dec')) {
         key === 'ra' && String(value).replace(/[^+-]/, "")

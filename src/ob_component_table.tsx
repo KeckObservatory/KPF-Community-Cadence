@@ -500,6 +500,7 @@ export default function OBComponentTable(props: Props) {
         }
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
             handleRowChange()
+            console.log('editRow changed', editRow)
             validators[componentName](editRow)
             setErrors(validators[componentName].errors ?? [])
             setSubmitted(editRow.state?.includes('SUBMITTED'))
