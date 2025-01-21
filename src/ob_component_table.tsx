@@ -124,6 +124,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
             width: 100,
             editable: valueProps.not_editable_by_user ? false : true,
             visible: valueProps.hide_column ? true : false,
+            valueOptions: valueProps.enum ?? undefined,
         } as GridColDef
         if (key === 'semids') {
             col = {
@@ -132,7 +133,6 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
                 valueOptions: semids,
             }
         }
-        columns.push(col)
     });
 
     return columns;
