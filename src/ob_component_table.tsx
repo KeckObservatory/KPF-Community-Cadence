@@ -75,7 +75,8 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
         }
 
         const valueSetter: GridValueSetter<ComponentRow> = (value: any, cmp: ComponentRow) => {
-            cmp = { ...cmp, [key]: value, "state": 'ROW_EDITED' }
+            //cmp = { ...cmp, [key]: value, "state": 'ROW_EDITED' }
+            cmp = { ...cmp, [key]: value }
             //TODO: add any custom logic here
             return cmp
         }
@@ -518,7 +519,7 @@ export default function OBComponentTable(props: Props) {
         const valid = errors.length === 0
 
         const ob = context.obs.find((ob) => ob._id === id)
-        console.log('ob action metadata', ob?.metadata)
+        const publishColor = ob?.metadata.state?.includes('SUBMITTED') ? 'success' : 'inherit'
 
         const firstButton = valid ?
             <Tooltip
@@ -533,7 +534,7 @@ export default function OBComponentTable(props: Props) {
                             color='warning' /> :
                         <PublishIcon
                             sx={refreshStyle}
-                            color={ob?.metadata.state?.includes('SUBMITTED') ? 'success' : 'inherit'}
+                            color={publishColor}
                         />
                     }
                     label="Publish"

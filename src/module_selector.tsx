@@ -33,6 +33,8 @@ export interface ScheduleData {
   num_nights_per_semester?: Integer,
   num_internight_cadence?: Integer,
   num_intranight_cadence?: Integer,
+  total_observations_requested?: Integer,
+  total_time_for_target?: Integer,
   fast_read_mode_requested?: boolean,
   fixed_time_start?: string,
   fixed_time_end?: string,

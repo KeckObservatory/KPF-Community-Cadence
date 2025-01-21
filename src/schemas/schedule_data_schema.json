@@ -94,6 +94,19 @@
             "default": 30,
             "multipleOf": 0.1
         },
+        "total_observations_requested": {
+            "type": "integer",
+            "description": "Total Observations Requested",
+            "not_editable_by_user": true
+        },
+        "total_time_for_target": {
+            "type": "number",
+            "description": "Total Time for Target [seconds]"
+        },
+        "total_time_for_target_hours": {
+            "type": "number",
+            "description": "Total Time for Target [hours]"
+        },
         "minimum_moon_separation": {
             "type": "number",
             "translator_mapping": "MinimumMoonSeparation",
