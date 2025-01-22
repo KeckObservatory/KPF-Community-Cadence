@@ -32,7 +32,7 @@ export interface Props {
 }
 
 const create_validator = (schema: any) => {
-  const ajv = new AJV2019({ allErrors: true, useDefaults: true })
+  const ajv = new AJV2019({ strict: false, allErrors: true, useDefaults: true })
   let ts = schema as any
   delete ts["$schema"]
   ajv.addKeyword("short_description")
@@ -43,8 +43,6 @@ const create_validator = (schema: any) => {
 }
 
 export type Validators = OBComponents
-
-export const validateCCTarget = create_validator(target_schema)
 
 export const ob_schemas = {
   "calibration": calibration_schema,

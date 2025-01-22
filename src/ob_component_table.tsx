@@ -570,7 +570,8 @@ export default function OBComponentTable(props: Props) {
             }
         } : {}
 
-        let publishText = errors.length > 0 ? 'validateCCTarget target before submitting' : 'Submit target for review'
+        let publishText = errors.length > 0 ? `validate ${componentName} before submitting` : 'Submit OB for review'
+        
         const resubmit = needs_resubmit(row, errors.length)
         if (resubmit) {
             publishText = 'Resubmit edited target for review'
