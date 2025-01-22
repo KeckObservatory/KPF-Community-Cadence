@@ -7,7 +7,7 @@ import { OBTarget } from './module_selector';
 
 
 export interface Props {
-    target: OBTarget 
+    target: OBTarget
     setTarget: Function
     hasCatalog: boolean
 }
@@ -67,9 +67,10 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
     const simbadData: SimbadTargetData = {}
 
     const simbadLines = simbad_output.split('\n')
-    let currDr = 0 
+    let currDr = 0
     let identifiersSection = false
     for (let line of simbadLines) {
+        if (!line) continue
         if (!identifiersSection && line.startsWith('Identifiers')) {
             identifiersSection = true
             continue
@@ -105,38 +106,36 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             Number(pmRa) && (simbadData['pm_ra'] = Number(pmRa))
             Number(pmDec) && (simbadData['pm_dec'] = Number(pmDec))
         }
-        else if(identifiersSection) //only check if in identifiers section
+        else if (identifiersSection) //only check if in identifiers section
         {
             console.log('line', line, simbadData)
-            if (simbadData.tic_id)  simbadData['tic_id'] = line.match(new RegExp('TIC\\s(\\w+)'))?.at(1)
-            if (simbadData.two_mass_id)  simbadData['two_mass_id'] = line.match(new RegExp('2MASS\\s(\\w+)'))?.at(1)
-            if (simbadData.gaia_id) {
-                const [match, dr, gaia_id ]= line.match(new RegExp('Gaia\\s(\\w+)\\s(\\w+)')) ?? []
-                if (match) { //replace if gaia version is higher
-                    Number(dr[2]) > currDr && (
-                        simbadData['gaia_id'] = `${dr}_${gaia_id}`)
-                    currDr = Number(dr[2])
-                }
-            }
+            if (!simbadData.tic_id) simbadData['tic_id'] = line.match(new RegExp('TIC\\s(\\w+)'))?.at(1)
+            if (!simbadData.two_mass_id) simbadData['two_mass_id'] = line.match(new RegExp('2MASS\\s(\\w+)'))?.at(1)
+            const [match, dr, gaia_id] = line.match(new RegExp('Gaia\\s(\\w+)\\s(\\w+)')) ?? []
+            if (match) { //replace if gaia version is higher
+                Number(dr[2]) > currDr && (
+                    simbadData['gaia_id'] = `${dr}_${gaia_id}`)
+                currDr = Number(dr[2])
         }
-        ;
     }
-    return simbadData
+    ;
+}
+return simbadData
 }
 
 export const get_simbad_and_gaia_target_info = async (targetName: string, gaia_id?: string): Promise<SimbadTargetData & GaiaParams> => {
     const simbadData = await get_simbad_data(targetName)
     let gaiaParams: GaiaParams = {}
     const simbadGaia = simbadData.gaia_id
-    gaia_id = gaia_id ?? simbadGaia 
-    let catTarget = {...simbadData}
+    gaia_id = gaia_id ?? simbadGaia
+    let catTarget = { ...simbadData }
     if (gaia_id) {
         const gaiaNumber = String(gaia_id).replace(/DR\d_/, "")
         const gaiaResp = await get_gaia(gaiaNumber)
         gaiaParams = gaiaResp.gaia_params ?? {}
-        if( Object.keys(gaiaParams).length === 0 ) {
+        if (Object.keys(gaiaParams).length === 0) {
             let comment = catTarget.comment + 'GAIA RESP: ' + gaiaResp.message
-            catTarget['comment'] = comment 
+            catTarget['comment'] = comment
         }
     }
     return { ...simbadData, ...gaiaParams, gaia_id: simbadGaia } //simbad gaia includes version.
@@ -151,7 +150,7 @@ export default function CatalogButton(props: Props) {
     const handleClick = async () => {
         if (targetName) {
             const catalogTargetInfo = await get_simbad_and_gaia_target_info(targetName, gaia_id)
-            setTarget({ ...target, ...catalogTargetInfo, "state": 'ROW_EDITED'})
+            setTarget({ ...target, ...catalogTargetInfo, "state": 'ROW_EDITED' })
         }
     }
 
