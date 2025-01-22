@@ -78,7 +78,7 @@
             "description": "Declination [degrees]"
         },
         "equinox": {
-            "type": "string",
+            "type": ["number", "string"],
             "description": "Equinox of the coordinate system (typically 2000)",
             "short_description": "Equinox",
             "translator_mapping": "Equinox"
