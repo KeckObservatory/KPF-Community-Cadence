@@ -51,6 +51,7 @@ export interface SimbadTargetData {
     pm_ra?: number,
     pm_dec?: number,
     epoch?: string,
+    parallax?: number,
     tic?: string,
     j_mag?: number,
     g_mag?: number,
@@ -63,16 +64,19 @@ export interface SimbadTargetData {
 
 export const get_simbad_data = async (targetName: string): Promise<SimbadTargetData> => {
     const simbad_output = await get_simbad(targetName)
-    let identifiersSection = false
     const simbadData: SimbadTargetData = {}
 
     const simbadLines = simbad_output.split('\n')
     let currDr = 0 
+    let identifiersSection = false
     for (let line of simbadLines) {
+        if (line.startsWith('Identifiers')) {
+            identifiersSection = true
+            continue
+        }
         if (line.startsWith('!!')) {
             simbadData['comment'] = line.split('!! ')[1]
         }
-        line.startsWith('Identifiers (') && (identifiersSection = true)
         if (line.startsWith('Coordinates(ICRS')) {
             simbadData['ra'] = line.split(': ')[1].split(' ').slice(0, 3).join(':')
             simbadData['dec'] = line.split(': ')[1].split(' ').slice(4, 7).join(':')
@@ -92,12 +96,16 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             const fluxG = Number(line.split(': ')[1].split(' ')[0])
             fluxG && (simbadData['g_mag'] = fluxG)
         }
+        else if (line.startsWith('Parallax')) {
+            const parallax = Number(line.split(': ')[1].split(' ')[0])
+            parallax && (simbadData['parallax'] = parallax)
+        }
         else if (line.startsWith('Proper motions')) {
             const [pmRa, pmDec] = line.split(' ').slice(2, 4);
             Number(pmRa) && (simbadData['pm_ra'] = Number(pmRa))
             Number(pmDec) && (simbadData['pm_dec'] = Number(pmDec))
         }
-        else if (identifiersSection)
+        else if(identifiersSection) //only check if in identifiers section
         {
             if (simbadData.tic_id)  simbadData['tic_id'] = line.match(new RegExp('TIC\\s(\\w+)'))?.at(1)
             if (simbadData.two_mass_id)  simbadData['two_mass_id'] = line.match(new RegExp('2MASS\\s(\\w+)'))?.at(1)
