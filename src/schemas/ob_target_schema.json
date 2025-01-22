@@ -118,12 +118,14 @@
         "rise_semester_day": {
             "type": "integer",
             "description": "Rise Day of Semester",
-            "not_editable_by_user": true
+            "not_editable_by_user": true,
+            "hide_column": true
         },
         "sets_semester_day": {
             "type": "integer",
             "description": "Set Day of Semester",
-            "not_editable_by_user": true
+            "not_editable_by_user": true,
+            "hide_column": true
         },
         "catalog_comment": {
             "type": "string",

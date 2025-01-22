@@ -53,7 +53,7 @@ export const Control = (props: Props) => {
             context.setTotalObservations(0)
             context.setOBs(resp.observing_blocks ?? [])
         }
-        if (resp.message.includes('NO_OBS_FOUND')) {
+        if (resp.message.includes('NO_OBSERVING_BLOCKS_FOUND')) {
             snackbarContext.setSnackbarMessage(
                 {
                     severity: 'error',

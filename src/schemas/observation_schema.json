@@ -80,6 +80,7 @@
             "type": "integer",
             "description": "Which wavelength bin to use for exposure meter termination?  (1=498nm, 2=604nm, 3=711nm, 4=817nm)",
             "short_description": "Exp Meter Bin",
+            "enum": [1, 2, 3, 4],
             "default": 1,
             "translator_mapping": "ExpMeterBin"
         },
