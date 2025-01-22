@@ -7,7 +7,6 @@ import Tooltip from '@mui/material/Tooltip';
 import ApprovalIcon from '@mui/icons-material/Approval';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import target_schema from './schemas/ob_target_schema.json'
 import AJV2019, { ErrorObject, ValidateFunction } from 'ajv/dist/2019'
 import { IconButton } from '@mui/material';
 // import * as ob_schema from './schemas/observing_block_schema.json'
