@@ -20,7 +20,6 @@ export interface OBTarget extends SimbadTargetData {
   _id?: string,
   target_name?: string,
   two_mass_id?: string,
-  parallax?: string,
   t_eff?: number,
   equinox?: string,
   d_ra?: number,
