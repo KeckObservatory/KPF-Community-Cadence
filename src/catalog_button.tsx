@@ -100,24 +100,17 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             Number(pmDec) && (simbadData['pm_dec'] = Number(pmDec))
         }
         else if (identifiersSection
-            && bibcodesSection === false
-            && (line.includes('Gaia') || line.includes('TIC') || line.includes('2MASS'))
-        ) {
-            let ticMatch = line.match(new RegExp('TIC\\s\\w+'))
-            const tic = ticMatch ? ticMatch[0].split(' ')[1] : undefined 
-            let twoMassMatch = line.match(new RegExp('2MASS\\s\\w+'))
-            const twoMass = twoMassMatch ? twoMassMatch[0].split(' ')[1] : undefined
-            let gaiaMatch = line.match(new RegExp('Gaia\\s\\w+\\s\\w+'))
-            const dr = gaiaMatch ? gaiaMatch[0].split(' ')[1] : '' 
-            const gaia = gaiaMatch ? gaiaMatch[0].split(' ')[2] : undefined 
-            console.log('line', line, 'tic', tic, '2mass', twoMass, 'dr', dr, 'gaia', gaia)
-            console.log('tic', tic, '2mass', twoMass, 'dr', dr, 'gaia', gaia)
-            tic && (simbadData['tic_id'] = tic)
-            twoMass && (simbadData['two_mass_id'] = twoMass)
-            if (dr && gaia) {
-                Number(dr[2]) > currDr && (
-                    simbadData['gaia_id'] = `${dr}_${gaia}`)
-                currDr = Number(dr[2])
+            && bibcodesSection === false)
+        {
+            if (simbadData.tic_id)  simbadData['tic_id'] = line.match(new RegExp('TIC\\s(\\w+)'))?.at(1)
+            if (simbadData.two_mass_id)  simbadData['two_mass_id'] = line.match(new RegExp('2MASS\\s(\\w+)'))?.at(1)
+            if (simbadData.gaia_id) {
+                const [match, dr, gaia_id ]= line.match(new RegExp('Gaia\\s(\\w+)\\s(\\w+)')) ?? []
+                if (match) { //replace if gaia version is higher
+                    Number(dr[2]) > currDr && (
+                        simbadData['gaia_id'] = `${dr}_${gaia_id}`)
+                    currDr = Number(dr[2])
+                }
             }
         }
         ;
