@@ -63,7 +63,6 @@ export interface SimbadTargetData {
 
 export const get_simbad_data = async (targetName: string): Promise<SimbadTargetData> => {
     const simbad_output = await get_simbad(targetName)
-    let bibcodesSection = false
     let identifiersSection = false
     const simbadData: SimbadTargetData = {}
 
@@ -73,7 +72,6 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
         if (line.startsWith('!!')) {
             simbadData['comment'] = line.split('!! ')[1]
         }
-        line.startsWith('Bib') && (bibcodesSection = true)
         line.startsWith('Identifiers (') && (identifiersSection = true)
         if (line.startsWith('Coordinates(ICRS')) {
             simbadData['ra'] = line.split(': ')[1].split(' ').slice(0, 3).join(':')
@@ -99,8 +97,7 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             Number(pmRa) && (simbadData['pm_ra'] = Number(pmRa))
             Number(pmDec) && (simbadData['pm_dec'] = Number(pmDec))
         }
-        else if (identifiersSection
-            && bibcodesSection === false)
+        else if (identifiersSection)
         {
             if (simbadData.tic_id)  simbadData['tic_id'] = line.match(new RegExp('TIC\\s(\\w+)'))?.at(1)
             if (simbadData.two_mass_id)  simbadData['two_mass_id'] = line.match(new RegExp('2MASS\\s(\\w+)'))?.at(1)
