@@ -32,7 +32,7 @@ export interface Props {
 }
 
 const create_validator = (schema: any) => {
-  const ajv = new AJV2019({ allErrors: true })
+  const ajv = new AJV2019({ allErrors: true, useDefaults: true })
   let ts = schema as any
   delete ts["$schema"]
   ajv.addKeyword("short_description")
