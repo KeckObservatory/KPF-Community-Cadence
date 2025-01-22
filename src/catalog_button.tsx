@@ -70,9 +70,8 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
     let currDr = 0 
     let identifiersSection = false
     for (let line of simbadLines) {
-        if (line.startsWith('Identifiers')) {
-            identifiersSection = true
-            continue
+        if (!identifiersSection && line.startsWith('Identifiers')) {
+            identifiersSection = line.startsWith('Identifiers')
         }
         if (line.startsWith('!!')) {
             simbadData['comment'] = line.split('!! ')[1]
