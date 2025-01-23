@@ -32,8 +32,8 @@ import { useDebounceCallback } from './use_debounce_callback';
 import { delete_obs, save_obs, submit_obs } from './api/api_root';
 import { OBWizardButton } from './ob_wizard';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
-import { MetaData, OB, Observation, OBTarget, ScheduleData } from './module_selector';
-import { format_edit_entry, format_tags, PropertyProps, raDecFormat, SchemaProps, rowSetter } from './ob_edit_util';
+import { MetaData, OB, OBComponent, Observation, OBTarget, ScheduleData } from './module_selector';
+import { format_edit_entry, format_tags, raDecFormat, ob_to_component_row, edit_ob } from './ob_edit_util';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import MenuItem from '@mui/material/MenuItem';
 import Button, { ButtonProps } from '@mui/material/Button';
@@ -43,13 +43,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import CatalogButton from './catalog_button';
 import Chip from '@mui/material/Chip';
+import OBEditDialogButton from './ob_edit_dialog_button';
 
 export type NewOB = Partial<OB> & {
     _id?: string
 }
-export type OBComponents = "calibration" | "schedule" | "target" | "observation" | "metadata"
+export type OBComponentName = "calibration" | "schedule" | "target" | "observation" | "metadata"
 
-interface ComponentRow extends Object {
+// export interface ComponentRow<OBComponent> {
+export interface ComponentRow extends OBComponent {
     isNew?: boolean;
     _id: string;
     target_name_semid: string,
@@ -61,7 +63,7 @@ interface ComponentRow extends Object {
 }
 
 interface EditToolbarProps {
-    componentName: OBComponents;
+    componentName: OBComponentName;
     processRowUpdate: (newRow: GridRowModel, originalRow?: GridRowModel) => ComponentRow;
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
 }
@@ -92,7 +94,7 @@ const ob_feisible_chip = (params: GridRenderCellParams) => {
     )
 }
 
-function convert_schema_to_columns(semids: string[], schemaName: OBComponents) {
+function convert_schema_to_columns(semids: string[], schemaName: OBComponentName) {
     const columns: GridColDef[] = []
 
     Object.entries(ob_schemas[schemaName].properties).forEach(([key, valueProps]: [string, any]) => {
@@ -162,7 +164,6 @@ export const create_new_ob = (semid: string, obsid: number, username: string, ta
         needs_resubmit: false,
         state: "CREATED",
         status: 'PENDING',
-        history: [],
         tags: [],
     }
 
@@ -303,51 +304,12 @@ function CustomExportButton(props: ExportButtonProps) {
 
 
 interface Props {
-    componentName: OBComponents,
+    componentName: OBComponentName,
 }
 
 const check_if_catalog = (row: ComponentRow) => {
     return (row as OBTarget).gaia_id || (row as OBTarget).tic_id ? true : false
 }
-
-const ob_to_component_row = (ob: OB, componentName: OBComponents): ComponentRow => {
-    const _id = ob._id ?? Math.random().toString(36).substring(7)
-    const target_name = ob.target?.target_name ?? "TBD"
-    const target_name_semid = target_name + '_' + ob.metadata.semid
-    const cmp = ob[componentName] as Object
-    const state = ob.metadata?.state ?? 'CREATED' //overwrite state with metadata state
-    const ob_feasible = ob.metadata.ob_feasible
-    const details = ob.metadata.details ?? ''
-    return {
-        ...cmp,
-        _id,
-        target_name,
-        target_name_semid,
-        state,
-        ob_feasible,
-        details,
-        submitted: ob.metadata.submitted ?? false,
-    }
-}
-
-const row_to_ob_component = (row: ComponentRow, componentName: OBComponents) => {
-    //removes row metadata.
-    let cmp: Partial<ComponentRow> = { ...row }
-    delete cmp._id
-    delete cmp.target_name_semid
-    if (!componentName.includes('target')) {
-        delete cmp.target_name
-    }
-    if (!componentName.includes('metadata')) {
-        delete cmp.state
-        delete cmp.submitted
-        delete cmp.ob_feasible
-        delete cmp.details
-    }
-    return cmp
-}
-
-
 
 export default function OBComponentTable(props: Props) {
     const { componentName } = props
@@ -375,36 +337,6 @@ export default function OBComponentTable(props: Props) {
         }, 300)
     }, [refreshContext.refreshTable, context.obs])
 
-    const edit_row = async (row: ComponentRow) => {
-        const idx = context.obs.findIndex((ob) => ob._id === row._id)
-        const obComponent = row_to_ob_component(row, componentName)
-        let newOB = context.obs.at(idx)
-        if (!newOB) return
-        newOB = { ...newOB, [componentName]: obComponent }
-        newOB = rowSetter(newOB, componentName)
-        const resp = await save_obs([newOB])
-        if (!resp.observing_blocks) {
-            console.error('edit ob save failed', resp)
-            snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `OB not saved. Details: ${resp.details}` })
-        }
-        else if (resp.observing_blocks.length === 0) {
-            console.error('edit ob save failed', resp)
-            snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `OB not saved. Details: ${resp.details}` })
-        }
-        else {
-            const respOB = resp.observing_blocks.at(0)
-            snackbarContext.setSnackbarMessage(
-                { severity: 'success', message: `OB saved` })
-            //replace old ob with saved ob
-            context.setOBs(context.obs.map((ob) => ob._id === respOB?._id ? respOB : ob))
-        }
-        return resp
-    }
-
-    const debounced_save = useDebounceCallback(edit_row, 1000)
-
     const handleEditClick = (_id: GridRowId) => () => {
         setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
     };
@@ -419,6 +351,8 @@ export default function OBComponentTable(props: Props) {
     const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
         setRowModesModel(newRowModesModel);
     };
+
+    const debounced_save = useDebounceCallback(edit_ob)
 
     let columns = convert_schema_to_columns(context.semids, componentName);
 
@@ -527,7 +461,7 @@ export default function OBComponentTable(props: Props) {
                 Object.keys(currRow).forEach((key) => {
                     let value = currRow[key as keyof ComponentRow];
                     if (value === undefined) return //skip undefined values
-                    const type = (schema.properties as SchemaProps)[key as keyof PropertyProps]?.type
+                    const type = schema.properties[key]?.type
                     value = type ? format_cell_value(key, value, type) : value
                     value !== params.row[key as keyof ComponentRow] && (changed = true)
                     sanitizedRow[key as keyof ComponentRow] = value
@@ -543,7 +477,7 @@ export default function OBComponentTable(props: Props) {
         const handleRowChange = () => {
             if (count > 0) {
                 processRowUpdate(editRow)
-                editRow.state?.includes('ROW_EDITED') && debounced_save(editRow)
+                editRow.state?.includes('ROW_EDITED') && debounced_save(editRow, componentName, context.obs, context.setOBs, snackbarContext.setSnackbarMessage)
                 debounced_edit_click(id)
                 if (componentName.includes('target')) {
                     setHasCatalog(check_if_catalog(editRow))
@@ -571,7 +505,7 @@ export default function OBComponentTable(props: Props) {
         } : {}
 
         let publishText = errors.length > 0 ? `validate ${componentName} before submitting` : 'Submit OB for review'
-        
+
         const resubmit = needs_resubmit(row, errors.length)
         if (resubmit) {
             publishText = 'Resubmit edited target for review'
@@ -606,6 +540,11 @@ export default function OBComponentTable(props: Props) {
         if (componentName.includes('target')) {
             cell.push(<CatalogButton hasCatalog={hasCatalog} target={editRow} setTarget={setEditRow} />)
         }
+        cell.push(<OBEditDialogButton
+            row={editRow}
+            setRow={setEditRow}
+            componentName={componentName}
+        />)
         cell.push(
             <Tooltip
                 title={"Delete this request"}

@@ -6,14 +6,16 @@
         "obsid": {
             "type": ["string", "number"],
             "description": "Observer ID",
-            "translator_mapping": "ObserverID"
+            "translator_mapping": "ObserverID",
+            "not_editable_by_user": true
         },
         "observer_name": {
             "type": "string",
             "description": "Name of the observer",
             "short_description": "Observer",
             "default": "",
-            "translator_mapping": "ObserverName"
+            "translator_mapping": "ObserverName",
+            "not_editable_by_user": true
         },
         "semid": {
             "type": "string",
@@ -23,12 +25,14 @@
         "semester": {
             "type": "string",
             "description": "Semester",
-            "translator_mapping": "Semester"
+            "translator_mapping": "Semester",
+            "not_editable_by_user": true
         },
         "progid": {
             "type": "string",
             "description": "Program ID",
-            "translator_mapping": "Progid"
+            "translator_mapping": "Progid",
+            "not_editable_by_user": true
         },
         "comment": {
             "type": "string",
@@ -53,7 +57,8 @@
         "submitter": {
             "type": "string",
             "description": "Submitter",
-            "translator_mapping": "Submitter"
+            "translator_mapping": "Submitter",
+            "not_editable_by_user": true
         },
         "need_resubmit": {
             "type": ["boolean", "null"],
@@ -86,7 +91,8 @@
         "last_modifification": {
             "type": "string",
             "description": "Last Modified",
-            "translator_mapping": "LastModified"
+            "translator_mapping": "LastModified",
+            "not_editable_by_user": true
         },
         "total_time_for_target": {
             "type": "number",

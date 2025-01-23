@@ -7,17 +7,17 @@ import Tooltip from '@mui/material/Tooltip';
 import ApprovalIcon from '@mui/icons-material/Approval';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import AJV2019, { ErrorObject, ValidateFunction } from 'ajv/dist/2019'
+import AJV2019, { ErrorObject, ValidateFunction, JSONSchemaType } from 'ajv/dist/2019'
 import { IconButton } from '@mui/material';
 // import * as ob_schema from './schemas/observing_block_schema.json'
 import * as calibration_schema from './schemas/calibration_schema.json'
 import * as schedule_schema from './schemas/schedule_data_schema.json'
-import * as ob_target from './schemas/ob_target_schema.json'
+import * as ob_target_schema from './schemas/ob_target_schema.json'
 import * as observation_schema from './schemas/observation_schema.json'
 import * as metadata_schema from './schemas/metadata_schema.json'
-import { OBComponents } from './ob_component_table';
 import { OB } from './module_selector';
-
+import { OBComponentName } from './ob_component_table';
+import { MetaData, Observation, OBTarget, ScheduleData, Calibration } from './module_selector';
 
 export interface SimpleDialogProps {
   open: boolean;
@@ -41,22 +41,47 @@ const create_validator = (schema: any) => {
   return ajv.compile(ts)
 }
 
-export type Validators = OBComponents
+export type Validators = OBComponentName
 
-export const ob_schemas = {
-  "calibration": calibration_schema,
-  "schedule": schedule_schema,
+interface Items extends PropertyProps {
+    properties?: { [key: string]: PropertyProps }
+}
+
+export interface PropertyProps {
+    description: string,
+    type: string | string[],
+    short_description?: string,
+    default?: unknown,
+    pattern?: string,
+    minLength?: number,
+    maxLength?: number,
+    not_editable_by_user?: boolean,
+    hide_column?: boolean,
+    enum?: string[],
+    items?: Items
+    translator_mapping?: string
+}
+
+const calibration = calibration_schema as unknown as JSONSchemaType<Calibration>
+const ob_target = ob_target_schema as unknown as JSONSchemaType<OBTarget>
+const observation = observation_schema as unknown as JSONSchemaType<Observation>
+const metadata = metadata_schema as unknown as JSONSchemaType<MetaData>
+const schedule = schedule_schema as unknown as JSONSchemaType<ScheduleData>
+
+export const ob_schemas: Record<string, any> = {
+  "calibration": calibration,
+  "schedule": schedule,
   "target": ob_target,
-  "observation": observation_schema,
-  "metadata": metadata_schema
+  "observation": observation,
+  "metadata": metadata
 }
 
 export const validators: Record<Validators, ValidateFunction> = {
-  "calibration": create_validator(calibration_schema),
-  "schedule": create_validator(schedule_schema),
+  "calibration": create_validator(calibration),
+  "schedule": create_validator(schedule),
   "target": create_validator(ob_target),
-  "observation": create_validator(observation_schema),
-  "metadata": create_validator(metadata_schema)
+  "observation": create_validator(observation),
+  "metadata": create_validator(metadata)
 }
 
 function ValidationDialog(props: SimpleDialogProps) {

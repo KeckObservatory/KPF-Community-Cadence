@@ -11,9 +11,6 @@ interface TabPanelProps {
   value: number;
 }
 
-//TODO: is using Opaque type more elegant than using union type?
-// export type Opaque<T, K> = T & { __opaque__: K };
-// export type Integer = Opaque<number, 'Integer'>;
 export type Integer = number | string;
 
 export interface OBTarget extends SimbadTargetData {
@@ -23,6 +20,10 @@ export interface OBTarget extends SimbadTargetData {
   t_eff?: number,
   d_ra?: number,
   d_dec?: number,
+}
+
+export interface OBComponent extends ScheduleData, Calibration, Observation, OBTarget, MetaData {
+
 }
 
 export interface ScheduleData {
@@ -60,7 +61,7 @@ export interface Calibration {
   exp_meter_mode?: string,
   exp_meter_exp_time?: number,
   exp_meter_bin?: number,
-  exp_meter_threshold?: number,
+  exp_meter_threshold?: Integer,
 }
 
 export interface Observation {
@@ -109,7 +110,6 @@ export interface MetaData {
   details?: string,
   status?: string,
   tags?: string[],
-  history?: History[]
 }
 
 

@@ -83,7 +83,7 @@ export interface SnackbarMessage {
   severity?: 'success' | 'error' | 'warning' | 'info';
 }
 
-export interface SnackbarContextProps {
+export interface SnackbarContext{
   snackbarOpen: boolean;
   setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   snackbarMessage: SnackbarMessage;
@@ -91,7 +91,7 @@ export interface SnackbarContextProps {
 }
 
 
-const init_snackbar_context: SnackbarContextProps = {
+const init_snackbar_context: SnackbarContext= {
   snackbarOpen: false,
   setSnackbarOpen: () => { },
   snackbarMessage: { severity: 'success', message: 'defaultMessage' },
@@ -102,7 +102,7 @@ export interface RefreshTableContext {
   refreshTable: number
   setRefreshTable: Function
 }
-const SnackbarContext = createContext<SnackbarContextProps>(init_snackbar_context);
+const SnackbarContext = createContext<SnackbarContext>(init_snackbar_context);
 export const useSnackbarContext = () => useContext(SnackbarContext);
 
 const refreshTableContext = createContext<RefreshTableContext>({
@@ -175,6 +175,7 @@ function App() {
   const handleGetOBs = async (semester?: string, semid?: string) => {
 
     const resp = await get_obs(semester, semid);
+    console.log('get_obs response', resp)
 
     if (resp.success !== 'SUCCESS') {
       setSnackbarMessage({

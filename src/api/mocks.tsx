@@ -1,6 +1,7 @@
 import { OB } from "../module_selector"
 import { NewOB } from "../ob_component_table"
 import { GaiaResp, GetOBResponse, SubmitResp, UserInfo } from "./api_root"
+import mock_ob_resp from './mock_ob_resp.json'
 
 
 export const mock_get_simbad = async (target: string): Promise<string> => {
@@ -30,7 +31,7 @@ export const mock_observer_logout = async (): Promise<SubmitResp> => {
 }
 
 export const mock_get_semids = async (): Promise<SubmitResp> => {
-    const programs = ['0000A_A234']
+    const programs = [{semid: '0000A_A234'}]
     const isAdmin = 'true'
     return { isAdmin, programs, details: 'mocked', message: `$mocked`, success: 'SUCCESS' }
 }
@@ -40,7 +41,8 @@ export const mock_get_userinfo = async (): Promise<UserInfo> => {
 }
 
 export const mock_get_obs = async (semester?: string, semid?: string, id?: string): Promise<GetOBResponse> => {
-    return { details: 'mocked', message: `${id} ${semester} ${semid} mocked`, success: 'mocked', observing_blocks: [] }
+    //@ts-ignore
+    return { details: 'mocked', message: `${id} ${semester} ${semid} mocked`, success: 'SUCCESS', observing_blocks: mock_ob_resp.observing_blocks }
 }
 
 export const mock_edit_obs = async (obs: OB[] | NewOB[]): Promise<SubmitResp> => {

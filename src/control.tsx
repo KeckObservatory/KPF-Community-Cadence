@@ -67,6 +67,7 @@ export const Control = (props: Props) => {
 
     const onSemesterClick = async () => {
         if (!context.semester) return
+        console.log('semester clicked', context.semester)
         //const resp = await get_all_semester_targets(context.semester, props.notApproved)
         const resp = await get_obs(context.semester)
         handleResponse(resp, context.semester)
@@ -76,6 +77,7 @@ export const Control = (props: Props) => {
 
     const onSemidChange = async (semid: string | undefined | null) => {
         if (!semid) return
+        console.log('semid clicked', semid)
         const resp = await get_obs(undefined, semid)
         context.setSemester(undefined)
         handleResponse(resp, semid)

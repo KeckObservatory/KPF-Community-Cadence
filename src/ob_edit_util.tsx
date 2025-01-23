@@ -1,31 +1,20 @@
+import React from 'react';
+import { save_obs } from './api/api_root';
 import { OB } from './module_selector';
-import target_schema from './schemas/ob_target_schema.json'
+import { ComponentRow, OBComponentName } from './ob_component_table';
+import { useDebounceCallback } from './use_debounce_callback';
+import { ob_schemas } from './validation_check_dialog';
 
 
-interface Items extends PropertyProps {
-    properties?: { [key: string]: PropertyProps }
+
+export const input_label = (param: string, componentName: OBComponentName, tooltip = false): string => {
+    const componentSchema = ob_schemas[componentName]
+    const props = componentSchema['properties'][param]
+    return tooltip ?
+        props.description
+        :
+        props.short_description ?? props.description
 }
-
-export interface PropertyProps {
-    description: string,
-    type: string | string[],
-    short_description?: string,
-    default?: unknown,
-    pattern?: string,
-    minLength?: number,
-    maxLength?: number,
-    not_editable_by_user?: boolean,
-    hide_column?: boolean,
-    enum?: string[],
-    items?: Items
-    translator_mapping?: string
-}
-
-export interface SchemaProps {
-    [key: string]: PropertyProps
-}
-
-const SchemaProps = target_schema.properties as SchemaProps
 
 export const format_tags = (tags: string[]) => {
     const pattern = /[,]/g
@@ -92,7 +81,7 @@ export const raDecFormat = (input: string) => {
     return sign + input;
 }
 
-export const rowSetter = (ob: OB, componentName: keyof OB) => {
+const obSetter = (ob: OB, componentName: keyof OB) => {
     // if num_vists_per_night is 1, set num_intranight_cadences to 0
     if (componentName === 'schedule' && ob.schedule.num_visits_per_night === 1) {
         ob.schedule = {
@@ -101,5 +90,119 @@ export const rowSetter = (ob: OB, componentName: keyof OB) => {
             'num_internight_cadence': 0,
         }
     }
-    return ob 
+    return ob
+}
+
+export const ob_to_component_row = (ob: OB, componentName: OBComponentName): ComponentRow => {
+    const _id = ob._id ?? Math.random().toString(36).substring(7)
+    const target_name = ob.target?.target_name ?? "TBD"
+    const target_name_semid = target_name + '_' + ob.metadata.semid
+    const cmp = ob[componentName] as Object
+    const state = ob.metadata?.state ?? 'CREATED' //overwrite state with metadata state
+    const ob_feasible = ob.metadata.ob_feasible
+    const details = ob.metadata.details ?? ''
+    return {
+        ...cmp,
+        _id,
+        target_name,
+        target_name_semid,
+        state,
+        ob_feasible,
+        details,
+        submitted: ob.metadata.submitted ?? false,
+    }
+}
+
+export const row_to_ob_component = (row: ComponentRow, componentName: OBComponentName) => {
+    //removes row metadata.
+    let cmp: Partial<ComponentRow> = { ...row }
+    delete cmp._id
+    delete cmp.target_name_semid
+    if (!componentName.includes('target')) {
+        delete cmp.target_name
+    }
+    if (!componentName.includes('metadata')) {
+        delete cmp.state
+        delete cmp.submitted
+        delete cmp.ob_feasible
+        delete cmp.details
+    }
+    return cmp
+}
+
+export const edit_ob = async (
+    row: ComponentRow,
+    componentName: OBComponentName,
+    obs: OB[],
+    setOBs: Function,
+    setSnackbarMessage: Function,
+) => {
+    const idx = obs.findIndex((ob) => ob._id === row._id)
+    const obComponent = row_to_ob_component(row, componentName)
+    let newOB = obs.at(idx)
+    if (!newOB) return
+    newOB = { ...newOB, [componentName]: obComponent }
+    newOB = obSetter(newOB, componentName)
+    const resp = await save_obs([newOB])
+    if (!resp.observing_blocks) {
+        console.error('edit ob save failed', resp)
+        setSnackbarMessage(
+            { severity: 'error', message: `OB not saved. Details: ${resp.details}` })
+    }
+    else if (resp.observing_blocks.length === 0) {
+        console.error('edit ob save failed', resp)
+        setSnackbarMessage(
+            { severity: 'error', message: `OB not saved. Details: ${resp.details}` })
+    }
+    else {
+        const respOB = resp.observing_blocks.at(0)
+        setSnackbarMessage(
+            { severity: 'success', message: `OB saved` })
+        //replace old ob with saved ob
+        setOBs(obs.map((ob) => ob._id === respOB?._id ? respOB : ob))
+    }
+    return resp
+}
+
+export interface BaseChangeInput {
+    componentName: OBComponentName,
+    saveFunction: Function,
+    obs: OB[]
+    setOBs: Function
+    setSnackbarMessage: Function
+    row: ComponentRow,
+    isNumber?: boolean
+}
+
+export interface TextChangeInput extends BaseChangeInput {
+    key: string,
+    value: string | number
+}
+
+export interface ArrayChangeInput extends BaseChangeInput {
+    key: string,
+    value: string[]
+}
+
+export interface SwitchChangeInput extends BaseChangeInput {
+    key: string,
+    event: React.SyntheticEvent<Element, Event>
+}
+
+export const text_change = (input: TextChangeInput ) => {
+    const formattedValue = format_edit_entry(input.key, input.value, input.isNumber ?? false)
+    const newRow = { ...input.row, [input.key]: formattedValue }
+    input.saveFunction(newRow, input.componentName, input.obs, input.setOBs, input.setSnackbarMessage)
+}
+
+export const array_change = (input: ArrayChangeInput ) => {
+    const formattedValue = format_tags(input.value)
+    const newRow = { ...input.row, [input.key]: formattedValue }
+    input.saveFunction(newRow, input.componentName, input.obs, input.setOBs, input.setSnackbarMessage)
+}
+
+export const switch_change = (input: SwitchChangeInput ) => {
+    const value = (input.event.target as HTMLInputElement).checked
+    const newRow = { ...input.row, [input.key]: value}
+    input.saveFunction(newRow, input.componentName, input.obs, input.setOBs, input.setSnackbarMessage)
 }
