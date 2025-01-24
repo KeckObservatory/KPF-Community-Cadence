@@ -1,8 +1,10 @@
 import React from 'react';
 import { save_obs } from './api/api_root';
-import { OB } from './module_selector';
+import { OB, OBComponent } from './module_selector';
 import { ComponentRow, OBComponentName } from './ob_component_table';
 import { ob_schemas } from './validation_check_dialog';
+import Tooltip from '@mui/material/Tooltip';
+import TextField from '@mui/material/TextField';
 
 
 
@@ -22,10 +24,10 @@ interface EnumChoice {
 export const enum_choices = (param: string, componentName: OBComponentName): string[] => {
     const componentSchema = ob_schemas[componentName]
     const props = componentSchema['properties'][param]
-    const enumChoices = props.enum.map( (choice: string | number) => {
-        return {label: String(choice)} as EnumChoice
+    const enumChoices = props.enum.map((choice: string | number) => {
+        return { label: String(choice) } as EnumChoice
     })
-    return enumChoices 
+    return enumChoices
 }
 
 export const format_tags = (tags: string[]) => {
@@ -199,20 +201,45 @@ export interface SwitchChangeInput extends BaseChangeInput {
     event: React.SyntheticEvent<Element, Event>
 }
 
-export const text_change = (input: TextChangeInput ) => {
+export const text_change = (input: TextChangeInput) => {
     const formattedValue = format_edit_entry(input.key, input.value, input.isNumber ?? false)
     const newRow = { ...input.row, [input.key]: formattedValue, state: 'ROW_EDITED' }
     input.saveFunction(newRow)
 }
 
-export const array_change = (input: ArrayChangeInput ) => {
+export const array_change = (input: ArrayChangeInput) => {
     const formattedValue = format_tags(input.value)
     const newRow = { ...input.row, [input.key]: formattedValue, state: 'ROW_EDITED' }
     input.saveFunction(newRow)
 }
 
-export const switch_change = (input: SwitchChangeInput ) => {
+export const switch_change = (input: SwitchChangeInput) => {
     const value = (input.event.target as HTMLInputElement).checked
     const newRow = { ...input.row, [input.key]: value, state: 'ROW_EDITED' }
     input.saveFunction(newRow)
+}
+
+export const make_text_field = (
+    key: string, 
+    component: OBComponent, 
+    componentName: OBComponentName, 
+    handleTextChange: Function,
+    isNumber=false) => {
+    
+    if (Object.keys(component).includes(key) === false) {
+        console.warn('make_text_field', `key ${key} not in component ${componentName}`)
+        return
+    }
+    //@ts-ignore
+    const value = component[key]
+    return (
+    <Tooltip title={input_label(key, componentName, true)}>
+        <TextField
+            // focused
+            label={input_label(key, componentName, false)}
+            id={key.replace('_', '-')}
+            onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
+            value={value}
+        />
+    </Tooltip>)
 }

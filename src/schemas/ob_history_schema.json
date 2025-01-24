@@ -1,0 +1,87 @@
+{
+    "title": "KPF Community Cadence History Params",
+    "description": "This document defines the schema for the KPF CC History",
+    "type": "object",
+    "properties": {
+        "ob_id": {
+            "type": "string",
+            "description": "ob_id of the target",
+            "not_editable_by_user": true
+        },
+        "semid": {
+            "type": "string",
+            "description": "OB semid of the target. May need to verify this from time to time, as semid can mutate in the OB.",
+            "translator_mapping": "ObserverID",
+            "not_editable_by_user": true
+        },
+        "executions": {
+            "type": "array",
+            "description": "Execution information for the OB",
+            "items": {
+                "description": "Information for a single execution",
+                "type": "object",
+                "properties": {
+                    "slot_planned": {
+                        "type": "integer",
+                        "description": "Planned slot for the execution"
+                    },
+                    "slot_actual": {
+                        "type": "integer",
+                        "description": "Actual slot for the execution"
+                    },
+                    "datetime_executed": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Datetime (HT) the execution was performed"
+                    },
+                    "date_scheduled": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date (HT) the execution was scheduled"
+                    },
+                    "observation_sucessfull": {
+                        "type": "boolean",
+                        "description": "Was the observation successful?"
+                    },
+                    "observed": {
+                        "type": "boolean",
+                        "description": "Was the target observed?"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "Comment on the execution"
+                    },
+                    "submitter": {
+                        "type": "string",
+                        "description": "Individual who executed OB"
+                    }
+                },
+                "required": [
+                    "slot_planned",
+                    "slot_actual",
+                    "datetime_executed",
+                    "date_scheduled",
+                    "observation_sucessfull",
+                    "observed",
+                    "submitter"
+                ], 
+                "additionalProperties": true 
+            }
+        },
+        "comment": {
+            "type": "string",
+            "description": "Comment on this OB's history"
+        },
+        "last_modifification": {
+            "type": "string",
+            "description": "Last Modified",
+            "translator_mapping": "LastModified",
+            "not_editable_by_user": true
+        }
+    },
+    "required": [
+        "executions",
+        "ob_id"
+    ],
+    "additionalProperties": true
+}

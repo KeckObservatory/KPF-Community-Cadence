@@ -16,7 +16,7 @@ import {
 } from '@mui/material'
 import { ComponentRow } from '../ob_component_table';
 import { Observation } from '../module_selector';
-import { input_label, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, enum_choices } from '../ob_edit_util';
+import { make_text_field, input_label, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, enum_choices } from '../ob_edit_util';
 
 
 interface Props {
@@ -53,6 +53,10 @@ export default function ObservationForm(props: Props) {
             event
         }
         switch_change(input)
+    }
+
+    const CreateTextField = (key: string, isNumber = false) => {
+        return make_text_field(key, observation, componentName, handleTextChange, isNumber)
     }
 
     return (
@@ -93,7 +97,10 @@ export default function ObservationForm(props: Props) {
                                 Observation Information
                             </Typography>
                             <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title={observation_input_label('object', true)}>
+                                {CreateTextField('object', false)}
+                                {CreateTextField('exposure_time', true)}
+                                {CreateTextField('num_exposures', true)}
+                                {/* <Tooltip title={observation_input_label('object', true)}>
                                     <TextField
                                         // focused
                                         label={observation_input_label('object')}
@@ -108,7 +115,7 @@ export default function ObservationForm(props: Props) {
                                         label={observation_input_label('exposure_time')}
                                         id="exposure-time"
                                         onChange={(event) => handleTextChange('exposure_time', event.target.value, true)}
-                                        value={observation.nominal_exposure_time}
+                                        value={observation.exposure_time}
                                     />
                                 </Tooltip>
                                 <Tooltip title={observation_input_label('num_exposures', true)}>
@@ -117,9 +124,9 @@ export default function ObservationForm(props: Props) {
                                         label={observation_input_label('num_exposures')}
                                         id="num_exposures"
                                         onChange={(event) => handleTextChange('num_exposures', event.target.value, true)}
-                                        value={observation.maximum_exposure_time}
+                                        value={observation.num_exposures}
                                     />
-                                </Tooltip>
+                                </Tooltip> */}
                             </Stack>
                             <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 <Tooltip title={observation_input_label('trigger_ca_h_k', true)}>
@@ -175,7 +182,9 @@ export default function ObservationForm(props: Props) {
                                             label={observation_input_label('auto_exp_meter')} />
                                     </FormGroup>
                                 </Tooltip>
-                                <Tooltip title={observation_input_label('exp_meter_exp_time', true)}>
+                                {CreateTextField('exp_meter_exp_time', true)}
+                                {CreateTextField('exp_meter_threshold', true)}
+                                {/* <Tooltip title={observation_input_label('exp_meter_exp_time', true)}>
                                     <TextField
                                         // focused
                                         label={observation_input_label('exp_meter_exp_time')}
@@ -192,7 +201,7 @@ export default function ObservationForm(props: Props) {
                                         onChange={(event) => handleTextChange('exp_meter_threshold', event.target.value, true)}
                                         value={observation.exp_meter_threshold}
                                     />
-                                </Tooltip>
+                                </Tooltip> */}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 <Tooltip title={observation_input_label('take_simulcal', true)}>
@@ -235,7 +244,9 @@ export default function ObservationForm(props: Props) {
                                 </Tooltip>
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
-                                <Tooltip title={observation_input_label('nod_n', true)}>
+                                {CreateTextField('nod_n', true)}
+                                {CreateTextField('nod_e', true)}
+                                {/* <Tooltip title={observation_input_label('nod_n', true)}>
                                     <TextField
                                         // focused
                                         label={observation_input_label('nod_n')}
@@ -252,7 +263,7 @@ export default function ObservationForm(props: Props) {
                                         onChange={(event) => handleTextChange('nod_e', event.target.value, true)}
                                         value={observation.nod_e}
                                     />
-                                </Tooltip>
+                                </Tooltip> */}
                                 <Tooltip title={observation_input_label('guide_here', true)}>
                                     <FormGroup>
                                         <FormControlLabel
