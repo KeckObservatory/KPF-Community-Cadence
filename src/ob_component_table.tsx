@@ -449,6 +449,18 @@ export default function OBComponentTable(props: Props) {
             return value
         }
 
+
+        const setRowWithCadenceChecks = (row: ComponentRow) => {
+            //if schedule and num_visits_per_night is 1, set cadence to 0. 
+            //This is used by the form edit display updating to match the submitted ob. 
+            if (componentName.includes('schedule') && Number(row.num_visits_per_night) === 1) {
+                row.num_internight_cadence = 0
+                row.num_intranight_cadence = 0
+            }
+            setEditRow(row)
+        }
+
+
         const handleRowEvent: GridEventListener<'rowEditStop'> = (params) => {
             //NOTE: Process row update will update all rows, triggering this event for all rows.
             //      Checking if anything changed is a workaround to prevent multiple saves
@@ -468,7 +480,7 @@ export default function OBComponentTable(props: Props) {
                 })
 
                 if (!changed) return
-                setEditRow({ ...sanitizedRow, 'state': 'ROW_EDITED' } as ComponentRow)
+                setRowWithCadenceChecks({ ...sanitizedRow, 'state': 'ROW_EDITED' } as ComponentRow)
             }, 300)
         }
 
@@ -532,7 +544,7 @@ export default function OBComponentTable(props: Props) {
                         />
                     }
                     label="Publish"
-                    onClick={() => handlePublishClick(id, setIconSpin, setEditRow)}
+                    onClick={() => handlePublishClick(id, setIconSpin, setRowWithCadenceChecks)}
                     color="inherit"
                 /></Tooltip> :
             < ValidationDialogButton errors={errors} json={editRow} />
@@ -543,7 +555,7 @@ export default function OBComponentTable(props: Props) {
         }
         cell.push(<OBEditDialogButton
             row={editRow}
-            setRow={setEditRow}
+            setRow={setRowWithCadenceChecks}
             componentName={componentName}
         />)
         cell.push(

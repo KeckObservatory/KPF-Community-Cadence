@@ -116,7 +116,7 @@ export interface Metadata {
 }
 
 
-export interface OB { //TODO: define component interfaces
+export interface OB {
   _id: string,
   metadata: Metadata,
   observation: Observation,

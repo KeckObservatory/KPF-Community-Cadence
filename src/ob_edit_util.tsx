@@ -96,12 +96,13 @@ export const raDecFormat = (input: string) => {
 const obSetter = (ob: OB, componentName: keyof OB) => {
     // if num_vists_per_night is 1, set num_intranight_cadences to 0
     console.log('obsetter', ob, componentName)
-    if (componentName === 'schedule' && Number(ob.schedule.num_visits_per_night) === 1) {
+    if (componentName === 'schedule' && Number(ob.schedule.num_visits_per_night ?? 0) === 1) {
         ob.schedule = {
             ...ob.schedule,
             'num_intranight_cadence': 0,
             'num_internight_cadence': 0,
         }
+        console.log('setting intranight/internight cadence', ob)
     }
     return ob
 }
