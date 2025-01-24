@@ -120,9 +120,9 @@ export default function ObservationForm(props: Props) {
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 {CreateSwitchField('take_simulcal')}
-                                {CreateSwitchField('audo_nd_filters')}
-                                {CreateAutocompleteField('cal_nd_filter', 'input Cal ND Filter', 'Cal ND 1')}
-                                {CreateAutocompleteField('cal_nd_filter_2', 'input Cal ND Filter 2', 'Cal ND 2')}
+                                {CreateSwitchField('auto_nd_filters')}
+                                {CreateAutocompleteField('cal_n_d_1', 'input Cal ND Filter 1', 'Cal ND 1')}
+                                {CreateAutocompleteField('cal_n_d_2', 'input Cal ND Filter 2', 'Cal ND 2')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 {CreateTextField('nod_n', true)}
