@@ -11,7 +11,7 @@ import MetadataForm from './forms/metadata_form';
 
 interface Props {
     row: ComponentRow,
-    setRow: Function,
+    setRow: (row: ComponentRow) => void
     componentName: OBComponentName
 }
 
