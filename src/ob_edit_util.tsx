@@ -264,13 +264,14 @@ export const make_autocomplete_field = (
     //@ts-ignore
     const value = component[key] ?? defaultValue
     const options = choices ?? enum_choices(key, componentName)
+    console.log('value', value, 'options', options)
 
     return (<Tooltip title={input_label(key, componentName, true)}>
         <Autocomplete
             disablePortal
             id={key.replace('_', '-')}
             value={value}
-            onChange={(_, value) => handleTextChange(key, value ?? "")}
+            onChange={(_, value) => handleTextChange(key, value.label ?? "")}
             options={options}
             sx={{ width: 300 }}
             renderInput={(params) => <TextField {...params} label={label} />}
