@@ -199,18 +199,18 @@ export interface SwitchChangeInput extends BaseChangeInput {
 
 export const text_change = (input: TextChangeInput ) => {
     const formattedValue = format_edit_entry(input.key, input.value, input.isNumber ?? false)
-    const newRow = { ...input.row, [input.key]: formattedValue }
+    const newRow = { ...input.row, [input.key]: formattedValue, state: 'ROW_EDITED' }
     input.saveFunction(newRow)
 }
 
 export const array_change = (input: ArrayChangeInput ) => {
     const formattedValue = format_tags(input.value)
-    const newRow = { ...input.row, [input.key]: formattedValue }
+    const newRow = { ...input.row, [input.key]: formattedValue, state: 'ROW_EDITED' }
     input.saveFunction(newRow)
 }
 
 export const switch_change = (input: SwitchChangeInput ) => {
     const value = (input.event.target as HTMLInputElement).checked
-    const newRow = { ...input.row, [input.key]: value}
+    const newRow = { ...input.row, [input.key]: value, state: 'ROW_EDITED' }
     input.saveFunction(newRow)
 }
