@@ -13,12 +13,9 @@ import {
     Switch,
     Typography
 } from '@mui/material'
-import { useCommCadContext } from '../App';
 import { ComponentRow } from '../ob_component_table';
 import { Schedule } from '../module_selector';
 import { input_label, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput } from '../ob_edit_util';
-import { useDebounceCallback } from '../use_debounce_callback';
-import { useSnackbarContext } from '../App';
 
 
 interface Props {
@@ -31,18 +28,12 @@ interface Props {
 export default function ScheduleForm(props: Props) {
     const componentName = 'schedule'
     const { schedule, open, handleClose, setSchedule } = props
-    const debounced_save = useDebounceCallback(setSchedule, 1000)
+    
     const schedule_input_label = (param: string, tooltip = false) => input_label(param, componentName, tooltip)
-    const context = useCommCadContext()
-    const snackbarContext = useSnackbarContext()
 
     const baseInput: BaseChangeInput = {
-        obs: context.obs,
-        setOBs: context.setOBs,
-        setSnackbarMessage: snackbarContext.setSnackbarMessage,
-        componentName: componentName,
         row: schedule,
-        saveFunction: debounced_save
+        saveFunction: setSchedule 
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {

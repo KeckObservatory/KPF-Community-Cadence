@@ -14,12 +14,9 @@ import {
     Switch,
     Typography
 } from '@mui/material'
-import { useCommCadContext } from '../App';
 import { ComponentRow } from '../ob_component_table';
 import { Observation } from '../module_selector';
 import { input_label, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, enum_choices } from '../ob_edit_util';
-import { useDebounceCallback } from '../use_debounce_callback';
-import { useSnackbarContext } from '../App';
 
 
 interface Props {
@@ -32,18 +29,11 @@ interface Props {
 export default function ObservationForm(props: Props) {
     const componentName = 'observation'
     const { observation, open, handleClose, setObservation } = props
-    const debounced_save = useDebounceCallback(setObservation, 1000)
     const observation_input_label = (param: string, tooltip = false) => input_label(param, componentName, tooltip)
-    const context = useCommCadContext()
-    const snackbarContext = useSnackbarContext()
 
     const baseInput: BaseChangeInput = {
-        obs: context.obs,
-        setOBs: context.setOBs,
-        setSnackbarMessage: snackbarContext.setSnackbarMessage,
-        componentName: componentName,
         row: observation,
-        saveFunction: debounced_save
+        saveFunction: setObservation 
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {

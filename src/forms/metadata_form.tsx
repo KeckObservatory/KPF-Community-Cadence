@@ -11,11 +11,10 @@ import {
     Typography
 } from '@mui/material'
 import { MuiChipsInput } from 'mui-chips-input';
-import { useCommCadContext, useSnackbarContext } from '../App';
 import { ComponentRow } from '../ob_component_table';
 import { Metadata } from '../module_selector';
 import { input_label, text_change, array_change, TextChangeInput, BaseChangeInput, ArrayChangeInput } from '../ob_edit_util';
-import { useDebounceCallback } from '../use_debounce_callback';
+import { useCommCadContext } from '../App'
 
 interface Props {
     open: boolean
@@ -27,17 +26,11 @@ interface Props {
 export default function MetadataForm(props: Props) {
     const componentName = 'metadata'
     const { metadata, open, handleClose, setMetadata } = props
-    const debounced_save = useDebounceCallback(setMetadata, 1000)
     const context = useCommCadContext()
-    const snackbarContext = useSnackbarContext()
 
     const baseInput: BaseChangeInput = {
-        obs: context.obs,
-        setOBs: context.setOBs,
-        setSnackbarMessage: snackbarContext.setSnackbarMessage,
-        componentName: componentName,
         row: metadata,
-        saveFunction: debounced_save
+        saveFunction: setMetadata 
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {

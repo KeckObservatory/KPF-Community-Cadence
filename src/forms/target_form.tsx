@@ -11,12 +11,9 @@ import {
     Typography
 } from '@mui/material'
 import CatalogButton from '../catalog_button';
-import { useCommCadContext } from '../App';
 import { ComponentRow } from '../ob_component_table';
 import { OBTarget } from '../module_selector';
 import { input_label, text_change, TextChangeInput, BaseChangeInput } from '../ob_edit_util';
-import { useDebounceCallback } from '../use_debounce_callback';
-import { useSnackbarContext } from '../App';
 
 
 interface Props {
@@ -29,19 +26,13 @@ interface Props {
 export default function TargetForm(props: Props) {
     const componentName = 'target'
     const { target, open, handleClose, setTarget} = props
-    const debounced_save = useDebounceCallback<(target: OBTarget & ComponentRow) => void>(setTarget, 1000)
+    // const debounced_save = useDebounceCallback<(target: OBTarget & ComponentRow) => void>(setTarget, 1000)
     const target_input_label = (param: string, tooltip = false) => input_label(param, componentName, tooltip)
     const [hasCatalog, setHasCatalog] = React.useState(target.tic_id || target.gaia_id ? true : false)
-    const context = useCommCadContext()
-    const snackbarContext = useSnackbarContext()
 
     const baseInput: BaseChangeInput = {
-        obs: context.obs,
-        setOBs: context.setOBs,
-        setSnackbarMessage: snackbarContext.setSnackbarMessage,
-        componentName: componentName,
         row: target,
-        saveFunction: debounced_save
+        saveFunction: setTarget 
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {

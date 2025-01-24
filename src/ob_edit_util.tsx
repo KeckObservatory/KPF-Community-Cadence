@@ -177,11 +177,7 @@ export const edit_ob = async (
 }
 
 export interface BaseChangeInput {
-    componentName: OBComponentName,
     saveFunction: Function,
-    obs: OB[]
-    setOBs: Function
-    setSnackbarMessage: Function
     row: ComponentRow,
     isNumber?: boolean
 }
@@ -204,17 +200,17 @@ export interface SwitchChangeInput extends BaseChangeInput {
 export const text_change = (input: TextChangeInput ) => {
     const formattedValue = format_edit_entry(input.key, input.value, input.isNumber ?? false)
     const newRow = { ...input.row, [input.key]: formattedValue }
-    input.saveFunction(newRow, input.componentName, input.obs, input.setOBs, input.setSnackbarMessage)
+    input.saveFunction(newRow)
 }
 
 export const array_change = (input: ArrayChangeInput ) => {
     const formattedValue = format_tags(input.value)
     const newRow = { ...input.row, [input.key]: formattedValue }
-    input.saveFunction(newRow, input.componentName, input.obs, input.setOBs, input.setSnackbarMessage)
+    input.saveFunction(newRow)
 }
 
 export const switch_change = (input: SwitchChangeInput ) => {
     const value = (input.event.target as HTMLInputElement).checked
     const newRow = { ...input.row, [input.key]: value}
-    input.saveFunction(newRow, input.componentName, input.obs, input.setOBs, input.setSnackbarMessage)
+    input.saveFunction(newRow)
 }
