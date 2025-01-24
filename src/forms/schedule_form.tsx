@@ -16,7 +16,7 @@ import {
 import { useCommCadContext } from '../App';
 import { ComponentRow } from '../ob_component_table';
 import { Schedule } from '../module_selector';
-import { edit_ob, input_label, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput } from '../ob_edit_util';
+import { input_label, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput } from '../ob_edit_util';
 import { useDebounceCallback } from '../use_debounce_callback';
 import { useSnackbarContext } from '../App';
 
