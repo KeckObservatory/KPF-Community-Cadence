@@ -17,7 +17,7 @@ import {
 import { useCommCadContext } from '../App';
 import { ComponentRow } from '../ob_component_table';
 import { Observation } from '../module_selector';
-import { edit_ob, input_label, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, enum_choices } from '../ob_edit_util';
+import { input_label, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, enum_choices } from '../ob_edit_util';
 import { useDebounceCallback } from '../use_debounce_callback';
 import { useSnackbarContext } from '../App';
 
@@ -25,13 +25,14 @@ import { useSnackbarContext } from '../App';
 interface Props {
     open: boolean
     observation: Observation & ComponentRow
+    setObservation: (schedule: Observation & ComponentRow) => void
     handleClose: Function
 }
 
 export default function ObservationForm(props: Props) {
     const componentName = 'observation'
-    const { observation, open, handleClose, } = props
-    const debounced_save = useDebounceCallback(edit_ob, 1000)
+    const { observation, open, handleClose, setObservation } = props
+    const debounced_save = useDebounceCallback(setObservation, 1000)
     const observation_input_label = (param: string, tooltip = false) => input_label(param, componentName, tooltip)
     const context = useCommCadContext()
     const snackbarContext = useSnackbarContext()

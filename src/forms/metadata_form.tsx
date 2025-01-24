@@ -13,21 +13,21 @@ import {
 import { MuiChipsInput } from 'mui-chips-input';
 import { useCommCadContext, useSnackbarContext } from '../App';
 import { ComponentRow } from '../ob_component_table';
-import { MetaData } from '../module_selector';
-import { edit_ob, input_label, text_change, array_change, TextChangeInput, BaseChangeInput, ArrayChangeInput } from '../ob_edit_util';
+import { Metadata } from '../module_selector';
+import { input_label, text_change, array_change, TextChangeInput, BaseChangeInput, ArrayChangeInput } from '../ob_edit_util';
 import { useDebounceCallback } from '../use_debounce_callback';
 
 interface Props {
     open: boolean
-    metadata: ComponentRow & MetaData
+    metadata: ComponentRow & Metadata
+    setMetadata: (schedule: Metadata & ComponentRow) => void
     handleClose: Function
 }
 
 export default function MetadataForm(props: Props) {
     const componentName = 'metadata'
-    const debounced_save = useDebounceCallback(edit_ob, 1000)
-
-    const { metadata, open, handleClose, } = props
+    const { metadata, open, handleClose, setMetadata } = props
+    const debounced_save = useDebounceCallback(setMetadata, 1000)
     const context = useCommCadContext()
     const snackbarContext = useSnackbarContext()
 

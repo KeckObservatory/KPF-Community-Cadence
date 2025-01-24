@@ -11,6 +11,7 @@ import MetadataForm from './forms/metadata_form';
 
 interface Props {
     row: ComponentRow,
+    setRow: Function,
     componentName: OBComponentName
 }
 
@@ -22,7 +23,7 @@ interface Props {
 
 export default function OBEditDialogButton(props: Props) {
     const [open, setOpen] = React.useState(false);
-    const { row, componentName } = props
+    const { row, componentName, setRow } = props
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -38,6 +39,7 @@ export default function OBEditDialogButton(props: Props) {
                 return <TargetForm
                     open={open}
                     target={row}
+                    setTarget={setRow}
                     handleClose={handleClose}
                 />
             }
@@ -45,6 +47,7 @@ export default function OBEditDialogButton(props: Props) {
                 return <CalibrationForm
                     open={open}
                     calibration={row}
+                    setCalibration={setRow}
                     handleClose={handleClose}
                 />
             }
@@ -52,6 +55,7 @@ export default function OBEditDialogButton(props: Props) {
                 return <ScheduleForm
                     open={open}
                     schedule={row}
+                    setSchedule={setRow}
                     handleClose={handleClose}
                 />
             }
@@ -59,6 +63,7 @@ export default function OBEditDialogButton(props: Props) {
                 return <ObservationForm
                     open={open}
                     observation={row}
+                    setObservation={setRow}
                     handleClose={handleClose}
                 />
             }
@@ -66,6 +71,7 @@ export default function OBEditDialogButton(props: Props) {
                 return <MetadataForm
                     open={open}
                     metadata={row}
+                    setMetadata={setRow}
                     handleClose={handleClose}
                 />
             }

@@ -32,7 +32,7 @@ import { useDebounceCallback } from './use_debounce_callback';
 import { delete_obs, save_obs, submit_obs } from './api/api_root';
 import { OBWizardButton } from './ob_wizard';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
-import { MetaData, OB, OBComponent, Observation, OBTarget, Schedule } from './module_selector';
+import { Metadata, OB, OBComponent, Observation, OBTarget, Schedule } from './module_selector';
 import { format_edit_entry, format_tags, raDecFormat, ob_to_component_row, edit_ob } from './ob_edit_util';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import MenuItem from '@mui/material/MenuItem';
@@ -154,7 +154,7 @@ export const create_new_ob = (semid: string, obsid: number, username: string, ta
         scheduling_mode: 'Cadence',
     }
 
-    const metadata: MetaData = {
+    const metadata: Metadata = {
         obsid: String(obsid),
         observer_name: username,
         submitter: username,

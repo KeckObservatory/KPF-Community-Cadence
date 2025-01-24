@@ -22,7 +22,7 @@ export interface OBTarget extends SimbadTargetData {
   d_dec?: number,
 }
 
-export interface OBComponent extends Schedule, Calibration, Observation, OBTarget, MetaData {
+export interface OBComponent extends Schedule, Calibration, Observation, OBTarget, Metadata {
 
 }
 
@@ -98,7 +98,7 @@ export interface History {
   comment: string,
 }
 
-export interface MetaData {
+export interface Metadata {
   obsid?: string,
   observer_name?: string,
   semid?: string,
@@ -118,7 +118,7 @@ export interface MetaData {
 
 export interface OB { //TODO: define component interfaces
   _id: string,
-  metadata: MetaData,
+  metadata: Metadata,
   observation: Observation,
   calibration: Calibration,
   target: OBTarget,

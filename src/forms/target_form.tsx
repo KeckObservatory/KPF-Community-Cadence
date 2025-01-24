@@ -14,7 +14,7 @@ import CatalogButton from '../catalog_button';
 import { useCommCadContext } from '../App';
 import { ComponentRow } from '../ob_component_table';
 import { OBTarget } from '../module_selector';
-import { edit_ob, input_label, text_change, TextChangeInput, BaseChangeInput } from '../ob_edit_util';
+import { input_label, text_change, TextChangeInput, BaseChangeInput } from '../ob_edit_util';
 import { useDebounceCallback } from '../use_debounce_callback';
 import { useSnackbarContext } from '../App';
 
@@ -22,13 +22,14 @@ import { useSnackbarContext } from '../App';
 interface Props {
     open: boolean
     target: OBTarget & ComponentRow
+    setTarget: (target: OBTarget & ComponentRow) => void
     handleClose: Function
 }
 
 export default function TargetForm(props: Props) {
     const componentName = 'target'
-    const { target, open, handleClose, } = props
-    const debounced_save = useDebounceCallback(edit_ob, 1000)
+    const { target, open, handleClose, setTarget} = props
+    const debounced_save = useDebounceCallback<(target: OBTarget & ComponentRow) => void>(setTarget, 1000)
     const target_input_label = (param: string, tooltip = false) => input_label(param, componentName, tooltip)
     const [hasCatalog, setHasCatalog] = React.useState(target.tic_id || target.gaia_id ? true : false)
     const context = useCommCadContext()
@@ -274,113 +275,6 @@ export default function TargetForm(props: Props) {
                                 </Tooltip>
                             </Stack>
                         </Box>
-                        {/*<Box>
-                            <Typography
-                                component="h1"
-                                variant="h6"
-                                color="inherit"
-                                align='center'
-                                noWrap
-                            >
-                                Observation Info
-                            </Typography>
-                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title={target_input_label('simulcal_on', true)}>
-                                    <FormGroup>
-                                        <FormControlLabel
-                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSwitchChange('simulcal_on', event)}
-                                            control={<Switch checked={target.sim} />}
-                                            label={target_input_label('simulcal_on')} />
-                                    </FormGroup>
-                                </Tooltip>
-                                <Tooltip title={target_input_label('nominal_exposure_time', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('nominal_exposure_time')}
-                                        id="exposure-time"
-                                        onChange={(event) => handleTextChange('nominal_exposure_time', event.target.value, true)}
-                                        value={target.nominal_exposure_time}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('maximum_exposure_time', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('maximum_exposure_time')}
-                                        onChange={(event) => handleTextChange('maximum_exposure_time', event.target.value, true)}
-                                        id="max-exposure-time"
-                                        value={target.maximum_exposure_time}
-                                    />
-                                </Tooltip>
-                            </Stack>
-                        </Box>
-                        <Box>
-                            <Typography
-                                component="h1"
-                                variant="h6"
-                                color="inherit"
-                                align='center'
-                                noWrap
-                            >
-                                Cadence Information
-                            </Typography>
-                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title={target_input_label('num_exposures_per_visit', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('num_exposures_per_visit')}
-                                        id="obs-per-visit"
-                                        onChange={(event) => handleTextChange('num_exposures_per_visit', event.target.value, true)}
-                                        value={target.num_exposures_per_visit}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('num_visits_per_night', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('num_visits_per_night')}
-                                        id="visits-per-night"
-                                        onChange={(event) => handleTextChange('num_visits_per_night', event.target.value, true)}
-                                        value={target.num_visits_per_night}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('num_unique_nights_per_semester', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('num_unique_nights_per_semester')}
-                                        id="unique-nights"
-                                        onChange={(event) => handleTextChange('num_unique_nights_per_semester', event.target.value, true)}
-                                        value={target.num_unique_nights_per_semester}
-                                    />
-                                </Tooltip>
-                            </Stack>
-                            <Stack sx={{
-                                marginBottom: '24px',
-                            }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
-                                <Stack justifyContent='center' spacing={2}>
-                                    <Tooltip title={target_input_label('num_internight_cadence', true)}>
-                                        <TextField
-                                            // focused
-                                            label={target_input_label('num_internight_cadence')}
-                                            id="num-inter-night-cadence"
-                                            value={target.num_internight_cadence}
-                                            onChange={(event) => handleTextChange('num_internight_cadence', event.target.value, true)}
-                                        />
-                                    </Tooltip>
-                                    <Tooltip
-                                        title={`${target_input_label('num_intranight_cadence', true)}.${target.num_visits_per_night === 1 ? ' Disabled because num_visits_per_night is 1' : ''}`}
-                                        placement='left'
-                                    >
-                                        <TextField
-                                            // focused
-                                            disabled={target.num_visits_per_night === 1}
-                                            label={target_input_label('num_intranight_cadence')}
-                                            id="num-intra-night-cadence"
-                                            value={target.num_intranight_cadence}
-                                            onChange={(event) => handleTextChange('num_intranight_cadence', event.target.value, false)}
-                                        />
-                                    </Tooltip>
-                                </Stack>
-                            </Stack>
-                        </Box> */}
                     </Paper>
                 </Stack>
             </DialogContent>

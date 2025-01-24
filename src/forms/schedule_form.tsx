@@ -24,13 +24,14 @@ import { useSnackbarContext } from '../App';
 interface Props {
     open: boolean
     schedule: Schedule & ComponentRow
+    setSchedule: (schedule: Schedule & ComponentRow) => void
     handleClose: Function
 }
 
 export default function ScheduleForm(props: Props) {
     const componentName = 'schedule'
-    const { schedule, open, handleClose, } = props
-    const debounced_save = useDebounceCallback(edit_ob, 1000)
+    const { schedule, open, handleClose, setSchedule } = props
+    const debounced_save = useDebounceCallback(setSchedule, 1000)
     const schedule_input_label = (param: string, tooltip = false) => input_label(param, componentName, tooltip)
     const context = useCommCadContext()
     const snackbarContext = useSnackbarContext()
