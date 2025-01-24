@@ -30,7 +30,6 @@ const mapEntries = Object.entries(ob_schemas).map(([ckey, schema]) => {
 
 
 const map = Object.fromEntries(mapEntries)
-console.log('map', map)
 
 const swap_translator_ob_to_ob_keys = (OB: { [key: string]: { [key: string]: object } }) => {
     //converts inported OB to swap translator_mapping and component keys

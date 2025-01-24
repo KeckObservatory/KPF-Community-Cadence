@@ -2,7 +2,6 @@ import React from 'react';
 import { save_obs } from './api/api_root';
 import { OB } from './module_selector';
 import { ComponentRow, OBComponentName } from './ob_component_table';
-import { useDebounceCallback } from './use_debounce_callback';
 import { ob_schemas } from './validation_check_dialog';
 
 
@@ -11,9 +10,22 @@ export const input_label = (param: string, componentName: OBComponentName, toolt
     const componentSchema = ob_schemas[componentName]
     const props = componentSchema['properties'][param]
     return tooltip ?
-        props.description
+        props?.description
         :
-        props.short_description ?? props.description
+        props?.short_description ?? props?.description
+}
+
+interface EnumChoice {
+    label: string
+}
+
+export const enum_choices = (param: string, componentName: OBComponentName): string[] => {
+    const componentSchema = ob_schemas[componentName]
+    const props = componentSchema['properties'][param]
+    const enumChoices = props.enum.map( (choice: string | number) => {
+        return {label: String(choice)} as EnumChoice
+    })
+    return enumChoices 
 }
 
 export const format_tags = (tags: string[]) => {

@@ -17,7 +17,7 @@ import * as observation_schema from './schemas/observation_schema.json'
 import * as metadata_schema from './schemas/metadata_schema.json'
 import { OB } from './module_selector';
 import { OBComponentName } from './ob_component_table';
-import { MetaData, Observation, OBTarget, ScheduleData, Calibration } from './module_selector';
+import { MetaData, Observation, OBTarget, Schedule, Calibration } from './module_selector';
 
 export interface SimpleDialogProps {
   open: boolean;
@@ -66,7 +66,7 @@ const calibration = calibration_schema as unknown as JSONSchemaType<Calibration>
 const ob_target = ob_target_schema as unknown as JSONSchemaType<OBTarget>
 const observation = observation_schema as unknown as JSONSchemaType<Observation>
 const metadata = metadata_schema as unknown as JSONSchemaType<MetaData>
-const schedule = schedule_schema as unknown as JSONSchemaType<ScheduleData>
+const schedule = schedule_schema as unknown as JSONSchemaType<Schedule>
 
 export const ob_schemas: Record<string, any> = {
   "calibration": calibration,

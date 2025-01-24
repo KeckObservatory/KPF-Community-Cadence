@@ -28,11 +28,13 @@
         },
         "nominal_exposure_time": {
             "type": "integer",
-            "description": "Nominal Exposure Time [s]"
+            "description": "Nominal Exposure Time [s]",
+            "short_description": "Nominal Exp Time"
         },
         "maximum_exposure_time": {
             "type": "integer",
-            "description": "Maximum Exposure Time [s]"
+            "description": "Maximum Exposure Time [s]",
+            "short_description": "Max Exp Time"
         },
         "num_internight_cadence": {
             "type": ["number", "string"],
@@ -70,12 +72,29 @@
             "short_description": "FT End",
             "default": ""
         },
+        "minimum_elevation": {
+            "type": "number",
+            "translator_mapping": "MinimumElevation",
+            "description": "[deg] Below 30 degrees elevation, the ADC performance degrades dramatically.",
+            "short_description": "Min El",
+            "default": 30,
+            "multipleOf": 0.1
+        },
+        "minimum_moon_separation": {
+            "type": "number",
+            "translator_mapping": "MinimumMoonSeparation",
+            "short_description": "Moon Sep",
+            "description": "Minimum moon separation angle [deg]",
+            "default": 15,
+            "multipleOf": 0.1
+        },
         "weather_band": {
             "type": "integer",
             "translator_mapping": "WeatherBand",
             "description": "[bitmap] 3 bits for to bands 1, 2, and 3",
             "short_description": "W Band",
-            "default": 7
+            "default": 7,
+            "not_editable_by_user": true
         },
         "accessibility_map": {
             "type": ["number", "string"],
@@ -86,14 +105,6 @@
             "not_editable_by_user": true,
             "default": 0
         },
-        "minimum_elevation": {
-            "type": "number",
-            "translator_mapping": "MinimumElevation",
-            "description": "[deg] Below 30 degrees elevation, the ADC performance degrades dramatically.",
-            "short_description": "Min El",
-            "default": 30,
-            "multipleOf": 0.1
-        },
         "total_observations_requested": {
             "type": "integer",
             "description": "Total Observations Requested",
@@ -101,19 +112,13 @@
         },
         "total_time_for_target": {
             "type": "number",
-            "description": "Total Time for Target [seconds]"
+            "description": "Total Time for Target [seconds]",
+            "not_editable_by_user": true
         },
         "total_time_for_target_hours": {
             "type": "number",
-            "description": "Total Time for Target [hours]"
-        },
-        "minimum_moon_separation": {
-            "type": "number",
-            "translator_mapping": "MinimumMoonSeparation",
-            "short_description": "Moon Sep",
-            "description": "Minimum moon separation angle [deg]",
-            "default": 15,
-            "multipleOf": 0.1
+            "description": "Total Time for Target [hours]",
+            "not_editable_by_user": true
         }
     },
     "required": [ ],

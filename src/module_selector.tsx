@@ -22,14 +22,16 @@ export interface OBTarget extends SimbadTargetData {
   d_dec?: number,
 }
 
-export interface OBComponent extends ScheduleData, Calibration, Observation, OBTarget, MetaData {
+export interface OBComponent extends Schedule, Calibration, Observation, OBTarget, MetaData {
 
 }
 
-export interface ScheduleData {
+export interface Schedule {
   scheduling_mode?: string,
   num_visits_per_night?: Integer,
   num_nights_per_semester?: Integer,
+  nominal_exposure_time?: number,
+  maximum_exposure_time?: number,
   num_internight_cadence?: Integer,
   num_intranight_cadence?: Integer,
   total_observations_requested?: Integer,
@@ -110,6 +112,7 @@ export interface MetaData {
   details?: string,
   status?: string,
   tags?: string[],
+  comment?: string,
 }
 
 
@@ -119,7 +122,7 @@ export interface OB { //TODO: define component interfaces
   observation: Observation,
   calibration: Calibration,
   target: OBTarget,
-  schedule: ScheduleData
+  schedule: Schedule
 }
 
 function CustomTabPanel(props: TabPanelProps) {

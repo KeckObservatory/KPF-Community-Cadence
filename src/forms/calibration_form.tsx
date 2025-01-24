@@ -26,7 +26,6 @@ import { Calibration } from '../module_selector';
 interface Props {
     open: boolean
     calibration: Calibration
-    setCalibration: Function
     handleClose: Function
 }
 

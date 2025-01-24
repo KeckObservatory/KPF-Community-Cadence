@@ -3,7 +3,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip'
 import EditIcon from '@mui/icons-material/Edit';
 import { ComponentRow, OBComponentName } from './ob_component_table';
-import { Calibration, MetaData, Observation, OBTarget, ScheduleData } from './module_selector';
+import { Calibration, MetaData, Observation, OBTarget, Schedule } from './module_selector';
 import TargetForm from './forms/target_form';
 import CalibrationForm from './forms/calibration_form';
 import ScheduleForm from './forms/schedule_form';
@@ -39,24 +39,21 @@ export default function OBEditDialogButton(props: Props) {
             case 'target': {
                 return <TargetForm
                     open={open}
-                    target={row as OBTarget}
-                    setTarget={setRow}
+                    target={row}
                     handleClose={handleClose}
                 />
             }
             case 'calibration': {
                 return <CalibrationForm
                     open={open}
-                    calibration={row as Calibration}
-                    setCalibration={setRow}
+                    calibration={row}
                     handleClose={handleClose}
                 />
             }
             case 'schedule': {
                 return <ScheduleForm
                     open={open}
-                    schedule={row as ScheduleData}
-                    setSchedule={setRow}
+                    schedule={row}
                     handleClose={handleClose}
                 />
             }
@@ -64,15 +61,13 @@ export default function OBEditDialogButton(props: Props) {
                 return <ObservationForm
                     open={open}
                     observation={row as Observation}
-                    setObservation={setRow}
                     handleClose={handleClose}
                 />
             }
             case 'metadata': {
                 return <MetadataForm
                     open={open}
-                    metadata={row as MetaData}
-                    setMetadata={setRow}
+                    metadata={row}
                     handleClose={handleClose}
                 />
             }

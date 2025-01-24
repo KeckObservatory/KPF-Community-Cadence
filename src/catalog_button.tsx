@@ -60,7 +60,7 @@ export interface SimbadTargetData {
     gaia_id?: string,
     tic_id?: string,
     two_mass_id?: string,
-    comment?: string
+    catalog_comment?: string
 }
 
 export const get_simbad_data = async (targetName: string): Promise<SimbadTargetData> => {
@@ -77,7 +77,7 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
             continue
         }
         if (line.startsWith('!!')) {
-            simbadData['comment'] = line.split('!! ')[1]
+            simbadData['catalog_comment'] = line.split('!! ')[1]
         }
         if (line.startsWith('Coordinates(ICRS')) {
             simbadData['ra'] = line.split(': ')[1].split(' ').slice(0, 3).join(':')
@@ -135,8 +135,8 @@ export const get_simbad_and_gaia_target_info = async (targetName: string, gaia_i
         const gaiaResp = await get_gaia(gaiaNumber)
         gaiaParams = gaiaResp.gaia_params ?? {}
         if (Object.keys(gaiaParams).length === 0) {
-            let comment = catTarget.comment + 'GAIA RESP: ' + gaiaResp.message
-            catTarget['comment'] = comment
+            let comment = catTarget.catalog_comment + 'GAIA RESP: ' + gaiaResp.message
+            catTarget['catalog_comment'] = comment
         }
     }
     return { ...simbadData, ...gaiaParams, gaia_id: simbadGaia } //simbad gaia includes version.
