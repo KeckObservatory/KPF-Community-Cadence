@@ -3,7 +3,6 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip'
 import EditIcon from '@mui/icons-material/Edit';
 import { ComponentRow, OBComponentName } from './ob_component_table';
-import { Calibration, MetaData, Observation, OBTarget, Schedule } from './module_selector';
 import TargetForm from './forms/target_form';
 import CalibrationForm from './forms/calibration_form';
 import ScheduleForm from './forms/schedule_form';
@@ -12,19 +11,18 @@ import MetadataForm from './forms/metadata_form';
 
 interface Props {
     row: ComponentRow,
-    setRow: Function,
     componentName: OBComponentName
 }
 
-interface OBEditProps extends Props {
-    handleClose: Function
-    open: boolean
-}
+// interface OBEditProps extends Props {
+//     handleClose: Function
+//     open: boolean
+// }
 
 
 export default function OBEditDialogButton(props: Props) {
     const [open, setOpen] = React.useState(false);
-    const { row, setRow, componentName } = props
+    const { row, componentName } = props
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -60,7 +58,7 @@ export default function OBEditDialogButton(props: Props) {
             case 'observation': {
                 return <ObservationForm
                     open={open}
-                    observation={row as Observation}
+                    observation={row}
                     handleClose={handleClose}
                 />
             }

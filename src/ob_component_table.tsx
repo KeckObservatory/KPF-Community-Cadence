@@ -542,7 +542,6 @@ export default function OBComponentTable(props: Props) {
         }
         cell.push(<OBEditDialogButton
             row={editRow}
-            setRow={setEditRow}
             componentName={componentName}
         />)
         cell.push(
