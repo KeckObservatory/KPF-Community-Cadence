@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { ComponentRow } from '../ob_component_table';
 import { Schedule } from '../module_selector';
-import { text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, make_text_field, make_autocomplete_field, make_switch_field } from '../ob_edit_util';
+import { text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, make_text_field, make_switch_field } from '../ob_edit_util';
 
 
 interface Props {
