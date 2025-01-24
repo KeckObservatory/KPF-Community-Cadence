@@ -13,14 +13,14 @@
             "not_editable_by_user": true
         },
         "num_visits_per_night": {
-            "type": ["number", "string"],
+            "type": "integer",
             "translator_mapping": "VisitsPerNight",
             "description": "(Cadence mode) Number of Visits per Night",
             "short_description": "# Visits",
             "default": 1
         },
         "num_nights_per_semester": {
-            "type": ["number", "string"],
+            "type": "integer",
             "translator_mapping": "NightsPerSemester",
             "description": "(Cadence mode) Number of of Nights Per Semester",
             "short_description": "# Nights",
@@ -37,14 +37,14 @@
             "short_description": "Max Exp Time"
         },
         "num_internight_cadence": {
-            "type": ["number", "string"],
+            "type": "integer",
             "translator_mapping": "interNightCadenceMin",
             "description": "(Cadence mode) Minimum Inter-Night Cadence (hours)",
             "short_description": "Inter Cad",
             "default": 0
         },
         "num_intranight_cadence": {
-            "type": "number",
+            "type": "integer",
             "translator_mapping": "intraNightCadenceMin",
             "description": "(Cadence mode) Minimum Intra-Night Cadence (days)",
             "short_description": "Intra Cad",
