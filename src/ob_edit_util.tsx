@@ -5,6 +5,10 @@ import { ComponentRow, OBComponentName } from './ob_component_table';
 import { ob_schemas } from './validation_check_dialog';
 import Tooltip from '@mui/material/Tooltip';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 
 
@@ -220,12 +224,12 @@ export const switch_change = (input: SwitchChangeInput) => {
 }
 
 export const make_text_field = (
-    key: string, 
-    component: OBComponent, 
-    componentName: OBComponentName, 
+    key: string,
+    component: OBComponent,
+    componentName: OBComponentName,
     handleTextChange: Function,
-    isNumber=false) => {
-    
+    isNumber = false) => {
+
     if (Object.keys(component).includes(key) === false) {
         console.warn('make_text_field', `key ${key} not in component ${componentName}`)
         return
@@ -233,13 +237,68 @@ export const make_text_field = (
     //@ts-ignore
     const value = component[key]
     return (
-    <Tooltip title={input_label(key, componentName, true)}>
-        <TextField
-            // focused
-            label={input_label(key, componentName, false)}
+        <Tooltip title={input_label(key, componentName, true)}>
+            <TextField
+                // focused
+                label={input_label(key, componentName, false)}
+                id={key.replace('_', '-')}
+                onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
+                value={value}
+            />
+        </Tooltip>)
+}
+
+export const make_autocomplete_field = (
+    key: string,
+    component: OBComponent,
+    componentName: OBComponentName,
+    handleTextChange: Function,
+    defaultValue: string = "",
+    label: string = "",
+    choices?: string[],
+) => {
+
+    if (Object.keys(component).includes(key) === false) {
+        console.warn('make_autocomplete_field', `key ${key} not in component ${componentName}`)
+        return
+    }
+    //@ts-ignore
+    const value = component[key] ?? defaultValue
+    const options = choices ?? enum_choices(key, componentName)
+
+    return (<Tooltip title={input_label(key, componentName, true)}>
+        <Autocomplete
+            disablePortal
             id={key.replace('_', '-')}
-            onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
             value={value}
+            onChange={(_, value) => handleTextChange(key, value ?? "")}
+            options={options}
+            sx={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label={label} />}
         />
     </Tooltip>)
+}
+
+export const make_switch_field = (
+    key: string,
+    component: OBComponent,
+    componentName: OBComponentName,
+    handleSwitchChange: Function) => {
+
+    if (Object.keys(component).includes(key) === false) {
+        console.warn('make_switch_field', `key ${key} not in component ${componentName}`)
+        return
+    }
+    //@ts-ignore
+    const value = component[key]
+    return (
+        <Tooltip title={input_label(key, componentName, true)}>
+            <FormGroup>
+                <FormControlLabel
+                    onChange={(event) => handleSwitchChange(key, event)}
+                    control={<Switch checked={value} />}
+                    label={input_label(key, componentName)} />
+            </FormGroup>
+        </Tooltip>
+    )
 }
