@@ -133,7 +133,7 @@
         "nod_e": {
             "type": "number",
             "description": "Distance to nod the telescope East before starting exposture [arcseconds]",
-            "short_description": "Nod N",
+            "short_description": "Nod E",
             "default": 0.0,
             "multipleOf": 0.01,
             "translator_mapping": "NodE"
