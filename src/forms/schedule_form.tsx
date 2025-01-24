@@ -54,14 +54,6 @@ export default function ScheduleForm(props: Props) {
         return make_text_field(key, schedule, componentName, handleTextChange, isNumber)
     }
 
-    const CreateAutocompleteField = (key: string,
-        defaultValue: string = "",
-        label: string = "",
-        choices?: { label: string }[],
-    ) => {
-        return make_autocomplete_field(key, schedule, componentName, handleTextChange, defaultValue, label, choices)
-    }
-
     const CreateSwitchField = (key: string) => {
         return make_switch_field(key, schedule, componentName, handleSwitchChange)
     }
