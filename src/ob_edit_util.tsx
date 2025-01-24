@@ -254,7 +254,7 @@ export const make_autocomplete_field = (
     handleTextChange: Function,
     defaultValue: string = "",
     label: string = "",
-    choices?: string[],
+    choices?: { label: string }[],
 ) => {
 
     if (Object.keys(component).includes(key) === false) {
@@ -264,7 +264,6 @@ export const make_autocomplete_field = (
     //@ts-ignore
     const value = component[key] ?? defaultValue
     const options = choices ?? enum_choices(key, componentName)
-    console.log('value', value, 'options', options)
 
     return (<Tooltip title={input_label(key, componentName, true)}>
         <Autocomplete

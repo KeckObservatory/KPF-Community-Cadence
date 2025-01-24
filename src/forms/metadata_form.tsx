@@ -4,16 +4,14 @@ import DialogContent from '@mui/material/DialogContent';
 import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper'
 import Tooltip from '@mui/material/Tooltip'
-import TextField from '@mui/material/TextField'
 import {
-    Autocomplete,
     Box,
     Typography
 } from '@mui/material'
 import { MuiChipsInput } from 'mui-chips-input';
 import { ComponentRow } from '../ob_component_table';
 import { Metadata } from '../module_selector';
-import { input_label, text_change, array_change, TextChangeInput, BaseChangeInput, ArrayChangeInput } from '../ob_edit_util';
+import { input_label, text_change, array_change, TextChangeInput, BaseChangeInput, ArrayChangeInput, make_text_field, make_autocomplete_field } from '../ob_edit_util';
 import { useCommCadContext } from '../App'
 
 interface Props {
@@ -52,6 +50,20 @@ export default function MetadataForm(props: Props) {
         array_change(input)
     }
 
+
+    const CreateTextField = (key: string, isNumber = false) => {
+        return make_text_field(key, metadata, componentName, handleTextChange, isNumber)
+    }
+
+    const CreateAutocompleteField = (key: string,
+        defaultValue: string = "",
+        label: string = "",
+        choices?: { label: string}[],
+    ) => {
+        return make_autocomplete_field(key, metadata, componentName, handleTextChange, defaultValue, label, choices)
+    }
+
+    const semidChoices = context.semids.map((s) => { return { label: s } })
 
     return (
         <Dialog
@@ -93,18 +105,7 @@ export default function MetadataForm(props: Props) {
                                     Program Information
                                 </Typography>
                                 <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                    <Tooltip title="Select semid"
-                                    >
-                                        <Autocomplete
-                                            disablePortal
-                                            id="semid-selection"
-                                            value={metadata.semid ? { label: metadata.semid } : { label: 'input semid' }}
-                                            onChange={(_, value) => handleTextChange('semid', value?.label ?? "")}
-                                            options={context.semids.map((s) => { return { label: s } })}
-                                            sx={{ width: 300 }}
-                                            renderInput={(params) => <TextField {...params} label="Semid" />}
-                                        />
-                                    </Tooltip>
+                                    {CreateAutocompleteField('semid', 'input semid', 'Semid', semidChoices)}
                                 </Stack>
                             </Stack>
                         </Box>
@@ -122,17 +123,7 @@ export default function MetadataForm(props: Props) {
                             <Stack sx={{
                                 marginBottom: '4px',
                             }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
-                                <Tooltip title={input_label('comment', componentName, true)}>
-                                    <TextField
-                                        // focused
-                                        multiline
-                                        maxRows={4}
-                                        label={input_label('comment', componentName)}
-                                        id="comment"
-                                        onChange={(event) => handleTextChange('comment', event.target.value)}
-                                        value={metadata.comment}
-                                    />
-                                </Tooltip>
+                                {CreateTextField('comment')}
                             </Stack>
                         </Box>
                     </Paper>

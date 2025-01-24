@@ -4,8 +4,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper'
-import Tooltip from '@mui/material/Tooltip'
-import TextField from '@mui/material/TextField'
 import {
     Box,
     Typography
@@ -13,7 +11,7 @@ import {
 import CatalogButton from '../catalog_button';
 import { ComponentRow } from '../ob_component_table';
 import { OBTarget } from '../module_selector';
-import { input_label, text_change, TextChangeInput, BaseChangeInput } from '../ob_edit_util';
+import { text_change, TextChangeInput, BaseChangeInput, make_text_field } from '../ob_edit_util';
 
 
 interface Props {
@@ -26,8 +24,6 @@ interface Props {
 export default function TargetForm(props: Props) {
     const componentName = 'target'
     const { target, open, handleClose, setTarget} = props
-    // const debounced_save = useDebounceCallback<(target: OBTarget & ComponentRow) => void>(setTarget, 1000)
-    const target_input_label = (param: string, tooltip = false) => input_label(param, componentName, tooltip)
     const [hasCatalog, setHasCatalog] = React.useState(target.tic_id || target.gaia_id ? true : false)
 
     const baseInput: BaseChangeInput = {
@@ -50,6 +46,11 @@ export default function TargetForm(props: Props) {
         setHasCatalog(tgt.tic_id || tgt.gaia_id ? true : false)
         //trigger rerender
         handleTextChange('ra', tgt.ra ?? "")
+    }
+
+
+    const CreateTextField = (key: string, isNumber = false) => {
+        return make_text_field(key, target, componentName, handleTextChange, isNumber)
     }
 
     return (
@@ -91,179 +92,34 @@ export default function TargetForm(props: Props) {
                                 Target Information
                             </Typography>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title={target_input_label('target_name', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('target_name')}
-                                        id="target-name"
-                                        value={target.target_name}
-                                        onChange={(event) => handleTextChange('target_name', event.target.value)}
-
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('t_eff', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('t_eff')}
-                                        id="t-eff"
-                                        value={target.t_eff}
-                                        onChange={(event) => handleTextChange('t_eff', event.target.value, true)}
-                                    />
-                                </Tooltip>
+                                {CreateTextField('target_name')}
+                                {CreateTextField('t_eff')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title={target_input_label('ra', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('ra')}
-                                        id="ra"
-                                        value={target.ra}
-                                        onChange={(event) => handleTextChange('ra', event.target.value)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('dec', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('dec')}
-                                        id="dec"
-                                        value={target.dec}
-                                        onChange={(event) => handleTextChange('dec', event.target.value)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('j_mag', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('j_mag')}
-                                        id="j-magnitude"
-                                        value={target.j_mag}
-                                        onChange={(event) => handleTextChange('j_mag', event.target.value)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('g_mag', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('g_mag')}
-                                        id="g-magnitude"
-                                        value={target.g_mag}
-                                        onChange={(event) => handleTextChange('g_mag', event.target.value)}
-                                    />
-                                </Tooltip>
+                                {CreateTextField('ra')}
+                                {CreateTextField('dec')}
+                                {CreateTextField('j_mag')}
+                                {CreateTextField('g_mag')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title={target_input_label('parallax', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('parallax')}
-                                        id="parallax"
-                                        value={target.parallax}
-                                        onChange={(event) => handleTextChange('parallax', event.target.value)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('gaia_id', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('gaia_id')}
-                                        id="gaia-id"
-                                        value={target.gaia_id}
-                                        onChange={(event) => handleTextChange('gaia_id', event.target.value)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('tic_id', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('tic_id')}
-                                        id="tic"
-                                        value={target.tic_id}
-                                        onChange={(event) => handleTextChange('tic_id', event.target.value)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('two_mass_id', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('two_mass_id')}
-                                        id="two_mass_id"
-                                        value={target.two_mass_id}
-                                        onChange={(event) => handleTextChange('two_mass_id', event.target.value)}
-                                    />
-                                </Tooltip>
+                                {CreateTextField('parallax')}
+                                {CreateTextField('gaia_id')}
+                                {CreateTextField('tic_id')}
+                                {CreateTextField('two_mass_id')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title={target_input_label('epoch', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('epoch')}
-                                        id="epoch"
-                                        value={target.epoch}
-                                        onChange={(event) => handleTextChange('epoch', event.target.value)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('equinox', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('equinox')}
-                                        id="equinox"
-                                        value={target.equinox}
-                                        onChange={(event) => handleTextChange('equinox', event.target.value, true)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('d_ra', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('d_ra')}
-                                        id="d_ra"
-                                        value={target.d_ra}
-                                        onChange={(event) => handleTextChange('d_ra', event.target.value, true)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('d_dec', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('d_dec')}
-                                        id="d_dec"
-                                        value={target.d_dec}
-                                        onChange={(event) => handleTextChange('d_dec', event.target.value, true)}
-                                    />
-                                </Tooltip>
+                                {CreateTextField('epoch')}
+                                {CreateTextField('equinox')}
+                                {CreateTextField('d_ra')}
+                                {CreateTextField('d_dec')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title={target_input_label('pm_ra', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('pm_ra')}
-                                        id="pm-ra"
-                                        value={target.pm_ra}
-                                        onChange={(event) => handleTextChange('pm_ra', event.target.value)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('pm_dec', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('pm_dec')}
-                                        id="pm-dec"
-                                        value={target.pm_dec}
-                                        onChange={(event) => handleTextChange('pm_dec', event.target.value)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title={target_input_label('systemic_velocity', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('systemic_velocity')}
-                                        id="rot-vel"
-                                        value={target.systemic_velocity}
-                                        onChange={(event) => handleTextChange('systemic_velocity', event.target.value)}
-                                    />
-                                </Tooltip>
+                                {CreateTextField('pm_ra')}
+                                {CreateTextField('pm_dec')}
+                                {CreateTextField('systemic_velocity')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                <Tooltip title={target_input_label('catalog_comment', true)}>
-                                    <TextField
-                                        // focused
-                                        label={target_input_label('catalog_comment')}
-                                        id="catalog_comment"
-                                        value={target.catalog_comment}
-                                        onChange={(event) => handleTextChange('catalog_comment', event.target.value)}
-                                    />
-                                </Tooltip>
+                                {CreateTextField('catalog_comment')}
                             </Stack>
                         </Box>
                     </Paper>

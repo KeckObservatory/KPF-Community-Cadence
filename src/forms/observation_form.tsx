@@ -55,7 +55,7 @@ export default function ObservationForm(props: Props) {
     const CreateAutocompleteField = (key: string,
         defaultValue: string = "",
         label: string = "",
-        choices?: string[],
+        choices?: { label: string }[],
     ) => {
         return make_autocomplete_field(key, observation, componentName, handleTextChange, defaultValue, label, choices)
     }
