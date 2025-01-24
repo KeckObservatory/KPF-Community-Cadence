@@ -56,13 +56,16 @@ export default function ObservationForm(props: Props) {
         defaultValue: string = "",
         label: string = "",
         choices?: { label: string }[],
+        disabled = false
     ) => {
-        return make_autocomplete_field(key, observation, componentName, handleTextChange, defaultValue, label, choices)
+        return make_autocomplete_field(key, observation, componentName, handleTextChange, defaultValue, label, choices, disabled)
     }
 
     const CreateSwitchField = (key: string) => {
         return make_switch_field(key, observation, componentName, handleSwitchChange)
     }
+
+    const autoFiltersOn = observation.auto_nd_filters === true
 
     return (
         <Dialog
@@ -121,8 +124,8 @@ export default function ObservationForm(props: Props) {
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 {CreateSwitchField('take_simulcal')}
                                 {CreateSwitchField('auto_nd_filters')}
-                                {CreateAutocompleteField('cal_n_d_1', 'input Cal ND Filter 1', 'Cal ND 1')}
-                                {CreateAutocompleteField('cal_n_d_2', 'input Cal ND Filter 2', 'Cal ND 2')}
+                                {CreateAutocompleteField('cal_n_d_1', 'input Cal ND Filter 1', 'Cal ND 1', undefined, autoFiltersOn)}
+                                {CreateAutocompleteField('cal_n_d_2', 'input Cal ND Filter 2', 'Cal ND 2', undefined, autoFiltersOn)}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 {CreateTextField('nod_n', true)}

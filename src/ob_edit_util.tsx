@@ -255,6 +255,7 @@ export const make_autocomplete_field = (
     defaultValue: string = "",
     label: string = "",
     choices?: { label: string }[],
+    disabled = false
 ) => {
 
     if (Object.keys(component).includes(key) === false) {
@@ -268,6 +269,7 @@ export const make_autocomplete_field = (
     return (<Tooltip title={input_label(key, componentName, true)}>
         <Autocomplete
             disablePortal
+            disabled={disabled}
             id={key.replace('_', '-')}
             value={value}
             onChange={(_, value) => handleTextChange(key, value.label ?? "")}
