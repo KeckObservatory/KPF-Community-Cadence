@@ -372,6 +372,15 @@ export default function OBComponentTable(props: Props) {
         width: 200,
         editable: false,
     } as GridColDef
+    const ob_feasible_col = {
+        field: 'ob_feasible',
+        type: 'boolean',
+        resizable: true,
+        headerName: 'Feasible',
+        width: 80,
+        editable: false,
+        renderCell: ob_feasible_chip
+    } as GridColDef
 
     columns = [...columns, target_name_col, target_name_semid_col, ob_feasible_col]
     const schema = ob_schemas[componentName]
