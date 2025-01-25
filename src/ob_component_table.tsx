@@ -69,7 +69,6 @@ interface EditToolbarProps {
 }
 
 const ob_feasible_chip = (params: GridRenderCellParams) => {
-    console.log('ob feasible params', params)
     let text = params.value == undefined ? 'Unknown'
         : params.value ? 'Feasible'
             : 'Infeasible'
