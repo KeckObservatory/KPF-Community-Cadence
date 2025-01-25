@@ -118,8 +118,9 @@ export const ob_to_component_row = (ob: OB, componentName: OBComponentName): Com
     const target_name_semid = target_name + '_' + ob.metadata.semid
     const cmp = ob[componentName] as Object
     const state = ob.metadata?.state ?? 'CREATED' //overwrite state with metadata state
-    const ob_feasible = ob.metadata.ob_feasible
+    const ob_feasible = ob.metadata?.ob_feasible
     const details = ob.metadata.details ?? ''
+    console.log('ob_to_component_row', ob, ob_feasible)
     return {
         ...cmp,
         _id,

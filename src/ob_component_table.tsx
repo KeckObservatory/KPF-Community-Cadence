@@ -68,7 +68,8 @@ interface EditToolbarProps {
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
 }
 
-const ob_feisible_chip = (params: GridRenderCellParams) => {
+const ob_feasible_chip = (params: GridRenderCellParams) => {
+    console.log('ob feasible params', params)
     let text = params.value == undefined ? 'Unknown'
         : params.value ? 'Feasible'
             : 'Infeasible'
@@ -370,15 +371,6 @@ export default function OBComponentTable(props: Props) {
         headerName: 'Target_Semid',
         width: 200,
         editable: false,
-    } as GridColDef
-    const ob_feasible_col = {
-        field: 'ob_feasible',
-        type: 'boolean',
-        resizable: true,
-        headerName: 'Feasible',
-        width: 100,
-        editable: false,
-        renderCell: ob_feisible_chip
     } as GridColDef
 
     columns = [...columns, target_name_col, target_name_semid_col, ob_feasible_col]
