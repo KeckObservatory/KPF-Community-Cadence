@@ -16,8 +16,6 @@ import {
     GridToolbar,
     GridValueSetter,
     GridValueParser,
-    GridExportMenuItemProps,
-    GridToolbarExportContainer,
     GridRowId,
     GridRowModes,
     GridActionsCellItem,
@@ -35,8 +33,7 @@ import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from '.
 import { Metadata, OB, OBComponent, Observation, OBTarget, Schedule } from './module_selector';
 import { format_edit_entry, format_tags, raDecFormat, ob_to_component_row, edit_ob } from './ob_edit_util';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
-import MenuItem from '@mui/material/MenuItem';
-import Button, { ButtonProps } from '@mui/material/Button';
+import Button  from '@mui/material/Button';
 import { ErrorObject } from 'ajv/dist/2019';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
