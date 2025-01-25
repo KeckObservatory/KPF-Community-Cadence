@@ -224,7 +224,18 @@ function EditComponentToolbar(props: EditToolbarProps) {
                         printOptions={{ disableToolbarButton: true }}
                         csvOptions={{ disableToolbarButton: true }}
                     />
-                    <CustomExportButton obs={context.obs} />
+                    {/* <CustomExportButton obs={context.obs} /> */}
+                    <Button
+                        onClick={() => {
+                            const json = getJson(context.obs);
+                            const blob = new Blob([JSON.stringify(json, null, 2)], {
+                                type: 'text/json',
+                            });
+                            exportBlob(blob, 'obs.json');
+                        }}
+                    >
+                        Export OB to JSON
+                    </Button>
                     <OBWizardButton />
                 </Box>
             </Box>
@@ -264,44 +275,6 @@ const getJson = (obs: OB[]) => {
     });
     return json
 };
-
-
-interface JsonExportMenuItemProps extends GridExportMenuItemProps<{}> {
-    obs: OB[];
-}
-
-function JsonExportMenuItem(props: JsonExportMenuItemProps) {
-    const { hideMenu, obs } = props;
-    return (
-        <MenuItem
-            onClick={() => {
-                const json = getJson(obs);
-                const blob = new Blob([JSON.stringify(json, null, 2)], {
-                    type: 'text/json',
-                });
-                exportBlob(blob, 'obs.json');
-                // Hide the export menu after the export
-                hideMenu?.();
-            }}
-        >
-            Export OB to JSON
-        </MenuItem>
-    );
-}
-
-
-interface ExportButtonProps extends ButtonProps {
-    obs: OB[];
-}
-
-function CustomExportButton(props: ExportButtonProps) {
-    return (
-        <GridToolbarExportContainer {...props}>
-            <JsonExportMenuItem obs={props.obs} />
-        </GridToolbarExportContainer>
-    );
-}
-
 
 interface Props {
     componentName: OBComponentName,
