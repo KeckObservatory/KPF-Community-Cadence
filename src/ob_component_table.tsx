@@ -523,6 +523,7 @@ export default function OBComponentTable(props: Props) {
             < ValidationDialogButton errors={errors} json={editRow} />
 
         let cell = [firstButton]
+        console.log('tgt', editRow, row)
         if (componentName.includes('target')) {
             cell.push(<CatalogButton hasCatalog={hasCatalog} target={editRow} setTarget={setEditRow} />)
         }
