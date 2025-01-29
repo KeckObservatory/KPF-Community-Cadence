@@ -125,7 +125,7 @@ export default function ScheduleForm(props: Props) {
                                 {CreateTextField('minimum_moon_separation', true)}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
-                                {CreateTextField('comment', true)}
+                                {CreateTextField('comment')}
                             </Stack>
                         </Box>
                     </Paper>
