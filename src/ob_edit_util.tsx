@@ -234,7 +234,6 @@ export const make_text_field = (
     isNumber = false) => {
 
     const schemaProperties = ob_schemas[componentName].properties
-
     if (!Object.keys(schemaProperties).includes(key)) {
         console.warn('make_text_field', `key ${key} not in component ${componentName}`)
         return
@@ -264,8 +263,9 @@ export const make_autocomplete_field = (
     disabled = false
 ) => {
 
-    if (Object.keys(component).includes(key) === false) {
-        console.warn('make_autocomplete_field', `key ${key} not in component ${componentName}`)
+    const schemaProperties = ob_schemas[componentName].properties
+    if (!Object.keys(schemaProperties).includes(key)) {
+        console.warn('make_text_field', `key ${key} not in component ${componentName}`)
         return
     }
     //@ts-ignore
@@ -292,8 +292,9 @@ export const make_switch_field = (
     componentName: OBComponentName,
     handleSwitchChange: Function) => {
 
-    if (Object.keys(component).includes(key) === false) {
-        console.warn('make_switch_field', `key ${key} not in component ${componentName}`)
+    const schemaProperties = ob_schemas[componentName].properties
+    if (!Object.keys(schemaProperties).includes(key)) {
+        console.warn('make_text_field', `key ${key} not in component ${componentName}`)
         return
     }
     //@ts-ignore
