@@ -24,7 +24,7 @@ interface Props {
 export default function ScheduleForm(props: Props) {
     const componentName = 'schedule'
     const { schedule, open, handleClose, setSchedule } = props
-    const schema = ob_schemas[componentName]
+    const schemaProperties = ob_schemas[componentName].properties
 
 
     const baseInput: BaseChangeInput = {
@@ -33,12 +33,12 @@ export default function ScheduleForm(props: Props) {
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {
-        if (Object.keys(schema).includes(key) === false) {
-            console.error(schema)
-            console.error(`key ${key} not found in schema ${schema}`)
+        if (Object.keys(schemaProperties).includes(key) === false) {
+            console.error(schemaProperties)
+            console.error(`key ${key} not found in schema ${schemaProperties}`)
             return
         }
-        const type = schema[key].type
+        const type = schemaProperties[key].type
         const input: TextChangeInput = {
             ...baseInput,
             key,

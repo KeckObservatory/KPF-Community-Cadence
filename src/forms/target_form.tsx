@@ -26,7 +26,7 @@ export default function TargetForm(props: Props) {
     const componentName = 'target'
     const { target, open, handleClose, setTarget} = props
     const [hasCatalog, setHasCatalog] = React.useState(target.tic_id || target.gaia_id ? true : false)
-    const schema = ob_schemas[componentName]
+    const schemaProperties = ob_schemas[componentName].properties
 
     const baseInput: BaseChangeInput = {
         row: target,
@@ -34,12 +34,12 @@ export default function TargetForm(props: Props) {
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {
-        if (Object.keys(schema).includes(key) === false) {
-            console.error(schema)
-            console.error(`key ${key} not found in schema ${schema}`)
+        if (Object.keys(schemaProperties).includes(key) === false) {
+            console.error(schemaProperties)
+            console.error(`key ${key} not found in schema ${schemaProperties}`)
             return
         }
-        const type = schema[key].type
+        const type = schemaProperties[key].type
         const input: TextChangeInput = {
             ...baseInput,
             key,
