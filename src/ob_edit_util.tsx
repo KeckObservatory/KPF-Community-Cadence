@@ -59,11 +59,11 @@ const sanitize_number = (value: string) => {
 }
 
 export const format_edit_entry = (key: string, value: string | number | undefined, type: string | Array<string>, isNumber = false) => {
-    if (type.includes('integer')) {
+    if (value && type.includes('integer')) {
         value = Number(String(value).replace(/[^0-9]/, ""))
     }
     //add trailing zero if string ends in a decimal 
-    if (isNumber) {
+    if (value && isNumber) {
         value = sanitize_number(String(value))
     }
     if (value && (key === 'ra' || key === 'dec')) {
