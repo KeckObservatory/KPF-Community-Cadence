@@ -103,8 +103,6 @@
         }
     },
     "required": [ 
-        "nominal_exposure_time",
-        "maximum_exposure_time",
         "num_internight_cadence",
         "num_visits_per_night",
         "num_nights_per_semester"
