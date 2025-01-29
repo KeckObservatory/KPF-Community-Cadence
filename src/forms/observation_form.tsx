@@ -121,6 +121,7 @@ export default function ObservationForm(props: Props) {
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 {CreateAutocompleteField('exp_meter_mode', 'input exposure meter mode', 'Exposure Meter Mode')}
+                                {CreateAutocompleteField('exp_meter_bin', 'input exposure meter bin', 'Exposure Meter Bin')}
                                 {CreateSwitchField('auto_exp_meter')}
                                 {CreateTextField('exp_meter_exp_time', true)}
                                 {CreateTextField('exp_meter_threshold', true)}
