@@ -34,6 +34,7 @@ export default function ScheduleForm(props: Props) {
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {
         if (Object.keys(schema).includes(key) === false) {
+            console.error(schema)
             console.error(`key ${key} not found in schema ${schema}`)
             return
         }
