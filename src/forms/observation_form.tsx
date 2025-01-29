@@ -108,7 +108,7 @@ export default function ObservationForm(props: Props) {
                             >
                                 Observation Information
                             </Typography>
-                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('object', false)}
                                 {CreateTextField('exposure_time', true)}
                                 {CreateTextField('num_exposures', true)}

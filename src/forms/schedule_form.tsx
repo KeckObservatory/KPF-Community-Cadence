@@ -108,15 +108,15 @@ export default function ScheduleForm(props: Props) {
                             >
                                 Schedule Information
                             </Typography>
-                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateAutocompleteField('scheduling_mode', 'input scheduling mode', 'Scheduling Mode')}
                             </Stack>
-                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('num_visits_per_night', true)}
                                 {CreateTextField('num_nights_per_semester', true)}
                                 {CreateSwitchField('fast_read_mode_requested')}
                             </Stack>
-                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('num_internight_cadence', true)}
                                 {CreateTextField('num_intranight_cadence', true)}
                             </Stack>

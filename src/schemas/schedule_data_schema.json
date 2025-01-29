@@ -98,8 +98,7 @@
         },
         "comment": {
             "type": "string",
-            "description": "Observing Notes",
-            "not_editable_by_user": true
+            "description": "Observing Notes"
         }
     },
     "required": [ 
