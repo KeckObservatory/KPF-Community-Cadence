@@ -49,7 +49,8 @@
         },
         "ob_feasible": {
             "type": ["boolean", "null"],
-            "description": "Request Feasibility",
+            "description": "Is this OB Feasible for Community Cadence observing?",
+            "short_description": "KPF-CC Feasible?",
             "not_editable_by_user": true
         },
         "submitter": {

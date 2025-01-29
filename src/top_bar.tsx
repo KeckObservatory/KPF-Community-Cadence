@@ -79,7 +79,7 @@ export function TopBar(props: Props) {
             flexGrow: 1,
           }}
         >
-          KPF Community Cadence Coversheet Webform
+          KPF Obsering Block Webform
         </Typography>
         <Tooltip title="Plz, select me to take a survey">
           <Button
