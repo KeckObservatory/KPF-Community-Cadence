@@ -77,10 +77,10 @@
             "translator_mapping": "ExpMeterExpTime"
         },
         "exp_meter_bin": {
-            "type": ["integer", "string"],
+            "type": "string",
             "description": "Which wavelength bin to use for exposure meter termination?  (1=498nm, 2=604nm, 3=711nm, 4=817nm)",
             "short_description": "Exposure Meter Bin",
-            "enum": [1, 2, 3, 4, "1", "2", "3", "4"],
+            "enum": ["1", "2", "3", "4"],
             "translator_mapping": "ExpMeterBin"
         },
         "exp_meter_threshold": {
