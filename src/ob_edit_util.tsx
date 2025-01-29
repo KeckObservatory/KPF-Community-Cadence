@@ -233,7 +233,9 @@ export const make_text_field = (
     handleTextChange: Function,
     isNumber = false) => {
 
-    if (Object.keys(component).includes(key) === false) {
+    const schemaProperties = ob_schemas[componentName].properties
+
+    if (!Object.keys(schemaProperties).includes(key)) {
         console.warn('make_text_field', `key ${key} not in component ${componentName}`)
         return
     }
