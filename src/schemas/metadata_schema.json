@@ -20,7 +20,8 @@
         "semid": {
             "type": "string",
             "description": "Semid",
-            "translator_mapping": "Semid"
+            "translator_mapping": "Semid",
+            "not_editable_by_user": true
         },
         "semester": {
             "type": "string",
@@ -34,10 +35,6 @@
             "translator_mapping": "Progid",
             "not_editable_by_user": true
         },
-        "comment": {
-            "type": "string",
-            "description": "Observing Notes"
-        },
         "tags": {
             "type": "array",
             "short_description": "Tags",
@@ -47,7 +44,8 @@
                 "type": "string",
                 "pattern": "^[^,]+$"
             },
-            "translator_mapping": "Tags"
+            "translator_mapping": "Tags",
+            "not_editable_by_user": true
         },
         "ob_feasible": {
             "type": ["boolean", "null"],
@@ -92,16 +90,6 @@
             "type": "string",
             "description": "Last Modified",
             "translator_mapping": "LastModified",
-            "not_editable_by_user": true
-        },
-        "total_time_for_target": {
-            "type": "number",
-            "description": "Total Time for Target [hours]",
-            "not_editable_by_user": true
-        },
-        "total_time_for_target_hours": {
-            "type": "number",
-            "description": "Total Time for Target [hours]",
             "not_editable_by_user": true
         }
     },

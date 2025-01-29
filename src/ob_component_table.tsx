@@ -33,7 +33,7 @@ import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from '.
 import { Metadata, OB, OBComponent, Observation, OBTarget, Schedule } from './module_selector';
 import { format_edit_entry, format_tags, raDecFormat, ob_to_component_row, edit_ob } from './ob_edit_util';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
-import Button  from '@mui/material/Button';
+import Button from '@mui/material/Button';
 import { ErrorObject } from 'ajv/dist/2019';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -273,6 +273,22 @@ const getJson = (obs: OB[]) => {
     return json
 };
 
+export const format_field_value = (field: string, value: any, type: string | string[]) => {
+    const isNumber = type.includes('number') || type.includes('integer')
+    if (type.includes('integer')) {
+        value = value.replace(/[^0-9]/, "")
+    }
+    if (type === 'array') {
+        value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
+    }
+    if (type.includes('string')) {
+        value = format_edit_entry(field, value, type, isNumber)
+    }
+    return value
+}
+
+
+
 interface Props {
     componentName: OBComponentName,
 }
@@ -408,18 +424,6 @@ export default function OBComponentTable(props: Props) {
         const apiRef = useGridApiContext();
         const [submitted, setSubmitted] = React.useState<boolean>(row.state?.includes('SUBMITTED') ?? false)
 
-        const format_cell_value = (field: string, value: any, type: string | string[]) => {
-            const isNumber = type.includes('number') || type.includes('integer')
-            if (type === 'array') {
-                value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
-            }
-            if (type.includes('string')) {
-                value = format_edit_entry(field, value, isNumber)
-            }
-            return value
-        }
-
-
         const setRowWithCadenceChecks = (row: ComponentRow) => {
             //if schedule and num_visits_per_night is 1, set cadence to 0. 
             //This is used by the form edit display updating to match the submitted ob. 
@@ -444,7 +448,7 @@ export default function OBComponentTable(props: Props) {
                     let value = currRow[key as keyof ComponentRow];
                     if (value === undefined) return //skip undefined values
                     const type = schema.properties[key]?.type
-                    value = type ? format_cell_value(key, value, type) : value
+                    value = type ? format_field_value(key, value, type) : value
                     value !== params.row[key as keyof ComponentRow] && (changed = true)
                     sanitizedRow[key as keyof ComponentRow] = value
                 })

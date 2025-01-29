@@ -11,6 +11,7 @@ import {
 import { ComponentRow } from '../ob_component_table';
 import { Observation } from '../module_selector';
 import { make_text_field, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, make_autocomplete_field, make_switch_field } from '../ob_edit_util';
+import { ob_schemas } from '../validation_check_dialog';
 
 
 interface Props {
@@ -23,6 +24,7 @@ interface Props {
 export default function ObservationForm(props: Props) {
     const componentName = 'observation'
     const { observation, open, handleClose, setObservation } = props
+    const schema = ob_schemas[componentName]
 
     const baseInput: BaseChangeInput = {
         row: observation,
@@ -30,10 +32,12 @@ export default function ObservationForm(props: Props) {
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {
+        const type = schema[key].type
         const input: TextChangeInput = {
             ...baseInput,
             key,
             value,
+            type,
             isNumber
         }
         text_change(input)

@@ -6,13 +6,11 @@ import Paper from '@mui/material/Paper'
 import Tooltip from '@mui/material/Tooltip'
 import {
     Box,
-    Typography
 } from '@mui/material'
 import { MuiChipsInput } from 'mui-chips-input';
 import { ComponentRow } from '../ob_component_table';
 import { Metadata } from '../module_selector';
-import { input_label, text_change, array_change, TextChangeInput, BaseChangeInput, ArrayChangeInput, make_text_field, make_autocomplete_field } from '../ob_edit_util';
-import { useCommCadContext } from '../App'
+import { input_label, array_change, BaseChangeInput, ArrayChangeInput } from '../ob_edit_util';
 
 interface Props {
     open: boolean
@@ -24,21 +22,10 @@ interface Props {
 export default function MetadataForm(props: Props) {
     const componentName = 'metadata'
     const { metadata, open, handleClose, setMetadata } = props
-    const context = useCommCadContext()
 
     const baseInput: BaseChangeInput = {
         row: metadata,
-        saveFunction: setMetadata 
-    }
-
-    const handleTextChange = (key: string, value: string | number, isNumber = false) => {
-        const input: TextChangeInput = {
-            ...baseInput,
-            key,
-            value,
-            isNumber
-        }
-        text_change(input)
+        saveFunction: setMetadata
     }
 
     const handleArrayChange = (key: string, value: string[]) => {
@@ -49,21 +36,6 @@ export default function MetadataForm(props: Props) {
         }
         array_change(input)
     }
-
-
-    const CreateTextField = (key: string, isNumber = false) => {
-        return make_text_field(key, metadata, componentName, handleTextChange, isNumber)
-    }
-
-    const CreateAutocompleteField = (key: string,
-        defaultValue: string = "",
-        label: string = "",
-        choices?: { label: string}[],
-    ) => {
-        return make_autocomplete_field(key, metadata, componentName, handleTextChange, defaultValue, label, choices)
-    }
-
-    const semidChoices = context.semids.map((s) => { return { label: s } })
 
     return (
         <Dialog
@@ -94,22 +66,6 @@ export default function MetadataForm(props: Props) {
                         elevation={3}
                     >
                         <Box>
-                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="column" justifyContent='center' spacing={2}>
-                                <Typography
-                                    component="h1"
-                                    variant="h6"
-                                    color="inherit"
-                                    align='center'
-                                    noWrap
-                                >
-                                    Program Information
-                                </Typography>
-                                <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                    {CreateAutocompleteField('semid', 'input semid', 'Semid', semidChoices)}
-                                </Stack>
-                            </Stack>
-                        </Box>
-                        <Box>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 <Tooltip title={input_label('tags', componentName, true)}>
                                     <MuiChipsInput
@@ -119,11 +75,6 @@ export default function MetadataForm(props: Props) {
                                         id="tags"
                                     />
                                 </Tooltip>
-                            </Stack>
-                            <Stack sx={{
-                                marginBottom: '4px',
-                            }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
-                                {CreateTextField('comment')}
                             </Stack>
                         </Box>
                     </Paper>

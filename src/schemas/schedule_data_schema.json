@@ -13,41 +13,31 @@
             "not_editable_by_user": true
         },
         "num_visits_per_night": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "translator_mapping": "VisitsPerNight",
             "description": "(Cadence mode) Number of Visits per Night",
             "short_description": "# Visits",
             "default": 1
         },
         "num_nights_per_semester": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "translator_mapping": "NightsPerSemester",
             "description": "(Cadence mode) Number of of Nights Per Semester",
             "short_description": "# Nights",
             "default": 1
         },
-        "nominal_exposure_time": {
-            "type": "integer",
-            "description": "Nominal Exposure Time [s]",
-            "short_description": "Nominal Exp Time"
-        },
-        "maximum_exposure_time": {
-            "type": "integer",
-            "description": "Maximum Exposure Time [s]",
-            "short_description": "Max Exp Time"
-        },
         "num_internight_cadence": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "translator_mapping": "interNightCadenceMin",
             "description": "(Cadence mode) Minimum Inter-Night Cadence (hours)",
-            "short_description": "Inter Cad",
+            "short_description": "Internight Cadence",
             "default": 0
         },
         "num_intranight_cadence": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "translator_mapping": "intraNightCadenceMin",
             "description": "(Cadence mode) Minimum Intra-Night Cadence (days)",
-            "short_description": "Intra Cad",
+            "short_description": "Intranight Cadence",
             "default": 1,
             "multipleOf": 0.01 
         },
@@ -58,41 +48,27 @@
             "short_description": "Fast Read Mode",
             "default": false
         },
-        "fixed_time_start": {
-            "type": "string",
-            "translator_mapping": "FixedTimeStart",
-            "description": "(FixedTime mode) Start of requested window",
-            "short_description": "FT Start",
-            "default": ""
-        },
-        "fixed_time_end": {
-            "type": "string",
-            "translator_mapping": "FixedTimeEnd",
-            "description": "(FixedTime mode) End of requested window",
-            "short_description": "FT End",
-            "default": ""
-        },
         "minimum_elevation": {
-            "type": "number",
+            "type": ["number", "string"],
             "translator_mapping": "MinimumElevation",
             "description": "[deg] Below 30 degrees elevation, the ADC performance degrades dramatically.",
-            "short_description": "Min El",
+            "short_description": "Minimum Elevation",
             "default": 30,
             "multipleOf": 0.1
         },
         "minimum_moon_separation": {
-            "type": "number",
+            "type": ["number", "string"],
             "translator_mapping": "MinimumMoonSeparation",
-            "short_description": "Moon Sep",
+            "short_description": "Moon Separation",
             "description": "Minimum moon separation angle [deg]",
             "default": 15,
             "multipleOf": 0.1
         },
         "weather_band": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "translator_mapping": "WeatherBand",
             "description": "[bitmap] 3 bits for to bands 1, 2, and 3",
-            "short_description": "W Band",
+            "short_description": "Weather Band",
             "default": 7,
             "not_editable_by_user": true
         },
@@ -106,18 +82,23 @@
             "default": 0
         },
         "total_observations_requested": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "description": "Total Observations Requested",
             "not_editable_by_user": true
         },
         "total_time_for_target": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Total Time for Target [seconds]",
             "not_editable_by_user": true
         },
         "total_time_for_target_hours": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Total Time for Target [hours]",
+            "not_editable_by_user": true
+        },
+        "comment": {
+            "type": "string",
+            "description": "Observing Notes",
             "not_editable_by_user": true
         }
     },

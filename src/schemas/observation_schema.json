@@ -11,14 +11,14 @@
             "translator_mapping": "Object"
         },
         "num_exposures": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "description": "Number of Exposures",
             "short_description": "# Exp",
             "default": 1,
             "translator_mapping": "nExp"
         },
         "exposure_time": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Exposure Time [seconds]",
             "short_description": "Exp Time",
             "default": 1,
@@ -56,7 +56,7 @@
         "exp_meter_mode": {
             "type": "string",
             "description": "Exposure Meter Mode?",
-            "short_description": "Exp Meter Mode?",
+            "short_description": "Exposure Meter Mode?",
             "enum": ["monitor", "control", "off"],
             "default": "monitor",
             "translator_mapping": "ExpMeterMode"
@@ -64,30 +64,30 @@
         "auto_exp_meter": {
             "type": "boolean",
             "description": "Set the exposure time on the exposure meter  automatically based on the target G magnitude?",
-            "short_description": "Auto Exp Meter?",
+            "short_description": "Auto Exposure Meter?",
             "default": true,
             "translator_mapping": "AutoExpMeter"
         },
         "exp_meter_exp_time": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Exposure Time for the exposure meter [seconds] ",
-            "short_description": "Exp Meter Time",
+            "short_description": "Exposure Meter Time",
             "default": 1,
             "multipleOf": 0.1,
             "translator_mapping": "ExpMeterExpTime"
         },
         "exp_meter_bin": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "description": "Which wavelength bin to use for exposure meter termination?  (1=498nm, 2=604nm, 3=711nm, 4=817nm)",
-            "short_description": "Exp Meter Bin",
+            "short_description": "Exposure Meter Bin",
             "enum": [1, 2, 3, 4],
             "default": 1,
             "translator_mapping": "ExpMeterBin"
         },
         "exp_meter_threshold": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Threshold flux at the science detector at which to terminate the exposure [e-/nm",
-            "short_description": "Exp Meter Th",
+            "short_description": "Exposure Meter Th",
             "default": 50000,
             "multipleOf": 1,
             "translator_mapping": "ExpMeterThreshold"
@@ -109,29 +109,29 @@
         "cal_n_d_1": {
             "type": "string",
             "enum": ["OD 0.1", "OD 1.0", "OD 1.3", "OD 2.0", "OD 3.0", "OD 4.0"],
-            "description": "Cal Bench filter 1 position. Throughput = 10^-OD. If Auto Filters is true, this value is ignored.",
-            "short_description": "Cal ND1",
+            "description": "Calibration Bench filter 1 position. Throughput = 10^-OD. If Auto Filters is true, this value is ignored.",
+            "short_description": "Calibration ND1",
             "default": "OD 0.1",
             "translator_mapping": "CalND1"
         },
         "cal_n_d_2": {
             "type": "string",
             "enum": ["OD 0.1", "OD 0.3", "OD 0.5", "OD 0.8", "OD 1.0", "OD 4.0"],
-            "description": "Cal Bench filter 2 position. Throughput = 10^-OD. If Auto Filters is true, this value is ignored.",
-            "short_description": "Cal ND2",
+            "description": "Calibration Bench filter 2 position. Throughput = 10^-OD. If Auto Filters is true, this value is ignored.",
+            "short_description": "Calibration ND2",
             "default": "OD 0.1",
             "translator_mapping": "CalND2"
         },
         "nod_n": {
-            "type": "number",
-            "description": "Distance to nod the telescope North before starting exposture [arcseconds]",
+            "type": ["number", "string"],
+            "description": "Distance to nod the telescope North before starting exposure [arcseconds]",
             "short_description": "Nod N",
             "default": 0.0,
             "multipleOf": 0.01,
             "translator_mapping": "NodN"
         },
         "nod_e": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Distance to nod the telescope East before starting exposture [arcseconds]",
             "short_description": "Nod E",
             "default": 0.0,

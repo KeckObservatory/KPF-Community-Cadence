@@ -10,7 +10,8 @@ import {
 } from '@mui/material'
 import { ComponentRow } from '../ob_component_table';
 import { Schedule } from '../module_selector';
-import { text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, make_text_field, make_switch_field } from '../ob_edit_util';
+import { text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, make_text_field, make_switch_field, make_autocomplete_field } from '../ob_edit_util';
+import { ob_schemas } from '../validation_check_dialog';
 
 
 interface Props {
@@ -23,17 +24,20 @@ interface Props {
 export default function ScheduleForm(props: Props) {
     const componentName = 'schedule'
     const { schedule, open, handleClose, setSchedule } = props
-    
+    const schema = ob_schemas[componentName]
+
 
     const baseInput: BaseChangeInput = {
         row: schedule,
-        saveFunction: setSchedule 
+        saveFunction: setSchedule
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {
+        const type = schema[key].type
         const input: TextChangeInput = {
             ...baseInput,
             key,
+            type,
             value,
             isNumber
         }
@@ -56,6 +60,15 @@ export default function ScheduleForm(props: Props) {
 
     const CreateSwitchField = (key: string) => {
         return make_switch_field(key, schedule, componentName, handleSwitchChange)
+    }
+
+    const CreateAutocompleteField = (key: string,
+        defaultValue: string = "",
+        label: string = "",
+        choices?: { label: string }[],
+        disabled = false
+    ) => {
+        return make_autocomplete_field(key, schedule, componentName, handleTextChange, defaultValue, label, choices, disabled)
     }
 
     return (
@@ -96,23 +109,23 @@ export default function ScheduleForm(props: Props) {
                                 Schedule Information
                             </Typography>
                             <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                                {CreateAutocompleteField('scheduling_mode', 'input scheduling mode', 'Scheduling Mode')}
+                            </Stack>
+                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('num_visits_per_night', true)}
                                 {CreateTextField('num_nights_per_semester', true)}
-                                {CreateTextField('nominal_exposure_time', true)}
-                                {CreateTextField('max_exposure_time', true)}
                                 {CreateSwitchField('fast_read_mode_requested')}
                             </Stack>
-                            <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
-                                <Stack justifyContent='center' spacing={2}>
-                                    {CreateTextField('num_internight_cadence', true)}
-                                    {CreateTextField('num_intranight_cadence', true)}
-                                </Stack>
+                            <Stack sx={{ marginBottom: '4px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                                {CreateTextField('num_internight_cadence', true)}
+                                {CreateTextField('num_intranight_cadence', true)}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
-                                {CreateTextField('fixed_time_start', true)}
-                                {CreateTextField('fixed_time_end', true)}
                                 {CreateTextField('minimum_elevation', true)}
                                 {CreateTextField('minimum_moon_separation', true)}
+                            </Stack>
+                            <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
+                                {CreateTextField('comment', true)}
                             </Stack>
                         </Box>
                     </Paper>

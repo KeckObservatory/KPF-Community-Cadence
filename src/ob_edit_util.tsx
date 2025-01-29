@@ -58,7 +58,10 @@ const sanitize_number = (value: string) => {
     return value
 }
 
-export const format_edit_entry = (key: string, value?: string | number, isNumber = false) => {
+export const format_edit_entry = (key: string, value: string | number | undefined, type: string | Array<string>, isNumber = false) => {
+    if (type.includes('integer')) {
+        value = Number(String(value).replace(/[^0-9]/, ""))
+    }
     //add trailing zero if string ends in a decimal 
     if (isNumber) {
         value = sanitize_number(String(value))
@@ -190,6 +193,7 @@ export interface BaseChangeInput {
 }
 
 export interface TextChangeInput extends BaseChangeInput {
+    type: string | Array<string>,
     key: string,
     value: string | number
 }
@@ -205,7 +209,7 @@ export interface SwitchChangeInput extends BaseChangeInput {
 }
 
 export const text_change = (input: TextChangeInput) => {
-    const formattedValue = format_edit_entry(input.key, input.value, input.isNumber ?? false)
+    const formattedValue = format_edit_entry(input.key, input.value, input.type, input.isNumber ?? false)
     const newRow = { ...input.row, [input.key]: formattedValue, state: 'ROW_EDITED' }
     input.saveFunction(newRow)
 }

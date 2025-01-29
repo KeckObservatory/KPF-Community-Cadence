@@ -12,6 +12,7 @@ import CatalogButton from '../catalog_button';
 import { ComponentRow } from '../ob_component_table';
 import { OBTarget } from '../module_selector';
 import { text_change, TextChangeInput, BaseChangeInput, make_text_field } from '../ob_edit_util';
+import { ob_schemas } from '../validation_check_dialog';
 
 
 interface Props {
@@ -25,6 +26,7 @@ export default function TargetForm(props: Props) {
     const componentName = 'target'
     const { target, open, handleClose, setTarget} = props
     const [hasCatalog, setHasCatalog] = React.useState(target.tic_id || target.gaia_id ? true : false)
+    const schema = ob_schemas[componentName]
 
     const baseInput: BaseChangeInput = {
         row: target,
@@ -32,9 +34,11 @@ export default function TargetForm(props: Props) {
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {
+        const type = schema[key].type
         const input: TextChangeInput = {
             ...baseInput,
             key,
+            type,
             value,
             isNumber
         }

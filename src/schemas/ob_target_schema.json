@@ -36,7 +36,7 @@
         "systemic_velocity": {
             "type": ["number", "string"],
             "description": "Systemic Velocity [km/s]",
-            "short_description": "Sys Vel",
+            "short_description": "Sysemic Velocity",
             "translator_mapping": "RadialVelocity"
         },
         "g_mag": {
@@ -52,7 +52,7 @@
             "translator_mapping": "Jmag"
         },
         "t_eff": {
-            "type": "number",
+            "type": ["integer", "string"],
             "description": "Effective Temperature [Kelvin]",
             "short_description": "Teff",
             "translator_mapping": "Teff"
@@ -70,11 +70,11 @@
             "translator_mapping": "DEC"
         },
         "ra_deg": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Right Ascension [degrees]"
         },
         "dec_deg": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Declination [degrees]"
         },
         "equinox": {
@@ -104,25 +104,25 @@
             "multipleOf": 0.01
         },
         "d_ra": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Non siderial tracking rate in RA [arcseconds / hr divided by 15]",
             "short_description": "RA Offset",
             "translator_mapping": "DRA"
         },
         "d_dec": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Non siderial tracking rate in Dec [arcseconds / hr]",
             "short_description": "Dec Offset",
             "translator_mapping": "DDEC"
         },
         "rise_semester_day": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "description": "Rise Day of Semester",
             "not_editable_by_user": true,
             "hide_column": true
         },
         "sets_semester_day": {
-            "type": "integer",
+            "type": ["integer", "string"],
             "description": "Set Day of Semester",
             "not_editable_by_user": true,
             "hide_column": true
@@ -130,7 +130,7 @@
         "catalog_comment": {
             "type": "string",
             "description": "Contain information from GAIA/SIMBAD or other sources.",
-            "short_description": "Cat. Comment",
+            "short_description": "Catlog Comment",
             "not_editable_by_user": true
         }
     },
