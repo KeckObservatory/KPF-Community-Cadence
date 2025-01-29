@@ -273,10 +273,10 @@ const getJson = (obs: OB[]) => {
     return json
 };
 
-export const format_field_value = (field: string, value: any, type: string | string[]) => {
+const format_field_value = (field: string, value: any, type: string | string[]) => {
     const isNumber = type.includes('number') || type.includes('integer')
     if (type.includes('integer')) {
-        value = value.replace(/[^0-9]/, "")
+        value = String(value).replace(/[^0-9]/, "")
     }
     if (type === 'array') {
         value = format_tags(Array.isArray(value) ? value.flat(Infinity) : value.split(','))
