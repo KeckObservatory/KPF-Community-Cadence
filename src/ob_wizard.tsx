@@ -136,12 +136,15 @@ const OBStepper = (props: Props) => {
 
     const handle_save_obs = async () => {
         const resp = await save_obs(obs)
-        if (resp.observing_blocks.length === obs.length) {
-            props.setOpen(false)
+        if (resp.observing_blocks.length>0) {
             context.setOBs([...context.obs, ...resp.observing_blocks])
             context.setTotalHours(resp.total_hours)
             refreshTableContext.setRefreshTable((prev: number) => { return prev + 1 })
             context.setTotalObservations(resp.total_observations)
+        }
+
+        if (resp.observing_blocks.length === obs.length) {
+            props.setOpen(false)
             snackbarContext.setSnackbarMessage(
                 { severity: 'success', message: `OBs saved!` }
             )
