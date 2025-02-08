@@ -148,9 +148,12 @@ const OBStepper = (props: Props) => {
         }
         else {
             console.error('Failed to save any/all OBs', resp)
-            setSaveMessage(`Failed to save ${obs.length} OBs: ${resp.details}`)
+            const names = resp.observing_blocks.map((ob: OB) => ob.target.target_name)
+            const missingNames = obs.map((ob: OB) => ob.target.target_name ?? "").filter((name: string) => !names.includes(name))
+            const details = resp.details ?? `missing obs: ${missingNames.join(', ')}`
+            setSaveMessage(`Failed to save OBs: ${details}`)
             snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `OBs not submitted. Details: ${resp.details}` }
+                { severity: 'error', message: `OBs not submitted. Details: ${details}` }
             )
         }
     }
