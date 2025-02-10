@@ -106,13 +106,13 @@
         "d_ra": {
             "type": ["number", "string"],
             "description": "Non siderial tracking rate in RA [arcseconds / hr divided by 15]",
-            "short_description": "RA Offset",
+            "short_description": "DRA",
             "translator_mapping": "DRA"
         },
         "d_dec": {
             "type": ["number", "string"],
             "description": "Non siderial tracking rate in Dec [arcseconds / hr]",
-            "short_description": "Dec Offset",
+            "short_description": "DDec",
             "translator_mapping": "DDEC"
         },
         "rise_semester_day": {
