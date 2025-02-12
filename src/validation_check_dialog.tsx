@@ -99,6 +99,12 @@ function ValidationDialog(props: SimpleDialogProps) {
             if (err.keyword === 'type' || err.keyword === 'pattern') {
               msg = `${err.instancePath.substring(1)}: ${err.message}`
             }
+            if (err.keyword === 'minimum' || err.keyword === 'maximum') {
+              msg = `${err.instancePath.substring(1)}: ${err.message}`
+            }
+            if (err.keyword === 'enum') {
+              msg = `${err.instancePath.substring(1)}: ${err.message}`
+            }
             return (
               <Typography gutterBottom>
                 {msg}

@@ -114,26 +114,26 @@ const obSetter = (ob: OB, componentName: keyof OB) => {
     if (componentName === 'schedule' && Number(ob.schedule.num_visits_per_night ?? 0) === 1) {
         ob.schedule = {
             ...ob.schedule,
-            'num_intranight_cadence': 0,
+            'num_intranight_cadence': "0",
         }
-        console.log('setting intranight/internight cadence', ob)
+        console.log('setting intranight cadence to zero', ob)
     }
     // if num_vists_per_night is 1, set num_internight_cadences to 0
     if (componentName === 'schedule' && Number(ob.schedule.num_nights_per_semester ?? 0) === 1) {
         ob.schedule = {
             ...ob.schedule,
-            'num_internight_cadence': 0,
+            'num_internight_cadence': "0",
         }
-        console.log('setting intranight/internight cadence', ob)
+        console.log('setting internight cadence to zero', ob)
     }
     // if is observing_mode is Single, set num_nights_per_semester to 1 and num_internight_cadences to 0
     if (componentName === 'schedule' && ob.schedule.scheduling_mode == 'Single') {
         ob.schedule = {
             ...ob.schedule,
-            'num_nights_per_semester': 1,
-            'num_internight_cadence': 0,
+            'num_nights_per_semester': "1",
+            'num_internight_cadence': "0",
         }
-        console.log('setting intranight/internight cadence', ob)
+        console.log('setting num nights to one and internight cadence to zero', ob)
     }
     return ob
 }
