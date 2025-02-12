@@ -250,6 +250,20 @@ export const switch_change = (input: SwitchChangeInput) => {
     input.saveFunction(newRow)
 }
 
+interface HandleTextChangeProps {
+    value: string,
+    handleTextChange: Function
+}
+
+const HandleTextChange(props: HandleTextChangeProps) {
+    const { value, changeShrinkInput } = props
+    const { focused }= useFormControl() || {}
+
+    if (focused || value.length>0) {
+        changeShrinkInput(true)
+    }
+}
+
 export const make_text_field = (
     key: string,
     component: OBComponent,
@@ -257,28 +271,17 @@ export const make_text_field = (
     handleTextChange: Function,
     isNumber = false) => {
     const schemaProperties = ob_schemas[componentName].properties
-    const { focused }= useFormControl() || {}
-
-    const shrinkInput = React.useMemo(() => {
-        //@ts-ignore
-        const val = String(component[key as keyof ComponentRow])
-        console.log('shrink', key, val, focused)
-        return (focused || val.length>0) ? true : false
-    }, [focused, component])
-
+    //@ts-ignore
+    const value = component[key]
+    const [shrinkInput, changeShrinkInput] = React.useState(value ? true : false)
     if (!Object.keys(schemaProperties).includes(key)) {
         console.warn('make_text_field', `key ${key} not in component ${componentName}`)
         return
     }
-
-    
-    //@ts-ignore
-    const value = component[key]
     return (
         <Tooltip title={input_label(key, componentName, true)}>
             <FormControl>
                 <TextField
-
                     label={input_label(key, componentName, false)}
                     id={key.replace('_', '-')}
                     slotProps={{
@@ -289,6 +292,7 @@ export const make_text_field = (
                     onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
                     value={value}
                 />
+                <HandleTextChange value={value} changeShrinkInput={changeShrinkInput} />
             </FormControl>
         </Tooltip>)
 }
