@@ -104,10 +104,9 @@ export const raDecFormat = (input: string) => {
 
 const obSetter = (ob: OB, componentName: keyof OB) => {
     //auto fill object name with target name if empty.
-    if (componentName === 'target' && ob.target.target_name) {
+    if (componentName === 'target' && ob.target.target_name && !ob.observation.object) {
         ob.observation= { 
             'object': ob.target.target_name,
-            ...ob.observation,
         }
     }
     // if num_vists_per_night is 1, set num_intranight_cadences to 0
