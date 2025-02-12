@@ -1,6 +1,6 @@
 import React from 'react';
 import { save_obs } from './api/api_root';
-import { OB, OBComponent } from './module_selector';
+import { OB, OBComponent, Schedule } from './module_selector';
 import { ComponentRow, OBComponentName } from './ob_component_table';
 import { ob_schemas } from './validation_check_dialog';
 import Tooltip from '@mui/material/Tooltip';
@@ -102,6 +102,35 @@ export const raDecFormat = (input: string) => {
     return sign + input;
 }
 
+export const adjust_cadences = (component: Schedule) => {
+    let schedule = { ...component } 
+    if (Number(schedule.num_visits_per_night ?? 0) === 1) {
+        schedule = {
+            ...schedule,
+            'num_intranight_cadence': "0",
+        }
+        console.log('setting intranight cadence to zero', component)
+    }
+    // if num_vists_per_night is 1, set num_internight_cadences to 0
+    if (Number(schedule.num_nights_per_semester ?? 0) === 1) {
+        schedule = {
+            ...schedule,
+            'num_internight_cadence': "0",
+        }
+        console.log('setting internight cadence to zero', component)
+    }
+    // if is observing_mode is Single, set num_nights_per_semester to 1 and num_internight_cadences to 0
+    if (schedule.scheduling_mode == 'Single') {
+        schedule = {
+            ...schedule,
+            'num_nights_per_semester': "1",
+            'num_internight_cadence': "0",
+        }
+        console.log('setting num nights to one and internight cadence to zero', component)
+    }
+    return schedule
+}
+
 const obSetter = (ob: OB, componentName: keyof OB) => {
     //auto fill object name with target name if empty.
     if (componentName === 'target' && ob.target.target_name && !ob.observation.object) {
@@ -112,28 +141,8 @@ const obSetter = (ob: OB, componentName: keyof OB) => {
     }
     // if num_vists_per_night is 1, set num_intranight_cadences to 0
     if (componentName === 'schedule' && Number(ob.schedule.num_visits_per_night ?? 0) === 1) {
-        ob.schedule = {
-            ...ob.schedule,
-            'num_intranight_cadence': "0",
-        }
-        console.log('setting intranight cadence to zero', ob)
-    }
-    // if num_vists_per_night is 1, set num_internight_cadences to 0
-    if (componentName === 'schedule' && Number(ob.schedule.num_nights_per_semester ?? 0) === 1) {
-        ob.schedule = {
-            ...ob.schedule,
-            'num_internight_cadence': "0",
-        }
-        console.log('setting internight cadence to zero', ob)
-    }
-    // if is observing_mode is Single, set num_nights_per_semester to 1 and num_internight_cadences to 0
-    if (componentName === 'schedule' && ob.schedule.scheduling_mode == 'Single') {
-        ob.schedule = {
-            ...ob.schedule,
-            'num_nights_per_semester': "1",
-            'num_internight_cadence': "0",
-        }
-        console.log('setting num nights to one and internight cadence to zero', ob)
+        const adjustedComponent = adjust_cadences(ob[componentName])
+        ob[componentName] = adjustedComponent
     }
     return ob
 }

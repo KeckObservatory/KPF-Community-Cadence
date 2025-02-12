@@ -32,7 +32,7 @@ import { delete_obs, save_obs, submit_obs } from './api/api_root';
 import { OBWizardButton } from './ob_wizard';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
 import { Metadata, OB, OBComponent, Observation, OBTarget, Schedule } from './module_selector';
-import { format_edit_entry, format_tags, raDecFormat, ob_to_component_row, edit_ob } from './ob_edit_util';
+import { format_edit_entry, format_tags, raDecFormat, ob_to_component_row, edit_ob, adjust_cadences } from './ob_edit_util';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import Button from '@mui/material/Button';
 import { ErrorObject } from 'ajv/dist/2019';
@@ -433,11 +433,12 @@ export default function OBComponentTable(props: Props) {
         const setRowWithCadenceChecks = (row: ComponentRow) => {
             //if schedule and num_visits_per_night is 1, set cadence to 0. 
             //This is used by the form edit display updating to match the submitted ob. 
-            if (componentName.includes('schedule') && Number(row.num_visits_per_night) === 1) {
-                row.num_internight_cadence = 0
-                row.num_intranight_cadence = 0
+            
+            let newRow = row
+            if (componentName.includes('schedule')) {
+                newRow = adjust_cadences(row as Schedule) as ComponentRow
             }
-            setEditRow(row)
+            setEditRow(newRow)
         }
 
 
