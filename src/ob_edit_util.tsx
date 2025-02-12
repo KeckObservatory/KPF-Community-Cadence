@@ -262,6 +262,7 @@ export const make_text_field = (
         console.warn('make_text_field', `key ${key} not in component ${componentName}`)
         return
     }
+    const shrinkInputLabel = (value==null || value==undefined || value=="")? true : false
     return (
         <Tooltip title={input_label(key, componentName, true)}>
             <TextField
@@ -269,7 +270,7 @@ export const make_text_field = (
                 id={key.replace('_', '-')}
                 slotProps={{
                     inputLabel: {
-                        shrink: value ? true : false,
+                        shrink: shrinkInputLabel,
                     }
                 }}
                 onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
