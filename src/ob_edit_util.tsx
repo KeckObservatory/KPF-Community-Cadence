@@ -262,6 +262,7 @@ export const make_text_field = (
     const shrinkInput = React.useMemo(() => {
         //@ts-ignore
         const val = String(component[key as keyof ComponentRow])
+        console.log('shrink', key, val, focused)
         return (focused || val.length>0) ? true : false
     }, [focused, component])
 
