@@ -60,7 +60,6 @@ export default function TargetForm(props: Props) {
         setHasCatalog(tgt.tic_id || tgt.gaia_id ? true : false)
         //trigger rerender
         setTarget(tgt)
-        handleTextChange('ra', tgt.ra ?? "")
     }
 
 
