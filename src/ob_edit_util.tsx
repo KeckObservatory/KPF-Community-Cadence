@@ -266,7 +266,7 @@ export const make_text_field = (
     return (
         <Tooltip title={input_label(key, componentName, true)}>
             <TextField
-                // focused
+                focused = {value ? true : false}
                 label={input_label(key, componentName, false)}
                 id={key.replace('_', '-')}
                 onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
