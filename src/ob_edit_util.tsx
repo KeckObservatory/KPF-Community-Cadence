@@ -256,7 +256,6 @@ export const make_text_field = (
     componentName: OBComponentName,
     handleTextChange: Function,
     isNumber = false) => {
-
     const schemaProperties = ob_schemas[componentName].properties
     const { focused }= useFormControl() || {}
 
@@ -274,7 +273,6 @@ export const make_text_field = (
     
     //@ts-ignore
     const value = component[key]
-    const textFocused = (focused || value) ? true : false
     return (
         <Tooltip title={input_label(key, componentName, true)}>
             <FormControl>
