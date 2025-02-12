@@ -259,10 +259,19 @@ export const make_text_field = (
 
     const schemaProperties = ob_schemas[componentName].properties
     const { focused }= useFormControl() || {}
+
+    const shrinkInput = React.useMemo(() => {
+        //@ts-ignore
+        const val = String(component[key as keyof ComponentRow])
+        return (focused || val.length>0) ? true : false
+    }, [focused, component])
+
     if (!Object.keys(schemaProperties).includes(key)) {
         console.warn('make_text_field', `key ${key} not in component ${componentName}`)
         return
     }
+
+    
     //@ts-ignore
     const value = component[key]
     const textFocused = (focused || value) ? true : false
@@ -275,7 +284,7 @@ export const make_text_field = (
                     id={key.replace('_', '-')}
                     slotProps={{
                         inputLabel: {
-                            shrink: textFocused,
+                            shrink: shrinkInput,
                         }
                     }}
                     onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
