@@ -104,18 +104,23 @@ export const raDecFormat = (input: string) => {
 
 export const adjust_cadences = (component: Schedule) => {
     let schedule = { ...component } 
-    if (Number(schedule.num_visits_per_night ?? 0) === 1) {
+    //convert to integers 
+    schedule.num_internight_cadence && (schedule.num_internight_cadence = Number(schedule.num_internight_cadence))
+    schedule.num_intranight_cadence && (schedule.num_intranight_cadence = Number(schedule.num_intranight_cadence))
+    schedule.num_visits_per_night && (schedule.num_visits_per_night = Number(schedule.num_visits_per_night))
+    schedule.num_nights_per_semester && (schedule.num_nights_per_semester = Number(schedule.num_nights_per_semester))
+    if (schedule.num_visits_per_night === 1) {
         schedule = {
             ...schedule,
-            'num_intranight_cadence': "0",
+            'num_intranight_cadence': 0,
         }
         console.log('setting intranight cadence to zero', component)
     }
     // if num_vists_per_night is 1, set num_internight_cadences to 0
-    if (Number(schedule.num_nights_per_semester ?? 0) === 1) {
+    if (schedule.num_nights_per_semester === 1) {
         schedule = {
             ...schedule,
-            'num_internight_cadence': "0",
+            'num_internight_cadence': 0,
         }
         console.log('setting internight cadence to zero', component)
     }
@@ -123,8 +128,8 @@ export const adjust_cadences = (component: Schedule) => {
     if (schedule.scheduling_mode == 'Single') {
         schedule = {
             ...schedule,
-            'num_nights_per_semester': "1",
-            'num_internight_cadence': "0",
+            'num_nights_per_semester': 1,
+            'num_internight_cadence': 0,
         }
         console.log('setting num nights to one and internight cadence to zero', component)
     }
