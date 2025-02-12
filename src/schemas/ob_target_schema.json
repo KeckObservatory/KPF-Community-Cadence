@@ -36,7 +36,7 @@
         "systemic_velocity": {
             "type": ["number", "string"],
             "description": "Systemic Velocity [km/s]",
-            "short_description": "Sysemic Velocity",
+            "short_description": "Systemic Velocity",
             "translator_mapping": "RadialVelocity"
         },
         "g_mag": {
