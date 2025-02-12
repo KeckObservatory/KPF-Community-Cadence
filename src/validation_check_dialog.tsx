@@ -8,6 +8,8 @@ import ApprovalIcon from '@mui/icons-material/Approval';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import AJV2019, { ErrorObject, ValidateFunction, JSONSchemaType } from 'ajv/dist/2019'
+import addFormats from "ajv-formats"
+
 import { IconButton } from '@mui/material';
 // import * as ob_schema from './schemas/observing_block_schema.json'
 import * as calibration_schema from './schemas/calibration_schema.json'
@@ -18,6 +20,7 @@ import * as metadata_schema from './schemas/metadata_schema.json'
 import { OB } from './module_selector';
 import { OBComponentName } from './ob_component_table';
 import { Metadata, Observation, OBTarget, Schedule, Calibration } from './module_selector';
+
 
 export interface SimpleDialogProps {
   open: boolean;
@@ -32,12 +35,15 @@ export interface Props {
 
 const create_validator = (schema: any) => {
   const ajv = new AJV2019({ strict: false, allErrors: true, useDefaults: true })
+  addFormats(ajv)
   let ts = schema as any
   delete ts["$schema"]
   ajv.addKeyword("short_description")
   ajv.addKeyword("not_editable_by_user")
   ajv.addKeyword("translator_mapping")
   ajv.addKeyword("hide_column")
+  
+  ajv
   return ajv.compile(ts)
 }
 

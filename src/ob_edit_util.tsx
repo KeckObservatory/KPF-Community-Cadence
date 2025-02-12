@@ -134,23 +134,6 @@ export const adjust_schedule = (component: Schedule) => {
         console.log('setting num nights to one and internight cadence to zero', component)
     }
     
-    const scheduleSchema = ob_schemas['schedule']
-    const minEl = scheduleSchema.properties.minimum_elevation.minimum
-    const maxEl = scheduleSchema.properties.minimum_elevation.maximum
-    if (Number(schedule.minimum_elevation) < minEl) {
-        schedule = {
-            ...schedule,
-            "minimum_elevation": minEl,
-        }
-        console.log(`setting minimum elevation to ${minEl}`, component)
-    }
-    if (Number(schedule.minimum_elevation) > maxEl) {
-        schedule = {
-            ...schedule,
-            "minimum_elevation": maxEl,
-        }
-        console.log(`setting minimum elevation to ${maxEl}`, component)
-    }
     return schedule
 }
 
