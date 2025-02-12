@@ -54,6 +54,7 @@
         "t_eff": {
             "type": ["integer", "string"],
             "description": "Effective Temperature [Kelvin]",
+            "regex": "^[+]?\\d+?$",
             "short_description": "Teff",
             "translator_mapping": "Teff"
         },
