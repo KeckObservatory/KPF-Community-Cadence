@@ -268,6 +268,11 @@ export const make_text_field = (
             <TextField
                 label={input_label(key, componentName, false)}
                 id={key.replace('_', '-')}
+                slotProps={{
+                    inputLabel: {
+                        shrink: value ? true: false,
+                    }
+                }}
                 onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
                 value={value}
             />
