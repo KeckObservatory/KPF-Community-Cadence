@@ -106,6 +106,7 @@ const obSetter = (ob: OB, componentName: keyof OB) => {
     //auto fill object name with target name if empty.
     if (componentName === 'target' && ob.target.target_name && !ob.observation.object) {
         ob.observation= { 
+            ...ob.observation,
             'object': ob.target.target_name,
         }
     }
