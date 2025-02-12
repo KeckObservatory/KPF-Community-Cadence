@@ -112,13 +112,7 @@ function ValidationDialog(props: SimpleDialogProps) {
             if (err.keyword === 'required') {
               msg = `${err.params.missingProperty}: ${err.message}`
             }
-            if (err.keyword === 'type' || err.keyword === 'pattern') {
-              msg = `${err.instancePath.substring(1)}: ${err.message}`
-            }
-            if (err.keyword === 'minimum' || err.keyword === 'maximum') {
-              msg = `${err.instancePath.substring(1)}: ${err.message}`
-            }
-            if (err.keyword === 'enum') {
+            else {
               msg = `${err.instancePath.substring(1)}: ${err.message}`
             }
             return (
