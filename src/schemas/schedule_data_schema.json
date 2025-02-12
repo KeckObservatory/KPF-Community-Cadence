@@ -6,9 +6,9 @@
         "scheduling_mode": {
             "type": "string",
             "translator_mapping": "SchedulingMode",
-            "description": "Scheduling Mode: FixedTime, Cadence, or Single",
+            "description": "Scheduling Mode: Cadence, or Single",
             "short_description": "Scheduling Mode",
-            "enum": ["FixedTime", "Cadence", "Single"],
+            "enum": ["Cadence", "Single"],
             "default": "Single",
             "not_editable_by_user": true
         },
@@ -17,6 +17,7 @@
             "translator_mapping": "VisitsPerNight",
             "description": "(Cadence mode) Number of Visits per Night",
             "short_description": "# Visits",
+            "minimum": 1,
             "default": 1
         },
         "num_nights_per_semester": {
@@ -24,6 +25,7 @@
             "translator_mapping": "NightsPerSemester",
             "description": "(Cadence mode) Number of of Nights Per Semester",
             "short_description": "# Nights",
+            "minimum": 1,
             "default": 1
         },
         "num_internight_cadence": {
@@ -39,6 +41,7 @@
             "description": "(Cadence mode) Minimum Intra-Night Cadence (days)",
             "short_description": "Intranight Cadence",
             "default": 1,
+            "minimum": 1,
             "multipleOf": 0.01 
         },
         "fast_read_mode_requested": {
@@ -54,6 +57,8 @@
             "description": "[deg] Below 30 degrees elevation, the ADC performance degrades dramatically.",
             "short_description": "Minimum Elevation",
             "default": 30,
+            "minimum": 18,
+            "maximum": 85,
             "multipleOf": 0.1
         },
         "minimum_moon_separation": {

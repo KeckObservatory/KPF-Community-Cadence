@@ -34,6 +34,11 @@ export default function TargetForm(props: Props) {
     }
 
     const handleTextChange = (key: string, value: string | number, isNumber = false) => {
+        console.log('text change', key, value)
+        if (key === 'gaia_id' || key === 'tic_id') {
+            console.log('catalog change', value)
+            setHasCatalog((value as string).length>0 ? true : false)
+        }
         if (Object.keys(schemaProperties).includes(key) === false) {
             console.error(schemaProperties)
             console.error(`key ${key} not found in schema ${schemaProperties}`)
@@ -51,9 +56,10 @@ export default function TargetForm(props: Props) {
     }
 
 
-    const handleCatalogChange = (tgt: OBTarget) => {
+    const handleCatalogChange = (tgt: OBTarget & ComponentRow) => {
         setHasCatalog(tgt.tic_id || tgt.gaia_id ? true : false)
         //trigger rerender
+        setTarget(tgt)
         handleTextChange('ra', tgt.ra ?? "")
     }
 

@@ -79,7 +79,7 @@ export function TopBar(props: Props) {
             flexGrow: 1,
           }}
         >
-          KPF Obsering Block Webform
+          KPF Observing Block Webform
         </Typography>
         <Tooltip title="Plz, select me to take a survey">
           <Button

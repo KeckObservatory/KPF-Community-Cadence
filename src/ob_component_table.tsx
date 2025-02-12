@@ -24,6 +24,7 @@ import {
     useGridApiEventHandler,
     GridRowParams,
     GridRenderCellParams,
+    GridPinnedColumnFields,
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
@@ -305,7 +306,8 @@ export default function OBComponentTable(props: Props) {
     }) as ComponentRow[];
 
     const [rows, setRows] = React.useState(initRows);
-    const pinnedColumns = { left: ['actions', 'target_name', 'target_name_semid'], right: ['ob_feasible'] }
+    let pinnedColumns: GridPinnedColumnFields = { left: ['actions', 'target_name', 'target_name_semid'], right: []}
+    
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
     const snackbarContext = useSnackbarContext()
     const refreshContext = useRefreshTableContext()
@@ -367,7 +369,11 @@ export default function OBComponentTable(props: Props) {
         renderCell: ob_feasible_chip
     } as GridColDef
 
-    columns = [...columns, target_name_col, target_name_semid_col, ob_feasible_col]
+    columns = [...columns, target_name_col, target_name_semid_col]
+    if (componentName.includes('schedule')) {
+        pinnedColumns.right?.push('ob_feasible')
+        columns = [...columns, ob_feasible_col]
+    } 
     const schema = ob_schemas[componentName]
 
     const needs_resubmit = (row: ComponentRow, nErrors: number) => {
