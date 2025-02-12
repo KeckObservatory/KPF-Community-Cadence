@@ -9,6 +9,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { FormControl, useFormControl } from '@mui/material';
 
 
 
@@ -105,7 +106,7 @@ export const raDecFormat = (input: string) => {
 const obSetter = (ob: OB, componentName: keyof OB) => {
     //auto fill object name with target name if empty.
     if (componentName === 'target' && ob.target.target_name && !ob.observation.object) {
-        ob.observation= { 
+        ob.observation = {
             ...ob.observation,
             'object': ob.target.target_name,
         }
@@ -119,7 +120,7 @@ const obSetter = (ob: OB, componentName: keyof OB) => {
         console.log('setting intranight/internight cadence', ob)
     }
     // if num_vists_per_night is 1, set num_internight_cadences to 0
-    if (componentName === 'schedule' && Number(ob.schedule.num_nights_per_semester?? 0) === 1) {
+    if (componentName === 'schedule' && Number(ob.schedule.num_nights_per_semester ?? 0) === 1) {
         ob.schedule = {
             ...ob.schedule,
             'num_internight_cadence': 0,
@@ -127,7 +128,7 @@ const obSetter = (ob: OB, componentName: keyof OB) => {
         console.log('setting intranight/internight cadence', ob)
     }
     // if is observing_mode is Single, set num_nights_per_semester to 1 and num_internight_cadences to 0
-    if (componentName === 'schedule' && ob.schedule.scheduling_mode=='Single') {
+    if (componentName === 'schedule' && ob.schedule.scheduling_mode == 'Single') {
         ob.schedule = {
             ...ob.schedule,
             'num_nights_per_semester': 1,
@@ -257,25 +258,30 @@ export const make_text_field = (
     isNumber = false) => {
 
     const schemaProperties = ob_schemas[componentName].properties
+    const { focused }= useFormControl() || {}
     if (!Object.keys(schemaProperties).includes(key)) {
         console.warn('make_text_field', `key ${key} not in component ${componentName}`)
         return
     }
     //@ts-ignore
     const value = component[key]
+    const textFocused = (focused || value) ? true : false
     return (
         <Tooltip title={input_label(key, componentName, true)}>
-            <TextField
-                label={input_label(key, componentName, false)}
-                id={key.replace('_', '-')}
-                slotProps={{
-                    inputLabel: {
-                        shrink: value ? true: false,
-                    }
-                }}
-                onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
-                value={value}
-            />
+            <FormControl>
+                <TextField
+
+                    label={input_label(key, componentName, false)}
+                    id={key.replace('_', '-')}
+                    slotProps={{
+                        inputLabel: {
+                            shrink: textFocused,
+                        }
+                    }}
+                    onChange={(event) => handleTextChange(key, event.target.value, isNumber)}
+                    value={value}
+                />
+            </FormControl>
         </Tooltip>)
 }
 
