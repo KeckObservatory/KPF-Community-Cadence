@@ -58,7 +58,7 @@
             "translator_mapping": "MinimumElevation",
             "description": "[deg] Below 30 degrees elevation, the ADC performance degrades dramatically.",
             "short_description": "Minimum Elevation",
-            "format": "float",
+            "format": "elevation",
             "formatMinimum": "18",
             "formatMaximum": "85",
             "default": 30,

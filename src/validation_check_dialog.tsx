@@ -7,11 +7,10 @@ import Tooltip from '@mui/material/Tooltip';
 import ApprovalIcon from '@mui/icons-material/Approval';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import AJV2019, { ErrorObject, ValidateFunction, JSONSchemaType } from 'ajv/dist/2019'
+import AJV, { ErrorObject, ValidateFunction, JSONSchemaType, FormatDefinition } from 'ajv'
 import addFormats from "ajv-formats"
 
 import { IconButton } from '@mui/material';
-// import * as ob_schema from './schemas/observing_block_schema.json'
 import * as calibration_schema from './schemas/calibration_schema.json'
 import * as schedule_schema from './schemas/schedule_data_schema.json'
 import * as ob_target_schema from './schemas/ob_target_schema.json'
@@ -33,9 +32,21 @@ export interface Props {
   json: OB | Object
 }
 
+const elevationFormat: FormatDefinition<number | string> = {
+  validate: (data: number | string) => { console.warn('validate', data); return true },
+  compare: (a: number | string, b: number | string) => {
+    console.warn('inside compare', a, b)
+    if (!(a && b)) return undefined
+    return Number(a) > Number(b) ? 1 : -1
+  },
+  type: "string",
+  async: false
+}
+
 const create_validator = (schema: any) => {
-  const ajv = new AJV2019({ strict: false, allErrors: true, useDefaults: true })
+  const ajv = new AJV({ strict: false, allErrors: true, useDefaults: true })
   addFormats(ajv)
+  ajv.addFormat('elevation', elevationFormat)
   let ts = schema as any
   delete ts["$schema"]
   ajv.addKeyword("short_description")
