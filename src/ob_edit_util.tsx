@@ -252,16 +252,17 @@ export const switch_change = (input: SwitchChangeInput) => {
 
 interface HandleTextChangeProps {
     value: string,
-    handleTextChange: Function
+    changeShrinkInput: Function
 }
 
-const HandleTextChange(props: HandleTextChangeProps) {
+const HandleTextChange = (props: HandleTextChangeProps) => {
     const { value, changeShrinkInput } = props
     const { focused }= useFormControl() || {}
 
     if (focused || value.length>0) {
         changeShrinkInput(true)
     }
+    return null
 }
 
 export const make_text_field = (
