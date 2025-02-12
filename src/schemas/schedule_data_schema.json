@@ -40,9 +40,7 @@
             "translator_mapping": "intraNightCadenceMin",
             "description": "(Cadence mode) Minimum Intra-Night Cadence (days)",
             "short_description": "Intranight Cadence",
-            "default": 1,
-            "minimum": 1,
-            "multipleOf": 0.01 
+            "default": 1
         },
         "fast_read_mode_requested": {
             "type": "boolean",
