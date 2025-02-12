@@ -102,7 +102,7 @@ export const raDecFormat = (input: string) => {
     return sign + input;
 }
 
-export const adjust_cadences = (component: Schedule) => {
+export const adjust_schedule = (component: Schedule) => {
     let schedule = { ...component } 
     //convert to integers 
     schedule.num_internight_cadence && (schedule.num_internight_cadence = Number(schedule.num_internight_cadence))
@@ -133,6 +133,24 @@ export const adjust_cadences = (component: Schedule) => {
         }
         console.log('setting num nights to one and internight cadence to zero', component)
     }
+    
+    const scheduleSchema = ob_schemas['schedule']
+    const minEl = scheduleSchema.properties.minimum_elevation.minimum
+    const maxEl = scheduleSchema.properties.minimum_elevation.maximum
+    if (Number(schedule.minimum_elevation) < minEl) {
+        schedule = {
+            ...schedule,
+            "minimum_elevation": minEl,
+        }
+        console.log(`setting minimum elevation to ${minEl}`, component)
+    }
+    if (Number(schedule.minimum_elevation) > maxEl) {
+        schedule = {
+            ...schedule,
+            "minimum_elevation": maxEl,
+        }
+        console.log(`setting minimum elevation to ${maxEl}`, component)
+    }
     return schedule
 }
 
@@ -146,7 +164,7 @@ const obSetter = (ob: OB, componentName: keyof OB) => {
     }
     // if num_vists_per_night is 1, set num_intranight_cadences to 0
     if (componentName === 'schedule' && Number(ob.schedule.num_visits_per_night ?? 0) === 1) {
-        const adjustedComponent = adjust_cadences(ob[componentName])
+        const adjustedComponent = adjust_schedule(ob[componentName])
         ob[componentName] = adjustedComponent
     }
     return ob

@@ -85,13 +85,13 @@ export const validators: Record<Validators, ValidateFunction> = {
 }
 
 function ValidationDialog(props: SimpleDialogProps) {
-  const { open, handleClose } = props;
+  const { open, handleClose, errors } = props;
   return (
     <Dialog maxWidth="lg" onClose={() => handleClose()} open={open}>
       <DialogTitle>Target Validation Errors</DialogTitle>
       <DialogContent dividers>
         {
-          props.errors.map((err) => {
+          errors.map((err) => {
             let msg = err.message
             if (err.keyword === 'required') {
               msg = `${err.params.missingProperty}: ${err.message}`
