@@ -33,7 +33,7 @@ export interface Props {
 }
 
 const elevationFormat: FormatDefinition<number | string> = {
-  validate: (data: number | string) => { return true },
+  validate: (_: number | string) => { return true },
   compare: (a: number | string, b: number | string) => {
     if (!(a && b)) return undefined
     return Number(a) > Number(b) ? 1 : -1
