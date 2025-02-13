@@ -10,7 +10,6 @@
             "short_description": "Scheduling Mode",
             "enum": ["Cadence", "Single"],
             "default": "Single",
-            "not_editable_by_user": true
         },
         "num_visits_per_night": {
             "type": ["integer", "string"],
