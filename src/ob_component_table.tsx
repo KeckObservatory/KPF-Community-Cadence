@@ -114,6 +114,8 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponentName
         }
 
 
+        console.log('key', key, 'show_column', valueProps.show_column ?? true)
+
         let col = {
             field: key,
             valueParser: valueParser,
