@@ -428,8 +428,9 @@ export default function OBComponentTable(props: Props) {
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
         const initNeedsResubmit = needs_resubmit(editRow, errors.length)
-        console.log('initNeedsResubmit', initNeedsResubmit, editRow)
+        const initSubmitColor = !initNeedsResubmit && editRow?.submitted ? 'success' : 'inherit'
         const [needsResubmit, setNeedsResubmit] = React.useState<boolean>(initNeedsResubmit)
+        const [submitColor, setSubmitColor] = React.useState<'inherit' | 'success'>(initSubmitColor)
 
         const setRowWithCadenceChecks = (row: ComponentRow) => {
             //if schedule and num_visits_per_night is 1, set cadence to 0. 
@@ -487,6 +488,7 @@ export default function OBComponentTable(props: Props) {
             const resubmit = needs_resubmit(editRow, errors.length)
             console.log('editRow changed', editRow, editedOB, resubmit)
             setNeedsResubmit(resubmit)
+            setSubmitColor(!resubmit && editedOB?.metadata.submitted ? 'success' : 'inherit')
             setCount((prev: number) => prev + 1)
         }, [editRow])
 
@@ -508,7 +510,6 @@ export default function OBComponentTable(props: Props) {
             publishText = 'Resubmit edited target for review'
         }
         const valid = errors.length === 0
-        const publishColor = needsResubmit? 'inherit' : 'success'
         const needsInitSubmit = needsResubmit && !editRow.submitted
 
 
@@ -525,7 +526,7 @@ export default function OBComponentTable(props: Props) {
                             color='warning' /> :
                         <PublishIcon
                             sx={refreshStyle}
-                            color={publishColor}
+                            color={submitColor}
                         />
                     }
                     label="Publish"
