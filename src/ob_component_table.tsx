@@ -56,6 +56,7 @@ export interface ComponentRow extends OBComponent {
     target_name?: string,
     state: string;
     submitted: boolean;
+    needs_resubmit: boolean;
     ob_feasible?: boolean;
     details: string;
 }
@@ -377,7 +378,7 @@ export default function OBComponentTable(props: Props) {
     const schema = ob_schemas[componentName]
 
     const needs_resubmit = (row: ComponentRow, nErrors: number) => {
-        return nErrors > 0 && row.state?.includes('SUBMITTED') && !row.submitted
+        return nErrors > 0 && row.state?.includes('SUBMITTED') && !row.submitted && row.needs_resubmit
     }
 
     const handlePublishClick = async (

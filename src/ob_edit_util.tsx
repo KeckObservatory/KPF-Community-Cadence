@@ -161,6 +161,8 @@ export const ob_to_component_row = (ob: OB, componentName: OBComponentName): Com
     const state = ob.metadata?.state ?? 'CREATED' //overwrite state with metadata state
     const ob_feasible = ob.metadata?.ob_feasible
     const details = ob.metadata.details ?? ''
+    const needs_resubmit = ob.metadata.needs_resubmit ?? false
+    const submitted = ob.metadata.submitted ?? false
     return {
         ...cmp,
         _id,
@@ -169,7 +171,8 @@ export const ob_to_component_row = (ob: OB, componentName: OBComponentName): Com
         state,
         ob_feasible,
         details,
-        submitted: ob.metadata.submitted ?? false,
+        submitted, 
+        needs_resubmit
     }
 }
 
