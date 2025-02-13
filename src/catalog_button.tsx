@@ -111,7 +111,7 @@ export const get_simbad_data = async (targetName: string): Promise<SimbadTargetD
         else if (identifiersSection) //only check if in identifiers section
         {
             if (!simbadData.tic_id) simbadData['tic_id'] = line.match(new RegExp('TIC\\s(\\w+)'))?.at(1)
-            if (!simbadData.two_mass_id) simbadData['two_mass_id'] = line.match(new RegExp('2MASS\\s(\\w+)'))?.at(1)
+            if (!simbadData.two_mass_id) simbadData['two_mass_id'] = line.match(new RegExp('2MASS\\s([-\\w]+)'))?.at(1)
             const [match, dr, gaia_id] = line.match(new RegExp('Gaia\\s(\\w+)\\s(\\w+)')) ?? []
             if (match) { //replace if gaia version is higher
                 Number(dr[2]) > currDr && (

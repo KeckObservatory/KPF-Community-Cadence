@@ -59,8 +59,8 @@ export default function ScheduleForm(props: Props) {
         switch_change(input)
     }
 
-    const CreateTextField = (key: string, isNumber = false) => {
-        return make_text_field(key, schedule, componentName, handleTextChange, isNumber)
+    const CreateTextField = (key: string, isNumber = false, width?: string) => {
+        return make_text_field(key, schedule, componentName, handleTextChange, isNumber, width)
     }
 
     const CreateSwitchField = (key: string) => {
@@ -119,18 +119,17 @@ export default function ScheduleForm(props: Props) {
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('num_visits_per_night', true)}
                                 {CreateTextField('num_nights_per_semester', true)}
-                                {CreateSwitchField('fast_read_mode_requested')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                {CreateTextField('num_internight_cadence', true)}
                                 {CreateTextField('num_intranight_cadence', true)}
+                                {CreateTextField('num_internight_cadence', true)}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 {CreateTextField('minimum_elevation', true)}
                                 {CreateTextField('minimum_moon_separation', true)}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
-                                {CreateTextField('comment')}
+                                {CreateTextField('comment', false, '100%')}
                             </Stack>
                         </Box>
                     </Paper>

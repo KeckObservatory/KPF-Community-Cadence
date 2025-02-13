@@ -270,7 +270,8 @@ export const make_text_field = (
     component: OBComponent,
     componentName: OBComponentName,
     handleTextChange: Function,
-    isNumber = false) => {
+    isNumber = false, 
+    width?: string) => {
     const schemaProperties = ob_schemas[componentName].properties
     //@ts-ignore
     const value = component[key]
@@ -282,7 +283,9 @@ export const make_text_field = (
     return (
         <Tooltip title={input_label(key, componentName, true)}>
             <TextField
+                sx={{ width: width ?? 300 }}
                 label={input_label(key, componentName, false)}
+
                 id={key.replace('_', '-')}
                 slotProps={{
                     inputLabel: {
