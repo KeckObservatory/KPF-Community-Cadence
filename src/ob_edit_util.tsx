@@ -283,7 +283,7 @@ export const make_text_field = (
     return (
         <Tooltip title={input_label(key, componentName, true)}>
             <TextField
-                sx={{ width: width ?? 300 }}
+                sx={{ width: width ?? undefined }}
                 label={input_label(key, componentName, false)}
 
                 id={key.replace('_', '-')}
