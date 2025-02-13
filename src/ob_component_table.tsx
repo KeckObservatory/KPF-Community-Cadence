@@ -509,6 +509,7 @@ export default function OBComponentTable(props: Props) {
         }
         const valid = errors.length === 0
         const publishColor = needsResubmit? 'inherit' : 'success'
+        const needsInitSubmit = needsResubmit && editRow.submitted === false
 
 
         const firstButton = valid ?
@@ -518,14 +519,14 @@ export default function OBComponentTable(props: Props) {
                 arrow key="publish" >
                 <GridActionsCellItem
                     disabled={!valid}
-                    icon={needsResubmit?
-                        <RefreshIcon
-                            sx={refreshStyle}
-                            color='warning' /> :
+                    icon={needsInitSubmit?
                         <PublishIcon
                             sx={refreshStyle}
                             color={publishColor}
-                        />
+                        /> :
+                        <RefreshIcon
+                            sx={refreshStyle}
+                            color='warning' /> 
                     }
                     label="Publish"
                     onClick={() => handlePublishClick(id, setIconSpin, setRowWithCadenceChecks)}
