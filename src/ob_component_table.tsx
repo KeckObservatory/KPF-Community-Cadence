@@ -488,7 +488,6 @@ export default function OBComponentTable(props: Props) {
             const newErrors = validators[componentName].errors ?? []
             setErrors(newErrors)
             const resubmit = needs_resubmit(editRow, errors.length)
-            console.log('editRow changed', editRow, editedOB, resubmit)
             setNeedsResubmit(resubmit)
             setSubmitColor(!resubmit && editRow.submitted ? 'success' : 'inherit')
             setCount((prev: number) => prev + 1)

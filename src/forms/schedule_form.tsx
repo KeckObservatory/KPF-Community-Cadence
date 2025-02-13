@@ -1,4 +1,3 @@
-import * as React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,7 +9,7 @@ import {
 } from '@mui/material'
 import { ComponentRow } from '../ob_component_table';
 import { Schedule } from '../module_selector';
-import { text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, make_text_field, make_switch_field, make_autocomplete_field } from '../ob_edit_util';
+import { text_change, TextChangeInput, BaseChangeInput, make_text_field, make_autocomplete_field } from '../ob_edit_util';
 import { ob_schemas } from '../validation_check_dialog';
 
 
@@ -49,22 +48,8 @@ export default function ScheduleForm(props: Props) {
         text_change(input)
     }
 
-    const handleSwitchChange = (key: string, event: React.SyntheticEvent<Element, Event>) => {
-        const input: SwitchChangeInput = {
-            ...baseInput,
-            key,
-            event
-        }
-        console.log('input', input)
-        switch_change(input)
-    }
-
     const CreateTextField = (key: string, isNumber = false, width?: string) => {
         return make_text_field(key, schedule, componentName, handleTextChange, isNumber, width)
-    }
-
-    const CreateSwitchField = (key: string) => {
-        return make_switch_field(key, schedule, componentName, handleSwitchChange)
     }
 
     const CreateAutocompleteField = (key: string,
