@@ -399,7 +399,9 @@ export default function OBComponentTable(props: Props) {
                 const submittedOB = resp.observing_blocks.at(0)
                 const newRow = ob_to_component_row(submittedOB, componentName)
                 processRowUpdate(newRow)
-                setEditRow(newRow)
+                setEditRow(newRow) //should not save the row...
+                //update the context.obs with the new OB
+                context.setOBs(context.obs.map((ob) => ob._id === _id ? submittedOB : ob))
                 snackbarContext.setSnackbarMessage(
                     { severity: 'success', message: `Target submitted.` })
             }
