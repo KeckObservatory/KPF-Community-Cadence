@@ -482,7 +482,6 @@ export default function OBComponentTable(props: Props) {
             }
         }
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-            const editedOB = context.obs.find((ob) => ob._id === editRow._id)
             handleRowChange()
             validators[componentName](editRow)
             const newErrors = validators[componentName].errors ?? []
