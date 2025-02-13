@@ -511,7 +511,7 @@ export default function OBComponentTable(props: Props) {
             publishText = 'Resubmit edited target for review'
         }
         const valid = errors.length === 0
-        const publishColor = resubmitSelected ? 'success' : 'inherit'
+        const publishColor = resubmitSelected ? 'inherit' : 'success'
 
 
         const firstButton = valid ?
