@@ -299,6 +299,10 @@ const check_if_catalog = (row: ComponentRow) => {
     return (row as OBTarget).gaia_id || (row as OBTarget).tic_id ? true : false
 }
 
+const needs_resubmit = (row: ComponentRow, nErrors: number) => {
+    return (nErrors > 0 && row.state?.includes('SUBMITTED') && !row.submitted) || row.needs_resubmit
+}
+
 export default function OBComponentTable(props: Props) {
     const { componentName } = props
     const context = useCommCadContext()
@@ -377,9 +381,6 @@ export default function OBComponentTable(props: Props) {
     } 
     const schema = ob_schemas[componentName]
 
-    const needs_resubmit = (row: ComponentRow, nErrors: number) => {
-        return nErrors > 0 && row.state?.includes('SUBMITTED') && !row.submitted && row.needs_resubmit
-    }
 
     const handlePublishClick = async (
         _id: GridRowId,
@@ -429,7 +430,8 @@ export default function OBComponentTable(props: Props) {
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
-        const [resubmitSelected, setResubmitSelected] = React.useState<boolean>(needs_resubmit(row, errors.length))
+        const initResubmitSelected = needs_resubmit(editRow, errors.length)
+        const [resubmitSelected, setResubmitSelected] = React.useState<boolean>(initResubmitSelected)
 
         const setRowWithCadenceChecks = (row: ComponentRow) => {
             //if schedule and num_visits_per_night is 1, set cadence to 0. 
@@ -480,12 +482,13 @@ export default function OBComponentTable(props: Props) {
         }
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
             const editedOB = context.obs.find((ob) => ob._id === editRow._id)
-            console.log('editRow changed', editRow, editedOB)
             handleRowChange()
             validators[componentName](editRow)
             const newErrors = validators[componentName].errors ?? []
             setErrors(newErrors)
-            setResubmitSelected(needs_resubmit(editRow, newErrors.length))
+            const resubmit = needs_resubmit(editRow, errors.length)
+            console.log('editRow changed', editRow, editedOB, resubmit)
+            setResubmitSelected(resubmit)
             setCount((prev: number) => prev + 1)
         }, [editRow])
 
