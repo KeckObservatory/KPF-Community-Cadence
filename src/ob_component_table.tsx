@@ -114,7 +114,6 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponentName
         }
 
 
-        console.log('key', key, 'show_column', valueProps.show_column ?? true)
 
         let col = {
             field: key,
@@ -125,7 +124,6 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponentName
             headerName: valueProps.short_description ?? valueProps.description,
             width: 100,
             editable: valueProps.not_editable_by_user ? false : true,
-            visible: valueProps.show_column ?? true,
             description: valueProps.description,
             type: valueProps.enum ? 'singleSelect' : valueProps.type,
             valueOptions: valueProps.enum ?? undefined,
@@ -137,7 +135,8 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponentName
                 valueOptions: semids,
             }
         }
-        columns.push(col)
+        const visible = valueProps.show_column === false ? false : true
+        visible && columns.push(col)
     });
 
     return columns;
