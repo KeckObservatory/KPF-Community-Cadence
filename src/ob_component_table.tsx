@@ -297,7 +297,7 @@ const check_if_catalog = (row: ComponentRow) => {
 }
 
 const needs_resubmit = (row: ComponentRow, nErrors: number) => {
-    return nErrors > 0 && row.state?.includes('SUBMITTED')
+    return nErrors > 0 && row.state.includes('SUBMITTED')
 }
 
 export default function OBComponentTable(props: Props) {
@@ -427,9 +427,9 @@ export default function OBComponentTable(props: Props) {
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
-        const initResubmitSelected = needs_resubmit(editRow, errors.length)
-        console.log('initResubmitSelected', initResubmitSelected, editRow)
-        const [resubmitSelected, setResubmitSelected] = React.useState<boolean>(initResubmitSelected)
+        const initNeedsResubmit = needs_resubmit(editRow, errors.length)
+        console.log('initNeedsResubmit', initNeedsResubmit, editRow)
+        const [needsResubmit, setNeedsResubmit] = React.useState<boolean>(initNeedsResubmit)
 
         const setRowWithCadenceChecks = (row: ComponentRow) => {
             //if schedule and num_visits_per_night is 1, set cadence to 0. 
@@ -486,7 +486,7 @@ export default function OBComponentTable(props: Props) {
             setErrors(newErrors)
             const resubmit = needs_resubmit(editRow, errors.length)
             console.log('editRow changed', editRow, editedOB, resubmit)
-            setResubmitSelected(resubmit)
+            setNeedsResubmit(resubmit)
             setCount((prev: number) => prev + 1)
         }, [editRow])
 
@@ -504,11 +504,11 @@ export default function OBComponentTable(props: Props) {
 
         let publishText = errors.length > 0 ? `validate ${componentName} before submitting` : 'Submit OB for review'
 
-        if (resubmitSelected) {
+        if (needsResubmit) {
             publishText = 'Resubmit edited target for review'
         }
         const valid = errors.length === 0
-        const publishColor = resubmitSelected ? 'inherit' : 'success'
+        const publishColor = needsResubmit? 'inherit' : 'success'
 
 
         const firstButton = valid ?
@@ -518,7 +518,7 @@ export default function OBComponentTable(props: Props) {
                 arrow key="publish" >
                 <GridActionsCellItem
                     disabled={!valid}
-                    icon={resubmitSelected ?
+                    icon={needsResubmit?
                         <RefreshIcon
                             sx={refreshStyle}
                             color='warning' /> :
