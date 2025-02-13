@@ -9,7 +9,7 @@
             "description": "Scheduling Mode: Cadence, or Single",
             "short_description": "Scheduling Mode",
             "enum": ["Cadence", "Single"],
-            "default": "Single",
+            "default": "Single"
         },
         "num_visits_per_night": {
             "type": ["integer", "string"],
