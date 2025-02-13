@@ -56,7 +56,6 @@ export interface ComponentRow extends OBComponent {
     target_name?: string,
     state: string;
     submitted: boolean;
-    needs_resubmit: boolean;
     ob_feasible?: boolean;
     details: string;
 }
@@ -160,7 +159,6 @@ export const create_new_ob = (semid: string, obsid: number, username: string, ta
         semester: semid.split('_')[0],
         progid: semid.split('_')[1],
         semid: semid,
-        needs_resubmit: false,
         state: "CREATED",
         status: 'PENDING',
         tags: [],
@@ -200,7 +198,6 @@ function EditComponentToolbar(props: EditToolbarProps) {
             return
         }
         newOB = resp.observing_blocks.at(0)
-        newOB.metadata.needs_resubmit = false
         newOB.metadata.status = 'SAVED'  //TODO: have backend set this field
         context.setOBs([newOB, ...context.obs])
         processRowUpdate(newOB[componentName])
@@ -300,7 +297,7 @@ const check_if_catalog = (row: ComponentRow) => {
 }
 
 const needs_resubmit = (row: ComponentRow, nErrors: number) => {
-    return (nErrors > 0 && row.state?.includes('SUBMITTED') && !row.submitted) || row.needs_resubmit
+    return nErrors > 0 && row.state?.includes('SUBMITTED')
 }
 
 export default function OBComponentTable(props: Props) {

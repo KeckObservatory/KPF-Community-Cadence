@@ -103,7 +103,6 @@ export interface Metadata {
   state: string,
   submitter?: string,
   submitted?: boolean,
-  needs_resubmit?: boolean,
   ob_feasible?: boolean,
   details?: string,
   status?: string,
