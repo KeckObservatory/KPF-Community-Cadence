@@ -113,6 +113,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponentName
             return cmp
         }
 
+
         let col = {
             field: key,
             valueParser: valueParser,
@@ -122,7 +123,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponentName
             headerName: valueProps.short_description ?? valueProps.description,
             width: 100,
             editable: valueProps.not_editable_by_user ? false : true,
-            visible: valueProps.hide_column ? true : false,
+            visible: valueProps.show_column ?? true,
             description: valueProps.description,
             type: valueProps.enum ? 'singleSelect' : valueProps.type,
             valueOptions: valueProps.enum ?? undefined,

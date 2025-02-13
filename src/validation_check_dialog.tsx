@@ -51,7 +51,7 @@ const create_validator = (schema: any) => {
   ajv.addKeyword("short_description")
   ajv.addKeyword("not_editable_by_user")
   ajv.addKeyword("translator_mapping")
-  ajv.addKeyword("hide_column")
+  ajv.addKeyword("show_column")
   
   ajv
   return ajv.compile(ts)
@@ -72,7 +72,7 @@ export interface PropertyProps {
     minLength?: number,
     maxLength?: number,
     not_editable_by_user?: boolean,
-    hide_column?: boolean,
+    show_column?: boolean,
     enum?: string[],
     items?: Items
     translator_mapping?: string
