@@ -50,6 +50,7 @@
             "type": "boolean",
             "translator_mapping": "FastreadModeRequested",
             "description": "(FixedTime mode) Does this OB request Fast Read Mode?",
+            "hide_column": true,
             "short_description": "Fast Read Mode",
             "default": false
         },
