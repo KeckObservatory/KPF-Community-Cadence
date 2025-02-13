@@ -429,7 +429,7 @@ export default function OBComponentTable(props: Props) {
         const [count, setCount] = React.useState(0); //prevents scroll update from triggering save
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
-        const [submitted, setSubmitted] = React.useState<boolean>(row.state?.includes('SUBMITTED') ?? false)
+        const [resubmitSelected, setResubmitSelected] = React.useState<boolean>(needs_resubmit(row, errors.length))
 
         const setRowWithCadenceChecks = (row: ComponentRow) => {
             //if schedule and num_visits_per_night is 1, set cadence to 0. 
@@ -483,8 +483,9 @@ export default function OBComponentTable(props: Props) {
             console.log('editRow changed', editRow, editedOB)
             handleRowChange()
             validators[componentName](editRow)
-            setErrors(validators[componentName].errors ?? [])
-            setSubmitted(editRow.state?.includes('SUBMITTED'))
+            const newErrors = validators[componentName].errors ?? []
+            setErrors(newErrors)
+            setResubmitSelected(needs_resubmit(editRow, newErrors.length))
             setCount((prev: number) => prev + 1)
         }, [editRow])
 
@@ -502,12 +503,11 @@ export default function OBComponentTable(props: Props) {
 
         let publishText = errors.length > 0 ? `validate ${componentName} before submitting` : 'Submit OB for review'
 
-        const resubmit = needs_resubmit(row, errors.length)
-        if (resubmit) {
+        if (resubmitSelected) {
             publishText = 'Resubmit edited target for review'
         }
         const valid = errors.length === 0
-        const publishColor = submitted ? 'success' : 'inherit'
+        const publishColor = resubmitSelected ? 'success' : 'inherit'
 
 
         const firstButton = valid ?
@@ -517,7 +517,7 @@ export default function OBComponentTable(props: Props) {
                 arrow key="publish" >
                 <GridActionsCellItem
                     disabled={!valid}
-                    icon={resubmit ?
+                    icon={resubmitSelected ?
                         <RefreshIcon
                             sx={refreshStyle}
                             color='warning' /> :
