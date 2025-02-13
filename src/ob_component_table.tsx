@@ -297,7 +297,7 @@ const check_if_catalog = (row: ComponentRow) => {
 }
 
 const needs_resubmit = (row: ComponentRow, nErrors: number) => {
-    return nErrors > 0 && row.state.includes('SUBMITTED')
+    return nErrors > 0 || !row.state.includes('SUBMITTED')
 }
 
 export default function OBComponentTable(props: Props) {
