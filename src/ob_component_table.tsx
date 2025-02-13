@@ -428,7 +428,7 @@ export default function OBComponentTable(props: Props) {
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
         const initNeedsResubmit = needs_resubmit(editRow, errors.length)
-        const initSubmitColor = !initNeedsResubmit && editRow?.submitted ? 'success' : 'inherit'
+        const initSubmitColor = !initNeedsResubmit && editRow.submitted ? 'success' : 'inherit'
         const [needsResubmit, setNeedsResubmit] = React.useState<boolean>(initNeedsResubmit)
         const [submitColor, setSubmitColor] = React.useState<'inherit' | 'success'>(initSubmitColor)
 
@@ -488,7 +488,7 @@ export default function OBComponentTable(props: Props) {
             const resubmit = needs_resubmit(editRow, errors.length)
             console.log('editRow changed', editRow, editedOB, resubmit)
             setNeedsResubmit(resubmit)
-            setSubmitColor(!resubmit && editedOB?.metadata.submitted ? 'success' : 'inherit')
+            setSubmitColor(!resubmit && editRow.submitted ? 'success' : 'inherit')
             setCount((prev: number) => prev + 1)
         }, [editRow])
 
