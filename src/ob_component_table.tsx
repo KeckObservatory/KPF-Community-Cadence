@@ -431,6 +431,7 @@ export default function OBComponentTable(props: Props) {
         const debounced_edit_click = useDebounceCallback(handleEditClick, 500)
         const apiRef = useGridApiContext();
         const initResubmitSelected = needs_resubmit(editRow, errors.length)
+        console.log('initResubmitSelected', initResubmitSelected, editRow)
         const [resubmitSelected, setResubmitSelected] = React.useState<boolean>(initResubmitSelected)
 
         const setRowWithCadenceChecks = (row: ComponentRow) => {
