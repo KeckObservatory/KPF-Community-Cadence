@@ -45,8 +45,7 @@ const strNumberFormat : FormatDefinition<number | string> = {
 const create_validator = (schema: any) => {
   const ajv = new AJV({ strict: false, allErrors: true, useDefaults: true })
   addFormats(ajv)
-  ajv.addFormat('elevation', strNumberFormat)
-  ajv.addFormat('minimum_moon_separation', strNumberFormat)
+  ajv.addFormat('strNumber', strNumberFormat)
   let ts = schema as any
   delete ts["$schema"]
   ajv.addKeyword("short_description")
