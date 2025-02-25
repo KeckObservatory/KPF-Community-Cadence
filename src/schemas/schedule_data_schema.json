@@ -69,6 +69,7 @@
         },
         "minimum_moon_separation": {
             "type": ["number", "string"],
+            "format": "moon_separation",
             "translator_mapping": "MinimumMoonSeparation",
             "short_description": "Moon Separation",
             "description": "Minimum moon separation angle [deg]",

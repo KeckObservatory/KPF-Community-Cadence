@@ -32,6 +32,16 @@ export interface Props {
   json: OB | Object
 }
 
+const moonSeparationFormat: FormatDefinition<number | string> = {
+  validate: (_: number | string) => { return true },
+  compare: (a: number | string, b: number | string) => {
+    if (!(a && b)) return undefined
+    return Number(a) > Number(b) ? 1 : -1
+  },
+  type: "string",
+  async: false
+}
+
 const elevationFormat: FormatDefinition<number | string> = {
   validate: (_: number | string) => { return true },
   compare: (a: number | string, b: number | string) => {
@@ -46,6 +56,7 @@ const create_validator = (schema: any) => {
   const ajv = new AJV({ strict: false, allErrors: true, useDefaults: true })
   addFormats(ajv)
   ajv.addFormat('elevation', elevationFormat)
+  ajv.addFormat('moonSeparation', moonSeparationFormat)
   let ts = schema as any
   delete ts["$schema"]
   ajv.addKeyword("short_description")
