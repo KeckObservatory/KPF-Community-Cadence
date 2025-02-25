@@ -120,13 +120,13 @@
             "type": ["integer", "string"],
             "description": "Rise Day of Semester",
             "not_editable_by_user": true,
-            "hide_column": true
+            "show_column": false 
         },
         "sets_semester_day": {
             "type": ["integer", "string"],
             "description": "Set Day of Semester",
             "not_editable_by_user": true,
-            "hide_column": true
+            "show_column": false 
         },
         "catalog_comment": {
             "type": "string",

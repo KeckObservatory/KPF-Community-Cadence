@@ -35,6 +35,15 @@
             "translator_mapping": "Progid",
             "not_editable_by_user": true
         },
+        "history":  {
+            "type": "array",
+            "description": "History of the target",
+            "items": {
+                "description": "History of the target",
+                "type": "string"
+            },
+            "not_editable_by_user": true
+        },
         "tags": {
             "type": "array",
             "short_description": "Tags",
