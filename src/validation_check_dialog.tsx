@@ -36,7 +36,7 @@ const strNumberFormat : FormatDefinition<number | string> = {
   validate: (_: number | string) => { return true },
   compare: (a: number | string, b: number | string) => {
     if (!(a && b)) return undefined
-    return Number(a) > Number(b) ? 1 : -1
+    return Number(a) >= Number(b) ? 1 : -1
   },
   type: "string",
   async: false
