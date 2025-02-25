@@ -73,7 +73,7 @@
             "translator_mapping": "MinimumMoonSeparation",
             "short_description": "Moon Separation",
             "description": "Minimum moon separation angle [deg]",
-            "formatMinimum": "30",
+            "formatMinimum": "0",
             "default": 30,
             "regex": "^[+]?\\d*([\\.]\\d*)?$",
             "minimum": 0,
