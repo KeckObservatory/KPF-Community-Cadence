@@ -8,6 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Tooltip } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import { ob_schemas } from './validation_check_dialog';
+import { useCommCadContext, useSnackbarContext } from './App';
 
 interface Props {
     setOBs: Function
@@ -30,6 +31,7 @@ const mapEntries = Object.entries(ob_schemas).map(([ckey, schema]) => {
 
 
 const map = Object.fromEntries(mapEntries)
+const componentNames = Object.keys(ob_schemas).filter(name => name !== 'calibration')
 
 const swap_translator_ob_to_ob_keys = (OB: { [key: string]: { [key: string]: object } }) => {
     //converts inported OB to swap translator_mapping and component keys
@@ -46,10 +48,32 @@ const swap_translator_ob_to_ob_keys = (OB: { [key: string]: { [key: string]: obj
 
 export function UploadComponent(props: UploadProps) {
 
+    const snackbarContext = useSnackbarContext()
+    const context = useCommCadContext()
+
     const parse_json = (contents: string) => {
         const OBS = JSON.parse(contents)
         //@ts-ignore
         const obs = OBS.map(OB => swap_translator_ob_to_ob_keys(OB)) as OB[]
+        //check obs are valid
+        obs.forEach(ob => {
+            Object.keys(ob_schemas).forEach(component => {
+                if (!ob[component]) {
+                    const msg = `Component ${component} not found in OB`
+                    console.warn(ob[component], msg)
+                    snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
+                    throw new Error(msg)
+                }
+            })
+            // check that semid correct semid is present
+            if (!context.semid.includes(ob.metadata.semid)) {
+                const msg = `${ob.metadata.semid} does not equal selected semid ${context.semid}`
+                console.warn(ob.semester, msg)
+                snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
+                throw new Error(msg)
+            }
+        })
+        //assign default values?
         console.log('translator obs', OBS, 'converted obs', obs)
         return obs
     }
