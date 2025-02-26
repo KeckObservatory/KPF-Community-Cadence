@@ -59,7 +59,7 @@ export function UploadComponent(props: UploadProps) {
         obs.forEach(ob => {
             Object.keys(ob_schemas).forEach(component => {
                 if (!ob[component]) {
-                    const msg = `Component ${component} not found in OB`
+                    const msg = `Component ${component} not found in OB for target${ob.target?.target_name}. Fix and reupload`
                     console.warn(ob[component], msg)
                     snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
                     throw new Error(msg)
@@ -67,7 +67,7 @@ export function UploadComponent(props: UploadProps) {
             })
             // check that semid correct semid is present
             if (!context.semid.includes(ob.metadata.semid)) {
-                const msg = `${ob.metadata.semid} does not equal selected semid ${context.semid}`
+                const msg = `OB for target ${ob.target?.target_name} ${ob.metadata.semid} does not equal selected semid ${context.semid}`
                 console.warn(ob.semester, msg)
                 snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
                 throw new Error(msg)
