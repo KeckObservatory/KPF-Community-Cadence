@@ -59,7 +59,7 @@ export function UploadComponent(props: UploadProps) {
         obs.forEach(ob => {
             componentNames.forEach(ckey => {
                 if (!ob[ckey]) {
-                    const msg = `Component ${ckey} not found in OB for target${ob.target?.target_name}. Fix and reupload`
+                    const msg = `Component ${ckey} not found in OB for target ${ob.target?.target_name}. Fix and reupload`
                     console.warn(msg)
                     snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
                     throw new Error(msg)
