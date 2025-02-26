@@ -57,10 +57,10 @@ export function UploadComponent(props: UploadProps) {
         const obs = OBS.map(OB => swap_translator_ob_to_ob_keys(OB)) as OB[]
         //check obs are valid
         obs.forEach(ob => {
-            Object.keys(ob_schemas).forEach(component => {
-                if (!ob[component]) {
-                    const msg = `Component ${component} not found in OB for target${ob.target?.target_name}. Fix and reupload`
-                    console.warn(ob[component], msg)
+            componentNames.forEach(ckey => {
+                if (!ob[ckey]) {
+                    const msg = `Component ${ckey} not found in OB for target${ob.target?.target_name}. Fix and reupload`
+                    console.warn(msg)
                     snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
                     throw new Error(msg)
                 }
