@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper'
 import {
     Box,
-    Typography
 } from '@mui/material'
 import CatalogButton from '../catalog_button';
 import { ComponentRow } from '../ob_component_table';

@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper'
 import {
     Box,
-    Typography
 } from '@mui/material'
 import { ComponentRow } from '../ob_component_table';
 import { Observation } from '../module_selector';
