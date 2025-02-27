@@ -42,6 +42,7 @@ import Typography from '@mui/material/Typography';
 import CatalogButton from './catalog_button';
 import Chip from '@mui/material/Chip';
 import OBEditDialogButton from './ob_edit_dialog_button';
+import { create } from 'domain';
 
 export type NewOB = Partial<OB> & {
     _id?: string
@@ -142,19 +143,27 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponentName
     return columns;
 }
 
+const create_default_component = (componentName: OBComponentName) => {
+    let component: Partial<OBComponent> = {}
+    Object.entries(ob_schemas[componentName].properties).forEach(([key, properties]) => {
+        //@ts-ignore
+        properties.default && (component[key] = properties.default)
+    })
+    return component
+}
+
 export const create_new_ob = (semid: string, obsid: number, username: string, target_name?: string) => {
-    const target: Partial<OBTarget> = {
-        target_name: target_name ?? 'TBD',
-    }
 
-    const observation: Partial<Observation> = {
-    }
+    let target: Partial<OBTarget> = create_default_component('target')
+    target.target_name = target_name ?? 'TBD'
 
-    const schedule: Partial<Schedule> = {
-        scheduling_mode: 'Cadence',
-    }
+    const observation: Partial<Observation> = create_default_component('observation')
 
-    const metadata: Metadata = {
+    const schedule: Partial<Schedule> = create_default_component('schedule')
+    schedule.scheduling_mode = 'Cadence'
+    let metadata: Metadata = create_default_component('metadata') as Metadata
+    metadata = {
+        ...metadata,
         obsid: String(obsid),
         observer_name: username,
         submitter: username,
@@ -173,6 +182,7 @@ export const create_new_ob = (semid: string, obsid: number, username: string, ta
         calibration: {},
         metadata
     }
+    console.log('new ob', ob)
     return ob
 }
 
