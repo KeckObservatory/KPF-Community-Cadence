@@ -139,8 +139,9 @@ export const adjust_schedule = (component: Schedule) => {
 
 const obSetter = (ob: OB, componentName: keyof OB) => {
     //auto fill object name with target name if empty.
-    const object_name = ob.observation.object ?? ob.target.target_name
-    if (object_name === 'TBD') {
+    if (componentName === 'target' &&
+         ob.target.target_name &&
+          (!ob.observation.object || ob.observation.object === 'TBD') ) {
         ob.observation = {
             ...ob.observation,
             'object': ob.target.target_name,
