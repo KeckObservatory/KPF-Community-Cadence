@@ -89,15 +89,6 @@ export default function ScheduleForm(props: Props) {
                         elevation={3}
                     >
                         <Box>
-                            <Typography
-                                component="h1"
-                                variant="h6"
-                                color="inherit"
-                                align='center'
-                                noWrap
-                            >
-                                Schedule Information
-                            </Typography>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateAutocompleteField('scheduling_mode', 'input scheduling mode', 'Scheduling Mode')}
                             </Stack>

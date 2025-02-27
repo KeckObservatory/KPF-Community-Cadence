@@ -109,7 +109,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponentName
 
         const valueSetter: GridValueSetter<ComponentRow> = (value: any, cmp: ComponentRow) => {
             cmp = { ...cmp, [key]: value, "state": 'ROW_EDITED' }
-            //TODO: add any custom logic here
+            //add any custom logic here
             return cmp
         }
 

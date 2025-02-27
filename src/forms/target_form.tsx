@@ -96,15 +96,6 @@ export default function TargetForm(props: Props) {
                         elevation={3}
                     >
                         <Box>
-                            <Typography
-                                component="h1"
-                                variant="h6"
-                                color="inherit"
-                                align='center'
-                                noWrap
-                            >
-                                Target Information
-                            </Typography>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('target_name')}
                                 {CreateTextField('t_eff')}

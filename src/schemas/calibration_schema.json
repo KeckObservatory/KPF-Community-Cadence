@@ -34,8 +34,8 @@
         },
         "trigger_ca_h_k": {
             "type": "boolean",
-            "description": "Trigger Ca, H, and K detector for this observation?",
-            "short_description": "Trigger Ca,H,&K",
+            "description": "Trigger Ca H, and K detector for this observation?",
+            "short_description": "Trigger Ca H,&K",
             "default": true,
             "translator_mapping": "TriggerCaHK"
         },

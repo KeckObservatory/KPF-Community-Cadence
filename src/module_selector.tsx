@@ -163,7 +163,7 @@ export const ModuleSelector = () => {
         <Tab value={0} label="OB Targets" {...a11yProps(0)} />
         {/* <Tab value={1} label="Calibrations" {...a11yProps(2)} /> */}
         <Tab value={1} label="Observations" {...a11yProps(1)} />
-        <Tab value={2} label="Schedule Data" {...a11yProps(2)} />
+        <Tab value={2} label="Cadence Schedule" {...a11yProps(2)} />
         <Tab value={3} label="Meta Data" {...a11yProps(3)} />
       </Tabs>
       {/* <CustomTabPanel value={value} index={0}>

@@ -104,15 +104,6 @@ export default function ObservationForm(props: Props) {
                         elevation={3}
                     >
                         <Box>
-                            <Typography
-                                component="h1"
-                                variant="h6"
-                                color="inherit"
-                                align='center'
-                                noWrap
-                            >
-                                Observation Information
-                            </Typography>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('object', false)}
                                 {CreateTextField('exposure_time', true)}
