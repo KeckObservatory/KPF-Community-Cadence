@@ -42,7 +42,6 @@ import Typography from '@mui/material/Typography';
 import CatalogButton from './catalog_button';
 import Chip from '@mui/material/Chip';
 import OBEditDialogButton from './ob_edit_dialog_button';
-import { create } from 'domain';
 
 export type NewOB = Partial<OB> & {
     _id?: string
