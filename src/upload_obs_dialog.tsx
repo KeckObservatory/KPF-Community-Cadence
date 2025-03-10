@@ -71,6 +71,7 @@ export function UploadComponent(props: UploadProps) {
                 semester: context.semester,
                 semid: context.semid,
                 obsid: context.obsid,
+                progid: context.semid.split('_')[1]
             }
         })
         //assign default values?
