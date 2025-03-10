@@ -65,6 +65,12 @@ export function UploadComponent(props: UploadProps) {
                     throw new Error(msg)
                 }
             })
+            ob.metadata = {
+                ...ob.metadata,
+                observer_name: context.username,
+                semester: context.semester,
+                obsid: context.obsid,
+            }
             // check that semid correct semid is present
             if (!context.semid.includes(ob.metadata.semid)) {
                 const msg = `OB for target ${ob.target?.target_name} ${ob.metadata.semid} does not equal selected semid ${context.semid}`

@@ -10,6 +10,9 @@ lerna-debug.log*
 node_modules
 dist
 build
+data
+forJeff
+*.zip
 dist-ssr
 *.local
 license.json
