@@ -68,7 +68,7 @@ export function UploadComponent(props: UploadProps) {
             ob.metadata = {
                 ...ob.metadata,
                 observer_name: context.username,
-                semester: context.semester,
+                semester: context.semid.split('_')[0],
                 semid: context.semid,
                 obsid: context.obsid,
                 progid: context.semid.split('_')[1]
