@@ -32,7 +32,7 @@
         "num_internight_cadence": {
             "type": ["integer", "string"],
             "translator_mapping": "interNightCadenceMin",
-            "description": "(Cadence mode) Minimum Inter-Night Cadence (hours)",
+            "description": "(Cadence mode) Minimum Inter-Night Cadence (days) is the time difference of between consecutive observations spread over multiple nights",
             "short_description": "Internight Cadence",
             "regex": "^\\d*$",
             "default": 0
@@ -40,7 +40,7 @@
         "num_intranight_cadence": {
             "type": ["integer", "string"],
             "translator_mapping": "intraNightCadenceMin",
-            "description": "(Cadence mode) Minimum Intra-Night Cadence (days)",
+            "description": "(Cadence mode) Minimum Intra-Night Cadence (hours) is the frequency and timing of observations make within a single night",
             "short_description": "Intranight Cadence",
             "default": 1,
             "regex": "^\\d*$"
