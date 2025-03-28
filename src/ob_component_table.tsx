@@ -25,6 +25,7 @@ import {
     GridRowParams,
     GridRenderCellParams,
     GridPinnedColumnFields,
+    GRID_CHECKBOX_SELECTION_COL_DEF,
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
@@ -42,6 +43,7 @@ import Typography from '@mui/material/Typography';
 import CatalogButton from './catalog_button';
 import Chip from '@mui/material/Chip';
 import OBEditDialogButton from './ob_edit_dialog_button';
+import DeleteDialogButton from './delete_rows_dialog';
 
 export type NewOB = Partial<OB> & {
     _id?: string
@@ -227,6 +229,7 @@ function EditComponentToolbar(props: EditToolbarProps) {
                     <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddOB}>
                         Create New OB
                     </Button>
+                    <DeleteDialogButton obs={context.obs} setOBs={context.setOBs} color='primary'/>
                     <GridToolbar
                         printOptions={{ disableToolbarButton: true }}
                         csvOptions={{ disableToolbarButton: true }}
@@ -319,7 +322,7 @@ export default function OBComponentTable(props: Props) {
     }) as ComponentRow[];
 
     const [rows, setRows] = React.useState(initRows);
-    let pinnedColumns: GridPinnedColumnFields = { left: ['actions', 'target_name', 'target_name_semid'], right: []}
+    let pinnedColumns: GridPinnedColumnFields = { left: [GRID_CHECKBOX_SELECTION_COL_DEF.field, 'actions', 'target_name', 'target_name_semid'], right: []}
     
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
     const snackbarContext = useSnackbarContext()
@@ -626,6 +629,7 @@ export default function OBComponentTable(props: Props) {
                 rows={rows ?? []}
                 getRowId={(row) => row._id}
                 editMode={'row'}
+                checkboxSelection={true}
                 processRowUpdate={processRowUpdate}
                 columns={columns}
                 rowModesModel={rowModesModel}
