@@ -18,7 +18,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
 import { save_obs } from './api/api_root';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { create_new_ob } from './ob_component_table'
+import { create_new_ob } from './ob_component_toolbar'
 import { OB } from './module_selector';
 
 

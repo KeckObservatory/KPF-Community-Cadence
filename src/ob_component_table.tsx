@@ -1,19 +1,15 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import AddIcon from '@mui/icons-material/Add';
 import PublishIcon from '@mui/icons-material/Publish';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 import {
-    GridRowsProp,
     GridRowModesModel,
     DataGridPro,
     GridColDef,
-    GridToolbarContainer,
     GridRowModel,
-    GridToolbar,
     GridValueSetter,
     GridValueParser,
     GridRowId,
@@ -26,28 +22,23 @@ import {
     GridRenderCellParams,
     GridPinnedColumnFields,
     GRID_CHECKBOX_SELECTION_COL_DEF,
+    GridRowSelectionModel,
 } from '@mui/x-data-grid-pro';
 
 import { useDebounceCallback } from './use_debounce_callback';
-import { delete_obs, save_obs, submit_obs } from './api/api_root';
-import { OBWizardButton } from './ob_wizard';
+import { delete_obs, submit_obs } from './api/api_root';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
-import { Metadata, OB, OBComponent, Observation, OBTarget, Schedule } from './module_selector';
+import { OB, OBComponent, OBTarget, Schedule } from './module_selector';
 import { format_edit_entry, format_tags, raDecFormat, ob_to_component_row, edit_ob, adjust_schedule } from './ob_edit_util';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
-import Button from '@mui/material/Button';
 import { ErrorObject } from 'ajv/dist/2019';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Typography from '@mui/material/Typography';
 import CatalogButton from './catalog_button';
 import Chip from '@mui/material/Chip';
 import OBEditDialogButton from './ob_edit_dialog_button';
-import DeleteDialogButton from './delete_rows_dialog';
+import { EditToolbarProps, EditComponentToolbar } from './ob_component_toolbar';
 
-export type NewOB = Partial<OB> & {
-    _id?: string
-}
 export type OBComponentName = "calibration" | "schedule" | "target" | "observation" | "metadata"
 
 // export interface ComponentRow<OBComponent> {
@@ -62,11 +53,6 @@ export interface ComponentRow extends OBComponent {
     details: string;
 }
 
-interface EditToolbarProps {
-    componentName: OBComponentName;
-    processRowUpdate: (newRow: GridRowModel, originalRow?: GridRowModel) => ComponentRow;
-    setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-}
 
 const ob_feasible_chip = (params: GridRenderCellParams) => {
     let text = params.value == undefined ? 'Unknown'
@@ -144,147 +130,7 @@ function convert_schema_to_columns(semids: string[], schemaName: OBComponentName
     return columns;
 }
 
-const create_default_component = (componentName: OBComponentName) => {
-    let component: Partial<OBComponent> = {}
-    Object.entries(ob_schemas[componentName].properties).forEach(([key, properties]) => {
-        //@ts-ignore
-        properties.default && (component[key] = properties.default)
-    })
-    return component
-}
 
-export const create_new_ob = (semid: string, obsid: number, username: string, target_name?: string) => {
-
-    let target: Partial<OBTarget> = create_default_component('target')
-    target.target_name = target_name ?? 'TBD'
-
-    const observation: Partial<Observation> = create_default_component('observation')
-
-    const schedule: Partial<Schedule> = create_default_component('schedule')
-    schedule.scheduling_mode = 'Cadence'
-    let metadata: Metadata = create_default_component('metadata') as Metadata
-    metadata = {
-        ...metadata,
-        obsid: String(obsid),
-        observer_name: username,
-        submitter: username,
-        semester: semid.split('_')[0],
-        progid: semid.split('_')[1],
-        semid: semid,
-        state: "CREATED",
-        status: 'PENDING',
-        tags: [],
-    }
-
-    const ob: NewOB = {
-        target,
-        observation,
-        schedule,
-        calibration: {},
-        metadata
-    }
-    console.log('new ob', ob)
-    return ob
-}
-
-
-
-function EditComponentToolbar(props: EditToolbarProps) {
-    const { componentName, processRowUpdate, setRows } = props;
-    const context = useCommCadContext()
-    const snackbarContext = useSnackbarContext()
-    const handleAddOB = async () => {
-        if (context.semid === undefined) {
-            console.error('semid is undefined')
-            snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `semid is undefined` })
-            return
-        }
-
-        let newOB = create_new_ob(context.semid, context.obsid, context.username) as OB
-
-        const resp = await save_obs([newOB])
-        if (resp.observing_blocks.length === 0) {
-            console.error('add OB save failed', resp)
-            snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `OB not saved. Details: ${resp}` })
-            return
-        }
-        newOB = resp.observing_blocks.at(0)
-        newOB.metadata.status = 'SAVED'  //TODO: have backend set this field
-        context.setOBs([newOB, ...context.obs])
-        processRowUpdate(newOB[componentName])
-        const newRow = ob_to_component_row(newOB, componentName)
-        setRows((oldRows) => {
-            return [newRow, ...oldRows]
-        });
-    };
-    const debouncedAddOB = useDebounceCallback(handleAddOB, 500)
-
-    return (
-        <GridToolbarContainer sx={{ justifyContent: 'center' }}>
-            <Box style={{ width: "100%", display: "flex", justifyContent: "space-around", alignItems: "center", marginLeft: "10px" }}>
-                <Typography variant="h5">{componentName?.toUpperCase()}</Typography>
-                <Box style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddOB}>
-                        Create New OB
-                    </Button>
-                    <DeleteDialogButton obs={context.obs} setOBs={context.setOBs} color='primary'/>
-                    <GridToolbar
-                        printOptions={{ disableToolbarButton: true }}
-                        csvOptions={{ disableToolbarButton: true }}
-                    />
-                    {/* <CustomExportButton obs={context.obs} /> */}
-                    <Button
-                        onClick={() => {
-                            const json = getJson(context.obs);
-                            const blob = new Blob([JSON.stringify(json, null, 2)], {
-                                type: 'text/json',
-                            });
-                            exportBlob(blob, 'obs.json');
-                        }}
-                    >
-                        Export OB to JSON
-                    </Button>
-                    <OBWizardButton />
-                </Box>
-            </Box>
-        </GridToolbarContainer>
-    );
-}
-
-const exportBlob = (blob: Blob, filename: string) => {
-    // Save the blob in a json file
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-
-    setTimeout(() => {
-        URL.revokeObjectURL(url);
-    });
-};
-
-const getJson = (obs: OB[]) => {
-    const json = obs.map((ob) => {
-        const keyValueArray = Object.keys(ob_schemas).map((ckey) => {
-            let translatedComponent: { [key: string]: unknown } = {}
-            // @ts-ignore
-            const schema = ob_schemas[ckey]
-            Object.keys(schema.properties).forEach(key => {
-                const props = schema.properties[key]
-                const tkey = props.translator_mapping ?? key
-                // @ts-ignore
-                ob[ckey][key] && (translatedComponent[tkey] = ob[ckey][key])
-            })
-            return [ckey, translatedComponent]
-        })
-        return Object.fromEntries(keyValueArray)
-    });
-    return json
-};
 
 const format_field_value = (field: string, value: any, type: string | string[]) => {
     const isNumber = type.includes('number') || type.includes('integer')
@@ -325,6 +171,7 @@ export default function OBComponentTable(props: Props) {
     let pinnedColumns: GridPinnedColumnFields = { left: [GRID_CHECKBOX_SELECTION_COL_DEF.field, 'actions', 'target_name', 'target_name_semid'], right: []}
     
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
+    const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
     const snackbarContext = useSnackbarContext()
     const refreshContext = useRefreshTableContext()
 
@@ -611,6 +458,12 @@ export default function OBComponentTable(props: Props) {
     }
 
     columns = [...addColumns, ...columns];
+    const toolbarProps: EditToolbarProps = {
+                        setRows,
+                        processRowUpdate,
+                        componentName,
+                        selectedRows: rows.filter((row) => rowSelectionModel.includes(row._id))
+                        }
 
     return (
         <Box
@@ -633,18 +486,16 @@ export default function OBComponentTable(props: Props) {
                 processRowUpdate={processRowUpdate}
                 columns={columns}
                 rowModesModel={rowModesModel}
+                onRowSelectionModelChange={(newRowSelectionModel) => {
+                    setRowSelectionModel(newRowSelectionModel);
+                }}
+                rowSelectionModel={rowSelectionModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 slots={{
-                    // @ts-ignore
-                    toolbar: EditComponentToolbar,
+                    toolbar: (props) => <EditComponentToolbar {...props} {...toolbarProps} />,
                 }}
                 slotProps={{
-                    toolbar: {
-                        // @ts-ignore
-                        setRows,
-                        processRowUpdate,
-                        componentName,
-                    },
+                    toolbar: toolbarProps,
                 }}
                 pinnedColumns={pinnedColumns} />
         </Box>
