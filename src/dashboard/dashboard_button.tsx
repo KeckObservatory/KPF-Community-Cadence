@@ -49,10 +49,12 @@ const get_semester_dates = (semester: string) => {
     return ranges
 }
 
-const visibility_chart_options = [
-    "Percentage Complete",
+export type DashboardChart = "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Night Plan"
+const visibility_chart_options: DashboardChart[] = [
+    "Cadence Plot",
+    "Cumulative Observation Function",
+    "Semester Schedule",
     "Night Plan",
-    "Cadence Plot"
 ]
 
 interface ChartSelectProps {
@@ -137,15 +139,13 @@ export const SemidSelect = () => {
     )
 }
 
-export type DashboardChart = "Percentage Complete" | "Night Plan" | "Cadence Plot"
-
 export const hidate = (date: Date, timezone: string) => {
     return dayjs(date).tz(timezone)
 }
 
 export const DashboardDialog = (props: DashboardDialogProps) => {
     const context = useCommCadContext()
-    const [chartType, setChartType] = useState<DashboardChart>("Percentage Complete")
+    const [chartType, setChartType] = useState<DashboardChart>("Cadence Plot")
     const [availableDates, setAvailableDates] = useState<Dayjs[]>([])
 
     const today = hidate(new Date(), TIMEZONE)
@@ -164,7 +164,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
         const dates = get_semester_dates(semester)
         console.log('dates', dates)
         setAvailableDates(dates)
-        const newDate = dates.includes(today)? today : hidate((dates.at(0) as Dayjs).toDate(), TIMEZONE)
+        const newDate = dates.includes(today) ? today : hidate((dates.at(0) as Dayjs).toDate(), TIMEZONE)
         setObsdate(newDate)
         //TODO: get data for the semid/ob
     }, [ob, context.semid])
@@ -206,20 +206,25 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             direction='column'>
             <Stack direction='row' spacing={1}>
                 <SemidSelect />
-                <NightPicker date={obsdate} minDate={availableDates.at(0)}
-                             maxDate={availableDates.at(-1)}
-                             handleDateChange={handleDateChange} />
-                <Tooltip title={'OB Name Select'}>
-                    <Autocomplete
-                        disablePortal
-                        id="selected-ob-name"
-                        value={ob.target.target_name ?? ob.target._id}
-                        onChange={(_, value) => value && onOBNameSelect(value)}
-                        options={selectedOBs.map(o => o.target.target_name ?? o._id)}
-                        sx={{ width: 250 }}
-                        renderInput={(params) => <TextField {...params} label={'Selected OB'} />}
-                    />
-                </Tooltip>
+                {['Cadence Plot', 'Night Plan'].includes(chartType) && (
+                    <NightPicker date={obsdate} minDate={availableDates.at(0)}
+                        maxDate={availableDates.at(-1)}
+                        handleDateChange={handleDateChange} />
+                )
+                }
+                {chartType === 'Cadence Plot' && (
+                    <Tooltip title={'OB Name Select'}>
+                        <Autocomplete
+                            disablePortal
+                            id="selected-ob-name"
+                            value={ob.target.target_name ?? ob.target._id}
+                            onChange={(_, value) => value && onOBNameSelect(value)}
+                            options={selectedOBs.map(o => o.target.target_name ?? o._id)}
+                            sx={{ width: 250 }}
+                            renderInput={(params) => <TextField {...params} label={'Selected OB'} />}
+                        />
+                    </Tooltip>
+                )}
                 <ChartSelectMenu chartType={chartType} setChartType={setChartType} />
             </Stack>
             <p>Graph goes here:</p>

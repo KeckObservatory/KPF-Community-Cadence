@@ -11,6 +11,7 @@ import { ob_schemas } from './validation_check_dialog';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import DeleteDialogButton from './delete_rows_dialog';
+import SubmitDialogButton from './submit_rows_dialog';
 
 import { useDebounceCallback } from './use_debounce_callback';
 import { save_obs } from './api/api_root';
@@ -146,11 +147,20 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
     let selectedOBs = selectedRows.map((row) => {
                             return context.obs.find((ob) => ob._id === row._id)
                           }).filter((ob) => ob !== undefined) as OB[]
+
+    let validSelectedOBs = selectedOBs.filter((ob) => {
+        const metadata = ob.metadata
+        return metadata.state === 'submitted'
+    })
                         
     if (selectedOBs.length === 0) { //TODO: filter out OBs that are not scheduled/have history
         //selectedOBs = context.obs.filter((ob) => ob.metadata.state === 'SUBMITTED')
         selectedOBs = context.obs
     }
+
+    const deletedButtonColor = selectedRows.length > 0 ? 'success' : 'inherit'
+    const submitButtonColor = validSelectedOBs.length > 0 ? 'success' : 'inherit'
+    console.log('colors', deletedButtonColor, submitButtonColor)
 
     return (
         <GridToolbarContainer sx={{ justifyContent: 'center' }}>
@@ -160,7 +170,8 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                     <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddOB}>
                         Create New OB
                     </Button>
-                    <DeleteDialogButton obs={selectedOBs} setOBs={context.setOBs} color='primary'/>
+                    <DeleteDialogButton obs={selectedOBs} setOBs={context.setOBs} color={deletedButtonColor}/>
+                    <SubmitDialogButton obs={selectedOBs} setOBs={context.setOBs} color={submitButtonColor}/>
                     {selectedOBs.length > 0 && <DashboardButton obs={selectedOBs}/>}
                     <GridToolbar
                         printOptions={{ disableToolbarButton: true }}
