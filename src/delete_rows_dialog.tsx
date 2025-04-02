@@ -7,7 +7,7 @@ import { DialogComponent } from './dialog_component';
 import { OB } from './module_selector';
 import { Button, Typography } from '@mui/material';
 //import { delete_target, submit_target } from './api/api_root';
-import { delete_obs, submit_obs} from './api/api_root';
+import { delete_obs, submit_obs } from './api/api_root';
 
 
 
@@ -21,11 +21,12 @@ export interface VTDProps {
 interface Props {
   obs: OB[];
   setOBs: Function;
+  disabled: boolean;
   color?: 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
 }
 
 function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
-  const { obs, setOBs} = props;
+  const { obs, setOBs } = props;
   const snackbarContext = useSnackbarContext()
   const [enableUndo, setEnableUndo] = React.useState(false);
   const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
@@ -33,23 +34,23 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
   const onDeleteClick = async () => {
     const ids = obs.map((ob) => ob._id);
     ids.forEach(async (id) => {
-        const resp = await delete_obs(id)
-        if (resp.status !== 'SUCCESS') {
+      const resp = await delete_obs(id)
+      if (resp.status !== 'SUCCESS') {
         console.error('error deleting ob', resp)
         snackbarContext.setSnackbarMessage({ severity: 'error', message: 'Error deleting targets' })
-        }
+      }
     })
     setDeletedOBs(obs)
     setOBs((oldOBs: OB[]) => {
-      const newOBs= oldOBs.filter((ob: OB) => !ids.includes(ob._id))
-      return newOBs 
+      const newOBs = oldOBs.filter((ob: OB) => !ids.includes(ob._id))
+      return newOBs
     });
     setEnableUndo(true)
   }
 
   const onUndoClick = async () => {
     const resp = await submit_obs(deletedOBs)
-    if (resp.errors.length>0) {
+    if (resp.errors.length > 0) {
       console.error('error while undoing target delete', resp)
       const msg = 'error when undoing deleted targets: ' + resp.errors.join(', ')
       snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
@@ -83,7 +84,7 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
 }
 
 function DeleteOBsDialog(props: VTDProps) {
-  const { open, handleClose, obs, setOBs} = props;
+  const { open, handleClose, obs, setOBs } = props;
 
   const dialogTitle = (
     <div>Delete OBs</div>
@@ -115,12 +116,19 @@ export default function DeleteDialogButton(props: Props) {
     setOpen(false);
   };
 
+  let tooltipMsg = "Delete selected target(s)"
+  if (props.disabled) {
+    tooltipMsg += " (No targets selected)"
+  }
+
   return (
     <>
-      <Tooltip title="Delete selected target(s)">
-        <IconButton aria-label="help" color={props.color ?? 'default'} onClick={handleClickOpen}>
-          <DeleteIcon />
-        </IconButton>
+      <Tooltip title={tooltipMsg}>
+        <span>
+          <IconButton disabled={props.disabled} aria-label="help" color={props.color ?? 'default'} onClick={handleClickOpen}>
+            <DeleteIcon />
+          </IconButton>
+        </span>
       </Tooltip>
       <DeleteOBsDialog
         open={open}

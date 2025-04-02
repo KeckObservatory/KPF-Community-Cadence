@@ -20,12 +20,13 @@ export interface VTDProps {
 
 interface Props {
     obs: OB[];
+    disabled: boolean;
     setOBs: Function;
     color?: 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
 }
 
 function SubmitOBs(props: { obs: OB[], setOBs: Function }) {
-    const { obs, setOBs } = props;
+    const { obs, setOBs, disabled } = props;
     const snackbarContext = useSnackbarContext()
 
     const onSubmitClick = async () => {
@@ -53,7 +54,7 @@ function SubmitOBs(props: { obs: OB[], setOBs: Function }) {
 
     return (
         <div>
-            <Button onClick={onSubmitClick}>Confirm Submit?</Button>
+            <Button disabled={disabled} onClick={onSubmitClick}>Confirm Submit?</Button>
             <Typography>OBs to be Submitted:</Typography>
             {targetList}
         </div>
@@ -93,12 +94,18 @@ export default function SubmitDialogButton(props: Props) {
         setOpen(false);
     };
 
+    let tooltipMsg = "Submit selected target(s)"
+    if (props.disabled) {
+        tooltipMsg += " (No targets selected)"
+    }
     return (
         <>
-            <Tooltip title="Submit selected target(s)">
-                <IconButton aria-label="help" color={props.color ?? 'default'} onClick={handleClickOpen}>
-                    <PublishIcon/>
-                </IconButton>
+            <Tooltip title={tooltipMsg}>
+                <span>
+                    <IconButton disabled={props.disabled} aria-label="help" color={props.color ?? 'default'} onClick={handleClickOpen}>
+                        <PublishIcon />
+                    </IconButton>
+                </span>
             </Tooltip>
             <SubmitOBsDialog
                 open={open}

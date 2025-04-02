@@ -159,7 +159,9 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
 
     const deletedButtonColor = selectedRows.length > 0 ? 'success' : 'inherit'
     const submitButtonColor = validSelectedOBs.length > 0 ? 'success' : 'inherit'
-    console.log('colors', deletedButtonColor, submitButtonColor)
+    const deletedDisabled = selectedRows.length === 0
+    const submitDisabled = validSelectedOBs.length <= 0
+    console.log('colors', deletedButtonColor, submitButtonColor, deletedDisabled, submitDisabled)
 
     return (
         <GridToolbarContainer sx={{ justifyContent: 'center' }}>
@@ -169,8 +171,8 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                     <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddOB}>
                         Create New OB
                     </Button>
-                    <DeleteDialogButton obs={selectedOBs} setOBs={context.setOBs} color={deletedButtonColor}/>
-                    <SubmitDialogButton obs={selectedOBs} setOBs={context.setOBs} color={submitButtonColor}/>
+                    <DeleteDialogButton disabled={deletedDisabled} obs={selectedOBs} setOBs={context.setOBs} color={deletedButtonColor}/>
+                    <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} setOBs={context.setOBs} color={submitButtonColor}/>
                     {selectedOBs.length > 0 && <DashboardButton obs={selectedOBs}/>}
                     <GridToolbar
                         printOptions={{ disableToolbarButton: true }}
