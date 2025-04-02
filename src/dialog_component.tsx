@@ -25,7 +25,7 @@ export const DialogComponent = (props: Props) => {
             sx={{ padding: '0px' }}
         >
             <DialogTitle>
-                <Stack direction='row' justifyContent='space-between' spacing={0}>
+                <Stack direction='row' justifyContent='space-between' spacing={1}>
                     {props.titleContent}
                     <Button
                         onClick={() => props.handleClose()}

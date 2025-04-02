@@ -171,7 +171,7 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                     <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddOB}>
                         Create New OB
                     </Button>
-                    <DeleteDialogButton disabled={deletedDisabled} obs={selectedOBs} setOBs={context.setOBs} color={deletedButtonColor}/>
+                    <DeleteDialogButton disabled={deletedDisabled} selectedOBs={selectedOBs} color={deletedButtonColor}/>
                     <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} setOBs={context.setOBs} color={submitButtonColor}/>
                     {selectedOBs.length > 0 && <DashboardButton obs={selectedOBs}/>}
                     <GridToolbar

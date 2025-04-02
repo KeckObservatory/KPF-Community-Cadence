@@ -15,19 +15,17 @@ import { useCommCadContext } from './App';
 export interface VTDProps {
   open: boolean;
   handleClose: Function;
-  obs: OB[];
-  setOBs: Function;
+  selectedOBs: OB[];
 }
 
 interface Props {
-  obs: OB[];
-  setOBs: Function;
+  selectedOBs: OB[];
   disabled: boolean;
   color?: 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
 }
 
-function DeleteOBs(props: { obs: OB[] }) {
-  const { obs } = props;
+function DeleteOBs(props: { selectedOBs: OB[] }) {
+  const { selectedOBs} = props;
   const snackbarContext = useSnackbarContext()
   const [enableUndo, setEnableUndo] = React.useState(false);
   const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
@@ -35,13 +33,13 @@ function DeleteOBs(props: { obs: OB[] }) {
   const refreshContext = useRefreshTableContext()
 
   React.useEffect(() => {
-    console.log('obs changed', obs)
-  }, [obs]);
+    console.log('selected obs changed', selectedOBs)
+  }, [selectedOBs]);
 
   const onDeleteClick = async () => {
     let delOB: OB[] = []
-    for (let idx = 0; idx < obs.length; idx++) {
-      const ob = obs[idx]
+    for (let idx = 0; idx < selectedOBs.length; idx++) {
+      const ob = selectedOBs[idx]
       const resp = await delete_obs(ob._id)
       if (resp.success === 'SUCCESS') {
         delOB.push(ob)
@@ -57,7 +55,7 @@ function DeleteOBs(props: { obs: OB[] }) {
     console.log('deleted obs', delOB, delIds, remOBs.length, context.obs.length)
     setDeletedOBs(delOB)
     //context.setOBs(remOBs);
-    refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
+    //refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     console.log(refreshContext.refreshTable)
     setEnableUndo(true)
   }
@@ -76,7 +74,7 @@ function DeleteOBs(props: { obs: OB[] }) {
     setEnableUndo(false)
   }
 
-  const targetList = obs.map((ob, index) => {
+  const targetList = selectedOBs.map((ob, index) => {
     return (
       <div key={index}>
         {ob.target.target_name}
@@ -98,14 +96,14 @@ function DeleteOBs(props: { obs: OB[] }) {
 }
 
 function DeleteOBsDialog(props: VTDProps) {
-  const { open, handleClose, obs } = props;
+  const { open, handleClose, selectedOBs } = props;
 
   const dialogTitle = (
     <div>Delete OBs</div>
   );
 
   const dialogContent = (
-    <DeleteOBs obs={obs} />
+    <DeleteOBs selectedOBs={selectedOBs} />
   )
 
   return (
@@ -120,7 +118,13 @@ function DeleteOBsDialog(props: VTDProps) {
 }
 
 export default function DeleteDialogButton(props: Props) {
+  console.log('initializing delete button')
   const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    console.log('selected obs changed. leaving open')
+    setOpen(true)
+  }, [props.selectedOBs]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -146,8 +150,7 @@ export default function DeleteDialogButton(props: Props) {
       </Tooltip>
       <DeleteOBsDialog
         open={open}
-        setOBs={props.setOBs}
-        obs={props.obs}
+        selectedOBs={props.selectedOBs}
         handleClose={handleClose}
       />
     </>
