@@ -56,7 +56,7 @@ function DeleteOBs(props: { obs: OB[] }) {
     console.log('deleted obs', delOB, remOBs)
     setDeletedOBs(delOB)
     context.setOBs(remOBs);
-    refreshContext.setRefreshTable(true)
+    refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     setEnableUndo(true)
   }
 
