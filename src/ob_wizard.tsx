@@ -11,7 +11,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { UploadComponent } from './upload_obs_dialog';
-import { get_simbad_and_gaia_target_info} from './catalog_button';
+import { get_simbad_and_gaia_target_info } from './catalog_button';
 import { Control } from './control';
 import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App';
 import Tooltip from '@mui/material/Tooltip';
@@ -60,15 +60,18 @@ function LinearProgressWithLabel(props: LinearProgressProps &
                 context.semid ?? "",
                 context.obsid,
                 tgtName)
-            let newOB: OB
+            let newOB: OB = { ...baseOB, ...ob }
             if (catalog !== 'NONE' || !ob.target?.tic_id || !ob.target?.gaia_id) { // if no tic or gaia id, get catalog data
-                const catalogTargetInfo = await get_simbad_and_gaia_target_info(tgtName)
-                // fill with base, then catalog data, then OB uploaded from json 
-                const catalogTarget = { ...ob.target, ...catalogTargetInfo}
-                newOB = { ...baseOB, ...ob, target: catalogTarget} as OB 
-            }
-            else {
-                newOB = { ...baseOB, ...ob} as OB
+                try {
+                    const catalogTargetInfo = await get_simbad_and_gaia_target_info(tgtName)
+                    // fill with base, then catalog data, then OB uploaded from json 
+                    const catalogTarget = { ...ob.target, ...catalogTargetInfo }
+                    newOB = { ...newOB, target: catalogTarget } as OB
+                }
+                catch (err) {
+                    const msg = `Failed to get simbad data for ${tgtName}`
+                    console.warn(msg, err)
+                }
             }
             newOBs.push(newOB)
             setProgress(((idx + 1) / obs.length) * 100)
@@ -136,7 +139,7 @@ const OBStepper = (props: Props) => {
 
     const handle_save_obs = async () => {
         const resp = await save_obs(obs)
-        if (resp.observing_blocks.length>0) {
+        if (resp.observing_blocks.length > 0) {
             context.setOBs([...context.obs, ...resp.observing_blocks])
             context.setTotalHours(resp.total_hours)
             refreshTableContext.setRefreshTable((prev: number) => { return prev + 1 })
@@ -259,7 +262,7 @@ const OBStepper = (props: Props) => {
                 <Paper square elevation={0} sx={{ p: 3 }}>
                     <Typography>{saveMessage}</Typography>
                     <Button onClick={handle_save_obs} sx={{ mt: 1, mr: 1 }}>
-                        Save OBs 
+                        Save OBs
                     </Button>
                     <Button
                         onClick={handleBack}
@@ -309,7 +312,7 @@ export const OBWizardButton = () => {
         <div>
             <Tooltip title="Upload OBs from .json file">
                 <Button onClick={handleClickOpen} startIcon={<UploadIcon />}>
-                    Upload OBs 
+                    Upload OBs
                 </Button>
             </Tooltip>
             <OBWizardDialog
