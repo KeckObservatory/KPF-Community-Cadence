@@ -152,10 +152,11 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     const [obsdate, setObsdate] = React.useState<Dayjs>(today)
 
     // target must have ra dec and be defined
-    const { ob, setSelectedOB, selectedOBs } = props
+    const { ob, setSelectedOB, selectedOBs, open } = props
 
     const regexp = new RegExp("^[12][0-9]{3}[AB]$")
     useEffect(() => {
+        if (!open) return 
         const semester = context.semid.split('_')[0]
         const validSemester = regexp.test(semester)
         if (!validSemester) {
