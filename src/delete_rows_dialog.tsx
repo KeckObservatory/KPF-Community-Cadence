@@ -32,6 +32,7 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
   const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
 
   const onDeleteClick = async () => {
+    console.log('delete obs clicked', obs)
     const ids = obs.map((ob) => ob._id);
     ids.forEach(async (id) => {
       const resp = await delete_obs(id)
