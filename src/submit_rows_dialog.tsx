@@ -54,7 +54,7 @@ function SubmitOBs(props: { obs: OB[], setOBs: Function }) {
 
     return (
         <div>
-            <Button disabled={disabled} onClick={onSubmitClick}>Confirm Submit?</Button>
+            <Button onClick={onSubmitClick}>Confirm Submit?</Button>
             <Typography>OBs to be Submitted:</Typography>
             {targetList}
         </div>
