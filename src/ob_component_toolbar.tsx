@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import DeleteDialogButton from './delete_rows_dialog';
 import SubmitDialogButton from './submit_rows_dialog';
 
+import { ErrorObject, JSONSchemaType } from 'ajv'
 import { useDebounceCallback } from './use_debounce_callback';
 import { save_obs } from './api/api_root';
 import { OBWizardButton } from './ob_wizard';
@@ -147,10 +148,28 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                             return context.obs.find((ob) => ob._id === row._id)
                           }).filter((ob) => ob !== undefined) as OB[]
 
-    let validSelectedOBs = selectedOBs.filter((ob) => {
-        const metadata = ob.metadata
-        return metadata.state === 'submitted'
-    })
+    let validSelectedOBs = selectedRows.map((row) => {
+        const ob = context.obs.find((ob) => ob._id === row._id)
+        if (!ob) {
+            return false 
+        }
+        //ob valid for all components?
+        let obErrs: ErrorObject[] = []
+        for (const cn in ob) {
+            const schema = ob_schemas[cn] as JSONSchemaType<unknown>
+            const comp = ob[cn as keyof OB] as OBComponent
+            if (!comp) {
+                return false //MISSING COMPONENT 
+            }
+            schema.validate(comp) as ErrorObject[]
+            obErrs = [...schema.errors, ...obErrs]
+        }
+        if (obErrs.length > 0) {
+            console.log('ob errors', obErrs)
+            return false 
+        }
+        return ob
+    }).filter((ob) => ob !== false) as OB[]
                         
     if (selectedOBs.length === 0) { //TODO: filter out OBs that are not scheduled/have history
         //selectedOBs = context.obs.filter((ob) => ob.metadata.state === 'SUBMITTED')
