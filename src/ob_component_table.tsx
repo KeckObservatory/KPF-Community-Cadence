@@ -357,13 +357,13 @@ export default function OBComponentTable(props: Props) {
         }, [editRow])
 
         React.useEffect(() => {
-            validators[componentName](editRow)
+            validators[componentName](row)
             const newErrors = validators[componentName].errors ?? []
             setErrors(newErrors)
-            const resubmit = needs_resubmit(editRow, errors.length)
+            const resubmit = needs_resubmit(row, errors.length)
             setNeedsResubmit(resubmit)
-            console.log('setting submit color', !resubmit && editRow.submitted)
-            setSubmitColor(!resubmit && editRow.submitted ? 'success' : 'inherit')
+            console.log('setting submit color', !resubmit && row.submitted)
+            setSubmitColor(!resubmit && row.submitted ? 'success' : 'inherit')
             // check_submit_status()
         }, [row])
 

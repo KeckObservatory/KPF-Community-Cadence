@@ -185,7 +185,6 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
     const submitButtonColor = validSelectedOBs.length > 0 ? 'success' : 'inherit'
     const deletedDisabled = selectedRows.length === 0
     const submitDisabled = validSelectedOBs.length <= 0
-    console.log('colors', deletedButtonColor, submitButtonColor, deletedDisabled, submitDisabled)
 
     return (
         <GridToolbarContainer sx={{ justifyContent: 'center' }}>
