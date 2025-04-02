@@ -26,7 +26,7 @@ interface Props {
 }
 
 function SubmitOBs(props: { obs: OB[], setOBs: Function }) {
-    const { obs, setOBs, disabled } = props;
+    const { obs, setOBs } = props;
     const snackbarContext = useSnackbarContext()
 
     const onSubmitClick = async () => {
