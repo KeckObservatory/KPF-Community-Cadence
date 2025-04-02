@@ -53,7 +53,7 @@ function DeleteOBs(props: { obs: OB[] }) {
     const remOBs = context.obs.filter((ob: OB) => {
       return !delIds.includes(ob._id)
     });
-    console.log('deleted obs', delOB, remOBs)
+    console.log('deleted obs', delOB, delIds, remOBs.length, context.obs.length)
     setDeletedOBs(delOB)
     context.setOBs(remOBs);
     refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
