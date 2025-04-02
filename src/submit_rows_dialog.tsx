@@ -2,7 +2,7 @@ import * as React from 'react';
 import PublishIcon from '@mui/icons-material/Publish';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { useSnackbarContext } from './App';
+import { useCommCadContext, useSnackbarContext } from './App';
 import { DialogComponent } from './dialog_component';
 import { OB } from './module_selector';
 import { Button, Typography } from '@mui/material';
@@ -15,33 +15,35 @@ export interface VTDProps {
     open: boolean;
     handleClose: Function;
     obs: OB[];
-    setOBs: Function;
 }
 
 interface Props {
     obs: OB[];
     disabled: boolean;
-    setOBs: Function;
     color?: 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
 }
 
-function SubmitOBs(props: { obs: OB[], setOBs: Function }) {
-    const { obs, setOBs } = props;
+function SubmitOBs(props: { obs: OB[] }) {
+    const { obs } = props;
     const snackbarContext = useSnackbarContext()
+    const context = useCommCadContext()
 
     const onSubmitClick = async () => {
         const resp = await submit_obs(obs)
         if (resp.success !== 'SUCCESS') {
             console.error('error deleting ob', resp)
             snackbarContext.setSnackbarMessage({ severity: 'error', message: `Error submitting targets ${resp}` })
+            return
         }
-        else {
-            setOBs((oldOBs: OB[]) => {
-                const newOBs = oldOBs.map((ob: OB) => resp.observing_blocks.find((o: OB) => o._id.includes(ob._id)) ?? ob)
-                return newOBs
-            });
+        const currOBs = context.obs.map((ob: OB) => {
+            const newOB = obs.find((o: OB) => o._id === ob._id)
+            return newOB ?? ob
+        })
+        context.setOBs(currOBs);
+        snackbarContext.setSnackbarMessage({
+            severity: 'success', message: `OBs submitted successfully`
 
-        }
+        })
     }
 
     const targetList = obs.map((ob, index) => {
@@ -62,14 +64,14 @@ function SubmitOBs(props: { obs: OB[], setOBs: Function }) {
 }
 
 function SubmitOBsDialog(props: VTDProps) {
-    const { open, handleClose, obs, setOBs } = props;
+    const { open, handleClose, obs } = props;
 
     const dialogTitle = (
         <div>Submit OBs</div>
     );
 
     const dialogContent = (
-        <SubmitOBs obs={obs} setOBs={setOBs} />
+        <SubmitOBs obs={obs} />
     )
 
     return (
@@ -109,7 +111,6 @@ export default function SubmitDialogButton(props: Props) {
             </Tooltip>
             <SubmitOBsDialog
                 open={open}
-                setOBs={props.setOBs}
                 obs={props.obs}
                 handleClose={handleClose}
             />
