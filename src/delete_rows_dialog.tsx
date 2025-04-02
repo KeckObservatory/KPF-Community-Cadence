@@ -88,7 +88,6 @@ function DeleteOBsDialog(props: VTDProps) {
 }
 
 export default function DeleteDialogButton(props: Props) {
-  console.log('initializing delete button')
   const [open, setOpen] = React.useState(false);
 
   const context = useCommCadContext()
@@ -120,7 +119,7 @@ export default function DeleteDialogButton(props: Props) {
     const remOBs = context.obs.filter((ob: OB) => {
       return !delIds.includes(ob._id)
     });
-    console.log('deleted obs', delOB, delIds, remOBs.length, context.obs.length)
+    console.log('deleted obs', delOB)
     setDeletedOBs(delOB)
     context.setOBs(remOBs);
     refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
