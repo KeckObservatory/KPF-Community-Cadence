@@ -90,19 +90,12 @@ function DeleteOBsDialog(props: VTDProps) {
 export default function DeleteDialogButton(props: Props) {
   console.log('initializing delete button')
   const [open, setOpen] = React.useState(false);
-  const { selectedOBs } = props;
 
   const context = useCommCadContext()
   const refreshContext = useRefreshTableContext()
   const snackbarContext = useSnackbarContext()
 
   const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
-
-
-  React.useEffect(() => {
-    // console.log('selected obs changed.')
-    // props.selectedOBs.length > 0 && setOpen(true)
-  }, [props.selectedOBs]);
 
   const handleClickOpen = () => {
     setOpen(true);
