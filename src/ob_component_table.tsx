@@ -163,7 +163,6 @@ const needs_resubmit = (row: ComponentRow, nErrors: number) => {
 export default function OBComponentTable(props: Props) {
     const { componentName } = props
     const context = useCommCadContext()
-    console.log('context.obs', context.obs)
     const initRows = context.obs.map((ob) => {
         return ob_to_component_row(ob, componentName)
     }) as ComponentRow[];

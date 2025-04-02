@@ -158,7 +158,6 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
         for (const cn in ob) {
             const validator = validators[cn as Validators]
             if (!validator) {
-                console.log('validator not found', cn)
                 continue
             }
             const comp = ob[cn as keyof OB] as OBComponent
