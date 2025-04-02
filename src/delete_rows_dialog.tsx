@@ -26,12 +26,16 @@ interface Props {
   color?: 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
 }
 
-function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
-  const { obs, setOBs } = props;
+function DeleteOBs(props: { obs: OB[] }) {
+  const { obs } = props;
   const snackbarContext = useSnackbarContext()
   const [enableUndo, setEnableUndo] = React.useState(false);
   const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
   const context = useCommCadContext()
+
+  React.useEffect(() => {
+    console.log('obs changed', obs)
+  }, [obs]);
 
   const onDeleteClick = async () => {
     let delOB: OB[] = []
@@ -45,7 +49,7 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
       }
     })
     const delIds = delOB.map((ob) => ob._id)
-    const remOBs = context.obs.filter( (ob: OB) => {
+    const remOBs = context.obs.filter((ob: OB) => {
       return !delIds.includes(ob._id)
     });
     console.log('deleted obs', delOB, remOBs)
@@ -63,9 +67,8 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
       return
     }
     snackbarContext.setSnackbarMessage({ severity: 'info', message: 'Resubmitted deleted targets' })
-    setOBs((oldOBs: any) => {
-      return [...deletedOBs, ...oldOBs]
-    });
+    const newOBS = [...deletedOBs, context.obs]
+    context.setOBs(newOBS);
     setEnableUndo(false)
   }
 
@@ -79,9 +82,10 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
 
   return (
     <div>
-      <Button onClick={onDeleteClick}>Confirm Delete?</Button>
-      {enableUndo && (
+      {enableUndo ? (
         <Button onClick={onUndoClick}>Undo Delete?</Button>
+      ) : (
+        <Button onClick={onDeleteClick}>Confirm Delete?</Button>
       )}
       <Typography>OBs to be deleted:</Typography>
       {targetList}
@@ -90,14 +94,14 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
 }
 
 function DeleteOBsDialog(props: VTDProps) {
-  const { open, handleClose, obs, setOBs } = props;
+  const { open, handleClose, obs } = props;
 
   const dialogTitle = (
     <div>Delete OBs</div>
   );
 
   const dialogContent = (
-    <DeleteOBs obs={obs} setOBs={setOBs} />
+    <DeleteOBs obs={obs} />
   )
 
   return (

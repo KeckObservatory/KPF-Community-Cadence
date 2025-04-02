@@ -177,7 +177,12 @@ export default function OBComponentTable(props: Props) {
     const refreshContext = useRefreshTableContext()
 
     React.useEffect(() => {
-    }, [])
+        const newRows = context.obs.map((ob) => {
+            const cmp = ob_to_component_row(ob, componentName)
+            return cmp
+        }) as ComponentRow[];
+        setRows(newRows)
+    }, [context.obs])
 
     React.useEffect(() => {
         setTimeout(() => {
