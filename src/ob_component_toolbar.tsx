@@ -106,7 +106,6 @@ export const create_new_ob = (semid: string, obsid: number, username: string, ta
         calibration: {},
         metadata
     }
-    console.log('new ob', ob)
     return ob
 }
 
