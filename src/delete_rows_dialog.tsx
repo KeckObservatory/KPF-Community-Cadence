@@ -122,8 +122,8 @@ export default function DeleteDialogButton(props: Props) {
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
-    console.log('selected obs changed. leaving open')
-    props.selectedOBs.length > 0 && setOpen(true)
+    // console.log('selected obs changed.')
+    // props.selectedOBs.length > 0 && setOpen(true)
   }, [props.selectedOBs]);
 
   const handleClickOpen = () => {
