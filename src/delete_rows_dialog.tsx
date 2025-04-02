@@ -45,10 +45,10 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
       }
     })
     const delIds = delOB.map((ob) => ob._id)
-    const remOBs = context.setOBs(context.obs.filter( (ob: OB) => {
-    console.log('deleted obs', delOB, remOBs)
+    const remOBs = context.obs.filter( (ob: OB) => {
       return !delIds.includes(ob._id)
-    }));
+    });
+    console.log('deleted obs', delOB, remOBs)
     setDeletedOBs(delOB)
     context.setOBs(remOBs);
     setEnableUndo(true)
