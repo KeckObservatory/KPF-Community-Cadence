@@ -57,14 +57,14 @@ function DeleteOBs(props: { obs: OB[] }) {
     console.log('deleted obs', delOB, delIds, remOBs.length, context.obs.length)
     setDeletedOBs(delOB)
     //context.setOBs(remOBs);
-    //refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
+    refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     console.log(refreshContext.refreshTable)
     setEnableUndo(true)
   }
 
   const onUndoClick = async () => {
     const resp = await submit_obs(deletedOBs)
-    if (resp.errors.length > 0) {
+    if (resp.errors?.length > 0) {
       console.error('error while undoing target delete', resp)
       const msg = 'error when undoing deleted targets: ' + resp.errors.join(', ')
       snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
