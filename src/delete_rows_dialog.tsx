@@ -30,6 +30,7 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
   const snackbarContext = useSnackbarContext()
   const [enableUndo, setEnableUndo] = React.useState(false);
   const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
+  const context = useCommCadContext()
 
   const onDeleteClick = async () => {
     let delOB: OB[] = []
@@ -43,10 +44,10 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
     console.log('deleted obs', delOB)
     const delIds = delOB.map((ob) => ob._id)
     setDeletedOBs(delOB)
-    setOBs((oldOBs: OB[]) => {
-      const newOBs = oldOBs.filter((ob: OB) => !delIds.includes(ob._id))
-      console.log('remaining OBS', newOBs)
-      return newOBs
+    context.setOBs((oldOBs: OB[]) => {
+      const remOBs = oldOBs.filter((ob: OB) => !delIds.includes(ob._id))
+      console.log('remaining OBS', remOBs)
+      return remOBs
     });
     setEnableUndo(true)
   }
