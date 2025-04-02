@@ -31,7 +31,7 @@ function SubmitOBs(props: { obs: OB[], setOBs: Function }) {
 
     const onSubmitClick = async () => {
         const resp = await submit_obs(obs)
-        if (resp.status !== 'SUCCESS') {
+        if (resp.success !== 'SUCCESS') {
             console.error('error deleting ob', resp)
             snackbarContext.setSnackbarMessage({ severity: 'error', message: `Error submitting targets ${resp}` })
         }
