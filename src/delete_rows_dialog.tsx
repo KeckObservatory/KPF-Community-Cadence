@@ -40,7 +40,8 @@ function DeleteOBs(props: { obs: OB[] }) {
 
   const onDeleteClick = async () => {
     let delOB: OB[] = []
-    obs.forEach(async (ob) => {
+    for (let idx = 0; idx < obs.length; idx++) {
+      const ob = obs[idx]
       const resp = await delete_obs(ob._id)
       if (resp.success === 'SUCCESS') {
         delOB.push(ob)
@@ -48,7 +49,7 @@ function DeleteOBs(props: { obs: OB[] }) {
       else {
         snackbarContext.setSnackbarMessage({ severity: 'error', message: 'Error deleting targets' })
       }
-    })
+    }
     const delIds = delOB.map((ob) => ob._id)
     const remOBs = context.obs.filter((ob: OB) => {
       return !delIds.includes(ob._id)
