@@ -54,8 +54,8 @@ function DeleteOBs(props: { selectedOBs: OB[] }) {
     });
     console.log('deleted obs', delOB, delIds, remOBs.length, context.obs.length)
     setDeletedOBs(delOB)
-    //context.setOBs(remOBs);
-    //refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
+    context.setOBs(remOBs);
+    refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     console.log(refreshContext.refreshTable)
     setEnableUndo(true)
   }
@@ -69,7 +69,7 @@ function DeleteOBs(props: { selectedOBs: OB[] }) {
       return
     }
     snackbarContext.setSnackbarMessage({ severity: 'info', message: 'Resubmitted deleted targets' })
-    const newOBS = [...deletedOBs, context.obs]
+    const newOBS = [...deletedOBs, ...context.obs]
     context.setOBs(newOBS);
     setEnableUndo(false)
   }
@@ -123,7 +123,7 @@ export default function DeleteDialogButton(props: Props) {
 
   React.useEffect(() => {
     console.log('selected obs changed. leaving open')
-    setOpen(true)
+    props.selectedOBs.length > 0 && setOpen(true)
   }, [props.selectedOBs]);
 
   const handleClickOpen = () => {
