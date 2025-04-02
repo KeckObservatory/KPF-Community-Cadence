@@ -99,8 +99,6 @@ export const DashboardButton = (props: DashboardButtonProps) => {
         setOpen(false);
     };
 
-    console.log('obs', obs, 'selected ob', ob)
-
     return (
         <>
             <Tooltip title={`Click to view OB dashboard for ${ob?.target?.target_name ?? ob._id}`}>
