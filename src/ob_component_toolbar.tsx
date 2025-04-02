@@ -7,13 +7,13 @@ import {
     ToolbarPropsOverrides,
 } from '@mui/x-data-grid-pro';
 
-import { ob_schemas } from './validation_check_dialog';
+import { ob_schemas, Validators, validators } from './validation_check_dialog';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import DeleteDialogButton from './delete_rows_dialog';
 import SubmitDialogButton from './submit_rows_dialog';
 
-import { ErrorObject, JSONSchemaType } from 'ajv'
+import { ErrorObject } from 'ajv'
 import { useDebounceCallback } from './use_debounce_callback';
 import { save_obs } from './api/api_root';
 import { OBWizardButton } from './ob_wizard';
@@ -156,17 +156,18 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
         //ob valid for all components?
         let obErrs: ErrorObject[] = []
         for (const cn in ob) {
-            const schema = ob_schemas[cn] as JSONSchemaType<unknown>
-            if (!schema) {
-                console.log('ob schema not found', cn)
+            const validator = validators[cn as Validators]
+            if (!validator) {
+                console.log('validator not found', cn)
                 continue
             }
             const comp = ob[cn as keyof OB] as OBComponent
             if (!comp) {
                 return false //MISSING COMPONENT 
             }
-            schema.validate(comp) as ErrorObject[]
-            obErrs = [...schema.errors, ...obErrs]
+            validator(comp)
+            const newErrors = validator.errors ?? []
+            obErrs = [...newErrors, ...obErrs]
         }
         if (obErrs.length > 0) {
             console.log('ob errors', obErrs)
