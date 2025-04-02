@@ -2,7 +2,7 @@ import * as React from 'react';
 import PublishIcon from '@mui/icons-material/Publish';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App';
+import { useSnackbarContext } from './App';
 import { DialogComponent } from './dialog_component';
 import { OB } from './module_selector';
 import { Button, Typography } from '@mui/material';
@@ -26,8 +26,8 @@ interface Props {
 function SubmitOBs(props: { obs: OB[] }) {
     const { obs } = props;
     const snackbarContext = useSnackbarContext()
-    const context = useCommCadContext()
-    const refreshContext = useRefreshTableContext()
+    // const context = useCommCadContext()
+    // const refreshContext = useRefreshTableContext()
 
     const onSubmitClick = async () => {
         const resp = await submit_obs(obs)
@@ -36,15 +36,16 @@ function SubmitOBs(props: { obs: OB[] }) {
             snackbarContext.setSnackbarMessage({ severity: 'error', message: `Error submitting targets ${resp}` })
             return
         }
-        const currOBs = context.obs.map((ob: OB) => {
-            const newOB = obs.find((o: OB) => o._id === ob._id)
-            return newOB ?? ob
-        })
-        context.setOBs(currOBs);
-        refreshContext.setRefreshTable( refreshContext.refreshTable + 1 )
-        snackbarContext.setSnackbarMessage({
-            severity: 'success', message: `OBs submitted successfully`
-        })
+        // const currOBs = context.obs.map((ob: OB) => {
+        //     const newOB = obs.find((o: OB) => o._id === ob._id)
+        //     return newOB ?? ob
+        // })
+        // context.setOBs(currOBs);
+        // refreshContext.setRefreshTable( refreshContext.refreshTable + 1 )
+        // snackbarContext.setSnackbarMessage({
+        //     severity: 'success', message: `OBs submitted successfully`
+        // })
+        window.location.reload()
 
     }
 
