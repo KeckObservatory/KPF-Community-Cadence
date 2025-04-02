@@ -7,7 +7,7 @@ import { DialogComponent } from './dialog_component';
 import { OB } from './module_selector';
 import { Button, Typography } from '@mui/material';
 //import { delete_target, submit_target } from './api/api_root';
-import { delete_obs, submit_obs } from './api/api_root';
+import { delete_obs } from './api/api_root';
 import { useCommCadContext } from './App';
 
 
@@ -16,6 +16,7 @@ export interface VTDProps {
   open: boolean;
   handleClose: Function;
   selectedOBs: OB[];
+  setDeletedOBs: Function;
 }
 
 interface Props {
@@ -24,53 +25,22 @@ interface Props {
   color?: 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
 }
 
-function DeleteOBs(props: { selectedOBs: OB[] }) {
-  const { selectedOBs} = props;
-  const snackbarContext = useSnackbarContext()
-  const [enableUndo, setEnableUndo] = React.useState(false);
-  const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
-  const context = useCommCadContext()
-  const refreshContext = useRefreshTableContext()
+interface DeleteOBProps {
+  selectedOBs: OB[];
+  setDeletedOBs: Function;
+}
 
-  React.useEffect(() => {
-    console.log('selected obs changed', selectedOBs)
-  }, [selectedOBs]);
+function DeleteOBs(props: DeleteOBProps) {
+  const { selectedOBs, setDeletedOBs } = props;
+  const [enableUndo, setEnableUndo] = React.useState(false);
 
   const onDeleteClick = async () => {
-    let delOB: OB[] = []
-    for (let idx = 0; idx < selectedOBs.length; idx++) {
-      const ob = selectedOBs[idx]
-      const resp = await delete_obs(ob._id)
-      if (resp.success === 'SUCCESS') {
-        delOB.push(ob)
-      }
-      else {
-        snackbarContext.setSnackbarMessage({ severity: 'error', message: 'Error deleting targets' })
-      }
-    }
-    const delIds = delOB.map((ob) => ob._id)
-    const remOBs = context.obs.filter((ob: OB) => {
-      return !delIds.includes(ob._id)
-    });
-    console.log('deleted obs', delOB, delIds, remOBs.length, context.obs.length)
-    setDeletedOBs(delOB)
-    context.setOBs(remOBs);
-    refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
-    console.log(refreshContext.refreshTable)
+    setDeletedOBs(selectedOBs)
     setEnableUndo(true)
   }
 
   const onUndoClick = async () => {
-    const resp = await submit_obs(deletedOBs)
-    if (resp.errors?.length > 0) {
-      console.error('error while undoing target delete', resp)
-      const msg = 'error when undoing deleted targets: ' + resp.errors.join(', ')
-      snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
-      return
-    }
-    snackbarContext.setSnackbarMessage({ severity: 'info', message: 'Resubmitted deleted targets' })
-    const newOBS = [...deletedOBs, ...context.obs]
-    context.setOBs(newOBS);
+    setDeletedOBs([])
     setEnableUndo(false)
   }
 
@@ -85,7 +55,7 @@ function DeleteOBs(props: { selectedOBs: OB[] }) {
   return (
     <div>
       {enableUndo ? (
-        <Button onClick={onUndoClick}>Undo Delete?</Button>
+        <Button onClick={onUndoClick}>OBs will be deleted upon closing this dialog window. Undo?</Button>
       ) : (
         <Button onClick={onDeleteClick}>Confirm Delete?</Button>
       )}
@@ -96,14 +66,14 @@ function DeleteOBs(props: { selectedOBs: OB[] }) {
 }
 
 function DeleteOBsDialog(props: VTDProps) {
-  const { open, handleClose, selectedOBs } = props;
+  const { open, handleClose, selectedOBs, setDeletedOBs } = props;
 
   const dialogTitle = (
     <div>Delete OBs</div>
   );
 
   const dialogContent = (
-    <DeleteOBs selectedOBs={selectedOBs} />
+    <DeleteOBs selectedOBs={selectedOBs} setDeletedOBs={setDeletedOBs}/>
   )
 
   return (
@@ -120,6 +90,14 @@ function DeleteOBsDialog(props: VTDProps) {
 export default function DeleteDialogButton(props: Props) {
   console.log('initializing delete button')
   const [open, setOpen] = React.useState(false);
+  const { selectedOBs } = props;
+
+  const context = useCommCadContext()
+  const refreshContext = useRefreshTableContext()
+  const snackbarContext = useSnackbarContext()
+
+  const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
+
 
   React.useEffect(() => {
     // console.log('selected obs changed.')
@@ -130,7 +108,29 @@ export default function DeleteDialogButton(props: Props) {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    let delOB: OB[] = []
+    for (let idx = 0; idx < deletedOBs.length; idx++) {
+      const ob = deletedOBs[idx]
+      const resp = await delete_obs(ob._id)
+      if (resp.success !== 'SUCCESS') {
+        console.error('error while deleting target', resp)
+        const msg = 'error when deleting targets: ' + resp.errors.join(', ')
+        snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
+        continue 
+      }
+      delOB.push(ob)
+    }
+
+    //update table view
+    const delIds = delOB.map((ob) => ob._id)
+    const remOBs = context.obs.filter((ob: OB) => {
+      return !delIds.includes(ob._id)
+    });
+    console.log('deleted obs', delOB, delIds, remOBs.length, context.obs.length)
+    setDeletedOBs(delOB)
+    context.setOBs(remOBs);
+    refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     setOpen(false);
   };
 
@@ -151,6 +151,7 @@ export default function DeleteDialogButton(props: Props) {
       <DeleteOBsDialog
         open={open}
         selectedOBs={props.selectedOBs}
+        setDeletedOBs={setDeletedOBs}
         handleClose={handleClose}
       />
     </>

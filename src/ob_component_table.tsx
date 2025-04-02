@@ -456,11 +456,12 @@ export default function OBComponentTable(props: Props) {
     }
 
     columns = [...addColumns, ...columns];
+    const selectedRows = rows.filter((row) => rowSelectionModel.includes(row._id))
     const toolbarProps: EditToolbarProps = {
                         setRows,
                         processRowUpdate,
                         componentName,
-                        selectedRows: rows.filter((row) => rowSelectionModel.includes(row._id))
+                        selectedRows
                         }
 
     return (
