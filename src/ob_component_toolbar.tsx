@@ -157,6 +157,10 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
         let obErrs: ErrorObject[] = []
         for (const cn in ob) {
             const schema = ob_schemas[cn] as JSONSchemaType<unknown>
+            if (!schema) {
+                console.log('ob schema not found', cn)
+                continue
+            }
             const comp = ob[cn as keyof OB] as OBComponent
             if (!comp) {
                 return false //MISSING COMPONENT 
