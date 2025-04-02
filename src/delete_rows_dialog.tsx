@@ -44,14 +44,13 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
         snackbarContext.setSnackbarMessage({ severity: 'error', message: 'Error deleting targets' })
       }
     })
-    console.log('deleted obs', delOB)
     const delIds = delOB.map((ob) => ob._id)
+    const remOBs = context.setOBs(context.obs.filter( (ob: OB) => {
+    console.log('deleted obs', delOB, remOBs)
+      return !delIds.includes(ob._id)
+    }));
     setDeletedOBs(delOB)
-    context.setOBs((oldOBs: OB[]) => {
-      const remOBs = oldOBs.filter((ob: OB) => !delIds.includes(ob._id))
-      console.log('remaining OBS', remOBs)
-      return remOBs
-    });
+    context.setOBs(remOBs);
     setEnableUndo(true)
   }
 
