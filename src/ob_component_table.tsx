@@ -357,7 +357,14 @@ export default function OBComponentTable(props: Props) {
         }, [editRow])
 
         React.useEffect(() => {
-            check_submit_status()
+            validators[componentName](editRow)
+            const newErrors = validators[componentName].errors ?? []
+            setErrors(newErrors)
+            const resubmit = needs_resubmit(editRow, errors.length)
+            setNeedsResubmit(resubmit)
+            console.log('setting submit color', !resubmit && editRow.submitted)
+            setSubmitColor(!resubmit && editRow.submitted ? 'success' : 'inherit')
+            // check_submit_status()
         }, [row])
 
         const refreshStyle = iconSpin ? {
