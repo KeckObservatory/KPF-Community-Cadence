@@ -354,11 +354,11 @@ export default function OBComponentTable(props: Props) {
             handleRowChange()
             setCount((prev: number) => prev + 1)
             check_submit_status()
-        }, [editRow, row])
+        }, [editRow])
 
-        // React.useEffect(() => {
-        //     check_submit_status()
-        // }, [row])
+        React.useEffect(() => {
+            check_submit_status()
+        }, [row])
 
         const refreshStyle = iconSpin ? {
             animation: "spin 2s linear infinite",
