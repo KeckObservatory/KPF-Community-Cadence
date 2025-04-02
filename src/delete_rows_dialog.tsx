@@ -2,7 +2,7 @@ import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { useSnackbarContext } from './App';
+import { useRefreshTableContext, useSnackbarContext } from './App';
 import { DialogComponent } from './dialog_component';
 import { OB } from './module_selector';
 import { Button, Typography } from '@mui/material';
@@ -32,6 +32,7 @@ function DeleteOBs(props: { obs: OB[] }) {
   const [enableUndo, setEnableUndo] = React.useState(false);
   const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
   const context = useCommCadContext()
+  const refreshContext = useRefreshTableContext()
 
   React.useEffect(() => {
     console.log('obs changed', obs)
@@ -55,6 +56,7 @@ function DeleteOBs(props: { obs: OB[] }) {
     console.log('deleted obs', delOB, remOBs)
     setDeletedOBs(delOB)
     context.setOBs(remOBs);
+    refreshContext.setRefreshTable(true)
     setEnableUndo(true)
   }
 
