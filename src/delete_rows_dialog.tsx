@@ -32,18 +32,20 @@ function DeleteOBs(props: { obs: OB[], setOBs: Function }) {
   const [deletedOBs, setDeletedOBs] = React.useState<OB[]>([]);
 
   const onDeleteClick = async () => {
-    console.log('delete obs clicked', obs)
-    const ids = obs.map((ob) => ob._id);
-    ids.forEach(async (id) => {
-      const resp = await delete_obs(id)
+    let delOB: OB[] = []
+    obs.forEach(async (ob) => {
+      const resp = await delete_obs(ob._id)
       if (resp.status !== 'SUCCESS') {
-        console.error('error deleting ob', resp)
+        delOB.push(ob)
         snackbarContext.setSnackbarMessage({ severity: 'error', message: 'Error deleting targets' })
       }
     })
-    setDeletedOBs(obs)
+    console.log('deleted obs', delOB)
+    const delIds = delOB.map((ob) => ob._id)
+    setDeletedOBs(delOB)
     setOBs((oldOBs: OB[]) => {
-      const newOBs = oldOBs.filter((ob: OB) => !ids.includes(ob._id))
+      const newOBs = oldOBs.filter((ob: OB) => !delIds.includes(ob._id))
+      console.log('remaining OBS', newOBs)
       return newOBs
     });
     setEnableUndo(true)

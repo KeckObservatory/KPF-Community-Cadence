@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [react()],
   base: './',
   build: {
+    minify: false,
     chunkSizeWarningLimit: 1000,
     outDir: resolve(__dirname, 'build'),
     rollupOptions: {
