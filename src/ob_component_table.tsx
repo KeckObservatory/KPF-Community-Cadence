@@ -28,7 +28,7 @@ import {
 import { useDebounceCallback } from './use_debounce_callback';
 import { delete_obs, submit_obs } from './api/api_root';
 import { useCommCadContext, useSnackbarContext, useRefreshTableContext } from './App';
-import { OB, OBComponent, OBTarget, Schedule } from './module_selector';
+import { OBComponent, OBTarget, Schedule } from './module_selector';
 import { format_edit_entry, format_tags, raDecFormat, ob_to_component_row, edit_ob, adjust_schedule } from './ob_edit_util';
 import ValidationDialogButton, { ob_schemas, validators } from './validation_check_dialog';
 import { ErrorObject } from 'ajv/dist/2019';

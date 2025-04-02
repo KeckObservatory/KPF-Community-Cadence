@@ -1,5 +1,5 @@
 import { OB } from "../module_selector"
-import { NewOB } from "../ob_component_table"
+import { NewOB } from "../ob_component_toolbar"
 import { GaiaResp, GetOBResponse, SubmitResp, UserInfo } from "./api_root"
 import mock_ob_resp from './mock_ob_resp.json'
 
