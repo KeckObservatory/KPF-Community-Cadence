@@ -2,7 +2,7 @@ import * as React from 'react';
 import PublishIcon from '@mui/icons-material/Publish';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { useCommCadContext, useSnackbarContext } from './App';
+import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App';
 import { DialogComponent } from './dialog_component';
 import { OB } from './module_selector';
 import { Button, Typography } from '@mui/material';
@@ -27,7 +27,7 @@ function SubmitOBs(props: { obs: OB[] }) {
     const { obs } = props;
     const snackbarContext = useSnackbarContext()
     const context = useCommCadContext()
-    // const refreshContext = useRefreshTableContext()
+    const refreshContext = useRefreshTableContext()
 
     const onSubmitClick = async () => {
         const resp = await submit_obs(obs)
@@ -41,11 +41,11 @@ function SubmitOBs(props: { obs: OB[] }) {
             return newOB ?? ob
         })
         context.setOBs(currOBs);
-        // refreshContext.setRefreshTable( refreshContext.refreshTable + 1 )
+        refreshContext.setRefreshTable( refreshContext.refreshTable + 1 )
         snackbarContext.setSnackbarMessage({
             severity: 'success', message: `OBs submitted successfully`
-
         })
+
     }
 
     const targetList = obs.map((ob, index) => {
