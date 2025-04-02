@@ -340,16 +340,25 @@ export default function OBComponentTable(props: Props) {
                 }
             }
         }
-        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-            handleRowChange()
+
+        const check_submit_status = () => {
             validators[componentName](editRow)
             const newErrors = validators[componentName].errors ?? []
             setErrors(newErrors)
             const resubmit = needs_resubmit(editRow, errors.length)
             setNeedsResubmit(resubmit)
             setSubmitColor(!resubmit && editRow.submitted ? 'success' : 'inherit')
+        }
+
+        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+            handleRowChange()
             setCount((prev: number) => prev + 1)
+            check_submit_status()
         }, [editRow, row])
+
+        // React.useEffect(() => {
+        //     check_submit_status()
+        // }, [row])
 
         const refreshStyle = iconSpin ? {
             animation: "spin 2s linear infinite",

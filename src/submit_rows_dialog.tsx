@@ -2,7 +2,7 @@ import * as React from 'react';
 import PublishIcon from '@mui/icons-material/Publish';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App';
+import { useCommCadContext, useSnackbarContext } from './App';
 import { DialogComponent } from './dialog_component';
 import { OB } from './module_selector';
 import { Button, Typography } from '@mui/material';
