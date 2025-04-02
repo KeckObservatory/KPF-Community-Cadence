@@ -27,7 +27,7 @@ function SubmitOBs(props: { obs: OB[] }) {
     const { obs } = props;
     const snackbarContext = useSnackbarContext()
     const context = useCommCadContext()
-    const refreshContext = useRefreshTableContext()
+    // const refreshContext = useRefreshTableContext()
 
     const onSubmitClick = async () => {
         const resp = await submit_obs(obs)
@@ -41,7 +41,7 @@ function SubmitOBs(props: { obs: OB[] }) {
             return newOB ?? ob
         })
         context.setOBs(currOBs);
-        refreshContext.setRefreshTable( refreshContext.refreshTable + 1 )
+        // refreshContext.setRefreshTable( refreshContext.refreshTable + 1 )
         snackbarContext.setSnackbarMessage({
             severity: 'success', message: `OBs submitted successfully`
 

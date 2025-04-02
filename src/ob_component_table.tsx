@@ -349,7 +349,7 @@ export default function OBComponentTable(props: Props) {
             setNeedsResubmit(resubmit)
             setSubmitColor(!resubmit && editRow.submitted ? 'success' : 'inherit')
             setCount((prev: number) => prev + 1)
-        }, [editRow])
+        }, [editRow, row])
 
         const refreshStyle = iconSpin ? {
             animation: "spin 2s linear infinite",
