@@ -29,7 +29,7 @@
         },
         "parallax": {
             "type": ["string", "number"],
-            "description": "Parallax of the target [miliarcseconds]",
+            "description": "Parallax of the target [milliarcseconds]",
             "short_description": "Parallax",
             "translator_mapping": "Parallax"
         },
