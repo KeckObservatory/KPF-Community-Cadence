@@ -110,8 +110,6 @@ export const create_new_ob = (semid: string, obsid: number, username: string, ta
     return ob
 }
 
-
-
 export const EditComponentToolbar = (props: EditToolbarProps) => {
     const { componentName, processRowUpdate, setRows, selectedRows } = props;
     const context = useCommCadContext()
@@ -145,13 +143,13 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
     const debouncedAddOB = useDebounceCallback(handleAddOB, 500)
 
     let selectedOBs = selectedRows.map((row) => {
-                            return context.obs.find((ob) => ob._id === row._id)
-                          }).filter((ob) => ob !== undefined) as OB[]
+        return context.obs.find((ob) => ob._id === row._id)
+    }).filter((ob) => ob !== undefined) as OB[]
 
     let validSelectedOBs = selectedRows.map((row) => {
         const ob = context.obs.find((ob) => ob._id === row._id)
         if (!ob) {
-            return false 
+            return false
         }
         //ob valid for all components?
         let obErrs: ErrorObject[] = []
@@ -170,11 +168,11 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
         }
         if (obErrs.length > 0) {
             console.log('ob errors', obErrs)
-            return false 
+            return false
         }
         return ob
     }).filter((ob) => ob !== false) as OB[]
-                        
+
     if (selectedOBs.length === 0) { //TODO: filter out OBs that are not scheduled/have history
         //selectedOBs = context.obs.filter((ob) => ob.metadata.state === 'SUBMITTED')
         selectedOBs = context.obs
@@ -193,9 +191,11 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                     <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddOB}>
                         Create New OB
                     </Button>
+                    {/* 
                     <DeleteDialogButton disabled={deletedDisabled} selectedOBs={selectedOBs} color={deletedButtonColor}/>
                     <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor}/>
-                    {selectedOBs.length > 0 && <DashboardButton obs={selectedOBs}/>}
+                    */}
+                    {selectedOBs.length > 0 && <DashboardButton obs={selectedOBs} />}
                     <GridToolbar
                         printOptions={{ disableToolbarButton: true }}
                         csvOptions={{ disableToolbarButton: true }}

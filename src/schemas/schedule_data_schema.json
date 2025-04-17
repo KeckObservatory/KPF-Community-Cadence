@@ -42,7 +42,7 @@
             "translator_mapping": "intraNightCadenceMin",
             "description": "(Cadence mode) Minimum Intra-Night Cadence (hours) is the frequency and timing of observations make within a single night",
             "short_description": "Intranight Cadence",
-            "default": 1,
+            "default": 0,
             "regex": "^\\d*$"
         },
         "fast_read_mode_requested": {
