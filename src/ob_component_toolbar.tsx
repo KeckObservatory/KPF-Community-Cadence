@@ -195,9 +195,9 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                         (<>
                             <DeleteDialogButton disabled={deletedDisabled} selectedOBs={selectedOBs} color={deletedButtonColor} />
                             <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor} />
+                            {selectedOBs.length > 0 && <DashboardButton obs={selectedOBs} />}
                         </>)
                     }
-                    {selectedOBs.length > 0 && <DashboardButton obs={selectedOBs} />}
                     <GridToolbar
                         printOptions={{ disableToolbarButton: true }}
                         csvOptions={{ disableToolbarButton: true }}
