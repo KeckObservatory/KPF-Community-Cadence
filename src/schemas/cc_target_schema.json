@@ -87,11 +87,11 @@
         },
         "pm_dec": {
             "type": ["number", "string"],
-            "description": "Proper Motion in Dec [miliarcseconds/year]"
+            "description": "Proper Motion in Dec [milliarcseconds/year]"
         },
         "pm_ra": {
             "type": ["number", "string"],
-            "description": "Proper Motion in RA [miliarcseconds/year]"
+            "description": "Proper Motion in RA [milliarcseconds/year]"
         },
         "ra": {
             "type": "string",

@@ -86,13 +86,13 @@
         },
         "pm_ra": {
             "type": ["number", "string"],
-            "description": "Proper Motion in RA [miliarcseconds/year]",
+            "description": "Proper Motion in RA [milliarcseconds/year]",
             "short_description": "PM RA",
             "translator_mapping": "PMRA"
         },
         "pm_dec": {
             "type": ["number", "string"],
-            "description": "Proper Motion in Dec [miliarcseconds/year]",
+            "description": "Proper Motion in Dec [milliarcseconds/year]",
             "short_description": "PM Dec",
             "translator_mapping": "PMDEC"
         },
