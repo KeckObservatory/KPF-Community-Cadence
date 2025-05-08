@@ -359,7 +359,7 @@ export default function OBComponentTable(props: Props) {
         React.useEffect(() => { // When submit selected is clicked you need to update editRow 
             //@ts-ignore
             const rowsot = ob_to_component_row(context.obs.find((ob) => ob._id === id), componentName)
-            const resubmit = needs_resubmit(editRow, errors.length)
+            const resubmit = needs_resubmit(rowsot, errors.length)
             console.log('row changed. resubmit?', row.target_name, resubmit, rowsot)
             if (resubmit !== needsResubmit) {
                 setEditRow(rowsot)
