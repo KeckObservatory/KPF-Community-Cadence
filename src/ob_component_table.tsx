@@ -359,7 +359,9 @@ export default function OBComponentTable(props: Props) {
 
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-            console.log('row changed', editRow)
+            //@ts-ignore
+            const sot = context.obs.find((ob) => ob._id === id)[componentName] as OBComponent
+            console.log('row changed', editRow, sot)
         }, [editRow, row])
 
         const refreshStyle = iconSpin ? {
