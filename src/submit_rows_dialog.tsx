@@ -2,12 +2,12 @@ import * as React from 'react';
 import PublishIcon from '@mui/icons-material/Publish';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { useSnackbarContext } from './App';
+import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App';
 import { DialogComponent } from './dialog_component';
 import { OB } from './module_selector';
 import { Button, Typography } from '@mui/material';
 //import { delete_target, submit_target } from './api/api_root';
-import { submit_obs } from './api/api_root';
+import { get_obs, submit_obs } from './api/api_root';
 
 
 
@@ -23,29 +23,42 @@ interface Props {
     color?: 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
 }
 
+
 function SubmitOBs(props: { obs: OB[] }) {
     const { obs } = props;
     const snackbarContext = useSnackbarContext()
-    // const context = useCommCadContext()
-    // const refreshContext = useRefreshTableContext()
+    const context = useCommCadContext()
+    const refreshContext = useRefreshTableContext()
 
     const onSubmitClick = async () => {
         const resp = await submit_obs(obs)
         if (resp.success !== 'SUCCESS') {
-            console.error('error deleting ob', resp)
+            console.error('error submitting obs', resp)
             snackbarContext.setSnackbarMessage({ severity: 'error', message: `Error submitting targets ${resp}` })
             return
         }
-        // const currOBs = context.obs.map((ob: OB) => {
-        //     const newOB = obs.find((o: OB) => o._id === ob._id)
-        //     return newOB ?? ob
-        // })
-        // context.setOBs(currOBs);
-        // refreshContext.setRefreshTable( refreshContext.refreshTable + 1 )
-        // snackbarContext.setSnackbarMessage({
-        //     severity: 'success', message: `OBs submitted successfully`
-        // })
-        window.location.reload()
+        refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
+
+        const handleGetOBs = async (semester?: string, semid?: string) => {
+
+            const resp = await get_obs(semester, semid);
+            console.log('get_obs response', resp)
+
+            if (resp.success !== 'SUCCESS') {
+            snackbarContext.setSnackbarMessage({
+                severity: 'error',
+                message: `Failed to get OBs. Details: ${resp.message}`
+            })
+            return
+            }
+
+            context.setOBs(resp.observing_blocks ?? [])
+            context.setTotalHours(resp.total_hours ?? 0)
+            context.setTotalObservations(resp.total_observations ?? 0)
+        }
+
+        handleGetOBs(context.semester, context.semid)
+        // window.location.reload() //TODO: remove this big hammer.
 
     }
 
