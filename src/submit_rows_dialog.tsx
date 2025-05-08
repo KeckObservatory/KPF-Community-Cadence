@@ -37,7 +37,6 @@ function SubmitOBs(props: { obs: OB[] }) {
             snackbarContext.setSnackbarMessage({ severity: 'error', message: `Error submitting targets ${resp}` })
             return
         }
-        refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
 
         const handleGetOBs = async (semester?: string, semid?: string) => {
 
@@ -55,6 +54,7 @@ function SubmitOBs(props: { obs: OB[] }) {
             context.setOBs(resp.observing_blocks ?? [])
             context.setTotalHours(resp.total_hours ?? 0)
             context.setTotalObservations(resp.total_observations ?? 0)
+            refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
         }
 
         handleGetOBs(context.semester, context.semid)
