@@ -96,7 +96,8 @@ export default function ScheduleForm(props: Props) {
                                 {CreateTextField('minimum_num_visits_per_night', true)}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                {/* {CreateTextField('num_visits_per_night', true)} */}
+                                {/* TODO: remove num_visits_per_night field when ready */}
+                                {CreateTextField('num_visits_per_night', true)} 
                                 {CreateTextField('num_nights_per_semester', true)}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
