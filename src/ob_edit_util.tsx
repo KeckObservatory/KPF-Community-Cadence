@@ -107,14 +107,22 @@ export const adjust_schedule = (component: Schedule) => {
     //convert to integers 
     schedule.num_internight_cadence && (schedule.num_internight_cadence = Number(schedule.num_internight_cadence))
     schedule.num_intranight_cadence && (schedule.num_intranight_cadence = Number(schedule.num_intranight_cadence))
+    schedule.desired_num_visits_per_night && (schedule.desired_num_visits_per_night = Number(schedule.desired_num_visits_per_night))
+    schedule.minimum_num_visits_per_night && (schedule.minimum_num_visits_per_night = Number(schedule.minimum_num_visits_per_night))
     schedule.num_visits_per_night && (schedule.num_visits_per_night = Number(schedule.num_visits_per_night))
     schedule.num_nights_per_semester && (schedule.num_nights_per_semester = Number(schedule.num_nights_per_semester))
-    if (schedule.num_visits_per_night === 1) {
+    if (schedule.desired_num_visits_per_night === 1) {
         schedule = {
             ...schedule,
             'num_intranight_cadence': 0,
         }
         console.log('setting intranight cadence to zero', component)
+    }
+    if (Number(schedule.minimum_num_visits_per_night ?? 0) > Number(schedule.desired_num_visits_per_night ?? 0)) {
+        schedule = {
+            ...schedule,
+            desired_num_visits_per_night: schedule.minimum_num_visits_per_night,
+        }
     }
     // if num_vists_per_night is 1, set num_internight_cadences to 0
     if (schedule.num_nights_per_semester === 1) {
@@ -147,10 +155,10 @@ const obSetter = (ob: OB, componentName: keyof OB) => {
             'object': ob.target.target_name,
         }
     }
-    // if num_vists_per_night is 1, set num_intranight_cadences to 0
-    if (componentName === 'schedule' && Number(ob.schedule.num_visits_per_night ?? 0) === 1) {
+    // if desired num_vists_per_night is 1, set num_intranight_cadences to 0
+    if (componentName === 'schedule' && Number(ob.schedule.desired_num_visits_per_night ?? 0) === 1) {
         const adjustedComponent = adjust_schedule(ob[componentName])
-        ob[componentName] = adjustedComponent
+        ob[componentName] = adjustedComponent as Schedule
     }
     return ob
 }

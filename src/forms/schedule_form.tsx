@@ -92,7 +92,11 @@ export default function ScheduleForm(props: Props) {
                                 {CreateAutocompleteField('scheduling_mode', 'input scheduling mode', 'Scheduling Mode')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                {CreateTextField('num_visits_per_night', true)}
+                                {CreateTextField('desired_num_visits_per_night', true)}
+                                {CreateTextField('minimum_num_visits_per_night', true)}
+                            </Stack>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                                {/* {CreateTextField('num_visits_per_night', true)} */}
                                 {CreateTextField('num_nights_per_semester', true)}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>

@@ -28,6 +28,8 @@ export interface OBComponent extends Schedule, Calibration, Observation, OBTarge
 
 export interface Schedule {
   scheduling_mode?: string,
+  desired_num_visits_per_night?: Integer,
+  minimum_num_visits_per_night?: Integer,
   num_visits_per_night?: Integer,
   num_nights_per_semester?: Integer,
   num_internight_cadence?: Integer,

@@ -11,6 +11,24 @@
             "enum": ["Cadence", "Single"],
             "default": "Single"
         },
+        "desired_num_visits_per_night": {
+            "type": ["integer", "string"],
+            "translator_mapping": "DesiredVisitsPerNight",
+            "description": "(Cadence mode) Desired Number of Visits per Night",
+            "short_description": "Desired # Visits",
+            "regex": "^\\d*$",
+            "minimum": 1,
+            "default": 1
+        },
+        "minimum_num_visits_per_night": {
+            "type": ["integer", "string"],
+            "translator_mapping": "MinVisitsPerNight",
+            "description": "(Cadence mode) Minimum Number of Visits per Night",
+            "short_description": "Minimum # Visits",
+            "regex": "^\\d*$",
+            "minimum": 1,
+            "default": 1
+        },
         "num_visits_per_night": {
             "type": ["integer", "string"],
             "translator_mapping": "VisitsPerNight",
