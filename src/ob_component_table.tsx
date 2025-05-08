@@ -177,6 +177,7 @@ export default function OBComponentTable(props: Props) {
 
     React.useEffect(() => {
         setTimeout(() => {
+            console.log('refreshing table', context.obs)
             const newRows = context.obs.map((ob) => {
                 const cmp = ob_to_component_row(ob, componentName)
                 return cmp
@@ -350,10 +351,16 @@ export default function OBComponentTable(props: Props) {
         }
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+            console.log('editRow changed', editRow)
             handleRowChange()
             setCount((prev: number) => prev + 1)
             check_submit_status()
         }, [editRow])
+
+
+        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+            console.log('row changed', editRow)
+        }, [editRow, row])
 
         const refreshStyle = iconSpin ? {
             animation: "spin 2s linear infinite",
