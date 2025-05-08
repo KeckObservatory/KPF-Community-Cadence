@@ -71,6 +71,24 @@ export interface GetLogsArgs {
     dateformat?: string
 }
 
+export interface GaiaParams {
+    ra_deg?: number,
+    dec_deg?: number,
+    parallax?: number,
+    systemic_velocity?: number,
+    g_mag?: number,
+    t_eff?: number,
+}
+
+export interface GaiaResp {
+    success: string,
+    message: string,
+    gaia_id: string,
+    details?: string,
+    gaia_params?: GaiaParams
+}
+
+
 const axiosInstance = axios.create({
     withCredentials: false,
     // timeout: 2000,
@@ -87,23 +105,6 @@ const get_simbad_call = (obj: string): Promise<string> => {
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
-}
-
-export interface GaiaParams {
-    ra_deg?: number,
-    dec_deg?: number,
-    parallax?: number,
-    systemic_velocity?: number,
-    g_mag?: number,
-    t_eff?: number,
-}
-
-export interface GaiaResp {
-    success: string,
-    message: string,
-    gaia_id: string,
-    details?: string,
-    gaia_params?: GaiaParams
 }
 
 const get_gaia_call = (gaia_id: string): Promise<GaiaResp> => {

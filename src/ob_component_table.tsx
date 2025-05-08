@@ -485,7 +485,7 @@ export default function OBComponentTable(props: Props) {
                 rows={rows ?? []}
                 getRowId={(row) => row._id}
                 editMode={'row'}
-                // checkboxSelection={true} //TODO: uncomment when ready to release submit/delete all button 
+                checkboxSelection={true}
                 processRowUpdate={processRowUpdate}
                 columns={columns}
                 rowModesModel={rowModesModel}
