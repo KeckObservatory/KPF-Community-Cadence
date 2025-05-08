@@ -360,7 +360,7 @@ export default function OBComponentTable(props: Props) {
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
             //@ts-ignore
-            const sot = obs.find((ob) => ob._id === id)[componentName] as OBComponent
+            const sot = context.obs.find((ob) => ob._id === id)[componentName] as OBComponent
             const rowsot = rows.find((ob) => ob._id === id) as OBComponent
             console.log('row changed', editRow, sot, rowsot)
         }, [editRow, row])
