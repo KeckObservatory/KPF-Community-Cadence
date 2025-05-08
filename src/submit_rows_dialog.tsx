@@ -59,7 +59,7 @@ function SubmitOBs(props: { obs: OB[] }) {
 
     return (
         <div>
-            <Button onClick={onSubmitClick}>Confirm Submit?</Button>
+            <Button variant='contained' onClick={onSubmitClick}>Confirm Submit?</Button>
             <Typography>OBs to be Submitted:</Typography>
             {targetList}
         </div>

@@ -57,7 +57,7 @@ function DeleteOBs(props: DeleteOBProps) {
       {enableUndo ? (
         <Button onClick={onUndoClick}>OBs will be deleted upon closing this dialog window. Undo?</Button>
       ) : (
-        <Button onClick={onDeleteClick}>Confirm Delete?</Button>
+        <Button variant='contained' onClick={onDeleteClick}>Confirm Delete?</Button>
       )}
       <Typography>OBs to be deleted:</Typography>
       {targetList}
@@ -135,7 +135,7 @@ export default function DeleteDialogButton(props: Props) {
     <>
       <Tooltip title={tooltipMsg}>
         <span>
-          <IconButton disabled={props.disabled} aria-label="help" color={props.color ?? 'default'} onClick={handleClickOpen}>
+          <IconButton  disabled={props.disabled} aria-label="help" color={props.color ?? 'default'} onClick={handleClickOpen}>
             <DeleteIcon />
           </IconButton>
         </span>
