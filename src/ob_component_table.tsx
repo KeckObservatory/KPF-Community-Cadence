@@ -350,8 +350,6 @@ export default function OBComponentTable(props: Props) {
         }
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-            const resubmit = needs_resubmit(editRow, errors.length)
-            setNeedsResubmit(resubmit)
             handleRowChange()
             setCount((prev: number) => prev + 1)
             check_submit_status()
@@ -360,10 +358,12 @@ export default function OBComponentTable(props: Props) {
 
         React.useEffect(() => { // When submit selected is clicked you need to update editRow 
             //@ts-ignore
-            const rowsot = rows.find((ob) => ob._id === id) as OBComponent
+            const rowsot = rows.find((ob) => ob._id === id) as ComponentRow 
             const resubmit = needs_resubmit(editRow, errors.length)
-            console.log('row changed. resubmit?', resubmit)
-            setNeedsResubmit(resubmit)
+            console.log('row changed. resubmit?', row.target_name, resubmit)
+            if (resubmit !== needsResubmit) {
+                setEditRow(rowsot)
+            }
         }, [row])
 
         const refreshStyle = iconSpin ? {
