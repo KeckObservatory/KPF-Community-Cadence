@@ -177,7 +177,6 @@ export default function OBComponentTable(props: Props) {
 
     React.useEffect(() => {
         setTimeout(() => {
-            console.log('refreshing table', context.obs)
             const newRows = context.obs.map((ob) => {
                 const cmp = ob_to_component_row(ob, componentName)
                 return cmp
@@ -351,19 +350,21 @@ export default function OBComponentTable(props: Props) {
         }
 
         React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
-            console.log('editRow changed', editRow)
+            const resubmit = needs_resubmit(editRow, errors.length)
+            setNeedsResubmit(resubmit)
             handleRowChange()
             setCount((prev: number) => prev + 1)
             check_submit_status()
         }, [editRow])
 
 
-        React.useEffect(() => { // when targed is edited in target edit dialog or simbad dialog
+        React.useEffect(() => { // When submit selected is clicked you need to update editRow 
             //@ts-ignore
-            const sot = context.obs.find((ob) => ob._id === id)[componentName] as OBComponent
             const rowsot = rows.find((ob) => ob._id === id) as OBComponent
-            console.log('row changed', editRow, sot, rowsot)
-        }, [editRow, row])
+            const resubmit = needs_resubmit(editRow, errors.length)
+            console.log('row changed. resubmit?', resubmit)
+            setNeedsResubmit(resubmit)
+        }, [row])
 
         const refreshStyle = iconSpin ? {
             animation: "spin 2s linear infinite",
