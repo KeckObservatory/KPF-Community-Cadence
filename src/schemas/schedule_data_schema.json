@@ -8,8 +8,7 @@
             "translator_mapping": "SchedulingMode",
             "description": "Scheduling Mode: Cadence, or Single",
             "short_description": "Scheduling Mode",
-            "enum": ["Cadence", "Single"],
-            "default": "Single"
+            "enum": ["Cadence", "Single"]
         },
         "desired_num_visits_per_night": {
             "type": ["integer", "string"],
@@ -17,8 +16,7 @@
             "description": "(Cadence mode) Desired Number of Visits per Night",
             "short_description": "Desired # Visits",
             "regex": "^\\d*$",
-            "minimum": 1,
-            "default": 1
+            "minimum": 1
         },
         "minimum_num_visits_per_night": {
             "type": ["integer", "string"],
@@ -26,8 +24,7 @@
             "description": "(Cadence mode) Minimum Number of Visits per Night",
             "short_description": "Minimum # Visits",
             "regex": "^\\d*$",
-            "minimum": 1,
-            "default": 1
+            "minimum": 1
         },
         "num_visits_per_night": {
             "type": ["integer", "string"],
@@ -35,8 +32,7 @@
             "description": "(Cadence mode) Number of Visits per Night. NOTE: THIS IS TO BE DEPRECATED FOR 2026A AND LATER",
             "short_description": "# Visits",
             "regex": "^\\d*$",
-            "minimum": 1,
-            "default": 1
+            "minimum": 1
         },
         "num_nights_per_semester": {
             "type": ["integer", "string"],
@@ -44,23 +40,20 @@
             "description": "(Cadence mode) Number of of Nights Per Semester",
             "short_description": "# Nights",
             "regex": "^\\d*$",
-            "minimum": 1,
-            "default": 1
+            "minimum": 1
         },
         "num_internight_cadence": {
             "type": ["integer", "string"],
             "translator_mapping": "interNightCadenceMin",
             "description": "(Cadence mode) Minimum Inter-Night Cadence (days) is the time difference of between consecutive observations spread over multiple nights",
             "short_description": "Internight Cadence",
-            "regex": "^\\d*$",
-            "default": 1
+            "regex": "^\\d*$"
         },
         "num_intranight_cadence": {
             "type": ["integer", "string"],
             "translator_mapping": "intraNightCadenceMin",
             "description": "(Cadence mode) Minimum Intra-Night Cadence (hours) is the frequency and timing of observations make within a single night",
             "short_description": "Intranight Cadence",
-            "default": 0,
             "regex": "^\\d*$"
         },
         "fast_read_mode_requested": {
@@ -68,8 +61,7 @@
             "translator_mapping": "FastreadModeRequested",
             "description": "(FixedTime mode) Does this OB request Fast Read Mode?",
             "show_column": false,
-            "short_description": "Fast Read Mode",
-            "default": false 
+            "short_description": "Fast Read Mode"
         },
         "minimum_elevation": {
             "type": ["number", "string"],
@@ -79,7 +71,6 @@
             "format": "strNumber",
             "formatMinimum": "18",
             "formatMaximum": "85",
-            "default": 30,
             "minimum": 18,
             "maximum": 85,
             "regex": "^[+]?\\d*([\\.]\\d*)?$",
@@ -92,7 +83,6 @@
             "short_description": "Moon Separation",
             "description": "Minimum moon separation angle [deg]",
             "formatMinimum": "0",
-            "default": 30,
             "regex": "^[+]?\\d*([\\.]\\d*)?$",
             "minimum": 0,
             "multipleOf": 0.1
@@ -102,7 +92,6 @@
             "translator_mapping": "WeatherBand",
             "description": "[bitmap] 3 bits for to bands 1, 2, and 3",
             "short_description": "Weather Band",
-            "default": 7,
             "not_editable_by_user": true
         },
         "accessibility_map": {
@@ -111,8 +100,7 @@
             "description": "[bitmap] If custom map is input, this is the AND with the default map based on inputs below",
             "short_description": "Access Map",
             "show": true,
-            "not_editable_by_user": true,
-            "default": 0
+            "not_editable_by_user": true
         },
         "total_observations_requested": {
             "type": ["integer", "string"],
