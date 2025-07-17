@@ -293,7 +293,7 @@ export default function OBComponentTable(props: Props) {
         const [submitColor, setSubmitColor] = React.useState<'inherit' | 'success'>(initSubmitColor)
 
         const setRowWithCadenceChecks = (row: ComponentRow) => {
-            //if schedule and num_visits_per_night is 1, set cadence to 0. 
+            //if schedule and desired_num_visits_per_night is 1, set cadence to 0. 
             //This is used by the form edit display updating to match the submitted ob. 
             
             let newRow = row

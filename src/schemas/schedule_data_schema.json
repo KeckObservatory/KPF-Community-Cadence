@@ -26,14 +26,6 @@
             "regex": "^\\d*$",
             "minimum": 1
         },
-        "num_visits_per_night": {
-            "type": ["integer", "string"],
-            "translator_mapping": "VisitsPerNight",
-            "description": "(Cadence mode) Number of Visits per Night. NOTE: THIS IS TO BE DEPRECATED FOR 2026A AND LATER",
-            "short_description": "# Visits",
-            "regex": "^\\d*$",
-            "minimum": 1
-        },
         "num_nights_per_semester": {
             "type": ["integer", "string"],
             "translator_mapping": "NightsPerSemester",

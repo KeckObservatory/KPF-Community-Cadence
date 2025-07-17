@@ -109,7 +109,6 @@ export const adjust_schedule = (component: Schedule) => {
     schedule.num_intranight_cadence && (schedule.num_intranight_cadence = Number(schedule.num_intranight_cadence))
     schedule.desired_num_visits_per_night && (schedule.desired_num_visits_per_night = Number(schedule.desired_num_visits_per_night))
     schedule.minimum_num_visits_per_night && (schedule.minimum_num_visits_per_night = Number(schedule.minimum_num_visits_per_night))
-    schedule.num_visits_per_night && (schedule.num_visits_per_night = Number(schedule.num_visits_per_night))
     schedule.num_nights_per_semester && (schedule.num_nights_per_semester = Number(schedule.num_nights_per_semester))
     if (schedule.desired_num_visits_per_night === 1) {
         schedule = {
