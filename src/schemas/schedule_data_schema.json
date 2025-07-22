@@ -116,7 +116,7 @@
     },
     "required": [ 
         "num_internight_cadence",
-        "num_visits_per_night",
+        "minimum_num_visits_per_night",
         "num_nights_per_semester"
     ],
     "additionalProperties": true
