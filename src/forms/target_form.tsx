@@ -62,8 +62,8 @@ export default function TargetForm(props: Props) {
     }
 
 
-    const CreateTextField = (key: string, isNumber = false) => {
-        return make_text_field(key, target, componentName, handleTextChange, isNumber)
+    const CreateTextField = (key: string, isNumber = false, width?: string) => {
+        return make_text_field(key, target, componentName, handleTextChange, isNumber, width)
     }
 
     return (
@@ -96,7 +96,9 @@ export default function TargetForm(props: Props) {
                     >
                         <Box>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                {CreateTextField('target_name')}
+                                {CreateTextField('target_name', false, '400px')}
+                            </Stack>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('t_eff')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
@@ -123,7 +125,7 @@ export default function TargetForm(props: Props) {
                                 {CreateTextField('systemic_velocity')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
-                                {CreateTextField('catalog_comment')}
+                                {CreateTextField('catalog_comment', false, '400px')}
                             </Stack>
                         </Box>
                     </Paper>

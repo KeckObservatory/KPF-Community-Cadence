@@ -131,7 +131,7 @@
         "catalog_comment": {
             "type": "string",
             "description": "Contain information from GAIA/SIMBAD or other sources.",
-            "short_description": "Catlog Comment",
+            "short_description": "Catalog Comment",
             "not_editable_by_user": true
         }
     },
