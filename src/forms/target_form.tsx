@@ -109,9 +109,11 @@ export default function TargetForm(props: Props) {
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('parallax')}
-                                {CreateTextField('gaia_id')}
                                 {CreateTextField('tic_id')}
                                 {CreateTextField('two_mass_id')}
+                            </Stack>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                                {CreateTextField('gaia_id', false, '400px')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('epoch')}
