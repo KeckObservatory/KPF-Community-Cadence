@@ -310,7 +310,7 @@ export const OBWizardButton = () => {
     };
     return (
         <div>
-            <Tooltip title="Upload OBs from .json file. \nNote: JSON file expects a list of OBs separated by commas. \nex: [{ob1}, {ob2}, ...]">
+            <Tooltip title="Upload OBs from .json file. Note: JSON file expects a list of OBs separated by commas. ex: [{ob1}, {ob2}, ...]">
                 <Button onClick={handleClickOpen} startIcon={<UploadIcon />}>
                     Upload OBs
                 </Button>
