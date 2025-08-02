@@ -143,7 +143,7 @@ export default function UploadDialog(props: Props) {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{"Upload OBs from .json"}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{"Upload OBs from .json file. \nNote: JSON file expects a list of OBs separated by commas. \nex: [{ob1}, {ob2}, ...]"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         Select the file to upload

@@ -5,7 +5,7 @@
     "properties": {
         "target_name": {
             "type": "string",
-            "pattern": "^[\\-a-zA-Z0-9\\s]+$",
+            "pattern": "^[\\-a-zA-Z0-9\\s\\_]+$",
             "description": "Target Name",
             "short_description": "Target Name",
             "translator_mapping": "TargetName"
@@ -37,6 +37,7 @@
             "type": ["number", "string"],
             "description": "Systemic Velocity [km/s]",
             "short_description": "Systemic Velocity",
+            "default": 0,
             "translator_mapping": "RadialVelocity"
         },
         "g_mag": {
@@ -135,6 +136,6 @@
             "not_editable_by_user": true
         }
     },
-    "required": [ ],
+    "required": [ "j_mag", "t_eff", "systemic_velocity" ],
     "additionalProperties": true
 }
