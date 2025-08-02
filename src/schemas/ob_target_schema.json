@@ -5,7 +5,7 @@
     "properties": {
         "target_name": {
             "type": "string",
-            "pattern": "^[\\-a-zA-Z0-9\\s\\_]+$",
+            "pattern": "^[\\-a-zA-Z0-9\\s_]+$",
             "description": "Target Name",
             "short_description": "Target Name",
             "translator_mapping": "TargetName"
