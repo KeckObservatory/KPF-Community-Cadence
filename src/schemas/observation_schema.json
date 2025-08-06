@@ -135,6 +135,7 @@
         },
         "nod_e": {
             "type": ["number", "string"],
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "description": "Distance to nod the telescope East before starting exposture [arcseconds]",
             "short_description": "Nod E",
             "default": 0.0,

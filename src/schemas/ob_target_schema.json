@@ -29,12 +29,14 @@
         },
         "parallax": {
             "type": ["string", "number"],
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "description": "Parallax of the target [milliarcseconds]",
             "short_description": "Parallax",
             "translator_mapping": "Parallax"
         },
         "systemic_velocity": {
             "type": ["number", "string"],
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "description": "Systemic Velocity [km/s]",
             "short_description": "Systemic Velocity",
             "default": 0,
@@ -42,12 +44,14 @@
         },
         "g_mag": {
             "type": ["number", "string"],
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "description": "G Magnitude",
             "short_description": "Gmag",
             "translator_mapping": "Gmag"
         },
         "j_mag": {
             "type": ["number", "string"],
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "description": "J Magnitude",
             "short_description": "Jmag",
             "translator_mapping": "Jmag"
@@ -73,10 +77,12 @@
         },
         "ra_deg": {
             "type": ["number", "string"],
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "description": "Right Ascension [degrees]"
         },
         "dec_deg": {
             "type": ["number", "string"],
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "description": "Declination [degrees]"
         },
         "equinox": {
@@ -87,18 +93,21 @@
         },
         "pm_ra": {
             "type": ["number", "string"],
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "description": "Proper Motion in RA [milliarcseconds/year]",
             "short_description": "PM RA",
             "translator_mapping": "PMRA"
         },
         "pm_dec": {
             "type": ["number", "string"],
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "description": "Proper Motion in Dec [milliarcseconds/year]",
             "short_description": "PM Dec",
             "translator_mapping": "PMDEC"
         },
         "epoch": {
             "type": ["number", "string"],
+            "regex": "^\\d*([\\.]\\d*)?$",
             "description": "Epoch of the coordinate measurements [decimal year]",   
             "short_description": "Epoch",
             "default": 2000,
@@ -108,23 +117,27 @@
         "d_ra": {
             "type": ["number", "string"],
             "description": "Non siderial tracking rate in RA [arcseconds / hr divided by 15]",
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "short_description": "DRA",
             "translator_mapping": "DRA"
         },
         "d_dec": {
             "type": ["number", "string"],
             "description": "Non siderial tracking rate in Dec [arcseconds / hr]",
+            "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "short_description": "DDec",
             "translator_mapping": "DDEC"
         },
         "rise_semester_day": {
             "type": ["integer", "string"],
+            "regex": "^\\d*?$",
             "description": "Rise Day of Semester",
             "not_editable_by_user": true,
             "show_column": false 
         },
         "sets_semester_day": {
             "type": ["integer", "string"],
+            "regex": "^\\d*?$",
             "description": "Set Day of Semester",
             "not_editable_by_user": true,
             "show_column": false 
