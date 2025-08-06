@@ -101,6 +101,7 @@
         "pm_dec": {
             "type": ["number", "string"],
             "regex": "^[+-]?\\d*([\\.]\\d*)?$",
+            "format": "strNumber",
             "description": "Proper Motion in Dec [milliarcseconds/year]",
             "short_description": "PM Dec",
             "translator_mapping": "PMDEC"
