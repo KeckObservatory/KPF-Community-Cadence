@@ -33,7 +33,7 @@ export interface Props {
 }
 
 const strNumberFormat : FormatDefinition<number | string> = {
-  validate: (_: number | string) => { return true },
+  validate: (val: number | string) => { return !isNaN(val as number)},
   compare: (a: number | string, b: number | string) => {
     if (!(a && b)) return undefined
     return Number(a) >= Number(b) ? 1 : -1
