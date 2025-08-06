@@ -16,6 +16,7 @@
             "short_description": "# Exp",
             "default": 1,
             "regex": "^\\d*$",
+            "format": "strNumber",
             "translator_mapping": "nExp"
         },
         "exposure_time": {
@@ -23,6 +24,7 @@
             "description": "Exposure Time [seconds]",
             "short_description": "Exp Time",
             "regex": "^[+]?\\d*([\\.]\\d*)?$",
+            "format": "strNumber",
             "default": 1,
             "multipleOf": 1,
             "translator_mapping": "ExpTime"
@@ -75,6 +77,7 @@
             "description": "Exposure Time for the exposure meter [seconds] ",
             "short_description": "Exposure Meter Time",
             "regex": "^[+]?\\d*([\\.]\\d*)?$",
+            "format": "strNumber",
             "default": 1,
             "multipleOf": 0.1,
             "translator_mapping": "ExpMeterExpTime"
@@ -91,6 +94,7 @@
             "description": "Threshold flux at the science detector at which to terminate the exposure [e-/nm]",
             "short_description": "Exposure Meter Th",
             "regex": "^\\d*$",
+            "format": "strNumber",
             "default": 50000,
             "translator_mapping": "ExpMeterThreshold"
         },
@@ -128,6 +132,7 @@
             "type": ["number", "string"],
             "description": "Distance to nod the telescope North before starting exposure [arcseconds]",
             "regex": "^[+-]?\\d*([\\.]\\d*)?$",
+            "format": "strNumber",
             "short_description": "Nod N",
             "default": 0.0,
             "multipleOf": 0.01,
@@ -136,6 +141,7 @@
         "nod_e": {
             "type": ["number", "string"],
             "regex": "^[+-]?\\d*([\\.]\\d*)?$",
+            "format": "strNumber",
             "description": "Distance to nod the telescope East before starting exposture [arcseconds]",
             "short_description": "Nod E",
             "default": 0.0,
