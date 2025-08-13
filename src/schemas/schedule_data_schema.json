@@ -83,8 +83,9 @@
             "type": ["integer", "string"],
             "translator_mapping": "WeatherBand",
             "description": "[bitmap] 3 bits for to bands 1, 2, and 3",
+            "enum": [1, 2, 3],
             "short_description": "Weather Band",
-            "not_editable_by_user": true
+            "not_editable_by_user": false 
         },
         "accessibility_map": {
             "type": ["number", "string"],
