@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import { ComponentRow } from '../ob_component_table';
 import { Schedule } from '../module_selector';
-import { text_change, TextChangeInput, BaseChangeInput, make_text_field, make_autocomplete_field } from '../ob_edit_util';
+import { text_change, switch_change, TextChangeInput, BaseChangeInput, make_text_field, make_autocomplete_field, make_switch_field, SwitchChangeInput } from '../ob_edit_util';
 import { ob_schemas } from '../validation_check_dialog';
 
 
@@ -47,6 +47,15 @@ export default function ScheduleForm(props: Props) {
         text_change(input)
     }
 
+    const handleSwitchChange = (key: string, event: React.SyntheticEvent<Element, Event>) => {
+        const input: SwitchChangeInput = {
+            ...baseInput,
+            key,
+            event
+        }
+        switch_change(input)
+    }
+
     const CreateTextField = (key: string, isNumber = false, width?: string) => {
         return make_text_field(key, schedule, componentName, handleTextChange, isNumber, width)
     }
@@ -59,6 +68,11 @@ export default function ScheduleForm(props: Props) {
     ) => {
         return make_autocomplete_field(key, schedule, componentName, handleTextChange, defaultValue, label, choices, disabled)
     }
+
+    const CreateSwitchField = (key: string) => {
+        return make_switch_field(key, schedule, componentName, handleSwitchChange)
+    }
+
 
     return (
         <Dialog
@@ -90,7 +104,12 @@ export default function ScheduleForm(props: Props) {
                         <Box>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateAutocompleteField('scheduling_mode', 'input scheduling mode', 'Scheduling Mode')}
-                                {CreateAutocompleteField('weather_band', '1 being clear obseriving conditions, 2 is non-ideal, 3 is just bad', 'Weather Band')}
+                                {CreateAutocompleteField('weather_band', '', 'Weather Band')}
+                            </Stack>
+                            <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
+                                {CreateSwitchField('weather_band_1')}
+                                {CreateSwitchField('weather_band_2')}
+                                {CreateSwitchField('weather_band_3')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateTextField('desired_num_visits_per_night', true)}

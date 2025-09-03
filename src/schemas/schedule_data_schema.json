@@ -82,10 +82,28 @@
         "weather_band": {
             "type": ["integer", "string"],
             "translator_mapping": "WeatherBand",
-            "description": "[bitmap] 3 bits for to bands 1, 2, and 3",
+            "description": "1 being clear obseriving conditions, 2 is non-ideal, 3 is just bad",
             "enum": [1, 2, 3],
             "short_description": "Weather Band",
             "not_editable_by_user": false 
+        },
+        "weather_band_1": {
+            "type": "boolean",
+            "description": "Is Weather Band 1 acceptable?",
+            "short_description": "Band 1",
+            "default": true
+        },
+        "weather_band_2": {
+            "type": "boolean",
+            "description": "Is Weather Band 2 acceptable?",
+            "short_description": "Band 2",
+            "default": true
+        },
+        "weather_band_3": {
+            "type": "boolean",
+            "description": "Is Weather Band 3 acceptable?",
+            "short_description": "Band 3",
+            "default": false
         },
         "accessibility_map": {
             "type": ["number", "string"],
