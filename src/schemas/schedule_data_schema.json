@@ -79,14 +79,6 @@
             "minimum": 0,
             "multipleOf": 0.1
         },
-        "weather_band": {
-            "type": ["integer", "string"],
-            "translator_mapping": "WeatherBand",
-            "description": "1 being clear obseriving conditions, 2 is non-ideal, 3 is just bad",
-            "enum": [1, 2, 3],
-            "short_description": "Weather Band",
-            "not_editable_by_user": false 
-        },
         "weather_band_1": {
             "type": "boolean",
             "description": "Is Weather Band 1 acceptable?",
@@ -131,6 +123,28 @@
         "comment": {
             "type": "string",
             "description": "Observing Notes"
+        },
+        "custom_time_constraints": {
+            "type": "array",
+            "description": "Custom Observability Time Constraints",
+            "short_description": "Custom Time Constraints",
+            "items": {
+                "description": "A single custom time constraint",
+                "short_description": "time constraint",
+                "type": "object",
+                "properties": {
+                    "start_datetime": {
+                        "type": "string",
+                        "description": "start time in YYYY-MM-DDTHH:MM:SS format (UTC)",
+                        "format": "date-time"
+                    },
+                    "end_datetime": {
+                        "type": "string",
+                        "description": "end time in YYYY-MM-DDTHH:MM:SS format (UTC)",
+                        "format": "date-time"
+                    }
+                }
+            }
         }
     },
     "required": [ 

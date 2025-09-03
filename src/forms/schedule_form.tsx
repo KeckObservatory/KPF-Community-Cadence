@@ -104,7 +104,6 @@ export default function ScheduleForm(props: Props) {
                         <Box>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateAutocompleteField('scheduling_mode', 'input scheduling mode', 'Scheduling Mode')}
-                                {CreateAutocompleteField('weather_band', '', 'Weather Band')}
                             </Stack>
                             <Stack sx={{ marginBottom: '24px' }} width="100%" direction="row" justifyContent='center' spacing={2}>
                                 {CreateSwitchField('weather_band_1')}
