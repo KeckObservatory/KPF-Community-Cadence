@@ -294,7 +294,8 @@ export const make_array_time_constraint_field = (
     }
     //@ts-ignore
     const arrayValue = component[key] ?? []
-    const tsValue = arrayValue[index][subkey] ?? {}
+    const tsObject = arrayValue[index] ?? {}
+    const tsValue = tsObject[subkey] ?? ""
     const label = input_label(subkey, componentName)
     const id = `${key}-${subkey}-${index}`
     const shrinkInputLabel = (tsValue===0 || tsValue!==null || tsValue!==undefined || tsValue!=="")? true : false 
@@ -312,10 +313,10 @@ export const make_array_time_constraint_field = (
                 }}
                 onChange={(event) => {
                     let newArray = [...arrayValue]
-                    newArray[index] = { ...tsValue, [subkey]: event.target.value }
+                    newArray[index] = { ...tsObject, [subkey]: event.target.value }
                     handleArrayChange(key, newArray)
                 }}
-                value={tsValue[subkey] ?? ""}
+                value={tsValue ?? ""}
             />
         </Tooltip>)
 }
