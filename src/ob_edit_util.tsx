@@ -294,10 +294,10 @@ export const make_array_time_constraint_field = (
     }
     //@ts-ignore
     const arrayValue = component[key] ?? []
-    const value = arrayValue[index][subkey]
+    const tsValue = arrayValue[index][subkey]
     const label = input_label(subkey, componentName)
     const id = `${key}-${subkey}-${index}`
-    const shrinkInputLabel = (value===0 || value!==null || value!==undefined || value!=="")? true : false 
+    const shrinkInputLabel = (tsValue===0 || tsValue!==null || tsValue!==undefined || tsValue!=="")? true : false 
     return (
         <Tooltip title={input_label(key, componentName, true)}>
             <TextField
@@ -312,10 +312,10 @@ export const make_array_time_constraint_field = (
                 }}
                 onChange={(event) => {
                     let newArray = [...arrayValue]
-                    newArray[index] = { ...value, [subkey]: event.target.value }
+                    newArray[index] = { ...tsValue, [subkey]: event.target.value }
                     handleArrayChange(key, newArray)
                 }}
-                value={value}
+                value={tsValue[subkey] ?? ""}
             />
         </Tooltip>)
 }
