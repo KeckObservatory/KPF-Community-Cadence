@@ -294,7 +294,7 @@ export const make_array_time_constraint_field = (
     }
     //@ts-ignore
     const arrayValue = component[key] ?? []
-    const tsValue = arrayValue[index][subkey]
+    const tsValue = arrayValue[index][subkey] ?? {}
     const label = input_label(subkey, componentName)
     const id = `${key}-${subkey}-${index}`
     const shrinkInputLabel = (tsValue===0 || tsValue!==null || tsValue!==undefined || tsValue!=="")? true : false 
