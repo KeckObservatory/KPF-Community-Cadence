@@ -168,11 +168,12 @@ export default function ScheduleForm(props: Props) {
                                 {CreateTextField('comment', false, '100%')}
                             </Stack>
 
-                            <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}></Stack>
-                            <Button variant="outlined"
-                                onClick={add_time_constraint}>
-                                Add Custom Time Constraint
-                            </Button>
+                            <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
+                                <Button variant="outlined"
+                                    onClick={add_time_constraint}>
+                                    Add Custom Time Constraint
+                                </Button>
+                            </Stack>
                             {
                                 schedule.custom_time_constraints?.map((_, index) => (
                                     <Stack key={index} sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
@@ -183,10 +184,12 @@ export default function ScheduleForm(props: Props) {
                             }
                             {
                                 (schedule.custom_time_constraints && schedule.custom_time_constraints.length > 0) &&
-                                <Button variant="outlined"
-                                    onClick={remove_time_constraint}>
-                                    Remove Last Time Constraint
-                                </Button>
+                                <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
+                                    <Button variant="outlined"
+                                        onClick={remove_time_constraint}>
+                                        Remove Last Time Constraint
+                                    </Button>
+                                </Stack>
                             }
 
                         </Box>
