@@ -104,6 +104,14 @@ export default function ScheduleForm(props: Props) {
         handleArrayChange('custom_time_constraints', newConstraints)
     }
 
+    const remove_time_constraint = () => {
+        if (schedule.custom_time_constraints && schedule.custom_time_constraints.length > 0) {
+            const newConstraints = [...schedule.custom_time_constraints]
+            newConstraints.pop()
+            handleArrayChange('custom_time_constraints', newConstraints)
+        }
+    }
+
 
     return (
         <Dialog
@@ -173,6 +181,14 @@ export default function ScheduleForm(props: Props) {
                                     </Stack>
                                 ))
                             }
+                            {
+                                (schedule.custom_time_constraints && schedule.custom_time_constraints.length > 0) &&
+                                <Button variant="outlined"
+                                    onClick={remove_time_constraint}>
+                                    Remove Last Time Constraint
+                                </Button>
+                            }
+
                         </Box>
                     </Paper>
                 </Stack>
