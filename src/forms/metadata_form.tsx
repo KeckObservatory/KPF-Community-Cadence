@@ -10,7 +10,7 @@ import {
 import { MuiChipsInput } from 'mui-chips-input';
 import { ComponentRow } from '../ob_component_table';
 import { Metadata } from '../module_selector';
-import { input_label, array_change, BaseChangeInput, ArrayChangeInput } from '../ob_edit_util';
+import { input_label, tag_array_change, BaseChangeInput, ArrayChangeInput } from '../ob_edit_util';
 
 interface Props {
     open: boolean
@@ -34,7 +34,7 @@ export default function MetadataForm(props: Props) {
             key,
             value
         }
-        array_change(input)
+        tag_array_change(input)
     }
 
     return (

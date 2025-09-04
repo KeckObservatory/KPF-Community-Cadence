@@ -1,6 +1,6 @@
 import React from 'react';
 import { save_obs } from './api/api_root';
-import { OB, OBComponent, Schedule } from './module_selector';
+import { OB, OBComponent, Schedule, TimeConstraint } from './module_selector';
 import { ComponentRow, OBComponentName } from './ob_component_table';
 import { ob_schemas } from './validation_check_dialog';
 import Tooltip from '@mui/material/Tooltip';
@@ -248,7 +248,7 @@ export interface TextChangeInput extends BaseChangeInput {
 
 export interface ArrayChangeInput extends BaseChangeInput {
     key: string,
-    value: string[]
+    value: string[] | TimeConstraint[]
 }
 
 export interface SwitchChangeInput extends BaseChangeInput {
@@ -262,9 +262,14 @@ export const text_change = (input: TextChangeInput) => {
     input.saveFunction(newRow)
 }
 
-export const array_change = (input: ArrayChangeInput) => {
-    const formattedValue = format_tags(input.value)
+export const tag_array_change = (input: ArrayChangeInput) => {
+    const formattedValue = format_tags(input.value as string[])
     const newRow = { ...input.row, [input.key]: formattedValue, state: 'ROW_EDITED' }
+    input.saveFunction(newRow)
+}
+
+export const time_constraint_array_change = (input: ArrayChangeInput) => {
+    const newRow = { ...input.row, [input.key]: input.value, state: 'ROW_EDITED' }
     input.saveFunction(newRow)
 }
 
@@ -272,6 +277,47 @@ export const switch_change = (input: SwitchChangeInput) => {
     const value = (input.event.target as HTMLInputElement).checked
     const newRow = { ...input.row, [input.key]: value, state: 'ROW_EDITED' }
     input.saveFunction(newRow)
+}
+
+export const make_array_time_constraint_field = (
+    key: string,
+    subkey: string,
+    component: OBComponent,
+    componentName: OBComponentName,
+    handleArrayChange: Function,
+    index: number
+) => {
+    const schemaProperties = ob_schemas[componentName].properties
+    if (!Object.keys(schemaProperties).includes(key)) {
+        console.warn('make_array_time_constraint_field', `key ${key} not in component ${componentName}`)
+        return
+    }
+    //@ts-ignore
+    const arrayValue = component[key] ?? []
+    const value = arrayValue[index][subkey]
+    const label = input_label(subkey, componentName)
+    const id = `${key}-${subkey}-${index}`
+    const shrinkInputLabel = (value===0 || value!==null || value!==undefined || value!=="")? true : false 
+    return (
+        <Tooltip title={input_label(key, componentName, true)}>
+            <TextField
+                sx={{ width: 200 }}
+                label={label}
+                id={id}
+                placeholder={"YYYY-MM-DDTHH:MM"}
+                slotProps={{
+                    inputLabel: {
+                        shrink: shrinkInputLabel,
+                    }
+                }}
+                onChange={(event) => {
+                    let newArray = [...arrayValue]
+                    newArray[index] = { ...value, [subkey]: event.target.value }
+                    handleArrayChange(key, newArray)
+                }}
+                value={value}
+            />
+        </Tooltip>)
 }
 
 export const make_text_field = (

@@ -5,10 +5,15 @@ import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper'
 import {
     Box,
+    Button,
 } from '@mui/material'
 import { ComponentRow } from '../ob_component_table';
-import { Schedule } from '../module_selector';
-import { text_change, switch_change, TextChangeInput, BaseChangeInput, make_text_field, make_autocomplete_field, make_switch_field, SwitchChangeInput } from '../ob_edit_util';
+import { Schedule, TimeConstraint } from '../module_selector';
+import {
+    text_change, switch_change, TextChangeInput, BaseChangeInput, make_text_field, make_autocomplete_field,
+    make_switch_field, SwitchChangeInput, make_array_time_constraint_field,
+    time_constraint_array_change, ArrayChangeInput
+} from '../ob_edit_util';
 import { ob_schemas } from '../validation_check_dialog';
 
 
@@ -47,6 +52,20 @@ export default function ScheduleForm(props: Props) {
         text_change(input)
     }
 
+    const handleArrayChange = (arrayKey: string, arrayValue: TimeConstraint[]) => {
+        if (Object.keys(schemaProperties).includes(arrayKey) === false) {
+            console.error(schemaProperties)
+            console.error(`key ${arrayKey} not found in schema ${schemaProperties}`)
+            return
+        }
+        const input: ArrayChangeInput = {
+            ...baseInput,
+            key: arrayKey,
+            value: arrayValue
+        }
+        time_constraint_array_change(input)
+    }
+
     const handleSwitchChange = (key: string, event: React.SyntheticEvent<Element, Event>) => {
         const input: SwitchChangeInput = {
             ...baseInput,
@@ -55,6 +74,12 @@ export default function ScheduleForm(props: Props) {
         }
         switch_change(input)
     }
+
+
+    const CreateArrayTimeConstraintField = (key: string, subkey: string, index: number) => {
+        return make_array_time_constraint_field(key, subkey, schedule, componentName, handleArrayChange, index)
+    }
+
 
     const CreateTextField = (key: string, isNumber = false, width?: string) => {
         return make_text_field(key, schedule, componentName, handleTextChange, isNumber, width)
@@ -71,6 +96,12 @@ export default function ScheduleForm(props: Props) {
 
     const CreateSwitchField = (key: string) => {
         return make_switch_field(key, schedule, componentName, handleSwitchChange)
+    }
+
+    const add_time_constraint = () => {
+        const newConstraints = schedule.custom_time_constraints ? [...schedule.custom_time_constraints] : []
+        newConstraints.push({})
+        handleArrayChange('custom_time_constraints', newConstraints)
     }
 
 
@@ -128,6 +159,20 @@ export default function ScheduleForm(props: Props) {
                             <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
                                 {CreateTextField('comment', false, '100%')}
                             </Stack>
+
+                            <Stack sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}></Stack>
+                            <Button variant="outlined"
+                                onClick={add_time_constraint}>
+                                Add Custom Time Constraint
+                            </Button>
+                            {
+                                schedule.custom_time_constraints?.map((_, index) => (
+                                    <Stack key={index} sx={{ marginBottom: '24px', }} width="100%" direction="row" alignItems='center' justifyContent='center' spacing={2}>
+                                        {CreateArrayTimeConstraintField('custom_time_constraints', 'start_datetime', index)}
+                                        {CreateArrayTimeConstraintField('custom_time_constraints', 'end_datetime', index)}
+                                    </Stack>
+                                ))
+                            }
                         </Box>
                     </Paper>
                 </Stack>

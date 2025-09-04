@@ -26,6 +26,11 @@ export interface OBComponent extends Schedule, Calibration, Observation, OBTarge
 
 }
 
+export interface TimeConstraint {
+  start_datetime?: string,
+  end_datetime?: string,
+}
+
 export interface Schedule {
   scheduling_mode?: string,
   desired_num_visits_per_night?: Integer,
@@ -39,6 +44,7 @@ export interface Schedule {
   weather_band_1?: boolean,
   weather_band_2?: boolean,
   weather_band_3?: boolean,
+  custom_time_constraints?: TimeConstraint[]
   accessibility_map?: Integer,
   minimum_elevation?: number,
   minimum_moon_separation?: number,
