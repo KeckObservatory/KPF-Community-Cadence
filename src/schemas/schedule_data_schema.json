@@ -126,7 +126,7 @@
         },
         "custom_time_constraints": {
             "type": "array",
-            "description": "Custom Observability Time Constraints",
+            "description": "Enter the timestamp to [START / END] a custom window of time in which your target can be scheduled. Note that timestamps must be UT and follow the format in the textbox. All starting times must have a corresponding end time and vice versa. We do not guarantee that observations will be made within this window, but we do guarantee observations will not be made outside the window.",
             "short_description": "Custom Time Constraints",
             "items": {
                 "description": "A single custom time constraint",
