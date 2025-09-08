@@ -135,13 +135,11 @@
                 "properties": {
                     "start_datetime": {
                         "type": "string",
-                        "description": "start time in YYYY-MM-DDTHH:MM:SS format (UTC)",
-                        "format": "date-time"
+                        "description": "start time in YYYY-MM-DDTHH:MM format (UTC)"
                     },
                     "end_datetime": {
                         "type": "string",
-                        "description": "end time in YYYY-MM-DDTHH:MM:SS format (UTC)",
-                        "format": "date-time"
+                        "description": "end time in YYYY-MM-DDTHH:MM format (UTC)"
                     }
                 }
             }
