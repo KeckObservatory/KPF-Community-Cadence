@@ -45,7 +45,6 @@ export interface Schedule {
   weather_band_2?: boolean,
   weather_band_3?: boolean,
   custom_time_constraints?: TimeConstraint[]
-  accessibility_map?: Integer,
   minimum_elevation?: number,
   minimum_moon_separation?: number,
 }

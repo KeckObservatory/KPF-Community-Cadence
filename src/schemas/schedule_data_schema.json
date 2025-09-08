@@ -97,14 +97,6 @@
             "short_description": "Band 3",
             "default": false
         },
-        "accessibility_map": {
-            "type": ["number", "string"],
-            "translator_mapping": "AccessibilityMap",
-            "description": "[bitmap] If custom map is input, this is the AND with the default map based on inputs below",
-            "short_description": "Access Map",
-            "show": true,
-            "not_editable_by_user": true
-        },
         "total_observations_requested": {
             "type": ["integer", "string"],
             "description": "Total Observations Requested",
