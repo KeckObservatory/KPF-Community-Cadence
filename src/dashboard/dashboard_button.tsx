@@ -254,12 +254,8 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
 
     const handleDateChange = (newDate: Dayjs | null) => {
         if (!newDate) return
-
         const newHiDate = hidate(newDate.toDate(), TIMEZONE)
-        if (availableDates.includes(newHiDate)) {
-            console.log('setting date', newHiDate, 'availableDates', availableDates)
-            setObsdate(newHiDate)
-        }
+        setObsdate(newHiDate)
     }
 
     const dialogTitle = (
