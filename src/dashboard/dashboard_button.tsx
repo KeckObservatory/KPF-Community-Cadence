@@ -6,11 +6,14 @@ import { useCommCadContext } from '../App';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField } from '@mui/material';
 import { DialogComponent } from '../dialog_component';
 import { OB } from '../module_selector';
-import { SEMESTER_RANGES, TIMEZONE } from './constants';
+import { SEMESTER_RANGES, STEP_SIZE, TIMEZONE } from './constants';
 import dayjs, { Dayjs, ManipulateType } from 'dayjs';
 import NightPicker from './night_picker';
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import { DomeChart, DomeTarget } from './dome_chart';
+import TimeSlider from './time_slider';
+import { get_day_times } from './sky_view_util';
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -49,8 +52,9 @@ const get_semester_dates = (semester: string) => {
     return ranges
 }
 
-export type DashboardChart = "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Night Plan"
+export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Night Plan"
 const visibility_chart_options: DashboardChart[] = [
+    "Dome Plot",
     "Cadence Plot",
     "Cumulative Observation Function",
     "Semester Schedule",
@@ -148,13 +152,16 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
 
     const today = hidate(new Date(), TIMEZONE)
     const [obsdate, setObsdate] = React.useState<Dayjs>(today)
+    const [time, setTime] = useState<Date>(new Date())
+    const [times, setTimes] = useState<Date[]>([])
+    const [domeTargets, setDomeTargets] = useState<DomeTarget[]>([])
 
     // target must have ra dec and be defined
     const { ob, setSelectedOB, selectedOBs, open } = props
 
     const regexp = new RegExp("^[12][0-9]{3}[AB]$")
     useEffect(() => {
-        if (!open) return 
+        if (!open) return
         const semester = context.semid.split('_')[0]
         const validSemester = regexp.test(semester)
         if (!validSemester) {
@@ -167,6 +174,35 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
         setObsdate(newDate)
         //TODO: get data for the semid/ob
     }, [ob, context.semid])
+
+    useEffect(() => {
+
+        const get_dome_data = async () => {
+            const URL_BASE = 'http://vm-kpfcc:50002/data'
+            const semester = context.semid.split('_')[0]
+            const obsdatestr = obsdate.format('YYYY-MM-DD')
+            const band = 'band1'
+            const url = `${URL_BASE}/${semester}/${obsdatestr}/${band}/nightplan`
+            console.log('fetching', url)
+            const resp = await fetch(url)
+            if (resp.status !== 200) {
+                console.error('Error fetching dome data', resp)
+                return
+            }
+            const data = await resp.json()
+            const dome_data = data.slew_animation_data
+            const nightstart = new Date(dome_data.nightstarts)
+            const nightend = new Date(dome_data.nightends)
+            const mytimes = get_day_times(nightstart, nightend, STEP_SIZE)
+            console.log('dome data', data)
+            setTimes(mytimes)
+            setTime(mytimes.at(0) as Date)
+            setDomeTargets(dome_data.targets)
+        }
+        if (chartType !== "Dome Plot") {
+            get_dome_data()
+        }
+    }, [chartType])
 
     const onOBNameSelect = (name: string) => {
         console.log('name', name)
@@ -193,6 +229,34 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     const dialogTitle = (
         <span>OB Cadence Chart</span>
     )
+
+
+    let chart = <p>Graph goes here:</p>
+    switch (chartType) {
+        case "Dome Plot":
+            chart = <DomeChart
+                targets={domeTargets}
+                obsdate={obsdate.format('YYYY-MM-DD')}
+                showCurrLoc={true}
+                time={time}
+                times={times}
+            />
+            break
+        case "Cadence Plot":
+            // chart = <CadencePlot ob={ob} obsdate={obsdate.format('YYYY-MM-DD')} />
+            break
+        case "Cumulative Observation Function":
+            // chart = <CumulativeObservationFunction ob={ob} />
+            break
+        case "Semester Schedule":
+            // chart = <SemesterSchedule ob={ob} />
+            break
+        case "Night Plan":
+            // chart = <NightPlan ob={ob} obsdate={obsdate.format('YYYY-MM-DD')} />
+            break
+        default:
+            chart = <p>Graph goes here:</p>
+    }
 
 
     const dialogContent = (
@@ -226,6 +290,13 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
                 )}
                 <ChartSelectMenu chartType={chartType} setChartType={setChartType} />
             </Stack>
+            {chartType === "Dome Plot" && (
+                <TimeSlider
+                    times={times}
+                    time={time}
+                    setTime={setTime}
+                />
+            )}
             <p>Graph goes here:</p>
         </Stack>
     )

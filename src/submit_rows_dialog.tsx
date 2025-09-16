@@ -58,7 +58,6 @@ function SubmitOBs(props: { obs: OB[] }) {
         }
 
         handleGetOBs(context.semester, context.semid)
-        // window.location.reload() //TODO: remove this big hammer.
 
     }
 
