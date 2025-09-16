@@ -103,6 +103,7 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
 
     //target trajectory traces
     let traces: Partial<Plotly.Data>[] = []
+    console.log('making traces for targetView', targetView)
     targetView.forEach((tgtv: TargetView, idx: number) => {
         let [rr, tt] = [[] as number[], [] as number[]]
         const texts: string[] = []
@@ -148,7 +149,6 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
     })
 
     if (showCurrLoc) {
-
         //target current location traces
         targetView.forEach((tgtv: TargetView, idx: number) => { //add current location trace
             let [rr, tt] = [[] as number[], [] as number[]]

@@ -188,6 +188,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             const tvis = { ...tgt, ra_deg, dec_deg, date: dte, dome: DOME, visibility, visibilitySum } as TargetView
             return tvis
         })
+        console.log(`newTargetView`, newTargetView)
         setTargetView(newTargetView as TargetView[])
     }, [times, obsdate, domeTargets])
 
@@ -323,7 +324,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
                 <ChartSelectMenu chartType={chartType} setChartType={setChartType} />
             </Stack>
             {chartType === "Dome Plot" && (
-                <Stack direction="column" sx={{paddingBottom: '50px'}} spacing={3}>
+                <Stack direction="column" sx={{ paddingBottom: '50px' }} spacing={3}>
                     <TimeSlider
                         times={times}
                         time={time}
