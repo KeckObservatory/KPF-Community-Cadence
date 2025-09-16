@@ -189,10 +189,10 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             return tvis
         })
         setTargetView(newTargetView as TargetView[])
-    }, [times, obsdate])
-
+    }, [times, obsdate, domeTargets])
 
     const regexp = new RegExp("^[12][0-9]{3}[AB]$")
+
     useEffect(() => {
         if (!open) return
         const semester = context.semid.split('_')[0]
@@ -236,7 +236,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
         if (chartType !== "Dome Plot") {
             get_dome_data()
         }
-    }, [chartType])
+    }, [chartType, obsdate, context.semid])
 
     const onOBNameSelect = (name: string) => {
         console.log('name', name)
@@ -323,7 +323,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
                 <ChartSelectMenu chartType={chartType} setChartType={setChartType} />
             </Stack>
             {chartType === "Dome Plot" && (
-                <Stack direction="column" spacing={3}>
+                <Stack direction="column" sx={{paddingBottom: '50px'}} spacing={3}>
                     <TimeSlider
                         times={times}
                         time={time}
