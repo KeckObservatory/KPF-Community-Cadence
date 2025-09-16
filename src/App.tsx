@@ -152,7 +152,8 @@ function App() {
       semidResp.isAdmin === 'true' && setIsAdmin(true)
       // if admin, get all OBs for the semester, otherwise initialize with semid
       semidResp.isAdmin ? (
-        handleGetOBs(initSemester, undefined)
+        //handleGetOBs(initSemester, undefined) //takes too long to load
+        handleGetOBs(undefined, semid)
       ) : (
         handleGetOBs(undefined, semid)
       )
