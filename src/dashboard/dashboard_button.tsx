@@ -14,6 +14,7 @@ import timezone from 'dayjs/plugin/timezone'
 import { DomeChart, DomeTarget } from './dome_chart';
 import TimeSlider from './time_slider';
 import { get_day_times } from './sky_view_util';
+import { mockedData } from './mock_dome_data';
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -178,23 +179,24 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     useEffect(() => {
 
         const get_dome_data = async () => {
-            const URL_BASE = 'http://vm-kpfcc:50002/data'
-            const semester = context.semid.split('_')[0]
-            const obsdatestr = obsdate.format('YYYY-MM-DD')
-            const band = 'band1'
-            const url = `${URL_BASE}/${semester}/${obsdatestr}/${band}/nightplan`
-            console.log('fetching', url)
-            const resp = await fetch(url)
-            if (resp.status !== 200) {
-                console.error('Error fetching dome data', resp)
-                return
-            }
-            const data = await resp.json()
-            const dome_data = data.slew_animation_data
-            const nightstart = new Date(dome_data.nightstarts)
+            // const URL_BASE = 'http://vm-kpfcc:50002/data'
+            // const semester = context.semid.split('_')[0]
+            // const obsdatestr = obsdate.format('YYYY-MM-DD')
+            // const band = 'band1'
+            // const url = `${URL_BASE}/${semester}/${obsdatestr}/${band}/nightplan`
+            // console.log('fetching', url)
+            // const resp = await fetch(url)
+            // if (resp.status !== 200) {
+            //     console.error('Error fetching dome data', resp)
+            //     return
+            // }
+            // const data = await resp.json()
+            // const dome_data = data.slew_animation_data
+            const dome_data = mockedData.slew_animation_data
+            const nightstart = new Date(dome_data.nightstart)
             const nightend = new Date(dome_data.nightends)
             const mytimes = get_day_times(nightstart, nightend, STEP_SIZE)
-            console.log('dome data', data)
+            console.log('dome data', dome_data)
             setTimes(mytimes)
             setTime(mytimes.at(0) as Date)
             setDomeTargets(dome_data.targets)

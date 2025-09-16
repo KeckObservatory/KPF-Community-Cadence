@@ -26,7 +26,7 @@ export interface DomeTarget {
     orderInNight: number[],
     priority: number,
     shots: number,
-    target_name: string,
+    human_starname: string,
     te: number,
     tend: number[],
     tl: number,
@@ -143,7 +143,7 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
             type: 'scatterpolar',
             mode: 'lines+markers',
             namelength: -1,
-            name: tgtv.target_name
+            name: tgtv.human_starname
         }
         traces.push(trace as Plotly.Data)
     })
