@@ -297,7 +297,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
                     setTime={setTime}
                 />
             )}
-            <p>Graph goes here:</p>
+            {chart}
         </Stack>
     )
 
