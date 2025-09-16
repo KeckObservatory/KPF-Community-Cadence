@@ -168,7 +168,6 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     const lngLatEl = telLatLngEl.keck
 
     useEffect(() => {
-        if (!domeTargets.length) return
         const dte = dayjs(obsdate).toDate()
         const newTargetView = domeTargets.map((tgt: DomeTarget) => {
             const ra_deg = tgt.ra
@@ -190,7 +189,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             return tvis
         })
         setTargetView(newTargetView as TargetView[])
-    }, [domeTargets, times, obsdate])
+    }, [times, obsdate])
 
 
     const regexp = new RegExp("^[12][0-9]{3}[AB]$")
