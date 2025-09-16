@@ -188,7 +188,9 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
             const exposure_stopped = time.getTime() > date_end.getTime()
             const during_exposure = exposure_started && !exposure_stopped
 
-            const outlineColor = during_exposure ? 'gold' : 'black'
+            const outlineColor = util.colors[idx % util.colors.length]
+            const marker_symbol = during_exposure ? 'star' : 'circle'
+            const marker_size = during_exposure ? 16 : 12
 
             const trace = {
                 r: rr,
@@ -199,15 +201,16 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
                 showlegend: false,
                 hovertemplate: '<b>%{text}</b>', //disable to show xyz coords
                 color: util.colors[idx % util.colors.length],
+                marker_symbol,
                 textposition: 'top left',
                 type: 'scatterpolar',
                 mode: 'markers',
                 marker: {
-                    size: 12,
-                    color: util.colors[idx % util.colors.length],
+                    size: marker_size,
+                    color: outlineColor,
                     opacity: exposure_stopped ? 0.7 : 1,
                     line: {
-                        color: outlineColor,
+                        color: 'black',
                         width: 2
                     }
                 },
