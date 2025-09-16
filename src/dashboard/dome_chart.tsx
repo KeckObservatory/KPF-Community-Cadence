@@ -244,7 +244,13 @@ export const DomeChart = (props: DomeChartProps) => {
         // const visibility = util.get_target_visibility(tgt, times, lngLatEl) as VizRow[]
         const visibility = times.map((date) => {
             const [az, alt] = util.ra_dec_to_az_alt(ra_deg, dec_deg, date, lngLatEl)
-            return alt_az_observable(az, alt, KG)
+            const viz: VizRow = {
+                az: az,
+                alt: alt,
+                datetime: date,
+                ...alt_az_observable(az, alt, KG)
+            }
+            return viz 
         })
         const visibilitySum = visibility.reduce((acc, viz) => acc + (viz.observable ? STEP_SIZE : 0), 0)
         return { ...tgt, ra_deg, dec_deg, date: dte, dome: DOME, visibility, visibilitySum } as TargetView
