@@ -201,12 +201,12 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
                 showlegend: false,
                 hovertemplate: '<b>%{text}</b>', //disable to show xyz coords
                 color: util.colors[idx % util.colors.length],
-                marker_symbol,
                 textposition: 'top left',
                 type: 'scatterpolar',
                 mode: 'markers',
                 marker: {
                     size: marker_size,
+                    symbol: marker_symbol,
                     color: outlineColor,
                     opacity: exposure_stopped ? 0.7 : 1,
                     line: {
