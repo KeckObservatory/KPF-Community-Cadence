@@ -6,7 +6,7 @@ import { alt_az_observable, reason_to_color_mapping } from "./target_viz_chart.t
 import { tel_geometry, STEP_SIZE, telLatLngEl, time_format } from "./constants.tsx"
 
 
-type BlockReason = 'Deck Blocking' | 'Below Horizon' | 'Above Tracking Limits'
+export type BlockReason = 'Deck Blocking' | 'Below Horizon' | 'Above Tracking Limits'
 
 export interface VizRow {
     datetime: Date
