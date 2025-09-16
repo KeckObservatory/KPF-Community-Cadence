@@ -257,6 +257,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
 
         const newHiDate = hidate(newDate.toDate(), TIMEZONE)
         if (availableDates.includes(newHiDate)) {
+            console.log('setting date', newHiDate, 'availableDates', availableDates)
             setObsdate(newHiDate)
         }
     }
