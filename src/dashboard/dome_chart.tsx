@@ -2,8 +2,8 @@ import dayjs from "dayjs"
 import * as util from './sky_view_util.tsx'
 import Plot from "react-plotly.js"
 import { LngLatEl, GeoModel } from "./constants.tsx"
-import { alt_az_observable, reason_to_color_mapping } from "./target_viz_chart.tsx"
-import { tel_geometry, STEP_SIZE, telLatLngEl, time_format } from "./constants.tsx"
+import { reason_to_color_mapping } from "./target_viz_chart.tsx"
+import { tel_geometry, telLatLngEl, time_format } from "./constants.tsx"
 
 
 export type BlockReason = 'Deck Blocking' | 'Below Horizon' | 'Above Tracking Limits'
@@ -34,7 +34,7 @@ export interface DomeTarget {
 }
 
 export type Dome = "K1" | "K2"
-const DOME = 'K1'
+export const DOME = 'K1'
 
 const height = 500
 const width = 500
@@ -53,10 +53,9 @@ export interface TargetView extends DomeTarget {
 const traceRadiusLimit = 90 - 2 //ignore points greater than the dome radius
 
 interface DomeChartProps {
-    targets: DomeTarget[]
-    obsdate: string
+    // targets: DomeTarget[]
+    targetView: TargetView[]
     showCurrLoc: boolean
-    times: Date[]
     time: Date 
 }
 
@@ -231,30 +230,9 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
 }
 
 export const DomeChart = (props: DomeChartProps) => {
-    const { targets, showCurrLoc, times, obsdate, time } = props
+    const { targetView, showCurrLoc, time } = props
     const KG = tel_geometry.keck[DOME]
     const lngLatEl = telLatLngEl.keck
-
-    const dte = dayjs(obsdate).toDate()
-
-
-    const targetView = targets.map((tgt: DomeTarget) => {
-        const ra_deg = tgt.ra
-        const dec_deg = tgt.dec
-        // const visibility = util.get_target_visibility(tgt, times, lngLatEl) as VizRow[]
-        const visibility = times.map((date) => {
-            const [az, alt] = util.ra_dec_to_az_alt(ra_deg, dec_deg, date, lngLatEl)
-            const viz: VizRow = {
-                az: az,
-                alt: alt,
-                datetime: date,
-                ...alt_az_observable(az, alt, KG)
-            }
-            return viz 
-        })
-        const visibilitySum = visibility.reduce((acc, viz) => acc + (viz.observable ? STEP_SIZE : 0), 0)
-        return { ...tgt, ra_deg, dec_deg, date: dte, dome: DOME, visibility, visibilitySum } as TargetView
-    })
 
 
     const traces = make_2d_traces(targetView,

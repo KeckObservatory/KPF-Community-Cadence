@@ -6,15 +6,18 @@ import { useCommCadContext } from '../App';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField } from '@mui/material';
 import { DialogComponent } from '../dialog_component';
 import { OB } from '../module_selector';
-import { SEMESTER_RANGES, STEP_SIZE, TIMEZONE } from './constants';
+import { SEMESTER_RANGES, telLatLngEl, TIMEZONE } from './constants';
 import dayjs, { Dayjs, ManipulateType } from 'dayjs';
 import NightPicker from './night_picker';
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import { DomeChart, DomeTarget } from './dome_chart';
+import { DOME, DomeChart, DomeTarget, TargetView, VizRow } from './dome_chart';
 import TimeSlider from './time_slider';
 import { get_day_times } from './sky_view_util';
 import { mockedData } from './mock_dome_data';
+import { alt_az_observable } from './target_viz_chart';
+import { tel_geometry, STEP_SIZE } from "./constants.tsx"
+import * as util from './sky_view_util.tsx'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -160,6 +163,36 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     // target must have ra dec and be defined
     const { ob, setSelectedOB, selectedOBs, open } = props
 
+    const [targetView, setTargetView] = useState<TargetView[]>([])
+
+    const lngLatEl = telLatLngEl.keck
+
+    useEffect(() => {
+        if (!domeTargets.length) return
+        const dte = dayjs(obsdate).toDate()
+        const newTargetView = domeTargets.map((tgt: DomeTarget) => {
+            const ra_deg = tgt.ra
+            const dec_deg = tgt.dec
+            const KG = tel_geometry.keck[DOME]
+            // const visibility = util.get_target_visibility(tgt, times, lngLatEl) as VizRow[]
+            const visibility = times.map((date) => {
+                const [az, alt] = util.ra_dec_to_az_alt(ra_deg, dec_deg, date, lngLatEl)
+                const viz: VizRow = {
+                    az: az,
+                    alt: alt,
+                    datetime: date,
+                    ...alt_az_observable(az, alt, KG)
+                }
+                return viz
+            })
+            const visibilitySum = visibility.reduce((acc, viz) => acc + (viz.observable ? STEP_SIZE : 0), 0)
+            const tvis = { ...tgt, ra_deg, dec_deg, date: dte, dome: DOME, visibility, visibilitySum } as TargetView
+            return tvis
+        })
+        setTargetView(newTargetView as TargetView[])
+    }, [domeTargets, times, obsdate])
+
+
     const regexp = new RegExp("^[12][0-9]{3}[AB]$")
     useEffect(() => {
         if (!open) return
@@ -237,11 +270,9 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     switch (chartType) {
         case "Dome Plot":
             chart = <DomeChart
-                targets={domeTargets}
-                obsdate={obsdate.format('YYYY-MM-DD')}
+                targetView={targetView}
                 showCurrLoc={true}
                 time={time}
-                times={times}
             />
             break
         case "Cadence Plot":
@@ -271,7 +302,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             direction='column'>
             <Stack direction='row' spacing={1}>
                 <SemidSelect />
-                {['Cadence Plot', 'Night Plan'].includes(chartType) && (
+                {['Cadence Plot', 'Night Plan', 'Dome Plot'].includes(chartType) && (
                     <NightPicker date={obsdate} minDate={availableDates.at(0)}
                         maxDate={availableDates.at(-1)}
                         handleDateChange={handleDateChange} />
@@ -293,11 +324,13 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
                 <ChartSelectMenu chartType={chartType} setChartType={setChartType} />
             </Stack>
             {chartType === "Dome Plot" && (
-                <TimeSlider
-                    times={times}
-                    time={time}
-                    setTime={setTime}
-                />
+                <Stack direction="column" spacing={3}>
+                    <TimeSlider
+                        times={times}
+                        time={time}
+                        setTime={setTime}
+                    />
+                </Stack>
             )}
             {chart}
         </Stack>
