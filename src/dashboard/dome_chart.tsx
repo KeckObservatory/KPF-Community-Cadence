@@ -30,6 +30,8 @@ export interface DomeTarget {
     te: number,
     tend: number[],
     tl: number,
+    time_started: string, //ISO string
+    time_ended: string, //ISO string
     visits: number
 }
 
@@ -113,6 +115,8 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
             txt += `Az: ${viz.az.toFixed(2)}<br>`
             txt += `El: ${viz.alt.toFixed(2)}<br>`
             txt += `HT: ${dayjs(viz.datetime).format(time_format)}<br>`
+            txt += `UTC: ${dayjs(viz.datetime).utc().format(time_format)}<br>`
+            txt += `Airmass: ${util.air_mass(viz.alt, lngLatEl.el).toFixed(2)}<br>`
             txt += `Visible for: ${tgtv.visibilitySum.toFixed(2)} hours<br>`
             txt += viz.observable ? '' : `<br>Not Observable: ${viz.reasons.join(', ')}`
             const radius = 90 - viz.alt
@@ -124,7 +128,15 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
             return txt
         })
 
-        const trace = {
+        const date_start = new Date(tgtv.time_started)
+        const date_end = new Date(tgtv.time_ended)
+        const exposure_started = time.getTime() >= date_start.getTime()
+        const exposure_stopped = time.getTime() > date_end.getTime()
+        const during_exposure = exposure_started && !exposure_stopped
+
+        const trace = { //trajectory trace
+            opacity: during_exposure ? 1 : 0.7,
+            // opacity: 0.7,
             r: rr,
             theta: tt,
             text: texts,
@@ -166,12 +178,22 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
                 txt += `Airmass: ${util.air_mass(azEl[0][1], lngLatEl.el).toFixed(2)}<br>`
                 // txt += `Airmass: ${util.air_mass(azEl[0][1]).toFixed(2)}<br>`
                 txt += `HT: ${dayjs(time).format(time_format)}`
+                txt += `UTC: ${dayjs(azEl[0][1]).utc().format(time_format)}<br>`
                 texts.push(txt)
             }
+
+            const date_start = new Date(tgtv.time_started)
+            const date_end = new Date(tgtv.time_ended)
+            const exposure_started = time.getTime() >= date_start.getTime()
+            const exposure_stopped = time.getTime() > date_end.getTime()
+            const during_exposure = exposure_started && !exposure_stopped
+
+            const outlineColor = during_exposure ? 'gold' : 'black'
 
             const trace = {
                 r: rr,
                 theta: tt,
+                opacity: exposure_stopped ? 0.7 : 1,
                 text: texts,
                 hovorinfo: 'text',
                 showlegend: false,
@@ -183,8 +205,9 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
                 marker: {
                     size: 12,
                     color: util.colors[idx % util.colors.length],
+                    opacity: exposure_stopped ? 0.7 : 1,
                     line: {
-                        color: 'black',
+                        color: outlineColor,
                         width: 2
                     }
                 },
