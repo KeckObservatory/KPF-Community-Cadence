@@ -223,7 +223,7 @@ export const get_curr_loc_trace = (targetView: TargetView[],
             const airmass = air_mass(azEl[1], lngLatEl.el)
             maxAirmass = Math.max(maxAirmass, airmass)
             minAirmass = Math.min(minAirmass, airmass)
-            let text = `<b>${tgtv.target_name}</b><br>` 
+            let text = `<b>${tgtv.human_starname}</b><br>` 
             text += `Az: ${azEl[0].toFixed(2)}<br>`
             text += `El: ${azEl[1].toFixed(2)}<br>`
             text += `HT: ${currTime.format(date_time_format)}`
@@ -246,7 +246,7 @@ export const get_curr_loc_trace = (targetView: TargetView[],
                 textposition: 'top left',
                 type: 'scatter',
                 mode: 'markers',
-                name: tgtv.target_name
+                name: tgtv.human_starname
             }
             return trace
         })
