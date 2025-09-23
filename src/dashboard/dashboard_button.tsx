@@ -19,6 +19,7 @@ import { alt_az_observable } from './target_viz_chart';
 import { tel_geometry, STEP_SIZE } from "./constants.tsx"
 import * as util from './sky_view_util.tsx'
 import { COFChart, COFChartProps } from './cof_chart.tsx';
+import { LadderChart, LadderChartProps } from './ladder_chart.tsx';
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -57,13 +58,13 @@ const get_semester_dates = (semester: string) => {
     return ranges
 }
 
-export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Night Plan" | "Ladder Plot"
+export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Ladder Plot"
 const visibility_chart_options: DashboardChart[] = [
     "Dome Plot",
     "Cadence Plot",
     "Cumulative Observation Function",
     "Semester Schedule",
-    "Night Plan",
+    "Ladder Plot"
 ]
 
 interface ChartSelectProps {
@@ -152,7 +153,7 @@ export const hidate = (date: Date, timezone: string) => {
 
 export const DashboardDialog = (props: DashboardDialogProps) => {
     const context = useCommCadContext()
-    const [chartType, setChartType] = useState<DashboardChart>("Cadence Plot")
+    const [chartType, setChartType] = useState<DashboardChart>("Dome Plot")
     const [availableDates, setAvailableDates] = useState<Dayjs[]>([])
 
     const today = hidate(new Date(), TIMEZONE)
@@ -161,6 +162,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     const [times, setTimes] = useState<Date[]>([])
     const [domeTargets, setDomeTargets] = useState<DomeTarget[]>([])
     const [cofData, setCofData] = useState<COFChartProps | null>(null)
+    const [ladderData, setLadderData] = useState<LadderChartProps | null>(null)
 
     // target must have ra dec and be defined
     const { ob, setSelectedOB, selectedOBs, open } = props
@@ -213,7 +215,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
 
     useEffect(() => {
 
-        const get_dome_data = async () => {
+        const get_dome_and_ladder_data = async () => {
             // const URL_BASE = 'http://vm-kpfcc:50002/data'
             // const semester = context.semid.split('_')[0]
             // const obsdatestr = obsdate.format('YYYY-MM-DD')
@@ -228,6 +230,8 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             // const data = await resp.json()
             // const dome_data = data.slew_animation_data
             const dome_data = mockedData.slew_animation_data
+            const myladderdata = { ladder_data: mockedData.ladder_data } as LadderChartProps
+            setLadderData(myladderdata)
             const nightstart = new Date(dome_data.nightstart)
             const nightend = new Date(dome_data.nightends)
             const mytimes = get_day_times(nightstart, nightend, STEP_SIZE)
@@ -244,8 +248,12 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
         }
 
         if (chartType !== "Dome Plot") {
-            get_dome_data()
+            get_dome_and_ladder_data()
         }
+        if (chartType !== "Ladder Plot") {
+            get_dome_and_ladder_data()
+        }
+
 
         if (chartType === "Cumulative Observation Function") {
             get_cof_data()
@@ -286,7 +294,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             />
             break
         case "Ladder Plot":
-            // chart = <LadderPlot ob={ob} obsdate={obsdate.format('YYYY-MM-DD')} />
+            ladderData && (chart = <LadderChart {...ladderData} />)
             break
         case "Cadence Plot":
             // chart = <CadencePlot ob={ob} obsdate={obsdate.format('YYYY-MM-DD')} />
@@ -296,9 +304,6 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             break
         case "Semester Schedule":
             // chart = <SemesterSchedule ob={ob} />
-            break
-        case "Night Plan":
-            // chart = <NightPlan ob={ob} obsdate={obsdate.format('YYYY-MM-DD')} />
             break
         default:
             chart = <p>Graph goes here:</p>
@@ -315,7 +320,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             direction='column'>
             <Stack direction='row' spacing={1}>
                 <SemidSelect />
-                {['Cadence Plot', 'Night Plan', 'Dome Plot'].includes(chartType) && (
+                {['Cadence Plot', 'Ladder Plot', 'Dome Plot'].includes(chartType) && (
                     <NightPicker date={obsdate} minDate={availableDates.at(0)}
                         maxDate={availableDates.at(-1)}
                         handleDateChange={handleDateChange} />
