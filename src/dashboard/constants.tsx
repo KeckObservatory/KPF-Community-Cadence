@@ -1,6 +1,6 @@
 export const FOVlink = 'FEATURES.json'
 export const ROUND_MINUTES = 10 // minutes
-export const STEP_SIZE = 10 / 60 //hours
+export const STEP_SIZE = 2 / 60 //hours
 export const TIMES_START = -7 //hours
 export const TIMES_END = 7 //hours
 export const RADIUS_EARTH = 6378.1 // km

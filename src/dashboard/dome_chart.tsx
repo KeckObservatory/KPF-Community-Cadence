@@ -54,7 +54,7 @@ export interface TargetView extends DomeTarget {
 
 const traceRadiusLimit = 90 - 2 //ignore points greater than the dome radius
 
-interface DomeChartProps {
+export interface DomeChartProps {
     // targets: DomeTarget[]
     targetView: TargetView[]
     showCurrLoc: boolean
