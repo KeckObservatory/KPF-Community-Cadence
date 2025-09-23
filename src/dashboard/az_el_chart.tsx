@@ -1,13 +1,13 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import dayjs from "dayjs"
 import * as util from './sky_view_util.tsx'
 import Plot from 'react-plotly.js';
-import { PlotData, Layout } from 'plotly.js';
+import { Layout } from 'plotly.js';
 import { VizRow, DomeChartProps, TargetView } from './dome_chart.tsx'; //uses same props as DomeChart
 import { telLatLngEl, LngLatEl, time_format } from './constants.tsx';
 
 
-const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Date,
+const make_2d_traces = (targetView: TargetView[], time: Date,
     time_format: string, lngLatEl: LngLatEl
 ) => {
 
@@ -107,13 +107,12 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
 
 export const AzElChart: React.FC<DomeChartProps> = ({
     targetView,
-    showCurrLoc,
     time,
 }) => {
     const height = 600;
     const width = 900;
     const dates = targetView.length > 0 ? targetView[0].visibility.map(v => v.datetime) : [];
-    const traces = make_2d_traces(targetView, showCurrLoc, time, time_format, telLatLngEl.keck);
+    const traces = make_2d_traces(targetView, time, time_format, telLatLngEl.keck);
 
     let layout: Partial<Layout> = {} 
 
