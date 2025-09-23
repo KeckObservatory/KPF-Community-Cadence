@@ -7,9 +7,7 @@ import { VizRow, DomeChartProps, TargetView } from './dome_chart.tsx'; //uses sa
 import { telLatLngEl, LngLatEl, time_format } from './constants.tsx';
 
 
-const make_2d_traces = (targetView: TargetView[], time: Date,
-    time_format: string, lngLatEl: LngLatEl
-) => {
+const make_2d_traces = (targetView: TargetView[], time: Date, time_format: string, lngLatEl: LngLatEl) => {
 
     //target trajectory traces
     let traces: Partial<Plotly.Data>[] = []
@@ -23,10 +21,10 @@ const make_2d_traces = (targetView: TargetView[], time: Date,
 
         tgtv.visibility.forEach((viz: VizRow) => {
             //if target is not exposing, skip
-            if (tgtv.time_started && time < new Date(tgtv.time_started)) {
+            if (tgtv.time_started && time <= new Date(tgtv.time_started)) {
                 return
             }
-            if (tgtv.time_ended && time > new Date(tgtv.time_ended)) {
+            if (tgtv.time_ended && time >= new Date(tgtv.time_ended)) {
                 return
             }
             let txt = ""
@@ -71,6 +69,8 @@ const make_2d_traces = (targetView: TargetView[], time: Date,
             type: 'scatter'
         });
 
+        console.log('az el traces:', traces)
+
     })
     return traces
 }
@@ -83,6 +83,7 @@ export const AzElChart: React.FC<DomeChartProps> = ({
     const height = 600;
     const width = 900;
     const dates = targetView.length > 0 ? targetView[0].visibility.map(v => v.datetime) : [];
+    console.log('adding az/el chart' )
     const traces = make_2d_traces(targetView, time, time_format, telLatLngEl.keck);
 
     let layout: Partial<Layout> = {} 
