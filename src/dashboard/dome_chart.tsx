@@ -48,6 +48,10 @@ export interface TargetView extends DomeTarget {
     date: Date,
     ra_deg: number,
     dec_deg: number,
+    az_start: number,
+    alt_start: number,
+    az_end: number,
+    alt_end: number,
     visibility: VizRow[],
     visibilitySum: number
 }

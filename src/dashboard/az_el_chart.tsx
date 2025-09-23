@@ -19,27 +19,28 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
     let texts: string[] = []
     targetView.forEach((tgtv: TargetView) => {
 
-        tgtv.visibility.forEach((viz: VizRow) => {
-            //if target is not exposing, skip
-            if (tgtv.time_started && viz.datetime <= new Date(tgtv.time_started)) {
-                return
-            }
-            if (tgtv.time_ended && viz.datetime >= new Date(tgtv.time_ended)) {
-                return
-            }
-            let txt = ""
-            txt += `<b>${tgtv.human_starname}</b><br>`
-            txt += `Az: ${viz.az.toFixed(2)}<br>`
-            txt += `El: ${viz.alt.toFixed(2)}<br>`
-            txt += `HT: ${dayjs(viz.datetime).format(time_format)}<br>`
-            txt += `UTC: ${dayjs(viz.datetime).utc().format(time_format)}<br>`
-            txt += `Airmass: ${util.air_mass(viz.alt, lngLatEl.el).toFixed(2)}<br>`
+        let txt = ""
+        txt += `<b>${tgtv.human_starname}</b><br>`
+        txt += `Az: ${tgtv.az_start.toFixed(2)}<br>`
+        txt += `El: ${tgtv.alt_start.toFixed(2)}<br>`
+        txt += `HT: ${dayjs(tgtv.time_started).format(time_format)}<br>`
+        txt += `UTC: ${dayjs(tgtv.time_started).utc().format(time_format)}<br>`
+        txt += `Airmass: ${util.air_mass(tgtv.alt_start, lngLatEl.el).toFixed(2)}<br>`
+        texts.push(txt)
+        dates.push(new Date(tgtv.time_started))
+        alt_path.push(tgtv.alt_start)
+        az_path.push(tgtv.az_start)
 
-            texts.push(txt)
-            dates.push(viz.datetime)
-            alt_path.push(viz.alt)
-            az_path.push(viz.az)
-        })
+        txt += `<b>${tgtv.human_starname}</b><br>`
+        txt += `Az: ${tgtv.az_end.toFixed(2)}<br>`
+        txt += `El: ${tgtv.alt_end.toFixed(2)}<br>`
+        txt += `HT: ${dayjs(tgtv.time_ended).format(time_format)}<br>`
+        txt += `UTC: ${dayjs(tgtv.time_ended).utc().format(time_format)}<br>`
+        txt += `Airmass: ${util.air_mass(tgtv.alt_end, lngLatEl.el).toFixed(2)}<br>`
+        texts.push(txt)
+        dates.push(new Date(tgtv.time_ended))
+        alt_path.push(tgtv.alt_start)
+        az_path.push(tgtv.az_start)
     })
 
         // Azimuth trace

@@ -6,7 +6,7 @@ import { useCommCadContext } from '../App';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField } from '@mui/material';
 import { DialogComponent } from '../dialog_component';
 import { OB } from '../module_selector';
-import { SEMESTER_RANGES, telLatLngEl, TIMEZONE } from './constants';
+import { GeoModel, KeckGeoModel, LngLatEl, SEMESTER_RANGES, telLatLngEl, TIMEZONE } from './constants';
 import dayjs, { Dayjs, ManipulateType } from 'dayjs';
 import NightPicker from './night_picker';
 import utc from 'dayjs/plugin/utc'
@@ -153,6 +153,17 @@ export const hidate = (date: Date, timezone: string) => {
     return dayjs(date).tz(timezone)
 }
 
+const create_viz_row = (ra_deg: number, dec_deg: number, date: Date, lngLatEl: LngLatEl, KG: GeoModel) => {
+    const [az, alt] = util.ra_dec_to_az_alt(ra_deg, dec_deg, date, lngLatEl)
+    const viz: VizRow = {
+        az: az,
+        alt: alt,
+        datetime: date,
+        ...alt_az_observable(az, alt, KG)
+    }
+    return viz
+}
+
 export const DashboardDialog = (props: DashboardDialogProps) => {
     const context = useCommCadContext()
     const [chartType, setChartType] = useState<DashboardChart>("Dome Plot")
@@ -179,19 +190,29 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             const ra_deg = tgt.ra
             const dec_deg = tgt.dec
             const KG = tel_geometry.keck[DOME]
-            // const visibility = util.get_target_visibility(tgt, times, lngLatEl) as VizRow[]
-            const visibility = times.map((date) => {
-                const [az, alt] = util.ra_dec_to_az_alt(ra_deg, dec_deg, date, lngLatEl)
-                const viz: VizRow = {
-                    az: az,
-                    alt: alt,
-                    datetime: date,
-                    ...alt_az_observable(az, alt, KG)
-                }
+            let visibility = times.map((date) => {
+                const viz = create_viz_row(ra_deg, dec_deg, date, lngLatEl, KG)
                 return viz
             })
+
+            const dateStarted = new Date(tgt.time_started)
+            const dateEnded = new Date(tgt.time_ended)
+
+            // TODO: include exposure start and end points in visibility
+            // const vizStart = create_viz_row(ra_deg, dec_deg, dateStarted, lngLatEl, KG)
+            // const vizEnd = create_viz_row(ra_deg, dec_deg, dateEnded, lngLatEl, KG)
+            // visibility = [vizStart, ...visibility, vizEnd]
+            // //sort by datetime
+            // visibility.sort((a, b) => a.datetime.getTime() - b.datetime.getTime())
+
+            const [az_start, alt_start] = util.ra_dec_to_az_alt(ra_deg, dec_deg, dateStarted, lngLatEl)
+            const [az_end, alt_end] = util.ra_dec_to_az_alt(ra_deg, dec_deg, dateEnded, lngLatEl)
             const visibilitySum = visibility.reduce((acc, viz) => acc + (viz.observable ? STEP_SIZE : 0), 0)
-            const tvis = { ...tgt, ra_deg, dec_deg, date: dte, dome: DOME, visibility, visibilitySum } as TargetView
+            const tvis = {
+                ...tgt,
+                az_start, alt_start, az_end, alt_end,
+                dec_deg, date: dte, dome: DOME, visibility, visibilitySum
+            } as TargetView
             return tvis
         })
         console.log(`newTargetView`, newTargetView)
