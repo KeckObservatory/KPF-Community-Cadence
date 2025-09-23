@@ -18,7 +18,7 @@ const make_2d_traces = (targetView: TargetView[], time: Date,
 
     let [az_path, alt_path] = [[] as number[], [] as number[]]
     let dates = [] as Date[]
-    targetView.forEach((tgtv: TargetView, idx: number) => {
+    targetView.forEach((tgtv: TargetView) => {
         const texts: string[] = []
 
         tgtv.visibility.forEach((viz: VizRow) => {
