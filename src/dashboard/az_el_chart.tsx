@@ -31,6 +31,7 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
         alt_path.push(tgtv.alt_start)
         az_path.push(tgtv.az_start)
 
+        txt = ""
         txt += `<b>${tgtv.human_starname}</b><br>`
         txt += `Az: ${tgtv.az_end.toFixed(2)}<br>`
         txt += `El: ${tgtv.alt_end.toFixed(2)}<br>`
