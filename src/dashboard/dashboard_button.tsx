@@ -6,7 +6,7 @@ import { useCommCadContext } from '../App';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField } from '@mui/material';
 import { DialogComponent } from '../dialog_component';
 import { OB } from '../module_selector';
-import { GeoModel, KeckGeoModel, LngLatEl, SEMESTER_RANGES, telLatLngEl, TIMEZONE } from './constants';
+import { GeoModel, LngLatEl, SEMESTER_RANGES, telLatLngEl, TIMEZONE } from './constants';
 import dayjs, { Dayjs, ManipulateType } from 'dayjs';
 import NightPicker from './night_picker';
 import utc from 'dayjs/plugin/utc'

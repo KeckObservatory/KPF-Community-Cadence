@@ -3,7 +3,7 @@ import dayjs from "dayjs"
 import * as util from './sky_view_util.tsx'
 import Plot from 'react-plotly.js';
 import { Layout } from 'plotly.js';
-import { VizRow, DomeChartProps, TargetView } from './dome_chart.tsx'; //uses same props as DomeChart
+import { DomeChartProps, TargetView } from './dome_chart.tsx'; //uses same props as DomeChart
 import { telLatLngEl, LngLatEl, time_format } from './constants.tsx';
 
 
