@@ -43,11 +43,6 @@ const make_2d_traces = (targetView: TargetView[], time: Date,
             az_path.push(viz.az)
         })
 
-        const date_start = new Date(tgtv.time_started)
-        const date_end = new Date(tgtv.time_ended)
-        const exposure_started = time.getTime() >= date_start.getTime()
-        const exposure_stopped = time.getTime() > date_end.getTime()
-        const during_exposure = exposure_started && !exposure_stopped
         // Azimuth trace
         traces.push({
             x: dates,
@@ -76,30 +71,6 @@ const make_2d_traces = (targetView: TargetView[], time: Date,
             type: 'scatter'
         });
 
-        const trace = { //trajectory trace
-            opacity: during_exposure ? 1 : 0.7,
-            // opacity: 0.7,
-            x: dates,
-            theta: az_path,
-            text: texts,
-            hovorinfo: 'text',
-            hovertemplate: '<b>%{text}</b>', //disable to show xyz coords
-            marker: {
-                color: util.colors[idx % util.colors.length],
-                opacity: 0,
-                size: 4
-            },
-            line: {
-                color: util.colors[idx % util.colors.length],
-                width: 5
-            },
-            textposition: 'top left',
-            type: 'scatterpolar',
-            mode: 'lines+markers',
-            namelength: -1,
-            name: tgtv.human_starname
-        }
-        traces.push(trace as Plotly.Data)
     })
     return traces
 }
