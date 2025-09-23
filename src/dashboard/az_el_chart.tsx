@@ -78,7 +78,6 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
 
 export const AzElChart: React.FC<DomeChartProps> = ({
     targetView,
-    time,
 }) => {
     const height = 600;
     const width = 900;
