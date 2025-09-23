@@ -16,8 +16,8 @@ const make_2d_traces = (targetView: TargetView[], time: Date, time_format: strin
 
     let [az_path, alt_path] = [[] as number[], [] as number[]]
     let dates = [] as Date[]
+    let texts: string[] = []
     targetView.forEach((tgtv: TargetView) => {
-        const texts: string[] = []
 
         tgtv.visibility.forEach((viz: VizRow) => {
             //if target is not exposing, skip
@@ -40,6 +40,7 @@ const make_2d_traces = (targetView: TargetView[], time: Date, time_format: strin
             alt_path.push(viz.alt)
             az_path.push(viz.az)
         })
+    })
 
         // Azimuth trace
         traces.push({
@@ -71,7 +72,6 @@ const make_2d_traces = (targetView: TargetView[], time: Date, time_format: strin
 
         console.log('az el traces:', traces)
 
-    })
     return traces
 }
 
