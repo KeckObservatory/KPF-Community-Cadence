@@ -21,10 +21,10 @@ const make_2d_traces = (targetView: TargetView[], time: Date, time_format: strin
 
         tgtv.visibility.forEach((viz: VizRow) => {
             //if target is not exposing, skip
-            if (tgtv.time_started && time <= new Date(tgtv.time_started)) {
+            if (tgtv.time_started && viz.datetime <= new Date(tgtv.time_started)) {
                 return
             }
-            if (tgtv.time_ended && time >= new Date(tgtv.time_ended)) {
+            if (tgtv.time_ended && viz.datetime >= new Date(tgtv.time_ended)) {
                 return
             }
             let txt = ""
