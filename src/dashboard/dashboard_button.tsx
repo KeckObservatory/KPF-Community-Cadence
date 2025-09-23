@@ -20,6 +20,7 @@ import { tel_geometry, STEP_SIZE } from "./constants.tsx"
 import * as util from './sky_view_util.tsx'
 import { COFChart, COFChartProps } from './cof_chart.tsx';
 import { LadderChart, LadderChartProps } from './ladder_chart.tsx';
+import { AzElChart } from './az_el_chart.tsx';
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -58,9 +59,10 @@ const get_semester_dates = (semester: string) => {
     return ranges
 }
 
-export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Ladder Plot"
+export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Ladder Plot" | "Az/El Plot"
 const visibility_chart_options: DashboardChart[] = [
     "Dome Plot",
+    "Az/El Plot",
     "Cadence Plot",
     "Cumulative Observation Function",
     "Semester Schedule",
@@ -247,14 +249,15 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
 
         }
 
-        if (chartType !== "Dome Plot") {
+        if (chartType === "Dome Plot") {
             get_dome_and_ladder_data()
         }
-        if (chartType !== "Ladder Plot") {
+        if (chartType === "Ladder Plot") {
             get_dome_and_ladder_data()
         }
-
-
+        if (chartType === "Az/El Plot") {
+            get_dome_and_ladder_data()
+        }
         if (chartType === "Cumulative Observation Function") {
             get_cof_data()
         }
@@ -286,6 +289,13 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
 
     let chart = <p>Graph goes here:</p>
     switch (chartType) {
+        case "Az/El Plot":
+            chart = <AzElChart
+                targetView={targetView}
+                showCurrLoc={true}
+                time={time}
+            />
+            break
         case "Dome Plot":
             chart = <DomeChart
                 targetView={targetView}

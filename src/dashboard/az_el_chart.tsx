@@ -105,7 +105,7 @@ const make_2d_traces = (targetView: TargetView[], showCurrLoc: boolean, time: Da
 }
 
 
-export const TelescopePath2DPlot: React.FC<DomeChartProps> = ({
+export const AzElChart: React.FC<DomeChartProps> = ({
     targetView,
     showCurrLoc,
     time,
@@ -246,5 +246,3 @@ export const TelescopePath2DPlot: React.FC<DomeChartProps> = ({
         />
     );
 };
-
-export default TelescopePath2DPlot;
