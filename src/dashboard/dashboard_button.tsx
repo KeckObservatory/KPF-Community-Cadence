@@ -18,6 +18,7 @@ import { mockedData } from './mock_dome_data';
 import { alt_az_observable } from './target_viz_chart';
 import { tel_geometry, STEP_SIZE } from "./constants.tsx"
 import * as util from './sky_view_util.tsx'
+import { COFChart, COFChartProps } from './cof_chart.tsx';
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -56,7 +57,7 @@ const get_semester_dates = (semester: string) => {
     return ranges
 }
 
-export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Night Plan"
+export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Night Plan" | "Ladder Plot"
 const visibility_chart_options: DashboardChart[] = [
     "Dome Plot",
     "Cadence Plot",
@@ -159,6 +160,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     const [time, setTime] = useState<Date>(new Date())
     const [times, setTimes] = useState<Date[]>([])
     const [domeTargets, setDomeTargets] = useState<DomeTarget[]>([])
+    const [cofData, setCofData] = useState<COFChartProps | null>(null)
 
     // target must have ra dec and be defined
     const { ob, setSelectedOB, selectedOBs, open } = props
@@ -234,8 +236,19 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             setTime(mytimes.at(0) as Date)
             setDomeTargets(dome_data.targets)
         }
+
+        const get_cof_data = async () => {
+            const cof_data = mockedData.cof as COFChartProps
+            setCofData(cof_data)
+
+        }
+
         if (chartType !== "Dome Plot") {
             get_dome_data()
+        }
+
+        if (chartType === "Cumulative Observation Function") {
+            get_cof_data()
         }
     }, [chartType, obsdate, context.semid])
 
@@ -272,11 +285,14 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
                 time={time}
             />
             break
+        case "Ladder Plot":
+            // chart = <LadderPlot ob={ob} obsdate={obsdate.format('YYYY-MM-DD')} />
+            break
         case "Cadence Plot":
             // chart = <CadencePlot ob={ob} obsdate={obsdate.format('YYYY-MM-DD')} />
             break
         case "Cumulative Observation Function":
-            // chart = <CumulativeObservationFunction ob={ob} />
+            cofData && (chart = <COFChart {...cofData} />)
             break
         case "Semester Schedule":
             // chart = <SemesterSchedule ob={ob} />
