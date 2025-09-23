@@ -72,10 +72,9 @@ export const COFChart: React.FC<COFChartProps> = ({
     height = 1000,
 }) => {
     // Generate even burn rate line
-    const generateBurnLine = (): number[] => {
+    const generateBurnLine = (dates: string[]): number[] => {
         const burnLine: number[] = [];
         // Generate array of dates from startdate to enddate (inclusive)
-        const dates = generate_dates_array(startdate, enddate);
         const length = dates.length;
 
         for (let idx = 0; idx < length; idx++) {
@@ -87,11 +86,20 @@ export const COFChart: React.FC<COFChartProps> = ({
     };
 
     // Calculate total COF data
-    const calculateTotalCofData = () => {
-        const dates = generate_dates_array(startdate, enddate);
+    const calculateTotalCofData = (dates: string[]) => {
         const cumeObserve = new Array(dates.length).fill(0);
         let maxValue = 0;
-
+        dates.forEach((date) => {
+            lines.forEach((line) => { // accumulate total observations requested over every line 
+                maxValue += line.total_observations_requested;
+                line.values.forEach((obs) => {
+                    if (obs.date === date) {
+                        const idx = dates.indexOf(obs.date);
+                        cumeObserve[idx] += obs.percent_complete;
+                    }
+                });
+            });
+        });
         lines.forEach(line => {
             line.values.forEach((obs) => {
                 const idx = dates.indexOf(obs.date);
@@ -107,9 +115,9 @@ export const COFChart: React.FC<COFChartProps> = ({
         return { cumeObservePct, maxValue };
     };
 
-    const burnLine = generateBurnLine();
-    const { cumeObservePct, maxValue } = calculateTotalCofData();
     const dates = generate_dates_array(startdate, enddate);
+    const burnLine = generateBurnLine(dates);
+    const { cumeObservePct, maxValue } = calculateTotalCofData(dates);
 
     // Create plot data
     const plotData: PlotData[] = [];
