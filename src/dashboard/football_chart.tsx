@@ -30,11 +30,12 @@ export const FootballChart: React.FC<FootballChartProps> = ({
 
     // Add dummy contour for colorbar
     traces.push({
-        type: 'contour',
+        type: 'heatmap',
         z: nights_grid,
         x: ra_grid[0].map(val => val - 180),
         y: dec_grid.map(row => row[0]),
         showscale: true,
+        hoverongaps: false,
         colorscale: 'Greys',
         contours: {
             start: 70,
