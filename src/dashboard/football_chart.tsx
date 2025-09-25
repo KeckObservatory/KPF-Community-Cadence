@@ -123,11 +123,13 @@ export const FootballChart: React.FC<FootballChartProps> = ({
         height,
         xaxis: {
             showgrid: false,
-            visible: true
+            visible: true,
+            tickfont: { size: 12, color: 'white' } as Plotly.Font,
         },
         yaxis: {
             showgrid: false,
-            visible: true
+            visible: true,
+            tickfont: { size: 12, color: 'white' } as Plotly.Font,
         },
         shapes,
         annotations
