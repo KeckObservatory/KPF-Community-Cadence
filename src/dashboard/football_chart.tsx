@@ -48,7 +48,8 @@ export const FootballChart: React.FC<FootballChartProps> = ({
             titleside: 'top',
             x: -0.15, // Place on left of plot
             len: 0.75,
-            thickness: 15
+            thickness: 15,
+            tickfont: { size: 12, color: 'white' } as Plotly.Font,
         }
     });
 
