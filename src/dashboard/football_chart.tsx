@@ -1,6 +1,7 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import { Layout, Shape, Annotations } from 'plotly.js';
+import { useTheme } from '@emotion/react';
 
 // Type definitions based on the Python function
 interface Program {
@@ -28,6 +29,10 @@ export const FootballChart: React.FC<FootballChartProps> = ({
     const height = 600;
     const width = 900;
 
+    const theme = useTheme()
+    // Adjust this according to your theme structure; for MUI, use theme.palette.mode, otherwise define the type
+    const isDarkMode = (theme as any).palette?.mode === 'dark';
+    
     // Add dummy contour for colorbar
     traces.push({
         type: 'heatmap',
@@ -49,7 +54,7 @@ export const FootballChart: React.FC<FootballChartProps> = ({
             x: -0.15, // Place on left of plot
             len: 0.75,
             thickness: 15,
-            tickfont: { size: 12, color: 'white' } as Plotly.Font,
+            tickfont: { size: 12, color: isDarkMode ? 'white' : 'black' } as Plotly.Font,
         }
     });
 
@@ -79,6 +84,8 @@ export const FootballChart: React.FC<FootballChartProps> = ({
         y0: 0.0,
         x1: 1.0,
         y1: 1.0,
+        fillcolor: 'rgba(0,0,0,0)',
+        layer: 'above',
         line: {
             color: 'black',
             width: 2
@@ -124,12 +131,12 @@ export const FootballChart: React.FC<FootballChartProps> = ({
         xaxis: {
             showgrid: false,
             visible: true,
-            tickfont: { size: 12, color: 'white' } as Plotly.Font,
+            tickfont: { size: 12, color: isDarkMode ? 'white' : 'black' } as Plotly.Font,
         },
         yaxis: {
             showgrid: false,
             visible: true,
-            tickfont: { size: 12, color: 'white' } as Plotly.Font,
+            tickfont: { size: 12, color: isDarkMode ? 'white' : 'black' } as Plotly.Font,
         },
         shapes,
         annotations
