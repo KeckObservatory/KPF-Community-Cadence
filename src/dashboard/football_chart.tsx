@@ -42,7 +42,7 @@ export const FootballChart: React.FC<FootballChartProps> = ({
             end: 184,
             size: 10
         },
-        opacity: 0, // Hide contour but keep colorbar
+        opacity: 1, 
         colorbar: {
             title: 'Observable<br>Nights',
             titleside: 'top',
