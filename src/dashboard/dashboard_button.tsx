@@ -21,6 +21,7 @@ import * as util from './sky_view_util.tsx'
 import { COFChart, COFChartProps } from './cof_chart.tsx';
 import { LadderChart, LadderChartProps } from './ladder_chart.tsx';
 import { AzElChart } from './az_el_chart.tsx';
+import { FootballChart, FootballChartProps } from './football_chart.tsx';
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -59,9 +60,10 @@ const get_semester_dates = (semester: string) => {
     return ranges
 }
 
-export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Ladder Plot" | "Az/El Plot"
+export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Ladder Plot" | "Az/El Plot" | "Football Plot"
 const visibility_chart_options: DashboardChart[] = [
     "Dome Plot",
+    "Football Plot",
     "Az/El Plot",
     "Cadence Plot",
     "Cumulative Observation Function",
@@ -176,6 +178,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     const [domeTargets, setDomeTargets] = useState<DomeTarget[]>([])
     const [cofData, setCofData] = useState<COFChartProps | null>(null)
     const [ladderData, setLadderData] = useState<LadderChartProps | null>(null)
+    const [footballData, setFootballData] = useState<FootballChartProps | null>(null)
 
     // target must have ra dec and be defined
     const { ob, setSelectedOB, selectedOBs, open } = props
@@ -264,6 +267,11 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             setDomeTargets(dome_data.targets)
         }
 
+        const get_football_data = async () => {
+            const football_data = mockedData.football as FootballChartProps
+            setFootballData(football_data)
+        }
+
         const get_cof_data = async () => {
             const cof_data = mockedData.cof as COFChartProps
             setCofData(cof_data)
@@ -278,6 +286,9 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
         }
         if (chartType === "Az/El Plot") {
             get_dome_and_ladder_data()
+        }
+        if (chartType === "Football Plot") {
+            get_football_data()
         }
         if (chartType === "Cumulative Observation Function") {
             get_cof_data()
@@ -326,6 +337,9 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
             break
         case "Ladder Plot":
             ladderData && (chart = <LadderChart {...ladderData} />)
+            break
+        case "Football Plot":
+            footballData && (chart = <FootballChart {...footballData} />)
             break
         case "Cadence Plot":
             // chart = <CadencePlot ob={ob} obsdate={obsdate.format('YYYY-MM-DD')} />
