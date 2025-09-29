@@ -144,7 +144,6 @@ export const BirdseyeChart: React.FC<BirdseyeChartProps> = ({
 }) => {
     const height = 600;
     const width = 900;
-    const dates = targetView.length > 0 ? targetView[0].visibility.map(v => v.datetime) : [];
     console.log('adding az/el chart')
     const traces = make_2d_traces(targetView, time_format, telLatLngEl.keck, semester);
 
