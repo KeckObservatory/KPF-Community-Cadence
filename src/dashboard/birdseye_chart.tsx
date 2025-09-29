@@ -81,7 +81,7 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
             time.set('year', dateSlot.year())
             time.set('month', dateSlot.month())
             time.set('date', dateSlot.date())
-            heatmap[date][time.format(date_time_format)] = { color: '', text: '' }
+            heatmap[date][time.format(date_time_format)] = { color: 'white', text: '' }
         }
     }
     console.log('made empty heatmap', heatmap)
@@ -110,7 +110,7 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
             txt += `HT: ${dayjs(tgtv.time_started).format(time_format)}<br>`
             txt += `UTC: ${dayjs(tgtv.time_started).utc().format(time_format)}<br>`
             txt += `Airmass: ${util.air_mass(tgtv.alt_start, lngLatEl.el).toFixed(2)}<br>`
-            const heatdatum: HeatValue = { color: color, text: txt }
+            const heatdatum: HeatValue = { color: 'black', text: txt }
             heatmap[slot.format(slot_date_format)][slot.format(date_time_format)] = heatdatum
         }
 
@@ -129,11 +129,11 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
     //     type: 'heatmap'
     // });
 
-    x = Object.values(heatmap).flatMap(day => Object.values(day).map((_, idx) => {
+    y = Object.values(heatmap).flatMap(day => Object.values(day).map((_, idx) => {
         const slotTimes = Object.keys(heatmap).map(d => Object.keys(heatmap[d])).flat()
         return new Date(slotTimes[idx])
     }))
-    y = Object.values(heatmap).flatMap(() => {
+    x = Object.values(heatmap).flatMap(() => {
         const dayKeys = Object.keys(heatmap)
         return dayKeys.map(d => new Date(d))
     })
