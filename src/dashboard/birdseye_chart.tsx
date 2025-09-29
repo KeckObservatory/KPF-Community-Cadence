@@ -87,7 +87,7 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
     console.log('made empty heatmap', heatmap)
     // const dates = Object.keys(heatmap).map(d => new Date(d)) //get all the dates in the heatmap
 
-    const color_by_semid = (new Set(targetView.map(t => t.semid))).size > 1
+    // const color_by_semid = (new Set(targetView.map(t => t.semid))).size > 1
 
     let x: Date[] = []
     let y: Date[] = []
