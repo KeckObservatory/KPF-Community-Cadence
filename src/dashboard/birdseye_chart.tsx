@@ -85,7 +85,7 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
         }
     }
     console.log('made empty heatmap', heatmap)
-    const dates = Object.keys(heatmap).map(d => new Date(d)) //get all the dates in the heatmap
+    // const dates = Object.keys(heatmap).map(d => new Date(d)) //get all the dates in the heatmap
 
     const color_by_semid = (new Set(targetView.map(t => t.semid))).size > 1
 
@@ -129,11 +129,11 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
     //     type: 'heatmap'
     // });
 
-    x = Object.values(heatmap).flatMap(day => Object.values(day).map((hv, idx) => {
+    x = Object.values(heatmap).flatMap(day => Object.values(day).map((_, idx) => {
         const slotTimes = Object.keys(heatmap).map(d => Object.keys(heatmap[d])).flat()
         return new Date(slotTimes[idx])
     }))
-    y = Object.values(heatmap).flatMap((day, idx) => {
+    y = Object.values(heatmap).flatMap(() => {
         const dayKeys = Object.keys(heatmap)
         return dayKeys.map(d => new Date(d))
     })
