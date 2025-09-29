@@ -116,14 +116,12 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
         x: times.map(t => t.toDate()),
         y: dates,
         z: Object.values(heatmap).map(day => Object.values(day).map(hv => hv.color)),
-        mode: 'lines+markers',
-        marker: { color: 'indigo' },
-        name: 'Azimuth',
+        name: 'Heatmap of Observations',
         text: Object.values(heatmap).flatMap(day => Object.values(day).map(hv => hv.text)),
-        hovertemplate: '%{text}<br>Az: %{y}',
+        hovertemplate: '%{text}<br>%{y|%Y-%m-%d} %{x|%H:%M}<extra></extra>',
         xaxis: 'x',
         yaxis: 'y',
-        type: 'scatter'
+        type: 'heatmap'
     });
 
     console.log('made heatmap traces', traces)
