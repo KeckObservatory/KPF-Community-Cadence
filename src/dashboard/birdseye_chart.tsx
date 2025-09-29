@@ -88,6 +88,12 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
     const dates = Object.keys(heatmap).map(d => new Date(d)) //get all the dates in the heatmap
 
     const color_by_semid = (new Set(targetView.map(t => t.semid))).size > 1
+
+    let x: Date[] = []
+    let y: Date[] = []
+    let texts: string[] = []
+    let color: string[] = []
+
     targetView.forEach((tgtv: TargetView) => {
 
         // Round to the nearest SLOT_SIZE minutes
@@ -111,22 +117,53 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
     })
 
     // heatmap trace
-    traces.push({
-        x: times.map(t => t.toDate()),
-        y: dates,
-        z: Object.values(heatmap).map(day => Object.values(day).map(hv => hv.color)),
-        name: 'Heatmap of Observations',
-        text: Object.values(heatmap).flatMap(day => Object.values(day).map(hv => hv.text)),
-        hovertemplate: '%{text}<br>%{y|%Y-%m-%d} %{x|%H:%M}<extra></extra>',
-        xaxis: 'x',
-        yaxis: 'y',
-        type: 'heatmap'
-    });
+    // traces.push({
+    //     x: times.map(t => t.toDate()),
+    //     y: dates,
+    //     z: Object.values(heatmap).map(day => Object.values(day).map(hv => hv.color)),
+    //     name: 'Heatmap of Observations',
+    //     text: Object.values(heatmap).flatMap(day => Object.values(day).map(hv => hv.text)),
+    //     hovertemplate: '%{text}<br>%{y|%Y-%m-%d} %{x|%H:%M}<extra></extra>',
+    //     xaxis: 'x',
+    //     yaxis: 'y',
+    //     type: 'heatmap'
+    // });
 
+    x = Object.values(heatmap).flatMap(day => Object.values(day).map((hv, idx) => {
+        const slotTimes = Object.keys(heatmap).map(d => Object.keys(heatmap[d])).flat()
+        return new Date(slotTimes[idx])
+    }))
+    y = Object.values(heatmap).flatMap((day, idx) => {
+        const dayKeys = Object.keys(heatmap)
+        return dayKeys.map(d => new Date(d))
+    })
+    texts = Object.values(heatmap).flatMap(day => Object.values(day).map(hv => hv.text))
+    color = Object.values(heatmap).flatMap(day => Object.values(day).map(hv => hv.color))
+    const trace: Partial<Plotly.PlotData> = {
+        x,
+        y,
+        text: texts,
+        marker: {
+            color,
+            size: 10,
+            symbol: 'square',
+            opacity: 1 // too dense to see ticks
+        },
+        hovertemplate: '<b>%{text}</b> <extra></extra>', //disable to show xyz coords
+        line: {
+            width: 0,
+        },
+        textposition: 'top left',
+        type: 'scattergl',
+        mode: 'lines+markers',
+        showlegend: false,
+        name: 'Heatmap of Observations',
+    }
+    traces.push(trace)
     console.log('made heatmap traces', traces)
 
 
-    return traces
+return traces
 }
 
 interface BirdseyeChartProps extends DomeChartProps {
