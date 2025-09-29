@@ -99,7 +99,7 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
         // Round to the nearest SLOT_SIZE minutes
         const startSlot = dayjs(roundToSlot(new Date(tgtv.time_started), SLOT_SIZE));
         const endSlot = dayjs(roundToSlot(new Date(tgtv.time_ended), SLOT_SIZE));
-        const color = color_by_semid ? tgtv.semid : tgtv.human_starname;
+        // const color = color_by_semid ? tgtv.semid : tgtv.human_starname;
         const slots = make_date_range(startSlot, endSlot)
 
         for (let slot of slots) {
