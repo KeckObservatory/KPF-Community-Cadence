@@ -153,97 +153,15 @@ export const BirdseyeChart: React.FC<BirdseyeChartProps> = ({
     layout = {
         height,
         width,
-        // template: 'plotly_white',
-        grid: {
-            rows: 2,
-            columns: 1,
-            pattern: 'independent',
-            // subplots: [['xy'], ['x2y2']]
-        },
-        annotations: [
-            {
-                text: 'Azimuth Path',
-                font: { size: 16 },
-                showarrow: false,
-                xref: 'paper',
-                yref: 'paper',
-                x: 0.5,
-                y: 0.95,
-                xanchor: 'center',
-                yanchor: 'bottom'
-            },
-            {
-                text: 'Elevation Path',
-                font: { size: 16 },
-                showarrow: false,
-                xref: 'paper',
-                yref: 'paper',
-                x: 0.5,
-                y: 0.45,
-                xanchor: 'center',
-                yanchor: 'bottom'
-            }
-        ],
         xaxis: {
-            domain: [0, 1],
             anchor: 'y',
             tickmode: 'array',
-            showticklabels: false
         },
         yaxis: {
-            domain: [0.55, 1],
             anchor: 'x',
             title: 'Azimuth (deg)'
         },
-        xaxis2: {
-            domain: [0, 1],
-            anchor: 'y2',
-            tickmode: 'array',
-            // tickvals: obsTime,
-            // ticktext: timeLabels,
-            title: 'Time (UTC)'
-        },
-        yaxis2: {
-            domain: [0, 0.45],
-            anchor: 'x2',
-            title: 'Altitude (deg)'
-        },
-        shapes: []
     };
-
-    // Add observation interval rectangles
-    for (let i = 0; i < dates.length - 1; i += 2) {
-        // Azimuth subplot rectangle
-        layout.shapes?.push({
-            type: 'rect',
-            x0: dates[i],
-            x1: dates[i + 1],
-            y0: 0,
-            y1: 1,
-            fillcolor: 'orange',
-            opacity: 0.2,
-            layer: 'below',
-            line: { width: 0 },
-            xref: 'x',
-            yref: 'y domain'
-        });
-
-        // Elevation subplot rectangle
-        layout.shapes?.push({
-            type: 'rect',
-            x0: dates[i],
-            x1: dates[i + 1],
-            y0: 0,
-            y1: 1,
-            fillcolor: 'orange',
-            opacity: 0.2,
-            layer: 'below',
-            line: { width: 0 },
-            xref: 'x2',
-            yref: 'y2 domain'
-        });
-    }
-
     return (
         <Plot
             data={traces}
