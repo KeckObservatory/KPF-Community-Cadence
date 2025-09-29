@@ -21,6 +21,7 @@ import * as util from './sky_view_util.tsx'
 import { COFChart, COFChartProps } from './cof_chart.tsx';
 import { LadderChart, LadderChartProps } from './ladder_chart.tsx';
 import { AzElChart } from './az_el_chart.tsx';
+import { BirdseyeChart } from './birdseye_chart.tsx';
 import { FootballChart, FootballChartProps } from './football_chart.tsx';
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -60,9 +61,10 @@ const get_semester_dates = (semester: string) => {
     return ranges
 }
 
-export type DashboardChart = "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Ladder Plot" | "Az/El Plot" | "Football Plot"
+export type DashboardChart = "Birdseye Plot" | "Dome Plot" | "Cumulative Observation Function" | "Semester Schedule" | "Cadence Plot" | "Ladder Plot" | "Az/El Plot" | "Football Plot"
 const visibility_chart_options: DashboardChart[] = [
     "Dome Plot",
+    "Birdseye Plot",
     "Football Plot",
     "Az/El Plot",
     "Cadence Plot",
@@ -166,6 +168,21 @@ const create_viz_row = (ra_deg: number, dec_deg: number, date: Date, lngLatEl: L
     return viz
 }
 
+const get_semester_from_date = (date: Date) => {
+    const month = date.getMonth() + 1
+    const year = date.getFullYear()
+    if (month >= 2 && month <= 7) {
+        return `${year}A`
+    } else {
+        if (month === 1) {
+            return `${year - 1}B`
+        } else {
+            return `${year}B`
+        }
+    }
+}
+
+
 export const DashboardDialog = (props: DashboardDialogProps) => {
     const context = useCommCadContext()
     const [chartType, setChartType] = useState<DashboardChart>("Dome Plot")
@@ -175,6 +192,10 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     const [obsdate, setObsdate] = React.useState<Dayjs>(today)
     const [time, setTime] = useState<Date>(new Date())
     const [times, setTimes] = useState<Date[]>([])
+
+    const init_semester = get_semester_from_date(time)
+
+    const [semester, setSemester] = useState<string>(init_semester)
     const [domeTargets, setDomeTargets] = useState<DomeTarget[]>([])
     const [cofData, setCofData] = useState<COFChartProps | null>(null)
     const [ladderData, setLadderData] = useState<LadderChartProps | null>(null)
@@ -298,6 +319,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
     const onOBNameSelect = (name: string) => {
         console.log('name', name)
         const obName = ob.target.target_name ?? ob._id
+
         if (name !== obName) {
             let newOB = selectedOBs.find((o: OB) => o.target.target_name === name || o._id === name)
             if (!newOB) {
@@ -305,7 +327,12 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
                 return
             }
             setSelectedOB(newOB)
+            ob.metadata?.semester && setSemester(ob.metadata.semester)
         }
+    }
+
+    const onSemesterSelect = (semester: string) => {
+        setSemester(semester)
     }
 
     const handleDateChange = (newDate: Dayjs | null) => {
@@ -350,6 +377,14 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
         case "Semester Schedule":
             // chart = <SemesterSchedule ob={ob} />
             break
+        case "Birdseye Plot":
+            chart = <BirdseyeChart
+                targetView={targetView}
+                time={time}
+                showCurrLoc={true}
+                semester={context.semid.split('_')[0]}
+            />
+            break
         default:
             chart = <p>Graph goes here:</p>
     }
@@ -371,7 +406,7 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
                         handleDateChange={handleDateChange} />
                 )
                 }
-                {chartType === 'Cadence Plot' && (
+                {['Cadence Plot', "Birdseye Plot"].includes(chartType) && (
                     <Tooltip title={'OB Name Select'}>
                         <Autocomplete
                             disablePortal
@@ -383,6 +418,17 @@ export const DashboardDialog = (props: DashboardDialogProps) => {
                             renderInput={(params) => <TextField {...params} label={'Selected OB'} />}
                         />
                     </Tooltip>
+                )}
+                {chartType === "Birdseye Plot" && (
+                    <Autocomplete
+                        disablePortal
+                        id="selected-semester"
+                        value={semester}
+                        onChange={(_, value) => value && onSemesterSelect(value)}
+                        options={context.semids.map(s => s.split('_')[0])}
+                        sx={{ width: 250 }}
+                        renderInput={(params) => <TextField {...params} label={'Selected Semester'} />}
+                    />
                 )}
                 <ChartSelectMenu chartType={chartType} setChartType={setChartType} />
             </Stack>

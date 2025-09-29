@@ -27,6 +27,7 @@ export interface DomeTarget {
     priority: number,
     shots: number,
     human_starname: string,
+    semid: string,
     te: number,
     tend: number[],
     tl: number,

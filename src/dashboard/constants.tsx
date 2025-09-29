@@ -1,23 +1,11 @@
 export const FOVlink = 'FEATURES.json'
 export const ROUND_MINUTES = 10 // minutes
 export const STEP_SIZE = 10 / 60 //hours
+export const SLOT_SIZE = 5 // minutes
 export const TIMES_START = -7 //hours
 export const TIMES_END = 7 //hours
 export const RADIUS_EARTH = 6378.1 // km
 export const ATMOSPHERE_HEIGHT = 50 // km
-
-interface SemesterDates {
-    start_day: number
-    start_month: number
-    end_day: number
-    end_month: number
-    plus_year?: number
-}
-
-interface SemesterRange {
-    'A': SemesterDates
-    'B': SemesterDates
-}
 
 export const TIMEZONE = 'Pacific/Honolulu'
 export const SEMESTER_RANGES: SemesterRange = {
@@ -39,8 +27,21 @@ export const SEMESTER_RANGES: SemesterRange = {
 export const MARKER_SIZE = 10 //pxl radius
 
 export const timezone = "Pacific/Honolulu"
+export const slot_date_format = "YYYY-MM-DD"
 export const time_format = "MM:DD HH:mm"
 export const date_time_format = "YYYY/MM/DD HH:mm"
+interface SemesterDates {
+    start_day: number
+    start_month: number
+    end_day: number
+    end_month: number
+    plus_year?: number
+}
+
+interface SemesterRange {
+    'A': SemesterDates
+    'B': SemesterDates
+}
 
 
 export interface KeckGeoModel {

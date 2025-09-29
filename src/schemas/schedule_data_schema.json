@@ -83,13 +83,13 @@
             "type": "boolean",
             "description": "Is Weather Band 1 acceptable?",
             "short_description": "Band 1",
-            "default": true
+            "default": false 
         },
         "weather_band_2": {
             "type": "boolean",
             "description": "Is Weather Band 2 acceptable?",
             "short_description": "Band 2",
-            "default": true
+            "default": false 
         },
         "weather_band_3": {
             "type": "boolean",

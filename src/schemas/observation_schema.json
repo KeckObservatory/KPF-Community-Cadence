@@ -62,7 +62,6 @@
             "description": "Exposure Meter Mode?",
             "short_description": "Exposure Meter Mode?",
             "enum": ["monitor", "control", "off"],
-            "default": "monitor",
             "translator_mapping": "ExpMeterMode"
         },
         "auto_exp_meter": {
@@ -95,7 +94,6 @@
             "short_description": "Exposure Meter Th",
             "regex": "^\\d*$",
             "format": "strNumber",
-            "default": 50000,
             "translator_mapping": "ExpMeterThreshold"
         },
         "take_simulcal": {
