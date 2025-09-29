@@ -84,6 +84,7 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
             heatmap[date][time.format(date_time_format)] = { color: '', text: '' }
         }
     }
+    console.log('made empty heatmap', heatmap)
     const dates = Object.keys(heatmap).map(d => new Date(d)) //get all the dates in the heatmap
 
     const color_by_semid = (new Set(targetView.map(t => t.semid))).size > 1
@@ -103,8 +104,9 @@ const make_2d_traces = (targetView: TargetView[], time_format: string, lngLatEl:
             txt += `HT: ${dayjs(tgtv.time_started).format(time_format)}<br>`
             txt += `UTC: ${dayjs(tgtv.time_started).utc().format(time_format)}<br>`
             txt += `Airmass: ${util.air_mass(tgtv.alt_start, lngLatEl.el).toFixed(2)}<br>`
+            const daySlots = heatmap[slot.format(slot_date_format)]
             const heatdatum: HeatValue = { color: color, text: txt }
-            heatmap[slot.format(slot_date_format)][slot.format(date_time_format)] = heatdatum
+            daySlots[slot.format(date_time_format)] = heatdatum
         }
 
     })

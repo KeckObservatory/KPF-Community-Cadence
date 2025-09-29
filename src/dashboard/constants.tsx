@@ -27,7 +27,7 @@ export const SEMESTER_RANGES: SemesterRange = {
 export const MARKER_SIZE = 10 //pxl radius
 
 export const timezone = "Pacific/Honolulu"
-export const slot_date_format = "YYYY-MM-DD"
+export const slot_date_format = "YYYY/MM/DD"
 export const time_format = "MM:DD HH:mm"
 export const date_time_format = "YYYY/MM/DD HH:mm"
 interface SemesterDates {
