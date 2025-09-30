@@ -42,10 +42,11 @@ export default function KPFModuleSelect(props: KPFModuleSelectProps) {
     <Tooltip
       placement="right"
       title="Select KPF Module. Either the Observing Block Webform for requesting/submitting OBS or viewing the Dashboard">
-      <Box sx={{ minWidth: 120, height: 30 }}>
+      <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
           <InputLabel id="select-kpf-module-label">KPF Module</InputLabel>
           <Select
+            sx={{ height: 40 }}
             labelId="select-kpf-module"
             id="select-kpf-module"
             value={props.module}
