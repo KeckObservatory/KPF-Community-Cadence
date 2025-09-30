@@ -122,7 +122,7 @@ export const DashboardButton = (props: DashboardButtonProps) => {
                     <VisibilityIcon />
                 </IconButton>
             </Tooltip>
-            <DashboardDialog
+            <Dashboard
                 open={open}
                 ob={ob}
                 setSelectedOB={setOB}
@@ -183,7 +183,7 @@ const get_semester_from_date = (date: Date) => {
 }
 
 
-export const DashboardDialog = (props: DashboardDialogProps) => {
+export const Dashboard = (props: DashboardDialogProps) => {
     const context = useCommCadContext()
     const [chartType, setChartType] = useState<DashboardChart>("Dome Plot")
     const [availableDates, setAvailableDates] = useState<Dayjs[]>([])

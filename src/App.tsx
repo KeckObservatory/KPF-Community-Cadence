@@ -15,6 +15,7 @@ import Alert from '@mui/material/Alert';
 import { LicenseInfo } from '@mui/x-license';
 import licenseKey from './license.json'
 import { ComponentSelector, OB } from './component_selector';
+import { Dashboard } from './dashboard/dashboard_button';
 
 
 
@@ -83,7 +84,7 @@ export interface SnackbarMessage {
   severity?: 'success' | 'error' | 'warning' | 'info';
 }
 
-export interface SnackbarContext{
+export interface SnackbarContext {
   snackbarOpen: boolean;
   setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   snackbarMessage: SnackbarMessage;
@@ -91,7 +92,7 @@ export interface SnackbarContext{
 }
 
 
-const init_snackbar_context: SnackbarContext= {
+const init_snackbar_context: SnackbarContext = {
   snackbarOpen: false,
   setSnackbarOpen: () => { },
   snackbarMessage: { severity: 'success', message: 'defaultMessage' },
@@ -295,12 +296,14 @@ function App() {
                   flexDirection: 'column',
                 }}
               >
-                <Control notApproved={notApproved} isAdmin={isAdmin} />
-                {init ?
-                  <ComponentSelector/>
-                  :
-                  <Skeleton variant="rectangular" width="100%" height={500} />
+                {
+                  module === 'webform' &&
+                  <>
+                    (<Control notApproved={notApproved} isAdmin={isAdmin} />
+                    init ?  <ComponentSelector /> : <Skeleton variant="rectangular" width="100%" height={500} />)
+                  </>
                 }
+                {module === 'dashboard' && (<Skeleton variant="rectangular" width="100%" height={500} />)}
               </Paper>
             </Stack>
           </SnackbarContext.Provider>
