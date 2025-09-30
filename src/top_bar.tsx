@@ -39,7 +39,9 @@ export default function KPFModuleSelect(props: KPFModuleSelectProps) {
   };
 
   return (
-    <Tooltip title="Select KPF Module. Either the Observing Block Webform for requesting/submitting OBS or viewing the Dashboard">
+    <Tooltip
+      placement="right"
+      title="Select KPF Module. Either the Observing Block Webform for requesting/submitting OBS or viewing the Dashboard">
       <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
           <InputLabel id="select-kpf-module-label">KPF Module</InputLabel>
@@ -118,7 +120,7 @@ export function TopBar(props: Props) {
           noWrap
           sx={{
             marginLeft: '12px',
-            flexGrow: 1,
+            flexGrow: .5,
           }}
         >
           {title}
