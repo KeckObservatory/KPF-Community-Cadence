@@ -113,6 +113,10 @@ export function TopBar(props: Props) {
           paddingLeft: '20px'
         }}
       >
+        <KPFModuleSelect
+          module={props.module}
+          setModule={props.setModule}
+        />
         <Typography
           component="h1"
           variant="h6"
@@ -125,10 +129,6 @@ export function TopBar(props: Props) {
         >
           {title}
         </Typography>
-        <KPFModuleSelect
-          module={props.module}
-          setModule={props.setModule}
-        />
         <Tooltip title="Plz, select me to take a survey">
           <Button
             variant='contained'
