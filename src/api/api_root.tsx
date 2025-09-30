@@ -4,7 +4,7 @@ import { handleResponse, handleError, intResponse, intError } from './response';
 const SIMBAD_ADDR = "https://simbad.u-strasbg.fr/simbad/sim-id?NbIdent=1&submit=submit+id&output.format=ASCII&obj.bibsel=off&Ident="
 const API_ADDR = "/api/proposals"
 import * as mocks from './mocks'
-import { OB } from '../module_selector';
+import { OB } from '../component_selector';
 import { NewOB } from '../ob_component_toolbar';
 
 export interface UserInfo {

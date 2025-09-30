@@ -16,9 +16,9 @@ import * as schedule_schema from './schemas/schedule_data_schema.json'
 import * as ob_target_schema from './schemas/ob_target_schema.json'
 import * as observation_schema from './schemas/observation_schema.json'
 import * as metadata_schema from './schemas/metadata_schema.json'
-import { OB } from './module_selector';
+import { OB } from './component_selector';
 import { OBComponentName } from './ob_component_table';
-import { Metadata, Observation, OBTarget, Schedule, Calibration } from './module_selector';
+import { Metadata, Observation, OBTarget, Schedule, Calibration } from './component_selector';
 
 
 export interface SimpleDialogProps {

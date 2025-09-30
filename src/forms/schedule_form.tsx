@@ -8,7 +8,7 @@ import {
     Button,
 } from '@mui/material'
 import { ComponentRow } from '../ob_component_table';
-import { Schedule, TimeConstraint } from '../module_selector';
+import { Schedule, TimeConstraint } from '../component_selector';
 import {
     text_change, switch_change, TextChangeInput, BaseChangeInput, make_text_field, make_autocomplete_field,
     make_switch_field, SwitchChangeInput, make_array_time_constraint_field,

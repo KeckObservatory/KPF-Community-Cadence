@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import { MuiChipsInput } from 'mui-chips-input';
 import { ComponentRow } from '../ob_component_table';
-import { Metadata } from '../module_selector';
+import { Metadata } from '../component_selector';
 import { input_label, tag_array_change, BaseChangeInput, ArrayChangeInput } from '../ob_edit_util';
 
 interface Props {

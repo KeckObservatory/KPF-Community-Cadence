@@ -8,7 +8,7 @@ import {
     Box,
 } from '@mui/material'
 import { ComponentRow } from '../ob_component_table';
-import { Observation } from '../module_selector';
+import { Observation } from '../component_selector';
 import { make_text_field, text_change, switch_change, TextChangeInput, BaseChangeInput, SwitchChangeInput, make_autocomplete_field, make_switch_field } from '../ob_edit_util';
 import { ob_schemas } from '../validation_check_dialog';
 

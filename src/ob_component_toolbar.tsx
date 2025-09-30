@@ -18,7 +18,7 @@ import { useDebounceCallback } from './use_debounce_callback';
 import { save_obs } from './api/api_root';
 import { OBWizardButton } from './ob_wizard';
 import { ComponentRow, OBComponentName } from './ob_component_table';
-import { Metadata, OB, OBComponent, Observation, OBTarget, Schedule } from './module_selector';
+import { Metadata, OB, OBComponent, Observation, OBTarget, Schedule } from './component_selector';
 import { useCommCadContext, useSnackbarContext } from './App';
 import { ob_to_component_row } from './ob_edit_util';
 import Box from '@mui/material/Box';

@@ -14,7 +14,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { LicenseInfo } from '@mui/x-license';
 import licenseKey from './license.json'
-import { ModuleSelector, OB } from './module_selector';
+import { ComponentSelector, OB } from './component_selector';
 
 
 
@@ -111,6 +111,8 @@ const refreshTableContext = createContext<RefreshTableContext>({
 })
 export const useRefreshTableContext = () => useContext(refreshTableContext)
 
+export type KPFModule = 'dashboard' | 'webform'
+
 
 function App() {
   const [darkState, setDarkState] = useQueryParam('darkState', withDefault(BooleanParam, true));
@@ -121,6 +123,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const theme = handleTheme(darkState)
   const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [module, setModule] = useState<KPFModule>('webform')
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>({})
   const [refreshTable, setRefreshTable] = useState(0)
 
@@ -258,6 +261,8 @@ function App() {
           <TopBar
             darkState={darkState}
             handleThemeChange={handleThemeChange}
+            module={module}
+            setModule={setModule}
             username={state.username} />
           <SnackbarContext.Provider value={{
             snackbarOpen: openSnackbar,
@@ -292,7 +297,7 @@ function App() {
               >
                 <Control notApproved={notApproved} isAdmin={isAdmin} />
                 {init ?
-                  <ModuleSelector />
+                  <ComponentSelector/>
                   :
                   <Skeleton variant="rectangular" width="100%" height={500} />
                 }

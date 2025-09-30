@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import CatalogButton from '../catalog_button';
 import { ComponentRow } from '../ob_component_table';
-import { OBTarget } from '../module_selector';
+import { OBTarget } from '../component_selector';
 import { text_change, TextChangeInput, BaseChangeInput, make_text_field } from '../ob_edit_util';
 import { ob_schemas } from '../validation_check_dialog';
 

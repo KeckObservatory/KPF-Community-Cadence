@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App';
 import { DialogComponent } from './dialog_component';
-import { OB } from './module_selector';
+import { OB } from './component_selector';
 import { Button, Typography } from '@mui/material';
 //import { delete_target, submit_target } from './api/api_root';
 import { get_obs, submit_obs } from './api/api_root';

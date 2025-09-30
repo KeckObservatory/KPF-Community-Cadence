@@ -1,4 +1,4 @@
-import { Calibration } from '../module_selector';
+import { Calibration } from '../component_selector';
 
 interface Props {
     open: boolean

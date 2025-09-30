@@ -5,7 +5,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { useCommCadContext } from '../App';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField } from '@mui/material';
 import { DialogComponent } from '../dialog_component';
-import { OB } from '../module_selector';
+import { OB } from '../component_selector.tsx';
 import { GeoModel, LngLatEl, SEMESTER_RANGES, telLatLngEl, TIMEZONE } from './constants';
 import dayjs, { Dayjs, ManipulateType } from 'dayjs';
 import NightPicker from './night_picker';

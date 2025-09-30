@@ -1,6 +1,6 @@
 import React from 'react';
 import { save_obs } from './api/api_root';
-import { OB, OBComponent, Schedule, TimeConstraint } from './module_selector';
+import { OB, OBComponent, Schedule, TimeConstraint } from './component_selector';
 import { ComponentRow, OBComponentName } from './ob_component_table';
 import { ob_schemas } from './validation_check_dialog';
 import Tooltip from '@mui/material/Tooltip';
