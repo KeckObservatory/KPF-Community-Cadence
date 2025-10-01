@@ -45,7 +45,7 @@ export const ComponentSelector = () => {
 
     const context = useCommCadContext();
 
-    const dashboards = context.isAdmin ? ["Single Target", "Semester", "Semid", "Nightplan", "Admin"] : ["Single Target", "Semester", "Semid", "Nightplan"]
+    const dashboards: Dashboards[] = context.isAdmin ? ["Single Target", "Semester", "Semid", "Nightplan", "Admin"] : ["Single Target", "Semester", "Semid", "Nightplan"]
 
 
     //@ts-ignore
