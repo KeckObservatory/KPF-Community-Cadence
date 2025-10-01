@@ -40,7 +40,7 @@ type Dashboards = "Single Target" | "Semester" | "Semid" | "Nightplan" | "Admin"
 
 
 
-export const ComponentSelector = () => {
+export const DashboardSelector = () => {
     const [value, setValue] = React.useState(0);
 
     const context = useCommCadContext();

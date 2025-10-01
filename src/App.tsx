@@ -15,6 +15,7 @@ import Alert from '@mui/material/Alert';
 import { LicenseInfo } from '@mui/x-license';
 import licenseKey from './license.json'
 import { ComponentSelector, OB } from './component_selector';
+import { DashboardSelector } from './dashboard/dashboard_selector';
 
 
 
@@ -303,7 +304,9 @@ function App() {
                     )
                   </>
                 }
-                {module === 'dashboard' && (<Skeleton variant="rectangular" width="100%" height={500} />)}
+                {module === 'dashboard' && (
+                  <DashboardSelector />
+                )}
               </Paper>
             </Stack>
           </SnackbarContext.Provider>
