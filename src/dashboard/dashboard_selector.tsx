@@ -4,6 +4,10 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { useCommCadContext } from '../App';
+import { BirdseyeChart } from './birdseye_chart';
+import { COFChart } from './cof_chart';
+import { AzElChart } from './az_el_chart';
+import { DomeChart } from './dome_chart';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -47,10 +51,24 @@ export const DashboardSelector = () => {
 
     const dashboards: Dashboards[] = context.isAdmin ? ["Single Target", "Semester", "Semid", "Nightplan", "Admin"] : ["Single Target", "Semester", "Semid", "Nightplan"]
 
+    const dashboardComponents = {
+        single_target: [ 
+            "<DashboardTable/>",
+            "<FootballChart/>",
+            "<BirdseyeChart/>",
+            "<COFChart/>"
+        ],
+        semester: ["<DashboardTable/>", "<FootballChart/>", "<BirdseyeChart/>", "<COFChart/>", "<TauInterChart/>"],
+        semid: ["<DashboardTable/>", "<FootballChart/>", "<BirdseyeChart/>", "<COFChart/>", "<TauInterChart/>"],
+        nightplan: ["<DashboardTable/>", "<DomeChart/>", "<AzElChart />"],
+        admin: ["<AdminDashboard/>"]
+    }
+
 
     //@ts-ignore
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
+        //retrieve data for the charts
     };
 
     return (

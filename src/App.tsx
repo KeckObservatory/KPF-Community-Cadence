@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { UserInfo, get_obs, get_semids, get_userinfo } from './api/api_root';
-import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
+import { BooleanParam, StringParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
 import Snackbar from '@mui/material/Snackbar';
@@ -124,7 +124,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const theme = handleTheme(darkState)
   const [openSnackbar, setOpenSnackbar] = useState(false)
-  const [module, setModule] = useState<KPFModule>('webform')
+  const [module, setModule] = useQueryParam<string>('module', withDefault(StringParam, 'webform'));
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>({})
   const [refreshTable, setRefreshTable] = useState(0)
 
@@ -262,7 +262,7 @@ function App() {
           <TopBar
             darkState={darkState}
             handleThemeChange={handleThemeChange}
-            module={module}
+            module={module as KPFModule}
             setModule={setModule}
             username={state.username} />
           <SnackbarContext.Provider value={{
