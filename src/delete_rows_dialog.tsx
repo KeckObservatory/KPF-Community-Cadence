@@ -102,22 +102,17 @@ export default function DeleteDialogButton(props: Props) {
 
   const handleClose = async () => {
     let delOB: OB[] = []
-    for (let idx = 0; idx < deletedOBs.length; idx++) {
-      const ob = deletedOBs[idx]
-      const resp = await delete_obs(ob._id)
-      if (resp.success !== 'SUCCESS') {
-        console.error('error while deleting target', resp)
-        const msg = 'error when deleting targets: ' + resp.errors.join(', ')
-        snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
-        continue 
-      }
-      delOB.push(ob)
+    const ids = deletedOBs.map((ob) => ob._id)
+    const resp = await delete_obs(ids)
+    if (resp.success !== 'SUCCESS') {
+      console.error('error while deleting target', resp)
+      const msg = 'error when deleting targets: ' + resp.errors.join(', ')
+      snackbarContext.setSnackbarMessage({ severity: 'error', message: msg })
     }
 
     //update table view
-    const delIds = delOB.map((ob) => ob._id)
     const remOBs = context.obs.filter((ob: OB) => {
-      return !delIds.includes(ob._id)
+      return !ids.includes(ob._id)
     });
     console.log('deleted obs', delOB)
     setDeletedOBs(delOB)

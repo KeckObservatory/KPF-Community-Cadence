@@ -456,7 +456,7 @@ export default function OBComponentTable(props: Props) {
                 { severity: 'error', message: `Target not found for deletion. Details: ${delRow}` })
             return
         }
-        const resp = await delete_obs(String(id))
+        const resp = await delete_obs([String(id)])
         if (resp.success === 'SUCCESS') {
             setRows(rows.filter((row) => row._id !== id));
             context.setOBs(context.obs.filter((ob) => ob._id !== delRow?._id))
