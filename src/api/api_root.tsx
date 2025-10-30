@@ -115,7 +115,7 @@ const get_gaia_call = (gaia_id: string): Promise<GaiaResp> => {
 }
 
 const observer_logout_call = (): Promise<SubmitResp> => {
-    const url = API_ADDR + '/logout'
+    const url = '/logout'
     return axiosInstance.get(url)
         .then(handleResponse)
         .catch(handleError)
