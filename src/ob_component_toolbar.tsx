@@ -55,6 +55,9 @@ const getJson = (obs: OB[]) => {
             let translatedComponent: { [key: string]: unknown } = {}
             // @ts-ignore
             const schema = ob_schemas[ckey]
+            if (schema.type === 'array') { // no translation for array types. Just return it.
+                return [ckey, ob[ckey]]
+            }
             Object.keys(schema.properties).forEach(key => {
                 const props = schema.properties[key]
                 const tkey = props.translator_mapping ?? key

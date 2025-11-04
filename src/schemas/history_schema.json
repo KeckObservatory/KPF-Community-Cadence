@@ -1,0 +1,47 @@
+{
+    "title": "KPF History",
+    "description": "This document defines the schema for the KPF History component",
+    "type": "array",
+    "not_editable_by_user": true,
+    "items": {
+        "type": "object",
+        "description": "History entry",
+        "properties": {
+            "comment": {
+                "description": "comment made during observation",
+                "type": "string"
+            },
+            "observer": {
+                "description": "name of observer who made the comment",
+                "type": "string"
+            },
+            "timestamp": {
+                "description": "timestamp of when the comment was made",
+                "type": "string",
+                "format": "date-time"
+            },
+            "exposure_start_times": {
+                "description": "list of exposure start times associated with this comment",
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "exposure_times": {
+                "description": "list of exposure times (in seconds) associated with this comment",
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            },
+            "junk": {
+                "description": "marks whether this observation is junk or not",
+                "type": "array",
+                "items": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}
