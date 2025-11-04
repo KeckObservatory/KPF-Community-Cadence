@@ -56,7 +56,7 @@ const getJson = (obs: OB[]) => {
             // @ts-ignore
             const schema = ob_schemas[ckey]
             if (schema.type === 'array') { // no translation for array types. Just return it.
-                return [ckey, ob[ckey]]
+                return [ckey, ob[ckey as keyof OB]]
             }
             Object.keys(schema.properties).forEach(key => {
                 const props = schema.properties[key]
