@@ -58,7 +58,7 @@ interface DomeChartProps {
     // targets: DomeTarget[]
     targetView: TargetView[]
     showCurrLoc: boolean
-    time: Date 
+    time: Date
 }
 
 export const moon_color = '#702963'
@@ -314,12 +314,9 @@ export const DomeChart = (props: DomeChartProps) => {
     }
 
     return (
-        <>
-            <Plot
-                data={traces}
-                layout={layout}
-            />
-
-        </>
+        <Plot
+            data={traces}
+            layout={layout}
+        />
     )
 }
