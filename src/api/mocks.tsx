@@ -54,6 +54,6 @@ export const mock_submit_obs = async (obs: OB[]): Promise<SubmitResp> => {
     const obNames = obs.map((ob) => ob._id)
     return { details: 'mocked', message: `${obNames} mocked`, success: 'mocked', observing_blocks: [] }
 }
-export const mock_delete_ob = async (_id: string): Promise<SubmitResp> => {
-    return { details: 'mocked', message: `${_id} delete mocked`, success: 'mocked'}
+export const mock_delete_ob = async (ids: string[]): Promise<SubmitResp> => {
+    return { details: 'mocked', message: `${ids.join(', ')} delete mocked`, success: 'mocked'}
 }
