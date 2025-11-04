@@ -37,8 +37,9 @@ const map = Object.fromEntries(mapEntries)
 let componentNames = Object.keys(ob_schemas).filter(name => name !== 'calibration')
 componentNames = Object.keys(ob_schemas).filter(name => name !== 'history')
 
-const swap_translator_ob_to_ob_keys = (OB: { [key: string]: { [key: string]: object } }) => {
+const swap_translator_ob_to_ob_keys = (OB: { [key: string]: { [key: string]: object }}) => {
     //converts inported OB to swap translator_mapping and component keys
+    delete OB.history
     const obEntries = Object.entries(OB).map(([ckey, Component]) => {
         const componentEntries = Object.entries(Component).map(([Key, value]) => {
             return [map[ckey][Key], value]
