@@ -22,7 +22,6 @@ import { Metadata, OB, OBComponent, Observation, OBTarget, Schedule } from './mo
 import { useCommCadContext, useSnackbarContext } from './App';
 import { ob_to_component_row } from './ob_edit_util';
 import Box from '@mui/material/Box';
-import { DashboardButton } from './dashboard/dashboard_button';
 
 export type NewOB = Partial<OB> & {
     _id?: string
@@ -55,6 +54,9 @@ const getJson = (obs: OB[]) => {
             let translatedComponent: { [key: string]: unknown } = {}
             // @ts-ignore
             const schema = ob_schemas[ckey]
+            if (schema.type === 'array') { // no translation for array types. Just return it.
+                return [ckey, ob[ckey as keyof OB]]
+            }
             Object.keys(schema.properties).forEach(key => {
                 const props = schema.properties[key]
                 const tkey = props.translator_mapping ?? key
@@ -194,7 +196,6 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                         <>
                             <DeleteDialogButton disabled={deletedDisabled} selectedOBs={selectedOBs} color={deletedButtonColor} />
                             <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor} />
-                            {selectedOBs.length > 0 && <DashboardButton obs={selectedOBs} />}
                         </>
                     <GridToolbar
                         printOptions={{ disableToolbarButton: true }}

@@ -118,9 +118,19 @@ export interface Metadata {
   comment?: string,
 }
 
+export interface History {
+  comment: string
+  observer: string,
+  timestamp: string,
+  exposure_times: number[],
+  junk: boolean[]
+  exposure_start_times: string[],
+}
+
 
 export interface OB {
   _id: string,
+  history: History[],
   metadata: Metadata,
   observation: Observation,
   calibration: Calibration,

@@ -22,6 +22,9 @@ interface UploadProps extends Props {
 
 const mapEntries = Object.entries(ob_schemas).map(([ckey, schema]) => {
     const properties = schema.properties as { [key: string]: { translator_mapping: string } }
+    if (!properties) { //handle array component
+        return [ckey, {}]
+    }
     const k2kComponentEntries = Object.entries(properties).map(([key, value]) => {
         return [value.translator_mapping ?? key, key] as [string, string]
     })
@@ -31,10 +34,12 @@ const mapEntries = Object.entries(ob_schemas).map(([ckey, schema]) => {
 
 
 const map = Object.fromEntries(mapEntries)
-const componentNames = Object.keys(ob_schemas).filter(name => name !== 'calibration')
+let componentNames = Object.keys(ob_schemas).filter(name => name !== 'calibration')
+componentNames = Object.keys(ob_schemas).filter(name => name !== 'history')
 
-const swap_translator_ob_to_ob_keys = (OB: { [key: string]: { [key: string]: object } }) => {
+const swap_translator_ob_to_ob_keys = (OB: { [key: string]: { [key: string]: object }}) => {
     //converts inported OB to swap translator_mapping and component keys
+    delete OB.history
     const obEntries = Object.entries(OB).map(([ckey, Component]) => {
         const componentEntries = Object.entries(Component).map(([Key, value]) => {
             return [map[ckey][Key], value]

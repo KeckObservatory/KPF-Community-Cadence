@@ -131,7 +131,6 @@
             "type": "number",
             "description": "Threshold flux at the science detector at which to terminate the exposure [e-/nm",
             "short_description": "Exposure Meter Threshold",
-            "default": 50000,
             "multipleOf": 1,
             "translator_mapping": "ExpMeterThreshold"
         }
