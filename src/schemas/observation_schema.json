@@ -95,7 +95,6 @@
             "short_description": "Exposure Meter Th",
             "regex": "^\\d*$",
             "format": "strNumber",
-            "default": 50000,
             "translator_mapping": "ExpMeterThreshold"
         },
         "take_simulcal": {
