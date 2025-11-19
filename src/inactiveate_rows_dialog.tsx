@@ -118,12 +118,13 @@ export default function InactivateDialogButton(props: Props) {
       return
     }
 
-    //update table view
-    const remOBs = context.obs.filter((ob: OB) => {
-      return !obs.map(ob => ob._id).includes(ob._id)
+    //update obs to show inactive status
+    const updatedOBs = context.obs.map((ob: OB) => {
+      const matchingOB = obs.find((o) => o._id === ob._id);
+      return matchingOB ? matchingOB : ob
     });
     console.log('inactive obs', obs)
-    context.setOBs(remOBs);
+    context.setOBs(updatedOBs);
     refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     setOpen(false);
   };
