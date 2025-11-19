@@ -47,6 +47,7 @@ export interface ComponentRow extends OBComponent {
     _id: string;
     target_name_semid: string,
     target_name?: string,
+    inactive?: boolean,
     state: string;
     submitted: boolean;
     ob_feasible?: boolean;
@@ -478,11 +479,19 @@ export default function OBComponentTable(props: Props) {
                         selectedRows
                         }
 
+    const getRowStyling = (params: GridRowParams) => {
+        if (params.row.ob_inactive) {
+          return 'greyed-out-row';
+        }
+        return '';
+      };
+
     return (
         <Box
             sx={{
                 height: 500,
                 width: '100%',
+
                 '& .actions': {
                     color: 'text.secondary',
                 },
@@ -495,6 +504,17 @@ export default function OBComponentTable(props: Props) {
                 rows={rows ?? []}
                 getRowId={(row) => row._id}
                 editMode={'row'}
+                getRowClassName={getRowStyling}
+                sx={{
+                    '.greyed-out-row': {
+                    backgroundColor: '#f0f0f0',
+                    color: '#999',
+                    opacity: 0.7,
+                    '&:hover': { // Optional: adjust hover style for greyed-out rows
+                        backgroundColor: '#e0e0e0',
+                    },
+                    }
+                }}
                 checkboxSelection={true}
                 processRowUpdate={processRowUpdate}
                 columns={columns}

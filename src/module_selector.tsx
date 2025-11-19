@@ -114,6 +114,7 @@ export interface Metadata {
   ob_feasible?: boolean,
   details?: string,
   status?: string,
+  ob_inactive?: boolean,
   tags?: string[],
   comment?: string,
 }
