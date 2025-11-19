@@ -88,8 +88,8 @@ export default function MetadataForm(props: Props) {
                                         id="tags"
                                     />
                                 </Tooltip>
+                                {CreateSwitchField('ob_inactive')}
                             </Stack>
-                            {CreateSwitchField('inactive')}
                         </Box>
                     </Paper>
                 </Stack>
