@@ -22,6 +22,7 @@ import { Metadata, OB, OBComponent, Observation, OBTarget, Schedule } from './mo
 import { useCommCadContext, useSnackbarContext } from './App';
 import { ob_to_component_row } from './ob_edit_util';
 import Box from '@mui/material/Box';
+import InactivateDialogButton from './inactiveate_rows_dialog';
 
 export type NewOB = Partial<OB> & {
     _id?: string
@@ -196,6 +197,7 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                         <>
                             <DeleteDialogButton disabled={deletedDisabled} selectedOBs={selectedOBs} color={deletedButtonColor} />
                             <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor} />
+                            <InactivateDialogButton disabled={submitDisabled} selectedOBs={validSelectedOBs} color={submitButtonColor} />
                         </>
                     <GridToolbar
                         printOptions={{ disableToolbarButton: true }}

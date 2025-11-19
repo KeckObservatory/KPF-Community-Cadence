@@ -507,8 +507,8 @@ export default function OBComponentTable(props: Props) {
                 getRowClassName={getRowStyling}
                 sx={{
                     '.greyed-out-row': {
-                    backgroundColor: '#f0f0f0',
-                    color: '#999',
+                    backgroundColor: '#7b7b7bff',
+                    color: '#131313ff',
                     opacity: 0.7,
                     '&:hover': { // Optional: adjust hover style for greyed-out rows
                         backgroundColor: '#e0e0e0',
