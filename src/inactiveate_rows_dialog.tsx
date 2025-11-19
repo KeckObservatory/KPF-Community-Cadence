@@ -128,9 +128,9 @@ export default function InactivateDialogButton(props: Props) {
     setOpen(false);
   };
 
-  let tooltipMsg = "Delete selected target(s)"
+  let tooltipMsg = "Set selected OB(s) to inactive"
   if (props.disabled) {
-    tooltipMsg += " (No targets selected)"
+    tooltipMsg += " (No OBs selected)"
   }
 
   return (
