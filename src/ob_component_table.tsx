@@ -507,12 +507,8 @@ export default function OBComponentTable(props: Props) {
                 getRowClassName={getRowStyling}
                 sx={{
                     '.greyed-out-row': {
-                    backgroundColor: '#7b7b7bff',
-                    color: '#131313ff',
+                    color: '#515151ff',
                     opacity: 0.7,
-                    '&:hover': { // Optional: adjust hover style for greyed-out rows
-                        backgroundColor: '#e0e0e0',
-                    },
                     }
                 }}
                 checkboxSelection={true}
