@@ -110,6 +110,10 @@ export default function InactivateDialogButton(props: Props) {
         }
       }
     })
+    if (obs.length === 0) {
+      setOpen(false);
+      return
+    }
     const resp = await submit_obs(obs)
     if (resp.success !== 'SUCCESS') {
       console.error('error while inactivating OBs', resp)
