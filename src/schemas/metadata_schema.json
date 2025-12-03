@@ -53,6 +53,11 @@
             "short_description": "KPF-CC Feasible?",
             "not_editable_by_user": true
         },
+        "ob_inactive": {
+            "type": ["boolean", "null"],
+            "short_description": "Inactive?",
+            "description": "Is this OB currently under observation or is it inactive?"
+        },
         "submitter": {
             "type": "string",
             "description": "Submitter",

@@ -10,7 +10,7 @@ import {
 import { MuiChipsInput } from 'mui-chips-input';
 import { ComponentRow } from '../ob_component_table';
 import { Metadata } from '../module_selector';
-import { input_label, tag_array_change, BaseChangeInput, ArrayChangeInput } from '../ob_edit_util';
+import { switch_change, input_label, tag_array_change, BaseChangeInput, ArrayChangeInput, SwitchChangeInput, make_switch_field } from '../ob_edit_util';
 
 interface Props {
     open: boolean
@@ -35,6 +35,19 @@ export default function MetadataForm(props: Props) {
             value
         }
         tag_array_change(input)
+    }
+
+    const handleSwitchChange = (key: string, event: React.SyntheticEvent<Element, Event>) => {
+        const input: SwitchChangeInput = {
+            ...baseInput,
+            key,
+            event
+        }
+        switch_change(input)
+    }
+
+    const CreateSwitchField = (key: string) => {
+        return make_switch_field(key, metadata, componentName, handleSwitchChange)
     }
 
     return (
@@ -75,6 +88,7 @@ export default function MetadataForm(props: Props) {
                                         id="tags"
                                     />
                                 </Tooltip>
+                                {CreateSwitchField('ob_inactive')}
                             </Stack>
                         </Box>
                     </Paper>
