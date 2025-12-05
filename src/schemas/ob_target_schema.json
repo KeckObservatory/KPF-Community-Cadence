@@ -102,7 +102,7 @@
             "type": ["number", "string"],
             "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "format": "strNumber",
-            "description": "Proper Motion in RA [milliarcseconds/year]",
+            "description": "Proper Motion in RA [arcseconds/year]",
             "short_description": "PM RA",
             "translator_mapping": "PMRA"
         },
@@ -110,7 +110,7 @@
             "type": ["number", "string"],
             "regex": "^[+-]?\\d*([\\.]\\d*)?$",
             "format": "strNumber",
-            "description": "Proper Motion in Dec [milliarcseconds/year]",
+            "description": "Proper Motion in Dec [arcseconds/year]",
             "short_description": "PM Dec",
             "translator_mapping": "PMDEC"
         },
