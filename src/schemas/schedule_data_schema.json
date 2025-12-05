@@ -4,82 +4,143 @@
     "type": "object",
     "properties": {
         "scheduling_mode": {
-            "translator_mapping": "SchedulingMode",
-            "description": "FixedTime, Cadence, or Single",
-            "enum": ["FixedTime", "Cadence", "Single"],
             "type": "string",
-            "default": "Single"
+            "translator_mapping": "SchedulingMode",
+            "description": "Scheduling Mode: Cadence, or Single",
+            "short_description": "Scheduling Mode",
+            "enum": ["Cadence", "Single"]
         },
-        "num_visits_per_night": {
-            "translator_mapping": "VisitsPerNight",
-            "description": "(Cadence mode) Number of Visits per Night",
-            "type": "integer",
-            "default": 1
+        "desired_num_visits_per_night": {
+            "type": ["integer", "string"],
+            "translator_mapping": "DesiredVisitsPerNight",
+            "description": "(Cadence mode) Desired Number of Visits per Night",
+            "short_description": "Desired # Visits",
+            "regex": "^\\d*$",
+            "minimum": 1
+        },
+        "minimum_num_visits_per_night": {
+            "type": ["integer", "string"],
+            "translator_mapping": "MinVisitsPerNight",
+            "description": "(Cadence mode) Minimum Number of Visits per Night",
+            "short_description": "Minimum # Visits",
+            "regex": "^\\d*$",
+            "minimum": 1
         },
         "num_nights_per_semester": {
+            "type": ["integer", "string"],
             "translator_mapping": "NightsPerSemester",
             "description": "(Cadence mode) Number of of Nights Per Semester",
-            "type": "integer",
-            "default": 1
+            "short_description": "# Nights",
+            "regex": "^\\d*$",
+            "minimum": 1
         },
         "num_internight_cadence": {
+            "type": ["integer", "string"],
             "translator_mapping": "interNightCadenceMin",
-            "description": "(Cadence mode) Minimum Inter-Night Cadence (hours)",
-            "type": "integer",
-            "default": 0
+            "description": "(Cadence mode) Minimum Inter-Night Cadence (days) is the time difference of between consecutive observations spread over multiple nights",
+            "short_description": "Internight Cadence",
+            "regex": "^\\d*$"
         },
         "num_intranight_cadence": {
+            "type": ["integer", "string"],
             "translator_mapping": "intraNightCadenceMin",
-            "description": "(Cadence mode) Minimum Intra-Night Cadence (days)",
-            "type": "number",
-            "default": 1,
-            "multipleOf": 0.01 
+            "description": "(Cadence mode) Minimum Intra-Night Cadence (hours) is the frequency and timing of observations make within a single night",
+            "short_description": "Intranight Cadence",
+            "regex": "^\\d*$"
         },
         "fast_read_mode_requested": {
+            "type": "boolean",
             "translator_mapping": "FastreadModeRequested",
             "description": "(FixedTime mode) Does this OB request Fast Read Mode?",
-            "type": "boolean",
-            "default": false
-        },
-        "fixed_time_start": {
-            "translator_mapping": "FixedTimeStart",
-            "description": "(FixedTime mode) Start of requested window",
-            "type": "string",
-            "default": ""
-        },
-        "fixed_time_end": {
-            "translator_mapping": "FixedTimeEnd",
-            "description": "(FixedTime mode) End of requested window",
-            "type": "string",
-            "default": ""
-        },
-        "weather_band": {
-            "translator_mapping": "WeatherBand",
-            "description": "[bitmap] 3 bits for to bands 1, 2, and 3",
-            "type": "integer",
-            "default": 7
-        },
-        "accessibility_map": {
-            "translator_mapping": "AccessibilityMap",
-            "description": "[bitmap] If custom map is input, this is the AND with the default map based on inputs below",
-            "type": "integer",
-            "default": 0
+            "show_column": false,
+            "short_description": "Fast Read Mode"
         },
         "minimum_elevation": {
+            "type": ["number", "string"],
             "translator_mapping": "MinimumElevation",
             "description": "[deg] Below 30 degrees elevation, the ADC performance degrades dramatically.",
-            "type": "number",
-            "default": 30,
+            "short_description": "Minimum Elevation",
+            "format": "strNumber",
+            "formatMinimum": "18",
+            "formatMaximum": "85",
+            "minimum": 18,
+            "maximum": 85,
+            "regex": "^[+]?\\d*([\\.]\\d*)?$",
             "multipleOf": 0.1
         },
         "minimum_moon_separation": {
+            "type": ["number", "string"],
+            "format": "strNumber",
             "translator_mapping": "MinimumMoonSeparation",
-            "description": "[deg]",
-            "type": "number",
-            "default": 15,
-            "precision": 0.1
+            "short_description": "Moon Separation",
+            "description": "Minimum moon separation angle [deg]",
+            "formatMinimum": "0",
+            "regex": "^[+]?\\d*([\\.]\\d*)?$",
+            "minimum": 0,
+            "multipleOf": 0.1
+        },
+        "weather_band_1": {
+            "type": "boolean",
+            "description": "Is Weather Band 1 acceptable?",
+            "short_description": "Band 1",
+            "default": true
+        },
+        "weather_band_2": {
+            "type": "boolean",
+            "description": "Is Weather Band 2 acceptable?",
+            "short_description": "Band 2",
+            "default": true
+        },
+        "weather_band_3": {
+            "type": "boolean",
+            "description": "Is Weather Band 3 acceptable?",
+            "short_description": "Band 3",
+            "default": false
+        },
+        "total_observations_requested": {
+            "type": ["integer", "string"],
+            "description": "Total Observations Requested",
+            "not_editable_by_user": true
+        },
+        "total_time_for_target": {
+            "type": ["number", "string"],
+            "description": "Total Time for Target [seconds]",
+            "not_editable_by_user": true
+        },
+        "total_time_for_target_hours": {
+            "type": ["number", "string"],
+            "description": "Total Time for Target [hours]",
+            "not_editable_by_user": true
+        },
+        "comment": {
+            "type": "string",
+            "description": "Observing Notes"
+        },
+        "custom_time_constraints": {
+            "type": "array",
+            "description": "Enter the timestamp to [START / END] a custom window of time in which your target can be scheduled. Note that timestamps must be UT and follow the format in the textbox. All starting times must have a corresponding end time and vice versa. We do not guarantee that observations will be made within this window, but we do guarantee observations will not be made outside the window.",
+            "short_description": "Custom Time Constraints",
+            "items": {
+                "description": "A single custom time constraint",
+                "short_description": "time constraint",
+                "type": "object",
+                "properties": {
+                    "start_datetime": {
+                        "type": "string",
+                        "description": "start time in YYYY-MM-DDTHH:MM format (UTC)"
+                    },
+                    "end_datetime": {
+                        "type": "string",
+                        "description": "end time in YYYY-MM-DDTHH:MM format (UTC)"
+                    }
+                }
+            }
         }
     },
-    "required": [ ],
+    "required": [ 
+        "num_internight_cadence",
+        "minimum_num_visits_per_night",
+        "num_nights_per_semester"
+    ],
     "additionalProperties": true
 }

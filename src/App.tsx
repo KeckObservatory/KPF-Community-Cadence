@@ -5,17 +5,16 @@ import { TopBar } from './top_bar';
 import { ThemeProvider } from "@mui/material/styles";
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import TargetTable from './target_table';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { UserInfo, get_all_targets, get_semids, get_userinfo } from './api/api_root';
+import { UserInfo, get_obs, get_semids, get_userinfo } from './api/api_root';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
-import { SimbadTargetData } from './simbad_button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { LicenseInfo } from '@mui/x-license';
 import licenseKey from './license.json'
+import { ModuleSelector, OB } from './module_selector';
 
 
 
@@ -33,48 +32,24 @@ LicenseInfo.setLicenseKey(
   licenseKey.license_key
 )
 
-export interface Target extends SimbadTargetData {
-  _id?: string,
-  semid: string,
-  target_name?: string,
-  j_mag?: number,
-  t_eff?: number,
-  systemic_velocity?: number,
-  submitted?: boolean,
-  state?: string,
-  simulcal_on?: boolean,
-  nominal_exposure_time?: number
-  maximum_exposure_time?: number,
-  num_internight_cadence?: number,
-  num_intranight_cadence: number,
-  num_exposures_per_visit?: number,
-  num_visits_per_night?: number,
-  num_unique_nights_per_semester?: number,
-  target_feasible?: boolean,
-  rise_semester_day?: number,
-  sets_semester_day?: number,
-  details?: string,
-  status?: string,
-  submitter?: string,
-  total_observations_requested?: number,
-  total_time_for_target?: number,
-  total_time_for_target_hours?: number,
-}
-
 interface State {
   username: string,
   obsid: number,
   userinfo?: UserInfo,
   semids: string[],
-  targets: Target[],
+  semester: string,
+  obs: OB[],
   total_hours: number,
   total_observations: number
 }
 
 export interface CCContext extends State {
   semid: string,
+  semester: string,
+  obs: OB[],
+  setSemester: Function,
   isAdmin: boolean,
-  setTargets: Function,
+  setOBs: Function,
   setObserverId: Function
   setSemid: Function
   setTotalHours: Function
@@ -85,14 +60,16 @@ const init_cc_context: CCContext = {
   username: "Dr. Observer Observerson",
   isAdmin: false,
   userinfo: undefined,
+  semester: 'XXXX_XXXX',
+  setSemester: () => { },
   obsid: 1234,
   semid: 'XXXX_XXXX',
   semids: [],
-  targets: [],
+  obs: [],
   total_hours: 0,
   total_observations: 0,
   setSemid: () => { },
-  setTargets: () => { },
+  setOBs: () => { },
   setObserverId: () => { },
   setTotalHours: () => { },
   setTotalObservations: () => { },
@@ -106,7 +83,7 @@ export interface SnackbarMessage {
   severity?: 'success' | 'error' | 'warning' | 'info';
 }
 
-export interface SnackbarContextProps {
+export interface SnackbarContext{
   snackbarOpen: boolean;
   setSnackbarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   snackbarMessage: SnackbarMessage;
@@ -114,7 +91,7 @@ export interface SnackbarContextProps {
 }
 
 
-const init_snackbar_context: SnackbarContextProps = {
+const init_snackbar_context: SnackbarContext= {
   snackbarOpen: false,
   setSnackbarOpen: () => { },
   snackbarMessage: { severity: 'success', message: 'defaultMessage' },
@@ -125,7 +102,7 @@ export interface RefreshTableContext {
   refreshTable: number
   setRefreshTable: Function
 }
-const SnackbarContext = createContext<SnackbarContextProps>(init_snackbar_context);
+const SnackbarContext = createContext<SnackbarContext>(init_snackbar_context);
 export const useSnackbarContext = () => useContext(SnackbarContext);
 
 const refreshTableContext = createContext<RefreshTableContext>({
@@ -133,6 +110,7 @@ const refreshTableContext = createContext<RefreshTableContext>({
   setRefreshTable: () => { }
 })
 export const useRefreshTableContext = () => useContext(refreshTableContext)
+
 
 function App() {
   const [darkState, setDarkState] = useQueryParam('darkState', withDefault(BooleanParam, true));
@@ -146,13 +124,17 @@ function App() {
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>({})
   const [refreshTable, setRefreshTable] = useState(0)
 
+  const date = new Date()
+  let initSemester = String(date.getFullYear()) + (date.getMonth() < 8 || date.getMonth() > 2 ? 'B' : 'A')
+
   useEffect(() => {
     const fetchData = async () => {
-      const userinfo = await get_userinfo();
+      let userinfo = await get_userinfo();
       const title = userinfo.Title ? userinfo.Title + ' ' : ''
       const username = `${title}${userinfo.FirstName} ${userinfo.LastName}`;
       const obsid = userinfo.Id;
-      const semidResp = await get_semids(obsid);
+      let semidResp = await get_semids(obsid);
+
       if (semidResp.success !== 'SUCCESS') {
         setSnackbarMessage({
           severity: 'error',
@@ -162,43 +144,59 @@ function App() {
       }
 
       let semids = semidResp.programs.map((p: any) => p.semid)
-      // const semid = semids[0]
+      const initSemid = semids.at(0)
+      initSemester = initSemid?.split('_')[0]
       if (semid === undefined) {
-        setSemid(semids[0])
+        setSemid(initSemid)
       }
-      if (semidResp.isAdmin === 'true') {
-        setIsAdmin(true)
-      }
-      const resp = await get_all_targets(semid);
+      semidResp.isAdmin === 'true' && setIsAdmin(true)
+      // if admin, get all OBs for the semester, otherwise initialize with semid
+      semidResp.isAdmin ? (
+        //handleGetOBs(initSemester, undefined) //takes too long to load
+        handleGetOBs(undefined, semid)
+      ) : (
+        handleGetOBs(undefined, semid)
+      )
 
-      let targets: Target[] = []
-      let total_hours = 0
-      let total_observations = 0
-      if (resp.success === 'SUCCESS') {
-        targets = resp.targets
-        total_hours = resp.total_hours
-        total_observations = resp.total_observations
-      }
-      else {
-        setSnackbarMessage({
-          severity: 'error',
-          message: `Failed to get Targets. Details: ${resp.message}`
-        })
-      }
-
-      setState({
-        obsid: obsid,
-        username,
-        userinfo,
-        semids: semids,
-        total_hours,
-        total_observations,
-        targets
+      setState((st) => {
+        return {
+          ...st,
+          obsid: obsid,
+          username,
+          userinfo,
+          semids: semids,
+          semester: initSemester
+        }
       });
       setInit(true)
     };
     fetchData();
   }, []);
+
+  const handleGetOBs = async (semester?: string, semid?: string) => {
+
+    const resp = await get_obs(semester, semid);
+    console.log('get_obs response', resp)
+
+    if (resp.success !== 'SUCCESS') {
+      setSnackbarMessage({
+        severity: 'error',
+        message: `Failed to get OBs. Details: ${resp.message}`
+      })
+      return
+    }
+
+    setState((st) => {
+      return {
+        ...st,
+        obs: resp.observing_blocks ?? [],
+        total_hours: resp.total_hours ?? 0,
+        total_observations: resp.total_observations ?? 0,
+        semester: semester ?? st.semester
+      }
+    })
+  }
+
 
   useEffect(() => {
     snackbarMessage.message && setOpenSnackbar(true)
@@ -219,12 +217,18 @@ function App() {
             obsid: state.userinfo?.Id ?? "XXXX",
             semids: state.semids ?? [],
             semid: semid ?? "XXXX_XXXX",
+            semester: state.semester,
+            setSemester: (semester: string) => {
+              setState((st) => {
+                return { ...st, semester }
+              })
+            },
             total_hours: state.total_hours,
             total_observations: state.total_observations,
-            targets: state.targets,
-            setTargets: (targets: Target[]) => {
+            obs: state.obs ?? [],
+            setOBs: (obs: OB[]) => {
               setState((st) => {
-                return { ...st, targets: targets }
+                return { ...st, obs }
               })
             },
             setSemid,
@@ -233,9 +237,9 @@ function App() {
                 return { ...st, semids }
               })
             },
-            setObserverId: (oid: string) => {
+            setObserverId: (oid: number) => {
               setState((st) => {
-                return { ...st, observer_id: oid }
+                return { ...st, obsid: oid }
               })
             },
             setTotalHours: (total_hours: number) => {
@@ -287,9 +291,11 @@ function App() {
                 }}
               >
                 <Control notApproved={notApproved} isAdmin={isAdmin} />
-                {init ? (
-                  <TargetTable />
-                ) : <Skeleton variant="rectangular" width="100%" height={500} />}
+                {init ?
+                  <ModuleSelector />
+                  :
+                  <Skeleton variant="rectangular" width="100%" height={500} />
+                }
               </Paper>
             </Stack>
           </SnackbarContext.Provider>

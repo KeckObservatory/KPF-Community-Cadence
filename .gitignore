@@ -9,10 +9,18 @@ lerna-debug.log*
 
 node_modules
 dist
+#dashboard
 build
+data
+forJeff
+*.zip
 dist-ssr
 *.local
 license.json
+
+#python stuff
+*.pyc
+.ipynb_checkpoints
 
 # Editor directories and files
 .vscode/*

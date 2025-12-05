@@ -10,17 +10,16 @@ import Typography from '@mui/material/Typography';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-import { UploadComponent } from './upload_targets_dialog';
-import { get_simbad_data } from './simbad_button';
+import { UploadComponent } from './upload_obs_dialog';
+import { get_simbad_and_gaia_target_info } from './catalog_button';
 import { Control } from './control';
-import { useCommCadContext, useRefreshTableContext, useSnackbarContext, Target } from './App';
+import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App';
 import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
-import { save_target } from './api/api_root';
+import { save_obs } from './api/api_root';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { create_new_target } from './target_table';
-// import Autocomplete from '@mui/material/Autocomplete';
-// import TextField from '@mui/material/TextField';
+import { create_new_ob } from './ob_component_toolbar'
+import { OB } from './module_selector';
 
 
 interface Props {
@@ -33,58 +32,65 @@ interface Props {
 
 function LinearProgressWithLabel(props: LinearProgressProps &
 {
-    targets: Target[]
-    setTargets: Function,
+    obs: OB[]
+    setOBs: Function,
     open: boolean
     catalog: string
 }
 ) {
 
     const context = useCommCadContext()
-    const [targetName, setTargetName] = React.useState('')
-    const [label, setLabel] = React.useState('Create Targets')
+    const [obName, setOBName] = React.useState('')
+    const [label, setLabel] = React.useState('Create OBs')
 
-    const { targets, setTargets, open, catalog } = props
+    const { obs, setOBs, open, catalog } = props
     const [progress, setProgress] = React.useState(0)
-    const generate_targets_from_list = async () => {
-        setLabel('Loading Targets')
-        const tgts: Target[] = []
-        for (let idx = 0; idx < targets.length; idx++) {
-            const csvTarget = targets[idx]
-            const tgtName = csvTarget.target_name ?? false
+    const newOBs = [] as OB[]
+    const generate_obs_from_list = async () => {
+        setLabel('Loading OBs')
+        for (let idx = 0; idx < obs.length; idx++) {
+            const ob = obs[idx]
+            const tgtName = ob.target?.target_name ?? false
             console.log(tgtName)
             if (!tgtName) continue
-            setTargetName(tgtName)
+            setOBName(tgtName)
             if (!open) break
 
-            const baseTarget = create_new_target(
+            const baseOB = create_new_ob(
                 context.semid ?? "",
-                undefined,
+                context.obsid,
                 tgtName)
-            let newTarget = { ...baseTarget, ...csvTarget }
-            if (catalog !== 'NONE' || !csvTarget.tic_id || !csvTarget.gaia_id) { // if no tic or gaia id, get catalog data
-                const simbadData = await get_simbad_data(tgtName)
-                // fill with base, then catalog data, then target uploaded from csv
-                newTarget = { ...baseTarget, ...simbadData, ...csvTarget } as Target
+            let newOB: OB = { ...baseOB, ...ob }
+            if (catalog !== 'NONE' || !ob.target?.tic_id || !ob.target?.gaia_id) { // if no tic or gaia id, get catalog data
+                try {
+                    const catalogTargetInfo = await get_simbad_and_gaia_target_info(tgtName)
+                    // fill with base, then catalog data, then OB uploaded from json 
+                    const catalogTarget = { ...ob.target, ...catalogTargetInfo }
+                    newOB = { ...newOB, target: catalogTarget } as OB
+                }
+                catch (err) {
+                    const msg = `Failed to get simbad data for ${tgtName}`
+                    console.warn(msg, err)
+                }
             }
-            tgts.push(newTarget)
-            setProgress(((idx + 1) / targets.length) * 100)
+            newOBs.push(newOB)
+            setProgress(((idx + 1) / obs.length) * 100)
         }
 
         setProgress(100)
-        setTargets(tgts)
-        setLabel('Targets Created')
+        setOBs(newOBs)
+        setLabel('OBs Created')
     }
     return (
         <>
             <Button
                 disabled={label.includes('Loading')}
-                onClick={generate_targets_from_list}>
+                onClick={generate_obs_from_list}>
                 {label}
             </Button>
-            {targetName && (
+            {obName && (
                 <Typography variant="body2" color="text.secondary">
-                    {targetName}
+                    {obName}
                 </Typography>
             )}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -102,58 +108,64 @@ function LinearProgressWithLabel(props: LinearProgressProps &
 }
 
 
-const TargetStepper = (props: Props) => {
+const OBStepper = (props: Props) => {
 
     const [activeStep, setActiveStep] = React.useState(0);
-    const [label, setLabel] = React.useState("Load Target Names");
+    const [label, setLabel] = React.useState("Load OB Names");
     const [catalog, _] = React.useState("SIMBAD");
-    const [targets, setTargets] = React.useState([] as Target[])
+    const [obs, setOBs] = React.useState([] as OB[])
     const context = useCommCadContext()
     const refreshTableContext = useRefreshTableContext()
     const [canContinue, setCanContinue] = React.useState(false)
-    const [saveMessage, setSaveMessage] = React.useState('All steps completed - Targets are ready to be saved')
+    const [saveMessage, setSaveMessage] = React.useState('All steps completed - OBs are ready to be saved')
 
     const snackbarContext = useSnackbarContext()
 
     React.useEffect(() => {
         let cont = false
         if (activeStep === 0) { cont = (context.semid) ? true : false }
-        if (activeStep === 1) { cont = targets.length > 0 }
-        // if (activeStep === 2) { cont = targets.length > 0 } //Uncomment for catalog step
+        if (activeStep === 1) { cont = obs.length > 0 }
+        // if (activeStep === 2) { cont = obs.length > 0 } //TODO: Uncomment for catalog step when vizier is implemented
         // if (activeStep === 3) {
-        //     cont = targets.length > 0
-        //     setSaveMessage('All steps completed - Targets are ready to be saved')
+        //     cont = obs.length > 0
+        //     setSaveMessage('All steps completed - OBs are ready to be saved')
         // }
-        if (activeStep === 2) { //Comment if catalog step is uncommented
-            cont = targets.length > 0
-            setSaveMessage('All steps completed - Targets are ready to be saved')
+        if (activeStep === 2) { //TODO: Comment if catalog step is uncommented
+            cont = obs.length > 0
+            setSaveMessage('All steps completed - OBs are ready to be saved')
         }
         setCanContinue(cont)
-    }, [context, targets, activeStep])
+    }, [context, obs, activeStep])
 
-    const save_targets = async () => {
-        const resp = await save_target(targets, context.semid ?? '')
-        if (resp.success === 'SUCCESS') {
-            props.setOpen(false)
-            context.setTargets([...context.targets, ...resp.targets])
+    const handle_save_obs = async () => {
+        const resp = await save_obs(obs)
+        if (resp.observing_blocks.length > 0) {
+            context.setOBs([...context.obs, ...resp.observing_blocks])
             context.setTotalHours(resp.total_hours)
             refreshTableContext.setRefreshTable((prev: number) => { return prev + 1 })
             context.setTotalObservations(resp.total_observations)
+        }
+
+        if (resp.observing_blocks.length === obs.length) {
+            props.setOpen(false)
             snackbarContext.setSnackbarMessage(
-                { severity: 'success', message: `Targets saved!` }
+                { severity: 'success', message: `OBs saved!` }
             )
         }
         else {
-            console.error('Failed to save targets', resp)
-            setSaveMessage(`Failed to save targets: ${resp.details}`)
+            console.error('Failed to save any/all OBs', resp)
+            const names = resp.observing_blocks.map((ob: OB) => ob.target.target_name)
+            const missingNames = obs.map((ob: OB) => ob.target.target_name ?? "").filter((name: string) => !names.includes(name))
+            const details = resp.details ?? `missing obs: ${missingNames.join(', ')}`
+            setSaveMessage(`Failed to save OBs: ${details}`)
             snackbarContext.setSnackbarMessage(
-                { severity: 'error', message: `Target not submitted. Details: ${resp.details}` }
+                { severity: 'error', message: `OBs not submitted. Details: ${details}` }
             )
         }
     }
 
-    const setTargetsAndContinue = (targets: Target[]) => {
-        setTargets(targets)
+    const setOBsAndContinue = (obs: OB[]) => {
+        setOBs(obs)
         setCanContinue(true)
     }
 
@@ -168,13 +180,13 @@ const TargetStepper = (props: Props) => {
             component: <UploadComponent
                 setLabel={setLabel}
                 label={label}
-                setTargets={setTargetsAndContinue}
+                setOBs={setOBsAndContinue}
             />
         },
         // {
         //     label: 'Select Catalog',
         //     component:
-        //         <Tooltip placement="top" title="Select Catalog to autofill missing target information">
+        //         <Tooltip placement="top" title="Select Catalog to autofill missing ob information">
         //             <Autocomplete
         //                 disablePortal
         //                 id="catalog-selection"
@@ -187,10 +199,10 @@ const TargetStepper = (props: Props) => {
         //         </Tooltip>
         // },
         {
-            label: 'Create Targets',
+            label: 'Create OBs',
             component: <LinearProgressWithLabel
-                targets={targets}
-                setTargets={setTargetsAndContinue}
+                obs={obs}
+                setOBs={setOBsAndContinue}
                 catalog={catalog}
                 open={props.open} />
         },
@@ -249,8 +261,8 @@ const TargetStepper = (props: Props) => {
             {activeStep === stepComponents.length && (
                 <Paper square elevation={0} sx={{ p: 3 }}>
                     <Typography>{saveMessage}</Typography>
-                    <Button onClick={save_targets} sx={{ mt: 1, mr: 1 }}>
-                        Save Targets
+                    <Button onClick={handle_save_obs} sx={{ mt: 1, mr: 1 }}>
+                        Save OBs
                     </Button>
                     <Button
                         onClick={handleBack}
@@ -270,7 +282,7 @@ interface DialogProps {
     setOpen: Function
 }
 
-export const TargetWizardDialog = (props: DialogProps) => {
+export const OBWizardDialog = (props: DialogProps) => {
 
     const { onClose, open, setOpen } = props;
 
@@ -280,13 +292,13 @@ export const TargetWizardDialog = (props: DialogProps) => {
 
     return (
         <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>Target Wizard</DialogTitle>
-            <TargetStepper open={open} setOpen={setOpen} />
+            <DialogTitle>OB Wizard</DialogTitle>
+            <OBStepper open={open} setOpen={setOpen} />
         </Dialog>
     )
 }
 
-export const TargetWizardButton = () => {
+export const OBWizardButton = () => {
 
     const [open, setOpen] = React.useState(false);
     const handleClickOpen = () => {
@@ -298,12 +310,12 @@ export const TargetWizardButton = () => {
     };
     return (
         <div>
-            <Tooltip title="Upload Targets from .csv or .txt file">
+            <Tooltip title="Upload OBs from .json file. Note: JSON file expects a list of OBs separated by commas. ex: [{ob1}, {ob2}, ...]">
                 <Button onClick={handleClickOpen} startIcon={<UploadIcon />}>
-                    Upload Targets
+                    Upload OBs
                 </Button>
             </Tooltip>
-            <TargetWizardDialog
+            <OBWizardDialog
                 open={open}
                 setOpen={setOpen}
                 onClose={handleClose}

@@ -1,9 +1,8 @@
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import { useEffect, useState } from 'react'
 import { Autocomplete, Button, Tooltip, Typography } from '@mui/material'
 import { useCommCadContext, useRefreshTableContext, useSnackbarContext } from './App'
-import { SubmitResp, get_all_semester_targets, get_all_targets } from './api/api_root';
+import { SubmitResp, get_obs } from './api/api_root';
 
 export interface SPP {
     semid: string
@@ -16,74 +15,73 @@ interface Props {
     notApproved?: boolean
 }
 
-const cartesian = (sets: string[][]) => {
+const cartesian_product = (sets: string[][]) => {
     return sets.reduce((a, b) => a.flatMap(d => b.map(e => [d, e]).flat()));
 }
+
 
 export const Control = (props: Props) => {
 
     const context = useCommCadContext()
     const snackbarContext = useSnackbarContext()
 
+    const refreshContext = useRefreshTableContext()
     const date = new Date()
-    let initSemester = String(date.getFullYear()) + (date.getMonth() < 8 || date.getMonth() > 2 ? 'B' : 'A')
-    const [semester, setSemester] = useState<string | undefined>(initSemester)
-    const semestersArr = cartesian([[date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1].map(s => String(s)),
+    const semestersArr = cartesian_product([[date.getFullYear() - 1, date.getFullYear(), date.getFullYear() + 1].map(s => String(s)),
     ['A', 'B']])
     const semesters = semestersArr.join('').split(/(?=\d{4}[AB])/)
-    const refreshContext = useRefreshTableContext()
 
     const onSemesterChange = (value: string | undefined | null) => {
         if (!value) return
-        setSemester(value)
+        context.setSemester(value)
     }
-
-    useEffect(() => {
-    }, [])
 
     const handleResponse = (resp: SubmitResp, value: string | undefined | null) => {
         if (resp.success === 'SUCCESS') {
-            console.log('setting targets', resp)
+            console.log('setting observing blocks', resp)
             context.setTotalHours(resp.total_hours ?? 0)
             context.setTotalObservations(resp.total_observations ?? 0)
-            context.setTargets(resp.targets)
+            context.setOBs(resp.observing_blocks ?? [])
         }
         else {
             snackbarContext.setSnackbarMessage(
                 {
                     severity: 'error',
-                    message: `Error fetching targets for semid ${value}. Details: ${resp.details}`
+                    message: `Error fetching observing blocks for semid ${value}. Details: ${resp.details}`
                 })
             context.setTotalHours(0)
             context.setTotalObservations(0)
-            context.setTargets([])
+            context.setOBs(resp.observing_blocks ?? [])
         }
-        if (resp.message.includes('NO_TARGETS_FOUND')) {
+        if (resp.message.includes('NO_OBSERVING_BLOCKS_FOUND')) {
             snackbarContext.setSnackbarMessage(
                 {
                     severity: 'error',
-                    message: `No targets found for semid ${value}. Details: ${resp.details ?? resp.message}`
+                    message: `No observing blocks found for semid ${value}. Details: ${resp.details ?? resp.message}`
                 })
             context.setTotalHours(0)
             context.setTotalObservations(0)
-            context.setTargets(resp.targets)
+            context.setOBs(resp.observing_blocks ?? [])
         }
     }
 
     const onSemesterClick = async () => {
-        if (!semester) return
-        const resp = await get_all_semester_targets(semester, props.notApproved)
-        handleResponse(resp, semester)
+        if (!context.semester) return
+        console.log('semester clicked', context.semester)
+        //const resp = await get_all_semester_targets(context.semester, props.notApproved)
+        const resp = await get_obs(context.semester)
+        handleResponse(resp, context.semester)
         refreshContext.setRefreshTable(refreshContext.refreshTable + 1)
     }
 
 
-    const onChange = async (value: string | undefined | null) => {
-        if (!value) return
-        const resp = await get_all_targets(value)
-        setSemester(undefined)
-        handleResponse(resp, value)
-        context.setSemid(value)
+    const onSemidChange = async (semid: string | undefined | null) => {
+        if (!semid) return
+        console.log('semid clicked', semid)
+        const resp = await get_obs(undefined, semid)
+        context.setSemester(undefined)
+        handleResponse(resp, semid)
+        context.setSemid(semid)
     }
 
 
@@ -96,7 +94,7 @@ export const Control = (props: Props) => {
                         <Autocomplete
                             disablePortal
                             id="semid-selection"
-                            value={{ label: semester ?? 'Semester'}}
+                            value={{ label: context.semester ?? 'Semester' }}
                             onChange={(_, value) => onSemesterChange(value?.label)}
                             options={semesters.map((s) => { return { label: s } })}
                             sx={{ width: 300 }}
@@ -111,7 +109,7 @@ export const Control = (props: Props) => {
                     disablePortal
                     id="semid-selection"
                     value={context.semid ? { label: context.semid } : { label: 'semid' }}
-                    onChange={(_, value) => onChange(value?.label)}
+                    onChange={(_, value) => onSemidChange(value?.label)}
                     options={context.semids.map((s) => { return { label: s } })}
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Semester ID" />}

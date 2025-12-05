@@ -1,0 +1,226 @@
+{
+    "details": "5 observing blocks found",
+    "message": "",
+    "observing_blocks": [
+        {
+            "_id": "678eed98c1e4ef3e035159a7",
+            "calibration": {},
+            "del_flag": 0,
+            "metadata": {
+                "details": "OB has changed. Need to resubmit to check feasibility",
+                "history": [],
+                "isNew": false,
+                "last_modification": "2025-01-21 14:02:38",
+                "observer_name": "Dr. Josh Walawender",
+                "obsid": "4866",
+                "progid": "E462",
+                "semester": "2024B",
+                "semid": "2024B_E462",
+                "state": "OBSERVING_BLOCK_SAVED",
+                "status": "SUCCESS",
+                "submitted": true,
+                "submitter": "Tyler Coda",
+                "tags": []
+            },
+            "observation": {
+                "auto_exp_meter": true,
+                "auto_nd_filters": false,
+                "cal_n_d_1": "OD 3.0",
+                "cal_n_d_2": "OD 0.5",
+                "exp_meter_exp_time": 0,
+                "exp_meter_mode": "control",
+                "exp_meter_threshold": 234,
+                "exposure_time": 60,
+                "isNew": false,
+                "num_exposures": 3,
+                "object": "HR8799",
+                "trigger_ca_h_k": true,
+                "trigger_green": true,
+                "trigger_red": true
+            },
+            "schedule": {
+                "days_observable": 183,
+                "rise_semester_day": 1,
+                "scheduling_mode": "Cadence",
+                "sets_semester_day": 184
+            },
+            "target": {
+                "dec": "+21:08:03.310767492",
+                "dec_deg": 21.13,
+                "epoch": "J2000",
+                "g_mag": 5.91,
+                "gaia_id": "DR3_2832463659640297472",
+                "isNew": false,
+                "j_mag": 5.383,
+                "parallax": 24.46,
+                "pm_dec": -50.04,
+                "pm_ra": 108.284,
+                "ra": "23:07:28.7157209544",
+                "ra_deg": 346.87,
+                "systemic_velocity": -10.41,
+                "target_name": "HR 8799",
+                "tic_id": "No_TIC_Name",
+                "two_mass_id": "3"
+            }
+        },
+        {
+            "_id": "6790587a3167add08761026f",
+            "calibration": {},
+            "del_flag": 0,
+            "metadata": {
+                "details": "OB has changed. Need to resubmit to check feasibility",
+                "history": [],
+                "last_modification": "2025-01-21 17:09:42",
+                "observer_name": "Mr. Tyler Coda",
+                "obsid": "4866",
+                "progid": "K443",
+                "semester": "2024B",
+                "semid": "2024B_K443",
+                "state": "OBSERVING_BLOCK_SAVED",
+                "status": "SUCCESS",
+                "submitter": "Tyler Coda",
+                "tags": []
+            },
+            "observation": {},
+            "schedule": {
+                "scheduling_mode": "Cadence"
+            },
+            "target": {
+                "dec": "-23:41:49.699340844",
+                "dec_deg": -23.697138706,
+                "epoch": "2000",
+                "equinox": "2000",
+                "g_mag": "13.373862",
+                "gaia_id": "DR3_6194815228636688768",
+                "isNew": false,
+                "j_mag": "12.357",
+                "parallax": "0.9411",
+                "pm_dec": "45.515",
+                "pm_ra": "-52.47",
+                "ra": "13:30:05.9394958608",
+                "ra_deg": 202.5247478994,
+                "systemic_velocity": "61.74",
+                "target_name": "HE1327-2326",
+                "tic_id": "423687511",
+                "two_mass_id": "J13300595"
+            }
+        },
+        {
+            "_id": "6790615d3167add08761029c",
+            "calibration": {},
+            "del_flag": 0,
+            "metadata": {
+                "details": "OB has changed. Need to resubmit to check feasibility",
+                "history": [],
+                "last_modification": "2025-01-21 17:09:28",
+                "observer_name": "Mr. Tyler Coda",
+                "obsid": "4866",
+                "progid": "K443",
+                "semester": "2024B",
+                "semid": "2024B_K443",
+                "state": "OBSERVING_BLOCK_SAVED",
+                "status": "SUCCESS",
+                "submitter": "Tyler Coda",
+                "tags": []
+            },
+            "observation": {},
+            "schedule": {
+                "scheduling_mode": "Cadence"
+            },
+            "target": {
+                "dec": "-00:58:32.290187664",
+                "dec_deg": -0.98,
+                "epoch": "J2000",
+                "equinox": 2000,
+                "g_mag": 14.02,
+                "gaia_id": "DR3_3251244858154433536",
+                "isNew": false,
+                "j_mag": 14.75,
+                "parallax": 32.22,
+                "pm_dec": -162.952,
+                "pm_ra": 84.622,
+                "ra": "03:48:50.1859724280",
+                "ra_deg": 57.21,
+                "systemic_velocity": 176.2,
+                "target_name": "gd50",
+                "tic_id": "333701850",
+                "two_mass_id": "J03485018"
+            }
+        },
+        {
+            "_id": "679061753167add0876102a3",
+            "calibration": {},
+            "del_flag": 0,
+            "metadata": {
+                "details": "OB has changed. Need to resubmit to check feasibility",
+                "history": [],
+                "last_modification": "2025-01-21 17:09:41",
+                "observer_name": "Mr. Tyler Coda",
+                "obsid": "4866",
+                "progid": "K443",
+                "semester": "2024B",
+                "semid": "2024B_K443",
+                "state": "OBSERVING_BLOCK_SAVED",
+                "status": "SUCCESS",
+                "submitter": "Tyler Coda",
+                "tags": []
+            },
+            "observation": {},
+            "schedule": {
+                "scheduling_mode": "Cadence"
+            },
+            "target": {
+                "target_name": "TBD"
+            }
+        },
+        {
+            "_id": "6790617b3167add0876102a8",
+            "calibration": {},
+            "del_flag": 0,
+            "metadata": {
+                "details": "OB has changed. Need to resubmit to check feasibility",
+                "history": [],
+                "last_modification": "2025-01-21 17:10:18",
+                "observer_name": "Mr. Tyler Coda",
+                "obsid": "4866",
+                "progid": "K443",
+                "semester": "2024B",
+                "semid": "2024B_K443",
+                "state": "OBSERVING_BLOCK_SAVED",
+                "status": "SUCCESS",
+                "submitter": "Tyler Coda",
+                "tags": []
+            },
+            "observation": {},
+            "schedule": {
+                "scheduling_mode": "Cadence"
+            },
+            "target": {
+                "comment": "'E1327-2326' this identifier has an incorrect format for catalog:",
+                "dec": "-23:41:49.699340844",
+                "dec_deg": -23.7,
+                "epoch": "J2000",
+                "equinox": 2000,
+                "g_mag": 13.37,
+                "gaia_id": "DR3_6194815228636688768",
+                "isNew": false,
+                "j_mag": 12.357,
+                "parallax": 0.94,
+                "pm_dec": 45.515,
+                "pm_ra": -52.47,
+                "ra": "13:30:05.9394958608",
+                "ra_deg": 202.52,
+                "systemic_velocity": 61.74,
+                "target_name": "HE1327-2326",
+                "tic_id": "423687511",
+                "two_mass_id": "J13300595"
+            }
+        }
+    ],
+    "semester": "2024B",
+    "semid": [
+        "2024B_E462",
+        "2024B_K443"
+    ],
+    "success": "SUCCESS"
+}

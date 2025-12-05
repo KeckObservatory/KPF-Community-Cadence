@@ -87,11 +87,11 @@
         },
         "pm_dec": {
             "type": ["number", "string"],
-            "description": "Proper Motion in Dec [miliarcseconds/year]"
+            "description": "Proper Motion in Dec [milliarcseconds/year]"
         },
         "pm_ra": {
             "type": ["number", "string"],
-            "description": "Proper Motion in RA [miliarcseconds/year]"
+            "description": "Proper Motion in RA [milliarcseconds/year]"
         },
         "ra": {
             "type": "string",
@@ -125,7 +125,7 @@
             "short_description": "TIC Identifier"
         },
         "gaia_id": {
-            "type": "string",
+            "type": ["string", "number"],
             "description": "GAIA Identifier: DR3 preferred (optional)",
             "short_description": "GAIA Identifier"
         },
@@ -154,6 +154,16 @@
             "description": "Submitter",
             "not_editable_by_user": true
         },
+        "tags": {
+            "type": "array",
+            "short_description": "Tags",
+            "description": "Tags, comma separated",
+            "items": {
+                "description": "Tag comprised of characters other than comma",
+                "type": "string",
+                "pattern": "^[^,]+$"
+            }
+        },
         "total_observations_requested": {
             "type": "integer",
             "description": "Total Observations Requested"
@@ -179,7 +189,6 @@
         "num_exposures_per_visit",
         "num_visits_per_night",
         "num_unique_nights_per_semester"
-        
     ],
     "additionalProperties": true
 }
