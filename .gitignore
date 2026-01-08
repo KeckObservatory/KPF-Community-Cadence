@@ -9,7 +9,7 @@ lerna-debug.log*
 
 node_modules
 dist
-#dashboard
+dashboard
 build
 data
 forJeff
@@ -17,6 +17,7 @@ forJeff
 dist-ssr
 *.local
 license.json
+mongodb-transfer.sh
 
 #python stuff
 *.pyc
