@@ -18,6 +18,7 @@ dist-ssr
 *.local
 license.json
 mongodb-transfer.sh
+package-lock.json
 
 #python stuff
 *.pyc
