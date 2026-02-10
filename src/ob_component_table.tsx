@@ -22,6 +22,7 @@ import {
     GridPinnedColumnFields,
     GRID_CHECKBOX_SELECTION_COL_DEF,
     GridRowSelectionModel,
+    GridDensity
 } from '@mui/x-data-grid';
 
 import { useDebounceCallback } from './use_debounce_callback';
@@ -168,6 +169,7 @@ export default function OBComponentTable(props: Props) {
     }) as ComponentRow[];
 
     const [rows, setRows] = React.useState(initRows);
+    const [density, setDensity] = React.useState<GridDensity>('standard');
     let pinnedColumns: GridPinnedColumnFields = { left: [GRID_CHECKBOX_SELECTION_COL_DEF.field, 'actions', 'target_name', 'target_name_semid'], right: []}
     
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
@@ -478,7 +480,9 @@ export default function OBComponentTable(props: Props) {
                         setRows,
                         processRowUpdate,
                         componentName,
-                        selectedRows
+                        selectedRows,
+                        density,
+                        onDensityChange: setDensity
                         }
 
     const getRowStyling = (params: GridRowParams) => {
@@ -506,6 +510,7 @@ export default function OBComponentTable(props: Props) {
                 rows={rows ?? []}
                 getRowId={(row) => row._id}
                 editMode={'row'}
+                density={density}
                 getRowClassName={getRowStyling}
                 sx={{
                     '.greyed-out-row': {

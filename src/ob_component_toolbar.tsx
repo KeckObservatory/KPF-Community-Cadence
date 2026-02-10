@@ -1,6 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import {
     Toolbar,
     GridRowModel,
@@ -8,6 +9,7 @@ import {
     ToolbarPropsOverrides,
     ColumnsPanelTrigger,
     FilterPanelTrigger,
+    GridDensity
 } from '@mui/x-data-grid';
 import { Badge } from '@mui/material';
 
@@ -38,6 +40,8 @@ export interface EditToolbarProps extends GridToolbarProps, ToolbarPropsOverride
     componentName: OBComponentName;
     processRowUpdate: (newRow: GridRowModel, originalRow?: GridRowModel) => ComponentRow;
     selectedRows: ComponentRow[];
+    density: GridDensity;
+    onDensityChange: (density: GridDensity) => void;
 }
 
 const exportBlob = (blob: Blob, filename: string) => {
@@ -150,6 +154,13 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
     };
     const debouncedAddOB = useDebounceCallback(handleAddOB, 500)
 
+    const handleDensityClick = () => { 
+        const densities: GridDensity[] = ['compact', 'standard', 'comfortable'];
+        const currentIndex = densities.indexOf(props.density);
+        const nextIndex = (currentIndex + 1) % densities.length;
+        props.onDensityChange(densities[nextIndex]);
+    }
+
     let selectedOBs = selectedRows.map((row) => {
         return context.obs.find((ob) => ob._id === row._id)
     }).filter((ob) => ob !== undefined) as OB[]
@@ -231,6 +242,15 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                                 );
                             }}
                         />
+                    </Tooltip>
+
+                    <Tooltip title={`Density: ${props.density}`}>
+                        <Button onClick={handleDensityClick}>
+                            <DensityMediumIcon fontSize="small" color="primary" />
+                            <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
+                                DENSITY
+                            </Typography>
+                        </Button>
                     </Tooltip>
 
                     <Button
