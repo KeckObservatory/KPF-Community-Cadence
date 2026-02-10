@@ -1,11 +1,12 @@
-SYSNAM   = kpf-cc
+SYSNAM   = KPF-Community-Cadence
+
 # Is this an official or sandbox build?
 ifeq ($(findstring sandbox, $(CURDIR)),sandbox)
-	VERNUM  = ""
-	RELDIR  = $(subst build,,$(CURDIR))
+        VERNUM  = ""
+        RELDIR  = $(subst build,,$(CURDIR))
 else
-	VERNUM = $(shell basename `pwd`)
-	RELDIR = /www/observers/$(SYSNAM)/$(VERNUM)
+        VERNUM = $(shell basename `pwd`)
+        RELDIR = /www/observers/$(SYSNAM)/$(VERNUM)
 endif
 
 BUILDDIR = build
@@ -24,4 +25,4 @@ show:
 	@echo CURDIR = $(CURDIR)
 	@echo SYSNAM = $(SYSNAM)
 	@echo VERNUM = $(VERNUM)
-	@echo RELDIR = $(RELDIR)
+	@echo RELDIR = $(RELDIR)                                 
