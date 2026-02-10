@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=17.9.0 <25.2.1"
+  },
   "scripts": {
     "dev": "NODE_ENV=development vite",
     "build": "NODE_ENV=production tsc && vite build --emptyOutDir",
