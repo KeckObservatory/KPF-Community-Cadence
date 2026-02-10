@@ -205,34 +205,6 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                         <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor} />
                         <InactivateDialogButton disabled={inactivateDisabled} selectedOBs={selectedOBs} color={selectedColor} />
                     </>
-
-                    {/* <Tooltip title="Columns">
-                        <ColumnsPanelTrigger render={<ToolbarButton />}>
-                            <ViewColumnIcon fontSize="small" color="primary" />
-                            <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
-                                COLUMNS
-                            </Typography>
-                        </ColumnsPanelTrigger>
-                    </Tooltip>
-
-                    <Tooltip title="Filters">
-                        <FilterPanelTrigger
-                            render={(props, state) => {
-                                // Omit 'ref' to avoid type error
-                                const { ref, ...rest } = props;
-                                return (
-                                    <ToolbarButton {...rest}>
-                                        <Badge badgeContent={state.filterCount} color="primary" variant="dot">
-                                            <FilterListIcon fontSize="small" color="primary" />
-                                        </Badge>
-                                        <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
-                                            FILTERS
-                                        </Typography>
-                                    </ToolbarButton>
-                                );
-                            }}
-                        />
-                    </Tooltip> */}
                     <Tooltip title="Columns">
                         <ColumnsPanelTrigger render={<Button />}>
                             <ViewColumnIcon fontSize="small" color="primary" />
