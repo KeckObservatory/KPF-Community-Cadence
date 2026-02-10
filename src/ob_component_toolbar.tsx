@@ -1,10 +1,16 @@
 import AddIcon from '@mui/icons-material/Add';
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import {
     Toolbar,
     GridRowModel,
     GridToolbarProps,
     ToolbarPropsOverrides,
+    ColumnsPanelTrigger,
+    ToolbarButton,
+    FilterPanelTrigger,
 } from '@mui/x-data-grid';
+import { Badge } from '@mui/material';
 
 import { ob_schemas, Validators, validators } from './validation_check_dialog';
 import Button from '@mui/material/Button';
@@ -22,6 +28,7 @@ import { useCommCadContext, useSnackbarContext } from './App';
 import { ob_to_component_row } from './ob_edit_util';
 import Box from '@mui/material/Box';
 import InactivateDialogButton from './inactiveate_rows_dialog';
+import { Tooltip } from '@mui/material';
 
 export type NewOB = Partial<OB> & {
     _id?: string
@@ -194,11 +201,67 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                     <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddOB}>
                         Create New OB
                     </Button>
-                        <>
-                            <DeleteDialogButton disabled={deletedDisabled} selectedOBs={selectedOBs} color={selectedColor} />
-                            <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor} />
-                            <InactivateDialogButton disabled={inactivateDisabled} selectedOBs={selectedOBs} color={selectedColor} />
-                        </>
+                    <>
+                        <DeleteDialogButton disabled={deletedDisabled} selectedOBs={selectedOBs} color={selectedColor} />
+                        <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor} />
+                        <InactivateDialogButton disabled={inactivateDisabled} selectedOBs={selectedOBs} color={selectedColor} />
+                    </>
+
+                    {/* <Tooltip title="Columns">
+                        <ColumnsPanelTrigger render={<ToolbarButton />}>
+                            <ViewColumnIcon fontSize="small" color="primary" />
+                            <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
+                                COLUMNS
+                            </Typography>
+                        </ColumnsPanelTrigger>
+                    </Tooltip>
+
+                    <Tooltip title="Filters">
+                        <FilterPanelTrigger
+                            render={(props, state) => {
+                                // Omit 'ref' to avoid type error
+                                const { ref, ...rest } = props;
+                                return (
+                                    <ToolbarButton {...rest}>
+                                        <Badge badgeContent={state.filterCount} color="primary" variant="dot">
+                                            <FilterListIcon fontSize="small" color="primary" />
+                                        </Badge>
+                                        <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
+                                            FILTERS
+                                        </Typography>
+                                    </ToolbarButton>
+                                );
+                            }}
+                        />
+                    </Tooltip> */}
+                    <Tooltip title="Columns">
+                        <ColumnsPanelTrigger render={<Button />}>
+                            <ViewColumnIcon fontSize="small" color="primary" />
+                            <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
+                                COLUMNS
+                            </Typography>
+                        </ColumnsPanelTrigger>
+                    </Tooltip>
+
+                    <Tooltip title="Filters">
+                        <FilterPanelTrigger
+                            render={(props, state) => {
+                                // Omit 'ref' to avoid type error
+                                const { ref, ...rest } = props;
+                                return (
+                                    <Button {...rest} >
+                                        <Badge badgeContent={state.filterCount} color="primary" variant="dot">
+                                            <FilterListIcon fontSize="small" color="primary" />
+                                        </Badge>
+                                        <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
+                                            FILTERS
+                                        </Typography>
+                                    </Button>
+                                );
+                            }}
+                        />
+                    </Tooltip>
+
                     <Button
                         onClick={() => {
                             const json = getJson(context.obs);
