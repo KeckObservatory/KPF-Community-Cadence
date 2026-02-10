@@ -1,11 +1,10 @@
 import AddIcon from '@mui/icons-material/Add';
 import {
-    GridToolbarContainer,
+    Toolbar,
     GridRowModel,
-    GridToolbar,
     GridToolbarProps,
     ToolbarPropsOverrides,
-} from '@mui/x-data-grid-pro';
+} from '@mui/x-data-grid';
 
 import { ob_schemas, Validators, validators } from './validation_check_dialog';
 import Button from '@mui/material/Button';
@@ -188,7 +187,7 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
     const submitDisabled = validSelectedOBs.length <= 0
 
     return (
-        <GridToolbarContainer sx={{ justifyContent: 'center' }}>
+        <Toolbar >
             <Box style={{ width: "100%", display: "flex", justifyContent: "space-around", alignItems: "center", marginLeft: "10px" }}>
                 <Typography variant="h5">{componentName?.toUpperCase()}</Typography>
                 <Box style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -200,11 +199,6 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                             <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor} />
                             <InactivateDialogButton disabled={inactivateDisabled} selectedOBs={selectedOBs} color={selectedColor} />
                         </>
-                    <GridToolbar
-                        printOptions={{ disableToolbarButton: true }}
-                        csvOptions={{ disableToolbarButton: true }}
-                    />
-                    {/* <CustomExportButton obs={context.obs} /> */}
                     <Button
                         onClick={() => {
                             const json = getJson(context.obs);
@@ -219,6 +213,6 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                     <OBWizardButton />
                 </Box>
             </Box>
-        </GridToolbarContainer>
+        </Toolbar>
     );
 }
