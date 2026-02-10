@@ -12,8 +12,6 @@ import { Control } from './control';
 import Skeleton from '@mui/material/Skeleton';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { LicenseInfo } from '@mui/x-license';
-import licenseKey from './license.json'
 import { ModuleSelector, OB } from './module_selector';
 
 
@@ -27,10 +25,6 @@ export const get_config = async () => {
   const json = await resp.json()
   return json
 }
-
-LicenseInfo.setLicenseKey(
-  licenseKey.license_key
-)
 
 interface State {
   username: string,
