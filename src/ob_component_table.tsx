@@ -234,7 +234,7 @@ export default function OBComponentTable(props: Props) {
         renderCell: ob_feasible_chip
     } as GridColDef
 
-    columns = [...columns, target_name_col, target_name_semid_col]
+    columns = [target_name_col, target_name_semid_col, ...columns, ]
     if (componentName.includes('schedule')) {
         pinnedColumns.right?.push('ob_feasible')
         columns = [...columns, ob_feasible_col]
