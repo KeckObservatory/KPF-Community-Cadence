@@ -218,7 +218,7 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                     </>
                     <Tooltip title="Columns">
                         <ColumnsPanelTrigger render={<Button />}>
-                            <ViewColumnIcon fontSize="small" color="primary" />
+                            <ViewColumnIcon color="primary" />
                             <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
                                 COLUMNS
                             </Typography>
@@ -233,7 +233,7 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                                 return (
                                     <Button {...rest} >
                                         <Badge badgeContent={state.filterCount} color="primary" variant="dot">
-                                            <FilterListIcon fontSize="small" color="primary" />
+                                            <FilterListIcon color="primary" />
                                         </Badge>
                                         <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
                                             FILTERS
