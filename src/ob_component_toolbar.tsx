@@ -1,11 +1,17 @@
 import AddIcon from '@mui/icons-material/Add';
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import {
-    GridToolbarContainer,
+    Toolbar,
     GridRowModel,
-    GridToolbar,
     GridToolbarProps,
     ToolbarPropsOverrides,
-} from '@mui/x-data-grid-pro';
+    ColumnsPanelTrigger,
+    FilterPanelTrigger,
+    GridDensity
+} from '@mui/x-data-grid';
+import { Badge } from '@mui/material';
 
 import { ob_schemas, Validators, validators } from './validation_check_dialog';
 import Button from '@mui/material/Button';
@@ -23,6 +29,7 @@ import { useCommCadContext, useSnackbarContext } from './App';
 import { ob_to_component_row } from './ob_edit_util';
 import Box from '@mui/material/Box';
 import InactivateDialogButton from './inactiveate_rows_dialog';
+import { Tooltip } from '@mui/material';
 
 export type NewOB = Partial<OB> & {
     _id?: string
@@ -33,6 +40,8 @@ export interface EditToolbarProps extends GridToolbarProps, ToolbarPropsOverride
     componentName: OBComponentName;
     processRowUpdate: (newRow: GridRowModel, originalRow?: GridRowModel) => ComponentRow;
     selectedRows: ComponentRow[];
+    density: GridDensity;
+    onDensityChange: (density: GridDensity) => void;
 }
 
 const exportBlob = (blob: Blob, filename: string) => {
@@ -145,6 +154,13 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
     };
     const debouncedAddOB = useDebounceCallback(handleAddOB, 500)
 
+    const handleDensityClick = () => { 
+        const densities: GridDensity[] = ['compact', 'standard', 'comfortable'];
+        const currentIndex = densities.indexOf(props.density);
+        const nextIndex = (currentIndex + 1) % densities.length;
+        props.onDensityChange(densities[nextIndex]);
+    }
+
     let selectedOBs = selectedRows.map((row) => {
         return context.obs.find((ob) => ob._id === row._id)
     }).filter((ob) => ob !== undefined) as OB[]
@@ -188,23 +204,55 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
     const submitDisabled = validSelectedOBs.length <= 0
 
     return (
-        <GridToolbarContainer sx={{ justifyContent: 'center' }}>
+        <Toolbar >
             <Box style={{ width: "100%", display: "flex", justifyContent: "space-around", alignItems: "center", marginLeft: "10px" }}>
                 <Typography variant="h5">{componentName?.toUpperCase()}</Typography>
                 <Box style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <Button color="primary" startIcon={<AddIcon />} onClick={debouncedAddOB}>
                         Create New OB
                     </Button>
-                        <>
-                            <DeleteDialogButton disabled={deletedDisabled} selectedOBs={selectedOBs} color={selectedColor} />
-                            <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor} />
-                            <InactivateDialogButton disabled={inactivateDisabled} selectedOBs={selectedOBs} color={selectedColor} />
-                        </>
-                    <GridToolbar
-                        printOptions={{ disableToolbarButton: true }}
-                        csvOptions={{ disableToolbarButton: true }}
-                    />
-                    {/* <CustomExportButton obs={context.obs} /> */}
+                    <>
+                        <DeleteDialogButton disabled={deletedDisabled} selectedOBs={selectedOBs} color={selectedColor} />
+                        <SubmitDialogButton disabled={submitDisabled} obs={validSelectedOBs} color={submitButtonColor} />
+                        <InactivateDialogButton disabled={inactivateDisabled} selectedOBs={selectedOBs} color={selectedColor} />
+                    </>
+                    <Tooltip title="Columns">
+                        <ColumnsPanelTrigger render={<Button />}>
+                            <ViewColumnIcon color="primary" />
+                            <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
+                                COLUMNS
+                            </Typography>
+                        </ColumnsPanelTrigger>
+                    </Tooltip>
+
+                    <Tooltip title="Filters">
+                        <FilterPanelTrigger
+                            render={(props, state) => {
+                                // Omit 'ref' to avoid type error
+                                const { ref, ...rest } = props;
+                                return (
+                                    <Button {...rest} >
+                                        <Badge badgeContent={state.filterCount} color="primary" variant="dot">
+                                            <FilterListIcon color="primary" />
+                                        </Badge>
+                                        <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
+                                            FILTERS
+                                        </Typography>
+                                    </Button>
+                                );
+                            }}
+                        />
+                    </Tooltip>
+
+                    <Tooltip title={`Density: ${props.density}`}>
+                        <Button onClick={handleDensityClick}>
+                            <DensityMediumIcon fontSize="small" color="primary" />
+                            <Typography variant="body1" color="primary" sx={{ ml: 0.5 }}>
+                                DENSITY
+                            </Typography>
+                        </Button>
+                    </Tooltip>
+
                     <Button
                         onClick={() => {
                             const json = getJson(context.obs);
@@ -219,6 +267,6 @@ export const EditComponentToolbar = (props: EditToolbarProps) => {
                     <OBWizardButton />
                 </Box>
             </Box>
-        </GridToolbarContainer>
+        </Toolbar>
     );
 }

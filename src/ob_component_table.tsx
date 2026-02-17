@@ -7,7 +7,7 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 import {
     GridRowModesModel,
-    DataGridPro,
+    DataGrid,
     GridColDef,
     GridRowModel,
     GridValueSetter,
@@ -17,13 +17,13 @@ import {
     GridActionsCellItem,
     useGridApiContext,
     GridEventListener,
-    useGridApiEventHandler,
     GridRowParams,
     GridRenderCellParams,
     GridPinnedColumnFields,
     GRID_CHECKBOX_SELECTION_COL_DEF,
     GridRowSelectionModel,
-} from '@mui/x-data-grid-pro';
+    GridDensity
+} from '@mui/x-data-grid';
 
 import { useDebounceCallback } from './use_debounce_callback';
 import { delete_obs, submit_obs } from './api/api_root';
@@ -169,10 +169,14 @@ export default function OBComponentTable(props: Props) {
     }) as ComponentRow[];
 
     const [rows, setRows] = React.useState(initRows);
+    const [density, setDensity] = React.useState<GridDensity>('standard');
     let pinnedColumns: GridPinnedColumnFields = { left: [GRID_CHECKBOX_SELECTION_COL_DEF.field, 'actions', 'target_name', 'target_name_semid'], right: []}
     
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({}); //warning: do not use when creating a new row.
-    const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
+    const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>({
+        type: 'include',
+        ids: new Set()
+    }  as GridRowSelectionModel);
     const snackbarContext = useSnackbarContext()
     const refreshContext = useRefreshTableContext()
 
@@ -230,7 +234,13 @@ export default function OBComponentTable(props: Props) {
         renderCell: ob_feasible_chip
     } as GridColDef
 
-    columns = [...columns, target_name_col, target_name_semid_col]
+    if (componentName.includes('target')) {
+        columns = [target_name_col, target_name_semid_col, ...columns.slice(1), ]
+    }
+    else {
+        columns = [target_name_col, target_name_semid_col, ...columns]
+    }
+
     if (componentName.includes('schedule')) {
         pinnedColumns.right?.push('ob_feasible')
         columns = [...columns, ob_feasible_col]
@@ -328,7 +338,7 @@ export default function OBComponentTable(props: Props) {
             }, 300)
         }
 
-        useGridApiEventHandler(apiRef, 'rowEditStop', handleRowEvent)
+        apiRef.current.subscribeEvent('rowEditStop', handleRowEvent)
 
         const handleRowChange = () => {
             if (count > 0) {
@@ -471,12 +481,14 @@ export default function OBComponentTable(props: Props) {
     }
 
     columns = [...addColumns, ...columns];
-    const selectedRows = rows.filter((row) => rowSelectionModel.includes(row._id))
+    const selectedRows = rows.filter((row) => rowSelectionModel.ids?.has(row._id))
     const toolbarProps: EditToolbarProps = {
                         setRows,
                         processRowUpdate,
                         componentName,
-                        selectedRows
+                        selectedRows,
+                        density,
+                        onDensityChange: setDensity
                         }
 
     const getRowStyling = (params: GridRowParams) => {
@@ -500,10 +512,11 @@ export default function OBComponentTable(props: Props) {
                 },
             }}
         >
-            <DataGridPro
+            <DataGrid
                 rows={rows ?? []}
                 getRowId={(row) => row._id}
                 editMode={'row'}
+                density={density}
                 getRowClassName={getRowStyling}
                 sx={{
                     '.greyed-out-row': {
@@ -523,10 +536,12 @@ export default function OBComponentTable(props: Props) {
                 slots={{
                     toolbar: (props) => <EditComponentToolbar {...props} {...toolbarProps} />,
                 }}
+                showToolbar
                 slotProps={{
                     toolbar: toolbarProps,
                 }}
-                pinnedColumns={pinnedColumns} />
+                // pinnedColumns={pinnedColumns}  // pro version only
+                />
         </Box>
     );
 }
