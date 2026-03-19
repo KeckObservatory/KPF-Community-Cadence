@@ -67,7 +67,7 @@ export interface Calibration {
   exp_meter_mode?: string,
   exp_meter_exp_time?: number,
   exp_meter_bin?: number,
-  exp_meter_threshold?: Integer,
+  exp_meter_threshold?: number,
 }
 
 export interface Observation {
@@ -82,7 +82,7 @@ export interface Observation {
   auto_exp_meter?: boolean,
   exp_meter_exp_time?: number,
   exp_meter_bin?: number,
-  exp_meter_threshold?: Integer,
+  exp_meter_threshold?: number,
   take_simulcal?: boolean,
   auto_nd_filters?: boolean,
   cal_n_d_1?: string,
