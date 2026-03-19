@@ -128,10 +128,9 @@
             "translator_mapping": "ExpMeterBin"
         },
         "exp_meter_threshold": {
-            "type": "number",
+            "type": ["number", "string"],
             "description": "Threshold flux at the science detector at which to terminate the exposure [e-/nm",
             "short_description": "Exposure Meter Threshold",
-            "multipleOf": 1,
             "translator_mapping": "ExpMeterThreshold"
         }
     },
