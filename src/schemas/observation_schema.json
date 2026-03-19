@@ -76,7 +76,7 @@
             "type": ["number", "string"],
             "description": "Exposure Time for the exposure meter [seconds] ",
             "short_description": "Exposure Meter Time",
-            "regex": "^[+]?\\d*([\\.]\\d*)?$",
+            "regex": "^\\d*([\\.]\\d*)?$",
             "format": "strNumber",
             "default": 1,
             "multipleOf": 0.1,
@@ -90,10 +90,10 @@
             "translator_mapping": "ExpMeterBin"
         },
         "exp_meter_threshold": {
-            "type": ["integer", "string"],
+            "type": ["number", "string"],
             "description": "Threshold flux at the science detector at which to terminate the exposure [e-/nm]",
             "short_description": "Exposure Meter Th",
-            "regex": "^\\d*$",
+            "regex": "^\\d*([\\.]\\d*)?$",
             "format": "strNumber",
             "translator_mapping": "ExpMeterThreshold"
         },

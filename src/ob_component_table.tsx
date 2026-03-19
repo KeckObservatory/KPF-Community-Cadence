@@ -214,6 +214,7 @@ export default function OBComponentTable(props: Props) {
         type: 'string',
         resizable: true,
         headerName: 'Target Name',
+	editable: componentName.includes('target') ? true : false,
         width: 100,
     } as GridColDef
     const target_name_semid_col = {
